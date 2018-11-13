@@ -8,6 +8,28 @@ namespace Tsetlin
 namespace Config
 {
 
+
+inline
+int n_jobs(config_t const & config)
+{
+    return std::any_cast<int>(config.at("n_jobs"));
+}
+
+
+inline
+seed_type seed(config_t const & config)
+{
+    return std::any_cast<seed_type>(config.at("seed"));
+}
+
+
+inline
+bool verbose(config_t const & config)
+{
+    return std::any_cast<bool>(config.at("verbose"));
+}
+
+
 inline
 int number_of_pos_neg_clauses_per_class(config_t const & config)
 {
@@ -26,6 +48,20 @@ inline
 int number_of_features(config_t const & config)
 {
     return std::any_cast<int>(config.at("number_of_features"));
+}
+
+
+inline
+real_type s(config_t const & config)
+{
+    return std::any_cast<real_type>(config.at("s"));
+}
+
+
+inline
+int threshold(config_t const & config)
+{
+    return std::any_cast<int>(config.at("threshold"));
 }
 
 

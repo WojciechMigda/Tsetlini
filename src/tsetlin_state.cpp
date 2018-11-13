@@ -1,9 +1,13 @@
+#define LOG_MODULE "tsetlin-core"
+#include "logger.hpp"
+
 #include "tsetlin_state.hpp"
 #include "config_companion.hpp"
 
 #include <any>
 #include <algorithm>
 #include <iterator>
+#include <thread>
 
 namespace Tsetlin
 {
@@ -36,24 +40,48 @@ config_t merge(LHS && lhs, RHS && rhs)
 
 ClassifierState make_classifier_state(config_patch_t const & patch)
 {
-    ClassifierState state(merge(config_t{default_config}, patch));
+    auto merged_config = merge(config_t{default_config}, patch);
 
-    state.gen.seed(std::any_cast<seed_type>(state.config.at("seed")));
+    if (Config::n_jobs(merged_config) == -1)
+    {
+        merged_config.at("n_jobs") = std::max<int>(1, std::thread::hardware_concurrency());
+    }
+
+    ClassifierState state(merged_config);
+
+    ////////////////////////////////////////////////////////////////////////////
 
     auto & config = state.config;
+
+    auto const verbose = Config::verbose(config);
+
+    state.gen.seed(Config::seed(config));
+    state.igen.init(Config::seed(config));
+    state.fgen.init(Config::seed(config));
+
+    LOG(info) << "number_of_classes: " << Config::number_of_classes(config) << '\n';
+    LOG(info) << "number_of_clauses: " << Config::number_of_clauses(config) << '\n';
+    LOG(info) << "number_of_features: " << Config::number_of_features(config) << '\n';
+    LOG(info) << "s: " << Config::s(config) << '\n';
+    LOG(info) << "number_of_states: " << Config::number_of_states(config) << '\n';
+    LOG(info) << "threshold: " << Config::threshold(config) << '\n';
+    LOG(info) << "n_jobs: " << Config::n_jobs(config) << '\n';
+    LOG(info) << "seed: " << Config::seed(config) << '\n';
+
+    // convenience reference variables
     auto & ta_state = state.ta_state;
+    auto & igen = state.igen;
+    auto & vcache = state.vcache;
 
     std::generate_n(std::back_inserter(ta_state), Config::number_of_clauses(config),
-        [&config]()
+        [&config, &igen]()
         {
             aligned_vector_int rv;
 
             std::generate_n(std::back_inserter(rv), Config::number_of_features(config) * 2,
-                [&config]()
+                [&config, &igen]()
                 {
-                // TODO
-                    return 1;
-//                    return this->igen_.next(Config::number_of_states(config), Config::number_of_states(config) + 1);
+                    return igen.next(Config::number_of_states(config), Config::number_of_states(config) + 1);
                 }
             );
 
@@ -61,6 +89,19 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
         }
     );
 
+    vcache.reserve(Config::n_jobs(config));
+    for (auto it = 0; it < Config::n_jobs(config); ++it)
+    {
+        vcache.emplace_back(
+            // TODO move ctor
+            ClassifierState::Cache{
+                feedback_vector_type(Config::number_of_clauses(config), 0),
+                aligned_vector_char(Config::number_of_clauses(config), 0),
+                aligned_vector_int(Config::number_of_classes(config), 0),
+                ClassifierState::frand_cache_type(2 * Config::number_of_features(config), igen.next())
+            }
+        );
+    }
 
     return state;
 }
