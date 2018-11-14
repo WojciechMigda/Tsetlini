@@ -22,11 +22,11 @@ struct Classifier
 
     real_type evaluate(std::vector<aligned_vector_char> const & X, y_vector_type const & y, int number_of_examples);
 
-    int predict(aligned_vector_char const & sample);
+    int predict(aligned_vector_char const & sample) const;
 
-    aligned_vector_int predict_raw(aligned_vector_char const & sample);
+    aligned_vector_int predict_raw(aligned_vector_char const & sample) const;
 
-    void predict_raw(aligned_vector_char const & sample, int * out_p);
+    void predict_raw(aligned_vector_char const & sample, int * out_p) const;
 
 private:
     ClassifierState state;

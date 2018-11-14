@@ -71,7 +71,7 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
     // convenience reference variables
     auto & ta_state = state.ta_state;
     auto & igen = state.igen;
-    auto & vcache = state.vcache;
+    auto & cache = state.cache;
 
     std::generate_n(std::back_inserter(ta_state), Config::number_of_clauses(config),
         [&config, &igen]()
@@ -89,18 +89,15 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
         }
     );
 
-    vcache.reserve(Config::n_jobs(config));
+    cache.clause_output = aligned_vector_char(Config::number_of_clauses(config), 0);
+    cache.class_sum = aligned_vector_int(Config::number_of_classes(config), 0);
+    cache.feedback_to_clauses = feedback_vector_type(Config::number_of_clauses(config), 0);
+
+    // initialize frand caches instances for use by all thread jobs
+    cache.fcache.reserve(Config::n_jobs(config));
     for (auto it = 0; it < Config::n_jobs(config); ++it)
     {
-        vcache.emplace_back(
-            // TODO move ctor
-            ClassifierState::Cache{
-                feedback_vector_type(Config::number_of_clauses(config), 0),
-                aligned_vector_char(Config::number_of_clauses(config), 0),
-                aligned_vector_int(Config::number_of_classes(config), 0),
-                ClassifierState::frand_cache_type(2 * Config::number_of_features(config), igen.next())
-            }
-        );
+        cache.fcache.emplace_back(2 * Config::number_of_features(config), igen.next());
     }
 
     return state;
