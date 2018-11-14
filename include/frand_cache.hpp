@@ -24,7 +24,7 @@ struct frand_cache
     {
         real_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
 
-        for (auto it = 0u; it < m_pos; ++it)
+        for (auto it = 0; it < m_pos; ++it)
         {
             fcache_p[it] = m_rng.next();
         }

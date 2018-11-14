@@ -66,6 +66,13 @@ int threshold(config_t const & config)
 
 
 inline
+int boost_true_positive_feedback(config_t const & config)
+{
+    return std::any_cast<int>(config.at("boost_true_positive_feedback"));
+}
+
+
+inline
 int number_of_states(config_t const & config)
 {
     return std::any_cast<int>(config.at("number_of_states"));

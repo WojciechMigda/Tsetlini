@@ -16,6 +16,8 @@ struct Classifier
     Classifier(ClassifierState const & state);
     Classifier(ClassifierState && state);
 
+    void update(aligned_vector_char const & X, y_vector_type::value_type target_class);
+
     void fit_batch(std::vector<aligned_vector_char> const & X, y_vector_type const & y);
 
     void fit(std::vector<aligned_vector_char> const & X, y_vector_type const & y, std::size_t number_of_examples, int epochs=100);
