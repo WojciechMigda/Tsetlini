@@ -441,84 +441,108 @@ void Classifier::predict_raw(aligned_vector_char const & sample, int * out_p) co
 
 void Classifier::update(aligned_vector_char const & X, y_vector_type::value_type target_class)
 {
-#if 0
+    auto & cache = state.cache;
+    auto const & config = state.config;
+
+    auto const number_of_classes = Config::number_of_classes(config);
+    auto const number_of_pos_neg_clauses_per_class = Config::number_of_pos_neg_clauses_per_class(config);
+    auto const threshold = Config::threshold(config);
+
+
     // Randomly pick one of the other classes, for pairwise learning of class output
-    int negative_target_class = igen_.next(0, number_of_classes - 1);
+    int negative_target_class = state.igen.next(0, number_of_classes - 1);
     while (negative_target_class == target_class)
     {
-        negative_target_class = igen_.next(0, number_of_classes - 1);
+        negative_target_class = state.igen.next(0, number_of_classes - 1);
     }
 
-    calculate_clause_output(X, cache.clause_output, false);
+    calculate_clause_output(
+        X,
+        cache.clause_output,
+        false,
+        Config::number_of_clauses(config),
+        Config::number_of_features(config),
+        Config::number_of_states(config),
+        state.ta_state
+    );
 
-    sum_up_class_votes(cache.clause_output, cache.class_sum, target_class);
-    sum_up_class_votes(cache.clause_output, cache.class_sum, negative_target_class);
+    sum_up_class_votes(
+        cache.clause_output,
+        cache.class_sum,
+        target_class,
+        number_of_pos_neg_clauses_per_class,
+        threshold);
+
+    sum_up_class_votes(
+        cache.clause_output,
+        cache.class_sum,
+        negative_target_class,
+        number_of_pos_neg_clauses_per_class,
+        threshold);
+
 
     std::fill(cache.feedback_to_clauses.begin(), cache.feedback_to_clauses.end(), 0);
 
-#endif
 
-    const auto S_inv = ONE / Config::s(state.config);
+    const auto S_inv = ONE / Config::s(config);
 
-#if 0
-    const auto THR2_inv = (ONE / (Config::threshold(state.config) * 2));
-    const auto THR_pos = THR2_inv * (threshold - state.cache.class_sum[target_class]);
-    const auto THR_neg = THR2_inv * (threshold + state,cache.class_sum[negative_target_class]);
+    const auto THR2_inv = (ONE / (threshold * 2));
+    const auto THR_pos = THR2_inv * (threshold - cache.class_sum[target_class]);
+    const auto THR_neg = THR2_inv * (threshold + cache.class_sum[negative_target_class]);
 
     for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
     {
-        if (frand() > THR_pos)
+        if (state.fgen.next() > THR_pos)
         {
             continue;
         }
 
         // Type I Feedback
-        cache.feedback_to_clauses[pos_clause_index(target_class, j)]++;
+        cache.feedback_to_clauses[pos_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]++;
     }
     for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
     {
-        if (frand() > THR_pos)
+        if (state.fgen.next() > THR_pos)
         {
             continue;
         }
 
         // Type II Feedback
-        cache.feedback_to_clauses[neg_clause_index(target_class, j)]--;
+        cache.feedback_to_clauses[neg_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]--;
     }
 
     for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
     {
-        if (frand() > THR_neg)
+        if (state.fgen.next() > THR_neg)
         {
             continue;
         }
 
-        cache.feedback_to_clauses[pos_clause_index(negative_target_class, j)]--;
+        cache.feedback_to_clauses[pos_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]--;
     }
     for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
     {
-        if (frand() > THR_neg)
+        if (state.fgen.next() > THR_neg)
         {
             continue;
         }
 
-        cache.feedback_to_clauses[neg_clause_index(negative_target_class, j)]++;
+        cache.feedback_to_clauses[neg_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]++;
     }
 
-#endif
 
     train_automata_batch(
         state.ta_state.data(),
         0,
-        Config::number_of_clauses(state.config),
-        state.cache.feedback_to_clauses.data(),
-        state.cache.clause_output.data(),
-        Config::number_of_features(state.config),
-        Config::number_of_states(state.config),
+        Config::number_of_clauses(config),
+        cache.feedback_to_clauses.data(),
+        cache.clause_output.data(),
+        Config::number_of_features(config),
+        Config::number_of_states(config),
         S_inv,
         X.data(),
-        Config::boost_true_positive_feedback(state.config),
-        state.cache.fcache[0]
+        Config::boost_true_positive_feedback(config),
+        cache.fcache[0]
     );
 }
 
