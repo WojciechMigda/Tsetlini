@@ -2,6 +2,7 @@
 #include "logger.hpp"
 
 #include "tsetlin.hpp"
+#include "mt.hpp"
 #include "assume_aligned.hpp"
 #include "config_companion.hpp"
 #include "tsetlin_types.hpp"
@@ -342,6 +343,124 @@ void train_automata_batch(
 }
 
 
+void update_impl(
+    aligned_vector_char const & X,
+    y_vector_type::value_type target_class,
+
+    int const number_of_classes,
+    int const number_of_pos_neg_clauses_per_class,
+    int const threshold,
+    int const number_of_clauses,
+    int const number_of_features,
+    int const number_of_states,
+    real_type s,
+    int const boost_true_positive_feedback,
+
+    IRNG & igen,
+    FRNG & fgen,
+    std::vector<aligned_vector_int> & ta_state,
+    ClassifierState::Cache & cache
+    )
+{
+    // Randomly pick one of the other classes, for pairwise learning of class output
+    int negative_target_class = igen.next(0, number_of_classes - 1);
+    while (negative_target_class == target_class)
+    {
+        negative_target_class = igen.next(0, number_of_classes - 1);
+    }
+
+    calculate_clause_output(
+        X,
+        cache.clause_output,
+        false,
+        number_of_clauses,
+        number_of_features,
+        number_of_states,
+        ta_state
+    );
+
+    sum_up_class_votes(
+        cache.clause_output,
+        cache.class_sum,
+        target_class,
+        number_of_pos_neg_clauses_per_class,
+        threshold);
+
+    sum_up_class_votes(
+        cache.clause_output,
+        cache.class_sum,
+        negative_target_class,
+        number_of_pos_neg_clauses_per_class,
+        threshold);
+
+
+    std::fill(cache.feedback_to_clauses.begin(), cache.feedback_to_clauses.end(), 0);
+
+
+    const auto S_inv = ONE / s;
+
+    const auto THR2_inv = (ONE / (threshold * 2));
+    const auto THR_pos = THR2_inv * (threshold - cache.class_sum[target_class]);
+    const auto THR_neg = THR2_inv * (threshold + cache.class_sum[negative_target_class]);
+
+    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
+    {
+        if (fgen.next() > THR_pos)
+        {
+            continue;
+        }
+
+        // Type I Feedback
+        cache.feedback_to_clauses[pos_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]++;
+    }
+    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
+    {
+        if (fgen.next() > THR_pos)
+        {
+            continue;
+        }
+
+        // Type II Feedback
+        cache.feedback_to_clauses[neg_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]--;
+    }
+
+    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
+    {
+        if (fgen.next() > THR_neg)
+        {
+            continue;
+        }
+
+        cache.feedback_to_clauses[pos_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]--;
+    }
+    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
+    {
+        if (fgen.next() > THR_neg)
+        {
+            continue;
+        }
+
+        cache.feedback_to_clauses[neg_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]++;
+    }
+
+
+    train_automata_batch(
+        ta_state.data(),
+        0,
+        number_of_clauses,
+        cache.feedback_to_clauses.data(),
+        cache.clause_output.data(),
+        number_of_features,
+        number_of_states,
+        S_inv,
+        X.data(),
+        boost_true_positive_feedback,
+        cache.fcache[0]
+    );
+}
+
+
+
 } // anonymous
 
 
@@ -441,117 +560,53 @@ void Classifier::predict_raw(aligned_vector_char const & sample, int * out_p) co
 
 void Classifier::update(aligned_vector_char const & X, y_vector_type::value_type target_class)
 {
-    auto & cache = state.cache;
     auto const & config = state.config;
 
-    auto const number_of_classes = Config::number_of_classes(config);
-    auto const number_of_pos_neg_clauses_per_class = Config::number_of_pos_neg_clauses_per_class(config);
-    auto const threshold = Config::threshold(config);
-
-
-    // Randomly pick one of the other classes, for pairwise learning of class output
-    int negative_target_class = state.igen.next(0, number_of_classes - 1);
-    while (negative_target_class == target_class)
-    {
-        negative_target_class = state.igen.next(0, number_of_classes - 1);
-    }
-
-    calculate_clause_output(
+    update_impl(
         X,
-        cache.clause_output,
-        false,
-        Config::number_of_clauses(config),
-        Config::number_of_features(config),
-        Config::number_of_states(config),
-        state.ta_state
-    );
-
-    sum_up_class_votes(
-        cache.clause_output,
-        cache.class_sum,
         target_class,
-        number_of_pos_neg_clauses_per_class,
-        threshold);
 
-    sum_up_class_votes(
-        cache.clause_output,
-        cache.class_sum,
-        negative_target_class,
-        number_of_pos_neg_clauses_per_class,
-        threshold);
-
-
-    std::fill(cache.feedback_to_clauses.begin(), cache.feedback_to_clauses.end(), 0);
-
-
-    const auto S_inv = ONE / Config::s(config);
-
-    const auto THR2_inv = (ONE / (threshold * 2));
-    const auto THR_pos = THR2_inv * (threshold - cache.class_sum[target_class]);
-    const auto THR_neg = THR2_inv * (threshold + cache.class_sum[negative_target_class]);
-
-    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
-    {
-        if (state.fgen.next() > THR_pos)
-        {
-            continue;
-        }
-
-        // Type I Feedback
-        cache.feedback_to_clauses[pos_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]++;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
-    {
-        if (state.fgen.next() > THR_pos)
-        {
-            continue;
-        }
-
-        // Type II Feedback
-        cache.feedback_to_clauses[neg_clause_index(target_class, j, number_of_pos_neg_clauses_per_class)]--;
-    }
-
-    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
-    {
-        if (state.fgen.next() > THR_neg)
-        {
-            continue;
-        }
-
-        cache.feedback_to_clauses[pos_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]--;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_class; ++j)
-    {
-        if (state.fgen.next() > THR_neg)
-        {
-            continue;
-        }
-
-        cache.feedback_to_clauses[neg_clause_index(negative_target_class, j, number_of_pos_neg_clauses_per_class)]++;
-    }
-
-
-    train_automata_batch(
-        state.ta_state.data(),
-        0,
+        Config::number_of_classes(config),
+        Config::number_of_pos_neg_clauses_per_class(config),
+        Config::threshold(config),
         Config::number_of_clauses(config),
-        cache.feedback_to_clauses.data(),
-        cache.clause_output.data(),
         Config::number_of_features(config),
         Config::number_of_states(config),
-        S_inv,
-        X.data(),
+        Config::s(config),
         Config::boost_true_positive_feedback(config),
-        cache.fcache[0]
+
+        state.igen,
+        state.fgen,
+        state.ta_state,
+        state.cache
     );
 }
 
 
 void Classifier::fit_batch(std::vector<aligned_vector_char> const & X, y_vector_type const & y)
 {
+    auto const & config = state.config;
+
     for (auto i = 0u; i < std::min(X.size(), y.size()); ++i)
     {
-        update(X[i], y[i]);
+        update_impl(
+            X[i],
+            y[i],
+
+            Config::number_of_classes(config),
+            Config::number_of_pos_neg_clauses_per_class(config),
+            Config::threshold(config),
+            Config::number_of_clauses(config),
+            Config::number_of_features(config),
+            Config::number_of_states(config),
+            Config::s(config),
+            Config::boost_true_positive_feedback(config),
+
+            state.igen,
+            state.fgen,
+            state.ta_state,
+            state.cache
+        );
     }
 }
 
@@ -561,13 +616,41 @@ void Classifier::fit(std::vector<aligned_vector_char> const & X, y_vector_type c
     std::vector<int> ix(X.size());
     std::iota(ix.begin(), ix.end(), 0);
 
+    auto const & config = state.config;
+
+    auto const number_of_classes = Config::number_of_classes(config);
+    auto const number_of_pos_neg_clauses_per_class = Config::number_of_pos_neg_clauses_per_class(config);
+    auto const threshold = Config::threshold(config);
+    auto const number_of_clauses = Config::number_of_clauses(config);
+    auto const number_of_features = Config::number_of_features(config);
+    auto const number_of_states = Config::number_of_states(config);
+    auto const s = Config::s(config);
+    auto const boost_true_positive_feedback = Config::boost_true_positive_feedback(config);
+
     for (int epoch = 0; epoch < epochs; ++epoch)
     {
         std::shuffle(ix.begin(), ix.end(), std::mt19937(state.gen));
 
         for (auto i = 0u; i < number_of_examples; ++i)
         {
-            update(X[ix[i]], y[ix[i]]);
+            update_impl(
+                X[ix[i]],
+                y[ix[i]],
+
+                number_of_classes,
+                number_of_pos_neg_clauses_per_class,
+                threshold,
+                number_of_clauses,
+                number_of_features,
+                number_of_states,
+                s,
+                boost_true_positive_feedback,
+
+                state.igen,
+                state.fgen,
+                state.ta_state,
+                state.cache
+            );
         }
     }
 
@@ -576,6 +659,15 @@ void Classifier::fit(std::vector<aligned_vector_char> const & X, y_vector_type c
 
 real_type Classifier::evaluate(std::vector<aligned_vector_char> const & X, y_vector_type const & y, int number_of_examples)
 {
+    auto const & config = state.config;
+
+    auto const number_of_classes = Config::number_of_classes(config);
+    auto const number_of_pos_neg_clauses_per_class = Config::number_of_pos_neg_clauses_per_class(config);
+    auto const threshold = Config::threshold(config);
+    auto const number_of_clauses = Config::number_of_clauses(config);
+    auto const number_of_features = Config::number_of_features(config);
+    auto const number_of_states = Config::number_of_states(config);
+
     int errors = 0;
 
     for (int l = 0; l < number_of_examples; ++l)
@@ -584,18 +676,18 @@ real_type Classifier::evaluate(std::vector<aligned_vector_char> const & X, y_vec
             X[l],
             state.cache.clause_output,
             true,
-            Config::number_of_clauses(state.config),
-            Config::number_of_features(state.config),
-            Config::number_of_states(state.config),
+            number_of_clauses,
+            number_of_features,
+            number_of_states,
             state.ta_state
         );
 
         sum_up_all_class_votes(
             state.cache.clause_output,
             state.cache.class_sum,
-            Config::number_of_classes(state.config),
-            Config::number_of_pos_neg_clauses_per_class(state.config),
-            Config::threshold(state.config));
+            number_of_classes,
+            number_of_pos_neg_clauses_per_class,
+            threshold);
 
 
         const int max_class = std::distance(
