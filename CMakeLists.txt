@@ -16,12 +16,10 @@ target_include_directories(tsetlin
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(tsetlin PRIVATE -Werror -Wall -march=native)
-
-target_compile_features(tsetlin PRIVATE cxx_auto_type) # 11
-target_compile_features(tsetlin PRIVATE cxx_generic_lambdas) # 14
+target_compile_options(tsetlin PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=native -std=c++17>)
 
 
+add_subdirectory(examples)
 
 enable_testing()
 add_subdirectory(tests)
