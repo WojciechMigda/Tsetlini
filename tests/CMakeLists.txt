@@ -31,7 +31,6 @@ add_executable(tsetlin-test
     src/test_state.cpp
     src/test_aligned_array.cpp
 )
-target_compile_features(tsetlin-test PRIVATE cxx_auto_type)
 
 target_include_directories(tsetlin-test
     PUBLIC
@@ -42,7 +41,7 @@ target_include_directories(tsetlin-test
 )
 
 target_link_libraries(tsetlin-test gtest_main tsetlin)
-target_compile_options(tsetlin-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native>)
+target_compile_options(tsetlin-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
 
 gtest_discover_tests(tsetlin-test)
 add_test(NAME monolithic COMMAND tsetlin-test)
