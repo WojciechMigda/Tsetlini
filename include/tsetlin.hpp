@@ -30,6 +30,8 @@ struct Classifier
 
     void predict_raw(aligned_vector_char const & sample, int * out_p) const;
 
+    config_t read_config() const;
+
 private:
     ClassifierState state;
 };

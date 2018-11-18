@@ -702,5 +702,9 @@ real_type Classifier::evaluate(std::vector<aligned_vector_char> const & X, y_vec
     return 0.;
 }
 
+config_t Classifier::read_config() const
+{
+    return state.config;
+}
 
 } // namespace Tsetlin
