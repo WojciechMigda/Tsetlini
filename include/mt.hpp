@@ -199,7 +199,7 @@ struct basic_IRNG : public BasePRNG<unsigned int, Alignment, NumberOfStreams, ba
     }
 };
 
-using IRNG = basic_IRNG<128, 8>;
+using IRNG = basic_IRNG<64, 8>;
 
 
 template<unsigned int Alignment=64, unsigned int NumberOfStreams=8>
@@ -222,4 +222,4 @@ struct basic_FRNG : public BasePRNG<float, Alignment, NumberOfStreams, basic_FRN
     }
 };
 
-using FRNG = basic_FRNG<128, 8>;
+using FRNG = basic_FRNG<64, 8>;
