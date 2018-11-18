@@ -23,26 +23,42 @@
 
 #pragma once
 
-#include "aligned_array.hpp"
 #include "likely.h"
+#include "assume_aligned.hpp"
 
 #include <type_traits>
+#include <cstddef>
 
 template<typename ValueType, unsigned int Alignment, unsigned int NumberOfStreams, typename DerivedT>
 struct BasePRNG
 {
     using value_type = ValueType;
+    using value_ptr = value_type *;
     using derived_type = DerivedT;
+    using size_type = std::size_t;
 
     static constexpr unsigned int MTSZ = 624;
-    static constexpr unsigned int alignment = Alignment;
+    static constexpr size_type alignment = Alignment;
     static constexpr unsigned int NS = NumberOfStreams;
 
 
     unsigned int index;
 
-    AlignedArray<value_type, MTSZ * NS, alignment> aRES;
-    AlignedArray<unsigned int, MTSZ * NS, alignment> aMT;
+    alignas(alignment) value_type aRES[MTSZ * NS + alignment / sizeof (value_type)];
+    alignas(alignment) unsigned int aMT[MTSZ * NS + alignment / sizeof (unsigned int)];
+
+    inline
+    value_ptr RESp() const
+    {
+        return reinterpret_cast<value_ptr>((reinterpret_cast<size_type>(&aRES[0]) + alignment - 1) & ~(alignment - 1));
+    }
+
+    inline
+    unsigned int * MTp() const
+    {
+        return reinterpret_cast<unsigned int *>((reinterpret_cast<size_type>(&aMT[0]) + alignment - 1) & ~(alignment - 1));
+    }
+
 
     inline
     BasePRNG(int seed=1)
@@ -53,7 +69,7 @@ struct BasePRNG
     inline
     void init(int seed=1)
     {
-        auto MT = aMT.data();
+        auto MT = assume_aligned<alignment>(MTp());
 
         for (auto it = 0u; it < NS; ++it)
         {
@@ -70,8 +86,7 @@ struct BasePRNG
     void generate()
     {
         auto MULT1 = 2567483615UL;
-        auto MT = aMT.data();
-        auto RES = aRES.data();
+        auto MT = assume_aligned<alignment>(MTp());
 
         for (unsigned int i = 0; i < 227 * NS; ++i)
         {
@@ -92,6 +107,8 @@ struct BasePRNG
             MT[(MTSZ - 1) * NS + it] = MT[(MTSZ - 1 - 227) * NS + it] ^ (y >> 1) ^ (y & 1 ? MULT1 : 0);
         }
 
+        auto RES = assume_aligned<alignment>(RESp());
+
         for (auto it = 0u; it < MTSZ * NS; ++it)
         {
             auto y = MT[it];
@@ -111,7 +128,8 @@ struct BasePRNG
             generate();
         }
 
-        value_type y = aRES[index];
+        auto RES = assume_aligned<alignment>(RESp());
+        value_type y = RES[index];
 
         if (UNLIKELY(index == MTSZ * NS - 1))
         {
