@@ -2,12 +2,15 @@
 #include "logger.hpp"
 
 #include "tsetlin_state.hpp"
+#include "tsetlin_types.hpp"
 #include "config_companion.hpp"
 
 #include <any>
 #include <algorithm>
 #include <iterator>
 #include <thread>
+#include <random>
+#include <any>
 
 namespace Tsetlin
 {
@@ -22,7 +25,7 @@ static const config_t default_config =
     {"threshold", std::any(15)},
     {"boost_true_positive_feedback", std::any(0)},
     {"n_jobs", std::any(-1)},
-    {"seed", std::any(0uL)},
+//    {"seed", std::any(0uL)},
     {"verbose", std::any(false)},
 };
 
@@ -45,6 +48,11 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
     if (Config::n_jobs(merged_config) == -1)
     {
         merged_config.at("n_jobs") = std::max<int>(1, std::thread::hardware_concurrency());
+    }
+
+    if (merged_config.count("seed") == 0)
+    {
+        merged_config["seed"] = std::make_any<seed_type>(std::random_device{}());
     }
 
     ClassifierState state(merged_config);
