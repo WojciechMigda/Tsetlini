@@ -1,4 +1,4 @@
-#undef NDEBUG // I wan't assert to work
+#undef NDEBUG // I want assert to work
 
 #include "tsetlin.hpp"
 
