@@ -89,7 +89,7 @@ Could not read from file NoisyXORTrainingData.txt. It either does not exist
 or is not readable.
 Please download it from https://github.com/cair/TsetlinMachineCython
 You can issue the following command:
-$> curl --remote-name-all https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
+$> curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
 or
 $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
 )";
@@ -102,7 +102,7 @@ Could not read from file NoisyXORTrainingData.txt. It either does not exist
 or is not readable.
 Please download it from https://github.com/cair/TsetlinMachineCython
 You can issue the following command:
-$> curl --remote-name-all https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
+$> curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
 or
 $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
 )";
