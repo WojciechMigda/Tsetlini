@@ -29,9 +29,19 @@
 #include <type_traits>
 #include <cstddef>
 
+
+constexpr bool is_power_of_two(unsigned long long x)
+{
+    return x && !(x & (x - 1));
+}
+
+
 template<typename ValueType, unsigned int Alignment, unsigned int NumberOfStreams, typename DerivedT>
 struct BasePRNG
 {
+    static_assert(std::alignment_of<ValueType>::value <= Alignment, "Alignment cannot be smaller than alignment of ValueType");
+    static_assert(is_power_of_two(Alignment), "Alignment must be a power of 2");
+
     using value_type = ValueType;
     using value_ptr = value_type *;
     using derived_type = DerivedT;
