@@ -10,7 +10,12 @@
 
 #include <iostream>
 #include <sstream>
-#include <boost/none_t.hpp>
+
+struct __logger_none_t
+{
+  struct init_tag{};
+  explicit __logger_none_t(init_tag){} // to disable default constructor
+};
 
 enum log_level
 {
@@ -128,7 +133,7 @@ public:
 
 #ifdef NDEBUG
 # define DEVLOG(given_level)\
-    DEVLOG_INVOKER(::logger::logger_null_stream_impl, ::boost::none_t, ::log_level, given_level, LOG_LEVEL)
+    DEVLOG_INVOKER(::logger::logger_null_stream_impl, __logger_none_t, ::log_level, given_level, LOG_LEVEL)
 #else
 # define DEVLOG(given_level)\
     DEVLOG_INVOKER(::logger::logger_impl, LOG_TYPE, ::log_level, given_level, LOG_LEVEL)
@@ -146,7 +151,7 @@ public:
     LOG_INVOKER(::logger::logger_impl, LOG_TYPE, ::log_level, given_level, "root")
 #endif
 
-#define NULL_LOG() DEVLOG_INVOKER(::logger::logger_null_stream_impl, ::boost::none_t, ::log_level, error, 100)
+#define NULL_LOG() DEVLOG_INVOKER(::logger::logger_null_stream_impl, __logger_none_t, ::log_level, error, 100)
 
 
 #define LOG(given_level) (verbose ? LOG_(given_level) : NULL_LOG())
