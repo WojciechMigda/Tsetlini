@@ -8,5 +8,5 @@ target_include_directories(noisy-xor
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
-target_link_libraries(noisy-xor tsetlin)
+target_link_libraries(noisy-xor tsetlin_static)
 target_compile_options(noisy-xor PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)

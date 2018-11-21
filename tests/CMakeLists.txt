@@ -40,7 +40,7 @@ target_include_directories(tsetlin-test
         ${CMAKE_SOURCE_DIR}/src
 )
 
-target_link_libraries(tsetlin-test gtest_main tsetlin)
+target_link_libraries(tsetlin-test gtest_main tsetlin_static)
 target_compile_options(tsetlin-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
 
 gtest_discover_tests(tsetlin-test)
