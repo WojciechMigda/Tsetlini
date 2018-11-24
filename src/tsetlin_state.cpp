@@ -4,29 +4,27 @@
 #include "tsetlin_state.hpp"
 #include "tsetlin_types.hpp"
 #include "config_companion.hpp"
+#include "tsetlin_config.hpp"
 
-#include <any>
 #include <algorithm>
 #include <iterator>
 #include <thread>
 #include <random>
-#include <any>
 
 namespace Tsetlin
 {
 
 static const config_t default_config =
 {
-    {"number_of_classes", std::any(2)},
-    {"number_of_pos_neg_clauses_per_class", std::any(5)},
-    {"number_of_features", std::any(2)},
-    {"number_of_states", std::any(100)},
-    {"s", std::any(2.0f)},
-    {"threshold", std::any(15)},
-    {"boost_true_positive_feedback", std::any(0)},
-    {"n_jobs", std::any(-1)},
-//    {"seed", std::any(0uL)},
-    {"verbose", std::any(false)},
+    {"number_of_classes", config_value_t(2)},
+    {"number_of_pos_neg_clauses_per_class", config_value_t(5)},
+    {"number_of_features", config_value_t(2)},
+    {"number_of_states", config_value_t(100)},
+    {"s", config_value_t(2.0f)},
+    {"threshold", config_value_t(15)},
+    {"boost_true_positive_feedback", config_value_t(0)},
+    {"n_jobs", config_value_t(-1)},
+    {"verbose", config_value_t(false)},
 };
 
 
@@ -52,7 +50,7 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
 
     if (merged_config.count("seed") == 0)
     {
-        merged_config["seed"] = std::make_any<seed_type>(std::random_device{}());
+        merged_config["seed"] = config_value_t(std::random_device{}());
     }
 
     ClassifierState state(merged_config);

@@ -12,7 +12,7 @@ namespace Tsetlin
 static constexpr unsigned int alignment = 64;
 
 using real_type = float;
-using seed_type = std::mt19937::result_type;
+using seed_type = std::random_device::result_type;
 
 // aligned vectors
 template <typename T>
