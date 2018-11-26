@@ -93,6 +93,10 @@ install:
       brew install cmake || brew upgrade cmake
     fi
     cmake --version
+  - |
+    sudo apt-get install python-pip python3-pip
+    pip install --user setuptools cython
+    pip3 install --user setuptools cython
 
 before_script:
   - if [[ ${TRAVIS_OS_NAME} == linux ]]; then export NODE_LABELS="Linux Ubuntu Ubuntu-16.04"; fi
@@ -104,7 +108,12 @@ before_script:
   - python3 --version
 
 script:
-  - cd .build
+  - pushd .build
   - cmake -DCMAKE_CXX_COMPILER=${CXX:-c++} -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF ..
   - cmake --build .
   - ctest
+  - popd
+  - pushd bindings/python
+  - python3 setup.py build
+  - python3 setup.py install --user
+  - popd
