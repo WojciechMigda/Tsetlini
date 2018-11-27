@@ -115,5 +115,6 @@ script:
   - popd
   - pushd bindings/python
   - python3 setup.py build
+  - python3 setup.py pytest
   - python3 setup.py install --user
   - popd

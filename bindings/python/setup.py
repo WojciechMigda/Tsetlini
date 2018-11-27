@@ -274,6 +274,8 @@ cython_ext_modules = [ext_module_dostuff,
 #
 my_ext_modules = cythonize( cython_ext_modules, include_path=my_include_dirs, gdb_debug=my_debug )
 
+needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
+pytest_runner = ['pytest-runner'] if needs_pytest else []
 
 #########################################################
 # Call setup()
@@ -322,8 +324,9 @@ setup(
     # See
     #    http://setuptools.readthedocs.io/en/latest/setuptools.html
     #
-    setup_requires = ["cython", "numpy"],
-    install_requires = ["numpy"],
+    setup_requires = ["cython", "numpy", "scikit-learn"] + pytest_runner,
+    tests_require=["pytest"],
+    install_requires = ["numpy", "scikit-learn"],
     provides = ["setup_template_cython"],
 
     # keywords for PyPI (in case you upload your project)
