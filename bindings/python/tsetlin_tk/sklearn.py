@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
+
 #from sklearn.metrics import euclidean_distances
 
 
@@ -84,9 +85,11 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         X, y = check_X_y(X, y)
         # Store the classes seen during fit
         self.classes_ = unique_labels(y)
+        self.n_features_ = X.shape[1]
 
         self.X_ = X
         self.y_ = y
+
         # Return the classifier
         return self
 
@@ -111,13 +114,11 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         # Input validation
         X = check_array(X)
 
-        closest = np.argmin(euclidean_distances(X, self.X_), axis=1)
-        return self.y_[closest]
+        return np.ones(X.shape[0])
 
 
     def predict_proba(self, X):
-        pred = np.random.rand(X.shape[0], self.classes_.size)
-        return pred / np.sum(pred, axis=1)[:, np.newaxis]
+        return np.zeros((X.shape[0], self.classes_.size))
 
 
     def partial_fit(self, X, y):
