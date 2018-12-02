@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <random>
+#include <optional>
 
 namespace Tsetlin
 {
@@ -13,6 +14,7 @@ static constexpr unsigned int alignment = 64;
 
 using real_type = float;
 using seed_type = std::random_device::result_type;
+using none_type = std::nullopt_t;
 
 // aligned vectors
 template <typename T>
@@ -21,7 +23,8 @@ using aligned_vector_int = aligned_vector<int>;
 using aligned_vector_char = aligned_vector<char>;
 using aligned_vector_float = aligned_vector<float>;
 
-using y_vector_type = std::vector<int>;
+using label_type = int;
+using label_vector_type = std::vector<label_type>;
 using feedback_vector_type = aligned_vector_int;
 
 static constexpr real_type ONE = 1.;

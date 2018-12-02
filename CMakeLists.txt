@@ -4,13 +4,11 @@ project(TsetlinMachineToolkit VERSION 1.0.0 LANGUAGES CXX)
 
 add_library(tsetlin_static
     src/tsetlin.cpp
-    src/tsetlin_config.cpp
+    src/tsetlin_params.cpp
     src/tsetlin_state.cpp
 )
 
-add_library(tsetlin SHARED
-    src/c_api.cpp
-)
+add_library(tsetlin SHARED)
 
 target_include_directories(tsetlin_static
     PUBLIC 

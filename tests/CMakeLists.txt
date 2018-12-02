@@ -27,9 +27,8 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(tsetlin-test
     src/main.cpp
-    src/test_config.cpp
-    src/test_state.cpp
-#    src/test_aligned_array.cpp
+    src/test_classifier.cpp
+    src/test_params.cpp
 )
 
 target_include_directories(tsetlin-test

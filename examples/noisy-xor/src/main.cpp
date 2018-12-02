@@ -110,47 +110,61 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     }
 
 
-    // for compiler with support of structured bindings
     auto const [train_X, train_y] = split_Xy(train_Xy);
     auto const [test_X, test_y] = split_Xy(test_Xy);
 
     assert(train_X.front().size() == 12);
     assert(test_X.front().size() == 12);
 
-    auto patch = Tsetlin::config_patch_from_json(R"({
-        "threshold": 15,
-        "s": 3.9,
-        "number_of_pos_neg_clauses_per_class": 5,
-        "number_of_states": 100,
-        "number_of_features": 12,
-        "number_of_classes": 2,
-        "boost_true_positive_feedback": 0,
-        "seed": 1,
-        "verbose": false
-    })");
-    assert(patch.size() != 0);
+    auto error_printer = [](Tsetlin::status_message_t && msg)
+    {
+        std::cout << msg.second << '\n';
+        return msg;
+    };
 
-    Tsetlin::Classifier tsetlin_machine(Tsetlin::make_classifier_state(patch));
 
-    // Training of the Tsetlin Machine in batch mode. The Tsetlin Machine can also be trained online
-    tsetlin_machine.fit(train_X, train_y, train_y.size(), 200);
+    Tsetlin::make_classifier(R"({
+            "threshold": 15,
+            "s": 3.9,
+            "number_of_pos_neg_clauses_per_label": 5,
+            "number_of_states": 100,
+            "boost_true_positive_feedback": 0,
+            "random_state": 1,
+            "verbose": false
+        })")
+        .leftMap(error_printer)
+        .rightMap([&](Tsetlin::Classifier && clf)
+        {
+            // Training of the Tsetlin Machine in batch mode. The Tsetlin Machine can also be trained online
+            auto status = clf.fit(train_X, train_y, 200);
 
-    // Some performacne statistics
+            // Some performance statistics
+            clf.evaluate(test_X, test_y)
+                .leftMap(error_printer)
+                .rightMap([](auto acc){ std::cout << "Accuracy on test data (no noise): " << acc << '\n'; return acc; });
 
-    std::cout << "Accuracy on test data (no noise): " <<
-        tsetlin_machine.evaluate(test_X, test_y, test_y.size()) << '\n';
+            clf.evaluate(train_X, train_y)
+                .leftMap(error_printer)
+                .rightMap([](auto acc){ std::cout << "Accuracy on training data (40% noise): " << acc << "\n\n"; return acc; });
 
-    std::cout << "Accuracy on training data (40% noise): " <<
-        tsetlin_machine.evaluate(train_X, train_y, train_y.size()) << "\n\n";
+            clf.predict(aligned_vector_char{1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0})
+                .rightMap([](auto label){ std::cout << "Prediction: x1 = 1, x2 = 0, ... -> y = " << label << '\n'; return label; })
+                .leftMap(error_printer);
 
-    std::cout << "Prediction: x1 = 1, x2 = 0, ... -> y = " <<
-        tsetlin_machine.predict(aligned_vector_char{1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0}) << '\n';
-    std::cout << "Prediction: x1 = 0, x2 = 1, ... -> y = " <<
-        tsetlin_machine.predict(aligned_vector_char{0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0}) << '\n';
-    std::cout << "Prediction: x1 = 0, x2 = 0, ... -> y = " <<
-        tsetlin_machine.predict(aligned_vector_char{0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0}) << '\n';
-    std::cout << "Prediction: x1 = 1, x2 = 1, ... -> y = " <<
-        tsetlin_machine.predict(aligned_vector_char{1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0}) << '\n';
+            clf.predict(aligned_vector_char{0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0})
+                .rightMap([](auto label){ std::cout << "Prediction: x1 = 0, x2 = 1, ... -> y = " << label << '\n'; return label; })
+                .leftMap(error_printer);
+
+            clf.predict(aligned_vector_char{0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0})
+                .rightMap([](auto label){ std::cout << "Prediction: x1 = 0, x2 = 0, ... -> y = " << label << '\n'; return label; })
+                .leftMap(error_printer);
+
+            clf.predict(aligned_vector_char{1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0})
+                .rightMap([](auto label){ std::cout << "Prediction: x1 = 1, x2 = 1, ... -> y = " << label << '\n'; return label; })
+                .leftMap(error_printer);
+
+            return clf;
+        });
 
     return 0;
 }

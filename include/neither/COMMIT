@@ -1,0 +1,6 @@
+https://github.com/LoopPerfect/neither
+
+05ebe5f164a0c1f5bfc2fff2ea34397f1d838e95
+
+Changes:
+ - Replace universal initialization (curly braces) with copy construction

@@ -111,7 +111,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
         return 1;
     }
 
-    // for compiler with support of structured bindings
+
     auto const [df_X, df_y] = split_Xy(df_Xy);
 
     assert(df_X.front().size() == 16);
@@ -132,20 +132,11 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
     std::vector<aligned_vector_char> test_X(df_X.size() - PIVOT);
     std::vector<int> test_y(df_y.size() - PIVOT);
 
-    auto patch = Tsetlin::config_patch_from_json(R"({
-        "threshold": 10,
-        "s": 3.0,
-        "number_of_pos_neg_clauses_per_class": 50,
-        "number_of_states": 100,
-        "number_of_features": 16,
-        "number_of_classes": 3,
-        "boost_true_positive_feedback": 1,
-        "seed": 1,
-        "verbose": false
-    })");
-    assert(patch.size() != 0);
-
-    auto state = Tsetlin::make_classifier_state(patch);
+    auto error_printer = [](Tsetlin::status_message_t const & msg)
+    {
+        std::cout << msg.second << '\n';
+        return msg;
+    };
 
 
     for (auto it = 0u; it < ensemble_size; ++it)
@@ -165,21 +156,49 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
             test_y[rit - PIVOT] = df_y[ix[rit]];
         }
 
-        Tsetlin::Classifier tsetlin_machine(state);
-        tsetlin_machine.fit(train_X, train_y, train_y.size(), 500);
+        auto clf = Tsetlin::make_classifier(R"({
+            "threshold": 10,
+            "s": 3.0,
+            "number_of_pos_neg_clauses_per_label": 50,
+            "number_of_states": 100,
+            "boost_true_positive_feedback": 1,
+            "random_state": 1,
+            "verbose": false
+        })").leftMap(error_printer)
+            .rightMap([&](auto && clf)
+            {
+                auto status = clf.fit(train_X, train_y, 500);
 
-        accuracy_train[it] = 100. * tsetlin_machine.evaluate(train_X, train_y, train_y.size());
-        accuracy_test[it] = 100. * tsetlin_machine.evaluate(test_X, test_y, test_y.size());
+                clf.evaluate(test_X, test_y)
+                    .leftMap(error_printer)
+                    .rightMap([&](auto acc)
+                    {
+                        accuracy_test[it] = 100. * acc;
 
-        {
-            auto [mean, stdev] = stdev_mean(accuracy_test.data(), accuracy_test.data() + it + 1);
-            printf("Average accuracy on test data: %.1f +/- %.1f\n", mean, 1.96 * stdev / std::sqrt(it + 1));
-        }
+                        auto [mean, stdev] = stdev_mean(accuracy_test.data(), accuracy_test.data() + it + 1);
+                        printf("Average accuracy on test data: %.1f +/- %.1f\n", mean, 1.96 * stdev / std::sqrt(it + 1));
 
-        {
-            auto [mean, stdev] = stdev_mean(accuracy_train.data(), accuracy_train.data() + it + 1);
-            printf("Average accuracy on train data: %.1f +/- %.1f\n", mean, 1.96 * stdev / std::sqrt(it + 1));
-        }
+                        return acc;
+                    });
+
+                return clf;
+            })
+            .rightMap([&](auto && clf)
+            {
+                clf.evaluate(train_X, train_y)
+                    .leftMap(error_printer)
+                    .rightMap([&](auto acc)
+                    {
+                        accuracy_train[it] = 100. * acc;
+
+                        auto [mean, stdev] = stdev_mean(accuracy_train.data(), accuracy_train.data() + it + 1);
+                        printf("Average accuracy on train data: %.1f +/- %.1f\n", mean, 1.96 * stdev / std::sqrt(it + 1));
+
+                        return acc;
+                    });
+
+                return clf;
+            });
     }
 
     return 0;

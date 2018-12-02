@@ -3,8 +3,8 @@
 
 #include "tsetlin_state.hpp"
 #include "tsetlin_types.hpp"
-#include "config_companion.hpp"
-#include "tsetlin_config.hpp"
+#include "params_companion.hpp"
+#include "tsetlin_params.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -14,80 +14,40 @@
 namespace Tsetlin
 {
 
-static const config_t default_config =
+
+void initialize_state(ClassifierState & state)
 {
-    {"number_of_classes", config_value_t(2)},
-    {"number_of_pos_neg_clauses_per_class", config_value_t(5)},
-    {"number_of_features", config_value_t(2)},
-    {"number_of_states", config_value_t(100)},
-    {"s", config_value_t(2.0f)},
-    {"threshold", config_value_t(15)},
-    {"boost_true_positive_feedback", config_value_t(0)},
-    {"n_jobs", config_value_t(-1)},
-    {"verbose", config_value_t(false)},
-};
+    auto & params = state.m_params;
 
+    auto const verbose = Params::verbose(params);
 
-template<typename LHS, typename RHS>
-config_t merge(LHS && lhs, RHS && rhs)
-{
-    config_patch_t rv(std::forward<RHS>(rhs));
+    state.gen.seed(Params::random_state(params));
+    state.igen.init(Params::random_state(params));
+    state.fgen.init(Params::random_state(params));
 
-    rv.merge(std::forward<LHS>(lhs));
-
-    return rv;
-}
-
-
-ClassifierState make_classifier_state(config_patch_t const & patch)
-{
-    auto merged_config = merge(config_t{default_config}, patch);
-
-    if (Config::n_jobs(merged_config) == -1)
-    {
-        merged_config.at("n_jobs") = std::max<int>(1, std::thread::hardware_concurrency());
-    }
-
-    if (merged_config.count("seed") == 0)
-    {
-        merged_config["seed"] = config_value_t(std::random_device{}());
-    }
-
-    ClassifierState state(merged_config);
-
-    ////////////////////////////////////////////////////////////////////////////
-
-    auto & config = state.config;
-
-    auto const verbose = Config::verbose(config);
-
-    state.gen.seed(Config::seed(config));
-    state.igen.init(Config::seed(config));
-    state.fgen.init(Config::seed(config));
-
-    LOG(info) << "number_of_classes: " << Config::number_of_classes(config) << '\n';
-    LOG(info) << "number_of_clauses: " << Config::number_of_clauses(config) << '\n';
-    LOG(info) << "number_of_features: " << Config::number_of_features(config) << '\n';
-    LOG(info) << "s: " << Config::s(config) << '\n';
-    LOG(info) << "number_of_states: " << Config::number_of_states(config) << '\n';
-    LOG(info) << "threshold: " << Config::threshold(config) << '\n';
-    LOG(info) << "n_jobs: " << Config::n_jobs(config) << '\n';
-    LOG(info) << "seed: " << Config::seed(config) << '\n';
+    LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_clauses(params) << '\n';
+    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "s: " << Params::s(params) << '\n';
+    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
+    LOG(info) << "random_state: " << Params::random_state(params) << '\n';
 
     // convenience reference variables
     auto & ta_state = state.ta_state;
     auto & igen = state.igen;
     auto & cache = state.cache;
 
-    std::generate_n(std::back_inserter(ta_state), Config::number_of_clauses(config),
-        [&config, &igen]()
+    std::generate_n(std::back_inserter(ta_state), Params::number_of_clauses(params),
+        [&params, &igen]()
         {
             aligned_vector_int rv;
 
-            std::generate_n(std::back_inserter(rv), Config::number_of_features(config) * 2,
-                [&config, &igen]()
+            std::generate_n(std::back_inserter(rv), Params::number_of_features(params) * 2,
+                [&params, &igen]()
                 {
-                    return igen.next(Config::number_of_states(config), Config::number_of_states(config) + 1);
+                    return igen.next(Params::number_of_states(params), Params::number_of_states(params) + 1);
                 }
             );
 
@@ -95,24 +55,23 @@ ClassifierState make_classifier_state(config_patch_t const & patch)
         }
     );
 
-    cache.clause_output = aligned_vector_char(Config::number_of_clauses(config), 0);
-    cache.class_sum = aligned_vector_int(Config::number_of_classes(config), 0);
-    cache.feedback_to_clauses = feedback_vector_type(Config::number_of_clauses(config), 0);
+    cache.clause_output = aligned_vector_char(Params::number_of_clauses(params), 0);
+    cache.label_sum = aligned_vector_int(Params::number_of_labels(params), 0);
+    cache.feedback_to_clauses = feedback_vector_type(Params::number_of_clauses(params), 0);
 
     // initialize frand caches instances for use by all thread jobs
-    cache.fcache.reserve(Config::n_jobs(config));
-    for (auto it = 0; it < Config::n_jobs(config); ++it)
+    cache.fcache.reserve(Params::n_jobs(params));
+    for (auto it = 0; it < Params::n_jobs(params); ++it)
     {
-        cache.fcache.emplace_back(2 * Config::number_of_features(config), igen.next());
+        cache.fcache.emplace_back(2 * Params::number_of_features(params), igen.next());
     }
-
-    return state;
 }
 
 
-ClassifierState::ClassifierState(config_patch_t const & config) :
-    config(config)
+ClassifierState::ClassifierState(params_t const & params) :
+    m_params(params)
 {
 }
+
 
 } // namespace Tsetlin
