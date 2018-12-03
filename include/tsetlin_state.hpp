@@ -6,7 +6,6 @@
 #include "tsetlin_params.hpp"
 #include "tsetlin_types.hpp"
 
-#include <random>
 #include <vector>
 
 namespace Tsetlin
@@ -32,7 +31,6 @@ struct ClassifierState
 
     mutable Cache cache;
 
-    std::mt19937 gen;
     IRNG igen;
     FRNG fgen;
 

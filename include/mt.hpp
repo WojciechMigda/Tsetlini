@@ -28,6 +28,7 @@
 
 #include <type_traits>
 #include <cstddef>
+#include <limits>
 
 
 constexpr bool is_power_of_two(unsigned long long x)
@@ -46,6 +47,7 @@ struct BasePRNG
     using value_ptr = value_type *;
     using derived_type = DerivedT;
     using size_type = std::size_t;
+    using result_type = value_type;
 
     static constexpr unsigned int MTSZ = 624;
     static constexpr size_type alignment = Alignment;
@@ -155,6 +157,24 @@ struct BasePRNG
 
     inline
     value_type next()
+    {
+        return rand();
+    }
+
+    inline constexpr
+    value_type min() const
+    {
+        return std::numeric_limits<value_type>::min();
+    }
+
+    inline constexpr
+    value_type max() const
+    {
+        return std::numeric_limits<value_type>::max();
+    }
+
+    inline
+    value_type operator()()
     {
         return rand();
     }

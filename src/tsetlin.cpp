@@ -550,9 +550,11 @@ fit_impl(
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
 
+    std::mt19937 gen(state.igen());
+
     for (int epoch = 0; epoch < epochs; ++epoch)
     {
-        std::shuffle(ix.begin(), ix.end(), std::mt19937(state.gen));
+        std::shuffle(ix.begin(), ix.end(), gen);
 
         for (auto i = 0u; i < number_of_examples; ++i)
         {

@@ -21,7 +21,6 @@ void initialize_state(ClassifierState & state)
 
     auto const verbose = Params::verbose(params);
 
-    state.gen.seed(Params::random_state(params));
     state.igen.init(Params::random_state(params));
     state.fgen.init(Params::random_state(params));
 
