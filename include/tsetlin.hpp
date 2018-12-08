@@ -39,6 +39,7 @@ struct Classifier
 //    void predict_raw(aligned_vector_char const & sample, int * out_p) const;
 //
     params_t read_params() const;
+    ClassifierState read_state() const;
 
 friend Either<status_message_t, Classifier> make_classifier(std::string const & json_params);
 

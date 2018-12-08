@@ -35,6 +35,8 @@ struct ClassifierState
     FRNG fgen;
 
     explicit ClassifierState(params_t const & params);
+
+    bool operator==(ClassifierState const & other) const;
 };
 
 void initialize_state(ClassifierState & state);

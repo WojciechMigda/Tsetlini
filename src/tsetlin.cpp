@@ -861,6 +861,12 @@ params_t Classifier::read_params() const
 }
 
 
+ClassifierState Classifier::read_state() const
+{
+    return m_state;
+}
+
+
 Either<status_message_t, Classifier>
 make_classifier(std::string const & json_params)
 {

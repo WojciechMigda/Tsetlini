@@ -11,6 +11,16 @@
 #include <thread>
 #include <random>
 
+
+namespace std
+{
+// this is needed for std::variant comparison, probably illegal. TODO
+static constexpr
+bool operator==(nullopt_t const & lhs, nullopt_t const & rhs){ return true; }
+
+}
+
+
 namespace Tsetlin
 {
 
@@ -72,5 +82,22 @@ ClassifierState::ClassifierState(params_t const & params) :
 {
 }
 
+
+bool ClassifierState::operator==(ClassifierState const & other) const
+{
+    if (this == &other)
+    {
+        return true;
+    }
+    else
+    {
+        return
+            ta_state == other.ta_state
+            and igen == other.igen
+            and fgen == other.fgen
+            and m_params == other.m_params
+            ;
+    }
+}
 
 } // namespace Tsetlin

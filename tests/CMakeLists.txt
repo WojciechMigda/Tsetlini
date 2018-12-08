@@ -28,6 +28,7 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 add_executable(tsetlin-test
     src/main.cpp
     src/test_classifier.cpp
+    src/test_classifier_state_json.cpp
     src/test_params.cpp
 )
 

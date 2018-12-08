@@ -29,6 +29,7 @@
 #include <type_traits>
 #include <cstddef>
 #include <limits>
+#include <algorithm>
 
 
 constexpr bool is_power_of_two(unsigned long long x)
@@ -177,6 +178,34 @@ struct BasePRNG
     value_type operator()()
     {
         return rand();
+    }
+
+    BasePRNG const & operator=(BasePRNG const & other)
+    {
+        if (this != &other)
+        {
+            index = other.index;
+            std::copy(other.RESp(), other.RESp() + MTSZ * NS, RESp());
+            std::copy(other.MTp(), other.MTp() + MTSZ * NS, MTp());
+        }
+
+        return *this;
+    }
+
+    bool operator==(BasePRNG const & other) const
+    {
+        if (this == &other)
+        {
+            return true;
+        }
+        else
+        {
+            return
+                index == other.index
+                and std::equal(RESp(), RESp() + MTSZ * NS, other.RESp())
+                and std::equal(MTp(), MTp() + MTSZ * NS, other.MTp())
+            ;
+        }
     }
 };
 

@@ -6,6 +6,7 @@ add_library(tsetlin_static
     src/tsetlin.cpp
     src/tsetlin_params.cpp
     src/tsetlin_state.cpp
+    src/tsetlin_state_json.cpp
 )
 
 add_library(tsetlin SHARED)
