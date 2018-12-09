@@ -95,8 +95,8 @@ install:
     cmake --version
   - |
     sudo apt-get install python-pip python3-pip
-    pip install --user setuptools cython
-    pip3 install --user setuptools cython
+    pip install --user setuptools cython numpy
+    pip3 install --user setuptools cython numpy
 
 before_script:
   - if [[ ${TRAVIS_OS_NAME} == linux ]]; then export NODE_LABELS="Linux Ubuntu Ubuntu-16.04"; fi
