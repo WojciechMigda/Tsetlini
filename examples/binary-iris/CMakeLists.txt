@@ -8,5 +8,5 @@ target_include_directories(binary-iris
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
 )
 
-target_link_libraries(binary-iris tsetlin_static)
+target_link_libraries(binary-iris tktsetlin_static)
 target_compile_options(binary-iris PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
