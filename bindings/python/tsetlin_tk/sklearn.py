@@ -4,7 +4,8 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 
-#from sklearn.metrics import euclidean_distances
+from .base import (
+    _validate_params, _fit_tsetlin_classifier)
 
 
 class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
@@ -66,7 +67,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         self.random_state = random_state
 
 
-    def fit(self, X, y):
+    def fit(self, X, y, n_iter=500):
         """A reference implementation of a fitting function for a classifier.
 
         Parameters
@@ -81,16 +82,30 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         self : object
             Returns self.
         """
+
+        self.set_params(**_validate_params(self.get_params()))
+        n_iter = int(n_iter)
+        assert(n_iter > 0)
+
         # Check that X and y have correct shape
         X, y = check_X_y(X, y)
-        # Store the classes seen during fit
-        self.classes_ = unique_labels(y)
+
         self.n_features_ = X.shape[1]
 
-        self.X_ = X
-        self.y_ = y
+        # Store the classes seen during fit
+        # I will need this for partial_fit to verify absence of unseen labels
+        # for y=[1, 4, 7, 99, 7] this produces a tuple
+        # (array([ 1,  4,  7, 99]), array([0, 1, 2, 3, 2]))
+        self.classes_, y = np.unique(y, return_inverse=True)
 
-        # Return the classifier
+        if len(self.classes_) < 2:
+            raise ValueError("This estimator needs samples of at least 2 classes"
+                             " in the data, but the data contains only one"
+                             " class: {}".format(self.classes_[0]))
+
+        self.model_ = _fit_tsetlin_classifier(
+            X, y, self.get_params(), n_iter)
+
         return self
 
 
@@ -106,10 +121,10 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         -------
         y : ndarray, shape (n_samples,)
             The label for each sample is the label of the closest sample
-            seen udring fit.
+            seen during fit.
         """
         # Check is fit had been called
-        check_is_fitted(self, ['X_', 'y_'])
+        check_is_fitted(self, ['model_'])
 
         # Input validation
         X = check_array(X)

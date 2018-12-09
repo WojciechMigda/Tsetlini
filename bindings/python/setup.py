@@ -135,7 +135,7 @@ openmp_link_args    = ['-fopenmp']
 #     https://github.com/cython/cython/wiki/PackageHierarchy
 #
 # For example: my_include_dirs = [np.get_include()]
-my_include_dirs = ["."]
+my_include_dirs = [".", "../../include"]
 
 
 # Choose the base set of compiler and linker flags.
@@ -185,12 +185,15 @@ Return value:
     else:
         compile_args = list(my_extra_compile_args_nonmath)
         link_args    = list(my_extra_link_args_nonmath)
-        libraries    = None  # value if no libraries, see setuptools.extension._Extension
+        libraries    = []  # value if no libraries, see setuptools.extension._Extension
 
     # OpenMP
     if use_openmp:
         compile_args.insert( 0, openmp_compile_args )
         link_args.insert( 0, openmp_link_args )
+
+    compile_args += ['-std=c++17']
+    libraries += ['tktsetlin']
 
     # See
     #    http://docs.cython.org/src/tutorial/external.html
@@ -254,13 +257,15 @@ except MyFileNotFoundError:
 
 # declare Cython extension modules here
 #
+ext_module_libtsetlin = declare_cython_extension( "tsetlin_tk.libtsetlin",            use_math=False, use_openmp=False , include_dirs=my_include_dirs )
 ext_module_dostuff    = declare_cython_extension( "tsetlin_tk.dostuff",               use_math=False, use_openmp=False , include_dirs=my_include_dirs )
 ext_module_compute    = declare_cython_extension( "tsetlin_tk.compute",               use_math=True,  use_openmp=False , include_dirs=my_include_dirs )
 ext_module_helloworld = declare_cython_extension( "tsetlin_tk.subpackage.helloworld", use_math=False, use_openmp=False , include_dirs=my_include_dirs )
 
 # this is mainly to allow a manual logical ordering of the declared modules
 #
-cython_ext_modules = [ext_module_dostuff,
+cython_ext_modules = [ext_module_libtsetlin,
+                      ext_module_dostuff,
                       ext_module_compute,
                       ext_module_helloworld]
 
