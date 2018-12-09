@@ -4,6 +4,7 @@
 #include <memory>
 #include <cassert>
 #include <cstddef>
+#include <type_traits>
 #include <neither/traits.hpp>
 
 namespace neither {
@@ -106,18 +107,33 @@ auto maybe(T value) -> Maybe<T> { return {value}; }
 template <typename T = void>
 auto maybe() -> Maybe<T> { return {}; }
 
+namespace {
+
+  inline
+  bool equal(Maybe<void> const&, Maybe<void> const&) {
+    return true;
+  }
+
+  template <typename T>
+  bool equal(Maybe<T> const &a, Maybe<T> const &b) {
+    if (a.hasValue) {
+      return b.hasValue && a.value == b.value;
+    }
+    return !b.hasValue;
+  }
+}
+
 template <typename T>
 bool operator == (Maybe<T> const& a, Maybe<T> const& b) {
-  if (a.hasValue) {
-    return b.hasValue && a.value == b.value;
-  }
-  return !b.hasValue;
+  return equal(a, b);
 }
 
 template <typename T>
 bool operator != (Maybe<T> const& a, Maybe<T> const& b) {
   return !(a == b);
 }
+
+static const auto none = maybe();
 
 }
 
