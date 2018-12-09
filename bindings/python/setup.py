@@ -31,6 +31,8 @@ except:  # FileNotFoundError does not exist in Python 2.7
     # - remove() (not currently used here) raises OSError
     MyFileNotFoundError = (IOError, OSError)
 
+import numpy as np
+
 #########################################################
 # General config
 #########################################################
@@ -135,7 +137,7 @@ openmp_link_args    = ['-fopenmp']
 #     https://github.com/cython/cython/wiki/PackageHierarchy
 #
 # For example: my_include_dirs = [np.get_include()]
-my_include_dirs = [".", "../../include"]
+my_include_dirs = [".", "../../include", np.get_include()]
 
 
 # Choose the base set of compiler and linker flags.
