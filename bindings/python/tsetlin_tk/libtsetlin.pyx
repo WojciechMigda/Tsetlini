@@ -7,17 +7,17 @@
 
 import  numpy as np
 cimport numpy as np
-cimport libtsetlin
+cimport tsetlin_tk.libtsetlin
 
 #from either cimport Either
 
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 
-from tsetlin_status_code cimport status_message_t
-from tsetlin_classifier_state cimport ClassifierState
-from tsetlin_classifier_state_maker cimport make_classifier_state_ptr
-from move_unique cimport move_unique
+from tsetlin_tk.tsetlin_status_code cimport status_message_t
+from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
+from tsetlin_tk.tsetlin_classifier_state_maker cimport make_classifier_state_ptr
+from tsetlin_tk.move_unique cimport move_unique
 
 
 cdef unique_ptr[ClassifierState] classifier_fn_right(unique_ptr[ClassifierState] && state_p):
@@ -25,6 +25,7 @@ cdef unique_ptr[ClassifierState] classifier_fn_right(unique_ptr[ClassifierState]
 
 
 cdef status_message_t classifier_fn_left(status_message_t && msg):
+    #raise ValueError(<bytes>msg.second)
     return msg
 
 

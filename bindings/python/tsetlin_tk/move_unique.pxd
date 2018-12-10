@@ -2,7 +2,7 @@
 # distutils: language = c++
 
 
-from tsetlin_classifier_state cimport ClassifierState
+from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
 
 from libcpp.memory cimport unique_ptr
 

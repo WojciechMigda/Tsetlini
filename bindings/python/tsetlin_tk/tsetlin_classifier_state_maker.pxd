@@ -2,13 +2,13 @@
 # distutils: language = c++
 
 
-from either cimport Either
+from tsetlin_tk.either cimport Either
 
 from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 
-from tsetlin_status_code cimport status_message_t
-from tsetlin_classifier_state cimport ClassifierState
+from tsetlin_tk.tsetlin_status_code cimport status_message_t
+from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
 
 
 cdef extern from "tsetlin_classifier_state_maker.hpp" namespace "Tsetlin" nogil:
