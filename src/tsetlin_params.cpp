@@ -112,7 +112,10 @@ json_to_params(json const & js)
         }
         else if (key == "random_state")
         {
-            rv[key] = value.get<seed_type>();
+            if (!value.is_null())
+            {
+                rv[key] = value.get<seed_type>();
+            }
         }
         else if (key == "s")
         {

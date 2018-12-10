@@ -86,6 +86,19 @@ TEST(Params, can_be_created_from_json_with_one_boolean_item)
 }
 
 
+TEST(Params, can_be_created_from_json_with_null_random_state)
+{
+    auto const rv = Tsetlin::make_params_from_json(R"({"random_state": null})");
+
+    EXPECT_TRUE(rv);
+
+    auto params = rv.right().value;
+
+    // null random_state is normalized with random seed
+    EXPECT_TRUE(std::holds_alternative<Tsetlin::seed_type>(params.at("random_state")));
+}
+
+
 TEST(Params, cannot_be_created_from_json_with_unrecognized_item)
 {
     auto const rv = Tsetlin::make_params_from_json(R"({"foobar": true})");
