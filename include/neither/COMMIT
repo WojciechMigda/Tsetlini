@@ -4,4 +4,5 @@ https://github.com/LoopPerfect/neither
 
 
 Changes:
-silenced warning in maybe.hpp
+- silenced warning in maybe.hpp
+- rightMap && fix
