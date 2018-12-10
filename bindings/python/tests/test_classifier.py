@@ -31,7 +31,7 @@ def test_classifier_throws_when_constructed_with_unknown_param():
         clf = TsetlinMachineClassifier(**params)
 
 
-def XXtest_classifier_passes_check_estimator():
+def test_classifier_passes_check_estimator():
     from sklearn.utils.estimator_checks import check_estimator
 
     check_estimator(TsetlinMachineClassifier)
