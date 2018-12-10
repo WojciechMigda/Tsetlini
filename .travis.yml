@@ -106,6 +106,8 @@ before_script:
   - ${CXX:-c++} -march=native -E -v - </dev/null 2>&1 | grep cc1
   - python --version
   - python3 --version
+  - cython --version
+  - cython3 --version
 
 script:
   - pushd .build
