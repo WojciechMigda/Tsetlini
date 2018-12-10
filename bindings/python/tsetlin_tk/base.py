@@ -17,7 +17,7 @@ def _validate_params(params):
         elif k == "n_jobs":
             v = int(v)
             assert(v == -1 or v > 0)
-        elif k == "number_of_pos_neg_clauses_per_class":
+        elif k == "number_of_pos_neg_clauses_per_label":
             v = int(v)
             assert(v > 0)
         elif k == "number_of_states":

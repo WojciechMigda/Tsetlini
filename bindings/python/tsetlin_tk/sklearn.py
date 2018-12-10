@@ -17,10 +17,10 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
 
     Parameters
     ----------
-    number_of_pos_neg_clauses_per_class : int, default=5
+    number_of_pos_neg_clauses_per_label : int, default=5
         Number of positive / negative clauses per class. E.g. for N classes this
         will lead to the model having
-        2 * number_of_pos_neg_clauses_per_class * N clauses.
+        2 * number_of_pos_neg_clauses_per_label * N clauses.
     number_of_states: int, default=100
         Number of integral states associated with a single Tsetlin automaton.
     s: float, default=2.0
@@ -49,7 +49,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         The classes seen at :meth:`fit`.
     """
     def __init__(self,
-                 number_of_pos_neg_clauses_per_class=5,
+                 number_of_pos_neg_clauses_per_label=5,
                  number_of_states=100,
                  s=2.0,
                  threshold=15,
@@ -57,7 +57,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
                  n_jobs=-1,
                  verbose=False,
                  random_state=None):
-        self.number_of_pos_neg_clauses_per_class = number_of_pos_neg_clauses_per_class
+        self.number_of_pos_neg_clauses_per_label = number_of_pos_neg_clauses_per_label
         self.number_of_states = number_of_states
         self.s = s
         self.threshold = threshold
