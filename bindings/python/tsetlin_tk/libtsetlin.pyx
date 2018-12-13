@@ -15,6 +15,7 @@ from tsetlin_tk.tsetlin_status_code cimport status_message_t
 from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
 from tsetlin_tk.tsetlin_classifier_state_maker cimport make_classifier_state_ptr
 from tsetlin_tk.tsetlin_types cimport aligned_vector_char, label_vector_type, label_type
+from tsetlin_tk.tsetlin_state_json cimport to_json_string
 
 from tsetlin_tk.move_unique cimport move_unique
 from tsetlin_tk.functional_bind cimport bind, _1
@@ -82,8 +83,7 @@ cdef extern from "tsetlin_private.hpp":
 
             if (status.first == Tsetlin::S_OK)
             {
-                std::string js_state = "{}";
-                // TODO
+                std::string js_state = Tsetlin::to_json_string(state);
 
                 return neither::Either<Tsetlin::status_message_t, std::string>::rightOf(js_state);
             }
@@ -97,6 +97,16 @@ cdef extern from "tsetlin_private.hpp":
 """(string params, vector[aligned_vector_char] X, label_vector_type y, int n_epochs)
 
 
+cdef extern from *:
+    cdef Either[string, string] reduce_status_message """
+[](Tsetlin::status_message_t && msg)
+{
+    return neither::Either<std::string, std::string>::leftOf(std::string());
+}
+""" (msg)
+
+
+
 def fit_classifier(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_params, int n_epochs):
 
     """
@@ -105,9 +115,10 @@ def fit_classifier(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_s
     cdef label_vector_type y = y_as_vector(npy, y_is_sparse)
     cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
 
+    cdef string js_state = \
+        train_lambda(<string>js_params, X, y, n_epochs) \
+            .leftMap(raise_value_error) \
+            .leftFlatMap(reduce_status_message) \
+            ._join[string]()
 
-    train_lambda(<string>js_params, X, y, n_epochs) \
-        .leftMap(raise_value_error)
-
-
-    return
+    return js_state

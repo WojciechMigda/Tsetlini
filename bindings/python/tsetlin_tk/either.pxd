@@ -18,6 +18,8 @@ cdef extern from "neither/either.hpp" namespace "neither" nogil:
         Either[L, R] rightFlatMap[FFR](FFR)
         Either[L, R] leftFlatMap[FFL](FFL)
 
+        T _join "join"[T]()
+
         @staticmethod
         Either[L, R] rightOf(R)
 
