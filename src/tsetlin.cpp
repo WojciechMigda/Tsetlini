@@ -506,83 +506,6 @@ unique_labels(label_vector_type const & y)
 }
 
 
-status_message_t
-fit_impl(
-    ClassifierState & state,
-    std::vector<aligned_vector_char> const & X,
-    label_vector_type const & y,
-    int epochs)
-{
-    (void)unique_labels;
-//    auto const labels = unique_labels(y);
-//    auto const number_of_labels = labels.rightMap([](auto const & labels) -> int { return labels.size(); });
-//
-//    validate_params();
-//
-//    initialize_state();
-
-
-    // let it crash - no input validation for now
-    {
-        int const number_of_labels = *std::max_element(y.cbegin(), y.cend()) + 1;
-        state.m_params["number_of_labels"] = param_value_t(number_of_labels);
-
-        int const number_of_features = X.front().size();
-        state.m_params["number_of_features"] = param_value_t(number_of_features);
-
-        initialize_state(state);
-    }
-
-
-    auto const number_of_examples = X.size();
-
-    std::vector<int> ix(number_of_examples);
-    std::iota(ix.begin(), ix.end(), 0);
-
-    auto const & params = state.m_params;
-
-    auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
-    auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
-    auto const number_of_states = Params::number_of_states(params);
-    auto const s = Params::s(params);
-    auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
-
-    std::mt19937 gen(state.igen());
-
-    for (int epoch = 0; epoch < epochs; ++epoch)
-    {
-        std::shuffle(ix.begin(), ix.end(), gen);
-
-        for (auto i = 0u; i < number_of_examples; ++i)
-        {
-            update_impl(
-                X[ix[i]],
-                y[ix[i]],
-
-                number_of_labels,
-                number_of_pos_neg_clauses_per_label,
-                threshold,
-                number_of_clauses,
-                number_of_features,
-                number_of_states,
-                s,
-                boost_true_positive_feedback,
-
-                state.igen,
-                state.fgen,
-                state.ta_state,
-                state.cache
-            );
-        }
-    }
-
-    return {S_OK, ""};
-}
-
-
 Either<status_message_t, real_type>
 evaluate_impl(
     ClassifierState const & state,
@@ -666,6 +589,83 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
 
 
 } // anonymous
+
+
+status_message_t
+fit_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int epochs)
+{
+    (void)unique_labels;
+//    auto const labels = unique_labels(y);
+//    auto const number_of_labels = labels.rightMap([](auto const & labels) -> int { return labels.size(); });
+//
+//    validate_params();
+//
+//    initialize_state();
+
+
+    // let it crash - no input validation for now
+    {
+        int const number_of_labels = *std::max_element(y.cbegin(), y.cend()) + 1;
+        state.m_params["number_of_labels"] = param_value_t(number_of_labels);
+
+        int const number_of_features = X.front().size();
+        state.m_params["number_of_features"] = param_value_t(number_of_features);
+
+        initialize_state(state);
+    }
+
+
+    auto const number_of_examples = X.size();
+
+    std::vector<int> ix(number_of_examples);
+    std::iota(ix.begin(), ix.end(), 0);
+
+    auto const & params = state.m_params;
+
+    auto const number_of_labels = Params::number_of_labels(params);
+    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const number_of_states = Params::number_of_states(params);
+    auto const s = Params::s(params);
+    auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
+
+    std::mt19937 gen(state.igen());
+
+    for (int epoch = 0; epoch < epochs; ++epoch)
+    {
+        std::shuffle(ix.begin(), ix.end(), gen);
+
+        for (auto i = 0u; i < number_of_examples; ++i)
+        {
+            update_impl(
+                X[ix[i]],
+                y[ix[i]],
+
+                number_of_labels,
+                number_of_pos_neg_clauses_per_label,
+                threshold,
+                number_of_clauses,
+                number_of_features,
+                number_of_states,
+                s,
+                boost_true_positive_feedback,
+
+                state.igen,
+                state.fgen,
+                state.ta_state,
+                state.cache
+            );
+        }
+    }
+
+    return {S_OK, ""};
+}
 
 
 Classifier::Classifier(params_t const & params) :

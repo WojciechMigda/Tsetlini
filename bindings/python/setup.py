@@ -137,7 +137,7 @@ openmp_link_args    = ['-fopenmp']
 #     https://github.com/cython/cython/wiki/PackageHierarchy
 #
 # For example: my_include_dirs = [np.get_include()]
-my_include_dirs = [".", "../../include", np.get_include()]
+my_include_dirs = [".", "../../include", "../../src", np.get_include()]
 
 
 # Choose the base set of compiler and linker flags.
