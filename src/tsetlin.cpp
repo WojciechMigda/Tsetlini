@@ -591,6 +591,55 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
 } // anonymous
 
 
+Either<status_message_t, label_vector_type>
+predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
+{
+    // let it crash - no state validation for now
+
+    auto const number_of_examples = X.size();
+
+    auto const & params = state.m_params;
+
+    auto const number_of_labels = Params::number_of_labels(params);
+    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const number_of_states = Params::number_of_states(params);
+
+    label_vector_type rv(number_of_examples);
+
+    for (auto it = 0u; it < number_of_examples; ++it)
+    {
+        calculate_clause_output(
+            X[it],
+            state.cache.clause_output,
+            true,
+            number_of_clauses,
+            number_of_features,
+            number_of_states,
+            state.ta_state
+        );
+
+        sum_up_all_class_votes(
+            state.cache.clause_output,
+            state.cache.label_sum,
+            number_of_labels,
+            number_of_pos_neg_clauses_per_label,
+            threshold);
+
+
+        const int max_class = std::distance(
+            state.cache.label_sum.cbegin(),
+            std::max_element(state.cache.label_sum.cbegin(), state.cache.label_sum.cend()));
+
+        rv[it] = max_class;
+    }
+
+    return Either<status_message_t, label_vector_type>::rightOf(rv);
+}
+
+
 status_message_t
 fit_impl(
     ClassifierState & state,
@@ -684,6 +733,13 @@ Either<status_message_t, label_type>
 Classifier::predict(aligned_vector_char const & sample) const
 {
     return predict_impl(m_state, sample);
+}
+
+
+Either<status_message_t, label_vector_type>
+Classifier::predict(std::vector<aligned_vector_char> const & X) const
+{
+    return predict_impl(m_state, X);
 }
 
 

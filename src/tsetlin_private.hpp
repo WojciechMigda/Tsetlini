@@ -4,10 +4,13 @@
 #include "tsetlin_state.hpp"
 #include "tsetlin_types.hpp"
 
+#include "neither/either.hpp"
+
 #include <vector>
 
 namespace Tsetlin
 {
+
 
 status_message_t
 fit_impl(
@@ -15,5 +18,11 @@ fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int epochs);
+
+neither::Either<status_message_t, label_vector_type>
+predict_impl(
+    ClassifierState const & state,
+    std::vector<aligned_vector_char> const & X);
+
 
 } // namespace Tsetlin

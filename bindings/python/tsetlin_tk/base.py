@@ -57,3 +57,10 @@ def _fit_tsetlin_classifier(X, y, params, n_iter):
         n_iter)
 
     return js_state
+
+
+def _predict_tsetlin_classifier(X, js_model):
+    import numpy as np
+    y_hat = np.ones(X.shape[0])
+
+    return y_hat

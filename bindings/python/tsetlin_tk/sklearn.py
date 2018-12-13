@@ -5,7 +5,7 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 
 from .base import (
-    _validate_params, _fit_tsetlin_classifier)
+    _validate_params, _fit_tsetlin_classifier, _predict_tsetlin_classifier)
 
 
 class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
@@ -129,7 +129,15 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         # Input validation
         X = check_array(X)
 
-        return np.ones(X.shape[0])
+        if X.shape[1] != self.n_features_:
+            raise ValueError("X.shape[1] should be {0:d}, not {1:d}.".format(
+                self.n_features_, X.shape[1]))
+
+        y_hat = _predict_tsetlin_classifier(X, self.model_)
+
+        # TODO un-index y_hat
+
+        return y_hat
 
 
     def predict_proba(self, X):

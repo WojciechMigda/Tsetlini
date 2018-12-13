@@ -33,6 +33,11 @@ struct Classifier
     Either<status_message_t, label_type>
     predict(aligned_vector_char const & sample) const
         __attribute__((warn_unused_result));
+
+    Either<status_message_t, label_vector_type>
+    predict(std::vector<aligned_vector_char> const & X) const
+        __attribute__((warn_unused_result));
+
 //
 //    aligned_vector_int predict_raw(aligned_vector_char const & sample) const;
 //
