@@ -1,5 +1,6 @@
 import json
 
+import scipy.sparse as sp
 
 from . import libtsetlin
 
@@ -45,6 +46,14 @@ def _fit_tsetlin_classifier(X, y, params, n_iter):
     """
     "number_of_labels" and "number_of_features" will be derived from X and y
     """
-    js_state = libtsetlin.fit_classifier(_params_as_json_bytes(params), n_iter)
+
+    X_is_sparse = sp.issparse(X)
+    y_is_sparse = sp.issparse(y)
+
+    js_state = libtsetlin.fit_classifier(
+        X, X_is_sparse,
+        y, y_is_sparse,
+        _params_as_json_bytes(params),
+        n_iter)
 
     return "{}"
