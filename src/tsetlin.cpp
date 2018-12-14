@@ -9,6 +9,7 @@
 #include "tsetlin_types.hpp"
 #include "tsetlin_state.hpp"
 #include "tsetlin_status_code.hpp"
+#include "tsetlin_classifier_state_private.hpp"
 
 #include "neither/either.hpp"
 

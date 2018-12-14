@@ -134,6 +134,15 @@ struct BasePRNG
     }
 
     inline
+    value_type peek() const
+    {
+        auto RES = assume_aligned<alignment>(RESp());
+        value_type y = RES[index];
+
+        return y;
+    }
+
+    inline
     value_type rand()
     {
         if (UNLIKELY(index == 0))

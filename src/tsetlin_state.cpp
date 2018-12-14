@@ -5,6 +5,7 @@
 #include "tsetlin_types.hpp"
 #include "params_companion.hpp"
 #include "tsetlin_params.hpp"
+#include "tsetlin_classifier_state_private.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -46,7 +47,6 @@ void initialize_state(ClassifierState & state)
     // convenience reference variables
     auto & ta_state = state.ta_state;
     auto & igen = state.igen;
-    auto & cache = state.cache;
 
     std::generate_n(std::back_inserter(ta_state), Params::number_of_clauses(params),
         [&params, &igen]()
@@ -64,15 +64,28 @@ void initialize_state(ClassifierState & state)
         }
     );
 
-    cache.clause_output = aligned_vector_char(Params::number_of_clauses(params), 0);
-    cache.label_sum = aligned_vector_int(Params::number_of_labels(params), 0);
-    cache.feedback_to_clauses = feedback_vector_type(Params::number_of_clauses(params), 0);
+    reset_state_cache(state);
+}
+
+
+void reset_state_cache(ClassifierState & state)
+{
+    auto & cache = state.cache;
+    auto & params = state.m_params;
+
+    cache.clause_output.clear();
+    cache.clause_output.resize(Params::number_of_clauses(params));
+    cache.label_sum.clear();
+    cache.label_sum.resize(Params::number_of_labels(params));
+    cache.feedback_to_clauses.clear();
+    cache.feedback_to_clauses.resize(Params::number_of_clauses(params));
 
     // initialize frand caches instances for use by all thread jobs
     cache.fcache.reserve(Params::n_jobs(params));
+
     for (auto it = 0; it < Params::n_jobs(params); ++it)
     {
-        cache.fcache.emplace_back(2 * Params::number_of_features(params), igen.next());
+        cache.fcache.emplace_back(2 * Params::number_of_features(params), state.igen.peek() + it);
     }
 }
 
@@ -96,6 +109,10 @@ bool ClassifierState::operator==(ClassifierState const & other) const
             and igen == other.igen
             and fgen == other.fgen
             and m_params == other.m_params
+            and cache.feedback_to_clauses.size() == other.cache.feedback_to_clauses.size()
+            and cache.clause_output.size() == other.cache.clause_output.size()
+            and cache.label_sum.size() == other.cache.label_sum.size()
+            and cache.fcache.size() == other.cache.fcache.size()
             ;
     }
 }

@@ -39,6 +39,5 @@ struct ClassifierState
     bool operator==(ClassifierState const & other) const;
 };
 
-void initialize_state(ClassifierState & state);
 
 } // namespace Tsetlin

@@ -2,6 +2,7 @@
 #include "tsetlin_state.hpp"
 #include "tsetlin_types.hpp"
 #include "tsetlin_params.hpp"
+#include "tsetlin_classifier_state_private.hpp"
 
 #include "json.hpp"
 
@@ -180,6 +181,8 @@ void from_json_string(ClassifierState & state, std::string const & jss)
             state.m_params[k] = static_cast<int>(std::get<seed_type>(v));
         }
     }
+
+    reset_state_cache(state);
 }
 
 
