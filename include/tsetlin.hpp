@@ -38,9 +38,14 @@ struct Classifier
     predict(std::vector<aligned_vector_char> const & X) const
         __attribute__((warn_unused_result));
 
-//
-//    aligned_vector_int predict_raw(aligned_vector_char const & sample) const;
-//
+    Either<status_message_t, aligned_vector_int>
+    predict_raw(aligned_vector_char const & sample) const
+        __attribute__((warn_unused_result));
+
+    Either<status_message_t, std::vector<aligned_vector_int>>
+    predict_raw(std::vector<aligned_vector_char> const & X) const
+        __attribute__((warn_unused_result));
+
 //    void predict_raw(aligned_vector_char const & sample, int * out_p) const;
 //
     params_t read_params() const;

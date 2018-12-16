@@ -25,4 +25,16 @@ predict_impl(
     std::vector<aligned_vector_char> const & X);
 
 
+neither::Either<status_message_t, aligned_vector_int>
+predict_raw_impl(
+    ClassifierState const & state,
+    aligned_vector_char const & sample);
+
+
+neither::Either<status_message_t, std::vector<aligned_vector_int>>
+predict_raw_impl(
+    ClassifierState const & state,
+    std::vector<aligned_vector_char> const & X);
+
+
 } // namespace Tsetlin

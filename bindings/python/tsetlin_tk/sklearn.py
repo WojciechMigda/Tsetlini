@@ -6,7 +6,8 @@ from sklearn.utils.validation import (check_X_y, check_array, check_is_fitted,
 from sklearn.utils.multiclass import unique_labels, check_classification_targets
 
 from .base import (
-    _validate_params, _fit_tsetlin_classifier, _predict_tsetlin_classifier)
+    _validate_params, _fit_tsetlin_classifier, _predict_tsetlin_classifier,
+    _classifier_predict_proba)
 
 
 class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
@@ -127,15 +128,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
             The label for each sample is the label of the closest sample
             seen during fit.
         """
-        # Check is fit had been called
-        check_is_fitted(self, ['model_'])
-
-        # Input validation
-        X = check_array(X)
-
-        if X.shape[1] != self.n_features_:
-            raise ValueError("X.shape[1] should be {0:d}, not {1:d}.".format(
-                self.n_features_, X.shape[1]))
+        X = self._validate_for_predict(X)
 
         y_hat_raw = _predict_tsetlin_classifier(X, self.model_)
 
@@ -144,8 +137,10 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         return y_hat
 
 
-    def DISABLED_predict_proba(self, X):
-        return np.zeros((X.shape[0], self.classes_.size))
+    def predict_proba(self, X):
+        X = self._validate_for_predict(X)
+        probas = _classifier_predict_proba(X, self.model_)
+        return probas
 
 
     def DISABLED_partial_fit(self, X, y):
@@ -162,3 +157,16 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         self : returns an instance of self.
         """
         return self
+
+
+    def _validate_for_predict(self, X):
+        # Check is fit had been called
+        check_is_fitted(self, ['model_'])
+
+        # Input validation
+        X = check_array(X)
+
+        if X.shape[1] != self.n_features_:
+            raise ValueError("X.shape[1] should be {0:d}, not {1:d}.".format(
+                self.n_features_, X.shape[1]))
+        return X

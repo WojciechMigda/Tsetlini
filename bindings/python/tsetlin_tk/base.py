@@ -66,3 +66,11 @@ def _predict_tsetlin_classifier(X, js_model):
     y_hat = libtsetlin.classifier_predict(X, X_is_sparse, js_model)
 
     return y_hat
+
+
+def _classifier_predict_proba(X, js_model):
+    X_is_sparse = sp.issparse(X)
+
+    probas = libtsetlin.classifier_predict_proba(X, X_is_sparse, js_model)
+
+    return probas

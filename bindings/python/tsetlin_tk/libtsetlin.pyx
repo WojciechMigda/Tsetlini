@@ -13,7 +13,8 @@ from tsetlin_tk.either cimport Either
 
 from tsetlin_tk.tsetlin_status_code cimport status_message_t
 from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
-from tsetlin_tk.tsetlin_types cimport aligned_vector_char, label_vector_type, label_type
+from tsetlin_tk.tsetlin_types cimport (aligned_vector_char, label_vector_type,
+    label_type, aligned_vector_int)
 from tsetlin_tk.tsetlin_state_json cimport to_json_string
 
 from libcpp.string cimport string
@@ -103,13 +104,26 @@ cdef extern from "tsetlin_private.hpp":
 """(string js_model, vector[aligned_vector_char] X)
 
 
+cdef extern from "tsetlin_private.hpp":
+    cdef Either[status_message_t, vector[aligned_vector_int]] predict_raw_lambda """
+[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X)
+{
+    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+
+    Tsetlin::from_json_string(state, js_model);
+
+    return Tsetlin::predict_raw_impl(state, X);
+}
+"""(string js_model, vector[aligned_vector_char] X)
+
+
 cdef extern from *:
     cdef Either[string, string] reduce_status_message_to_string """
 [](Tsetlin::status_message_t && msg)
 {
     return neither::Either<std::string, std::string>::leftOf(std::string());
 }
-""" (msg)
+""" (status_message_t msg)
 
 
 cdef extern from *:
@@ -118,7 +132,16 @@ cdef extern from *:
 {
     return neither::Either<Tsetlin::label_vector_type, Tsetlin::label_vector_type>::leftOf(Tsetlin::label_vector_type());
 }
-""" (msg)
+""" (status_message_t msg)
+
+
+cdef extern from *:
+    cdef Either[vector[aligned_vector_int], vector[aligned_vector_int]] reduce_status_message_to_label_counts """
+[](Tsetlin::status_message_t && msg)
+{
+    return neither::Either<std::vector<Tsetlin::aligned_vector_int>, std::vector<Tsetlin::aligned_vector_int>>::leftOf(std::vector<Tsetlin::aligned_vector_int>());
+}
+""" (status_message_t msg)
 
 
 
@@ -144,7 +167,7 @@ def classifier_predict(np.ndarray npX, bint X_is_sparse, bytes js_model):
     cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
 
     cdef label_vector_type labels = \
-         predict_lambda(<string>js_model, X) \
+        predict_lambda(<string>js_model, X) \
             .leftMap(raise_value_error) \
             .leftFlatMap(reduce_status_message_to_label_vector) \
             ._join[label_vector_type]()
@@ -152,3 +175,40 @@ def classifier_predict(np.ndarray npX, bint X_is_sparse, bytes js_model):
     cdef label_type * labels_p = labels.data()
     cdef label_type[::1] vec_view = <label_type[:labels.size()]>labels_p
     return np.array(vec_view)
+
+
+cdef extern from *:
+    cdef void counts_to_probas """
+[](Tsetlin::aligned_vector_int const & counts, double * f_p)
+{
+    auto const N = counts.size();
+
+    std::transform(counts.cbegin(), counts.cend(), f_p, [](int cnt){ return std::exp((float(cnt))); });
+    auto const sigma = std::accumulate(f_p, f_p + N, 0.0);
+
+    std::transform(f_p, f_p + N, f_p, [sigma](auto x){ return x / sigma; });
+}
+""" (aligned_vector_int counts, double * fp)
+
+
+def classifier_predict_proba(np.ndarray npX, bint X_is_sparse, bytes js_model):
+
+    cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
+
+    cdef vector[aligned_vector_int] label_counts = \
+        predict_raw_lambda(<string>js_model, X) \
+            .leftMap(raise_value_error) \
+            .leftFlatMap(reduce_status_message_to_label_counts) \
+            ._join[vector[aligned_vector_int]]()
+
+    cdef size_t nrows = label_counts.size()
+    cdef size_t ncols = label_counts.front().size()
+
+    rv = np.empty((nrows, ncols), dtype=np.float64)
+
+    cdef double[:, ::1] oview = rv
+
+    for rit in range(nrows):
+        counts_to_probas(label_counts[rit], &oview[rit, 0])
+
+    return rv

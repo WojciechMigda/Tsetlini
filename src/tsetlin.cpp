@@ -641,6 +641,85 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
 }
 
 
+Either<status_message_t, aligned_vector_int>
+predict_raw_impl(ClassifierState const & state, aligned_vector_char const & sample)
+{
+    // let it crash - no state validation for now
+
+    auto const & params = state.m_params;
+
+    auto const number_of_labels = Params::number_of_labels(params);
+    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const number_of_states = Params::number_of_states(params);
+
+    calculate_clause_output(
+        sample,
+        state.cache.clause_output,
+        true,
+        number_of_clauses,
+        number_of_features,
+        number_of_states,
+        state.ta_state
+    );
+
+    sum_up_all_class_votes(
+        state.cache.clause_output,
+        state.cache.label_sum,
+        number_of_labels,
+        number_of_pos_neg_clauses_per_label,
+        threshold);
+
+    return Either<status_message_t, aligned_vector_int>::rightOf(state.cache.label_sum);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
+{
+    // let it crash - no state validation for now
+
+    auto const number_of_examples = X.size();
+
+    auto const & params = state.m_params;
+
+    auto const number_of_labels = Params::number_of_labels(params);
+    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const number_of_states = Params::number_of_states(params);
+
+    std::vector<aligned_vector_int> rv(number_of_examples);
+
+    for (auto it = 0u; it < number_of_examples; ++it)
+    {
+        calculate_clause_output(
+            X[it],
+            state.cache.clause_output,
+            true,
+            number_of_clauses,
+            number_of_features,
+            number_of_states,
+            state.ta_state
+        );
+
+        sum_up_all_class_votes(
+            state.cache.clause_output,
+            state.cache.label_sum,
+            number_of_labels,
+            number_of_pos_neg_clauses_per_label,
+            threshold);
+
+        rv[it] = state.cache.label_sum;
+    }
+
+    return Either<status_message_t, std::vector<aligned_vector_int>>::rightOf(rv);
+}
+
+
 status_message_t
 fit_impl(
     ClassifierState & state,
@@ -741,6 +820,20 @@ Either<status_message_t, label_vector_type>
 Classifier::predict(std::vector<aligned_vector_char> const & X) const
 {
     return predict_impl(m_state, X);
+}
+
+
+Either<status_message_t, aligned_vector_int>
+Classifier::predict_raw(aligned_vector_char const & sample) const
+{
+    return predict_raw_impl(m_state, sample);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+Classifier::predict_raw(std::vector<aligned_vector_char> const & X) const
+{
+    return predict_raw_impl(m_state, X);
 }
 
 
