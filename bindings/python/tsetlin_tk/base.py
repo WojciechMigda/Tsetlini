@@ -50,7 +50,7 @@ def _fit_tsetlin_classifier(X, y, params, n_iter):
     X_is_sparse = sp.issparse(X)
     y_is_sparse = sp.issparse(y)
 
-    js_state = libtsetlin.fit_classifier(
+    js_state = libtsetlin.classifier_fit(
         X, X_is_sparse,
         y, y_is_sparse,
         _params_as_json_bytes(params),
@@ -60,7 +60,9 @@ def _fit_tsetlin_classifier(X, y, params, n_iter):
 
 
 def _predict_tsetlin_classifier(X, js_model):
-    import numpy as np
-    y_hat = np.ones(X.shape[0])
+
+    X_is_sparse = sp.issparse(X)
+
+    y_hat = libtsetlin.classifier_predict(X, X_is_sparse, js_model)
 
     return y_hat

@@ -1,8 +1,9 @@
 # coding: utf-8
 import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
-from sklearn.utils.multiclass import unique_labels
+from sklearn.utils.validation import (check_X_y, check_array, check_is_fitted,
+    column_or_1d)
+from sklearn.utils.multiclass import unique_labels, check_classification_targets
 
 from .base import (
     _validate_params, _fit_tsetlin_classifier, _predict_tsetlin_classifier)
@@ -92,11 +93,14 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
 
         self.n_features_ = X.shape[1]
 
+        checked_y = column_or_1d(y, warn=True)
+        check_classification_targets(y)
+
         # Store the classes seen during fit
         # I will need this for partial_fit to verify absence of unseen labels
         # for y=[1, 4, 7, 99, 7] this produces a tuple
         # (array([ 1,  4,  7, 99]), array([0, 1, 2, 3, 2]))
-        self.classes_, y = np.unique(y, return_inverse=True)
+        self.classes_, y = np.unique(checked_y, return_inverse=True)
 
         if len(self.classes_) < 2:
             raise ValueError("This estimator needs samples of at least 2 classes"
@@ -133,18 +137,18 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
             raise ValueError("X.shape[1] should be {0:d}, not {1:d}.".format(
                 self.n_features_, X.shape[1]))
 
-        y_hat = _predict_tsetlin_classifier(X, self.model_)
+        y_hat_raw = _predict_tsetlin_classifier(X, self.model_)
 
-        # TODO un-index y_hat
+        y_hat = self.classes_[y_hat_raw]
 
         return y_hat
 
 
-    def predict_proba(self, X):
+    def DISABLED_predict_proba(self, X):
         return np.zeros((X.shape[0], self.classes_.size))
 
 
-    def partial_fit(self, X, y):
+    def DISABLED_partial_fit(self, X, y):
         """Fit using existing state of the classifier for online-learning.
         Parameters
         ----------

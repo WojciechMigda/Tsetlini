@@ -97,8 +97,21 @@ cdef extern from "tsetlin_private.hpp":
 """(string params, vector[aligned_vector_char] X, label_vector_type y, int n_epochs)
 
 
+cdef extern from "tsetlin_private.hpp":
+    cdef Either[status_message_t, label_vector_type] predict_lambda """
+[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X)
+{
+    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+
+    Tsetlin::from_json_string(state, js_model);
+
+    return Tsetlin::predict_impl(state, X);
+}
+"""(string js_model, vector[aligned_vector_char] X)
+
+
 cdef extern from *:
-    cdef Either[string, string] reduce_status_message """
+    cdef Either[string, string] reduce_status_message_to_string """
 [](Tsetlin::status_message_t && msg)
 {
     return neither::Either<std::string, std::string>::leftOf(std::string());
@@ -106,8 +119,17 @@ cdef extern from *:
 """ (msg)
 
 
+cdef extern from *:
+    cdef Either[label_vector_type, label_vector_type] reduce_status_message_to_label_vector """
+[](Tsetlin::status_message_t && msg)
+{
+    return neither::Either<Tsetlin::label_vector_type, Tsetlin::label_vector_type>::leftOf(Tsetlin::label_vector_type());
+}
+""" (msg)
 
-def fit_classifier(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_params, int n_epochs):
+
+
+def classifier_fit(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_params, int n_epochs):
 
     """
     Going with the most basic and general input preparation - deep copy X and y into c++ vectors
@@ -118,7 +140,22 @@ def fit_classifier(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_s
     cdef string js_state = \
         train_lambda(<string>js_params, X, y, n_epochs) \
             .leftMap(raise_value_error) \
-            .leftFlatMap(reduce_status_message) \
+            .leftFlatMap(reduce_status_message_to_string) \
             ._join[string]()
 
     return js_state
+
+
+def classifier_predict(np.ndarray npX, bint X_is_sparse, bytes js_model):
+
+    cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
+
+    cdef label_vector_type labels = \
+         predict_lambda(<string>js_model, X) \
+            .leftMap(raise_value_error) \
+            .leftFlatMap(reduce_status_message_to_label_vector) \
+            ._join[label_vector_type]()
+
+    cdef label_type * labels_p = labels.data()
+    cdef label_type[::1] vec_view = <label_type[:labels.size()]>labels_p
+    return np.array(vec_view)

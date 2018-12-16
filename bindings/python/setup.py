@@ -260,15 +260,11 @@ except MyFileNotFoundError:
 # declare Cython extension modules here
 #
 ext_module_libtsetlin = declare_cython_extension( "tsetlin_tk.libtsetlin",            use_math=False, use_openmp=False , include_dirs=my_include_dirs )
-#ext_module_dostuff    = declare_cython_extension( "tsetlin_tk.dostuff",               use_math=False, use_openmp=False , include_dirs=my_include_dirs )
-#ext_module_compute    = declare_cython_extension( "tsetlin_tk.compute",               use_math=True,  use_openmp=False , include_dirs=my_include_dirs )
 #ext_module_helloworld = declare_cython_extension( "tsetlin_tk.subpackage.helloworld", use_math=False, use_openmp=False , include_dirs=my_include_dirs )
 
 # this is mainly to allow a manual logical ordering of the declared modules
 #
 cython_ext_modules = [ext_module_libtsetlin,
-                      #ext_module_dostuff,
-                      #ext_module_compute,
                       #ext_module_helloworld
                      ]
 
