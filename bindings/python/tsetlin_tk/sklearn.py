@@ -6,7 +6,7 @@ from sklearn.utils.validation import (check_X_y, check_array, check_is_fitted,
 from sklearn.utils.multiclass import unique_labels, check_classification_targets
 
 from .base import (
-    _validate_params, _fit_tsetlin_classifier, _predict_tsetlin_classifier,
+    _validate_params, _classifier_fit, _classifier_predict,
     _classifier_predict_proba)
 
 
@@ -108,7 +108,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
                              " in the data, but the data contains only one"
                              " class: {}".format(self.classes_[0]))
 
-        self.model_ = _fit_tsetlin_classifier(
+        self.model_ = _classifier_fit(
             X, y, self.get_params(), n_iter)
 
         return self
@@ -130,7 +130,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         """
         X = self._validate_for_predict(X)
 
-        y_hat_raw = _predict_tsetlin_classifier(X, self.model_)
+        y_hat_raw = _classifier_predict(X, self.model_)
 
         y_hat = self.classes_[y_hat_raw]
 

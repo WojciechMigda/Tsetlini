@@ -42,7 +42,7 @@ def _params_as_json_bytes(params):
     return json.dumps(params).encode('UTF-8')
 
 
-def _fit_tsetlin_classifier(X, y, params, n_iter):
+def _classifier_fit(X, y, params, n_iter):
     """
     "number_of_labels" and "number_of_features" will be derived from X and y
     """
@@ -59,7 +59,7 @@ def _fit_tsetlin_classifier(X, y, params, n_iter):
     return js_state
 
 
-def _predict_tsetlin_classifier(X, js_model):
+def _classifier_predict(X, js_model):
 
     X_is_sparse = sp.issparse(X)
 
