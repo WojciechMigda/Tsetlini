@@ -13,18 +13,11 @@ from tsetlin_tk.either cimport Either
 
 from tsetlin_tk.tsetlin_status_code cimport status_message_t
 from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
-from tsetlin_tk.tsetlin_classifier_state_maker cimport make_classifier_state_ptr
 from tsetlin_tk.tsetlin_types cimport aligned_vector_char, label_vector_type, label_type
 from tsetlin_tk.tsetlin_state_json cimport to_json_string
 
-from tsetlin_tk.move_unique cimport move_unique
-from tsetlin_tk.functional_bind cimport bind, _1
-
-from libcpp.memory cimport unique_ptr
 from libcpp.string cimport string
 from libcpp.vector cimport vector
-from libcpp.utility cimport pair
-from libcpp.functional cimport function
 
 
 cdef status_message_t raise_value_error(status_message_t && msg):
