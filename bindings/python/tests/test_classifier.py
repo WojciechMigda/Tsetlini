@@ -30,8 +30,3 @@ def test_classifier_throws_when_constructed_with_unknown_param():
     with pytest.raises(TypeError):
         clf = TsetlinMachineClassifier(**params)
 
-
-def test_classifier_passes_check_estimator():
-    from sklearn.utils.estimator_checks import check_estimator
-
-    check_estimator(TsetlinMachineClassifier)

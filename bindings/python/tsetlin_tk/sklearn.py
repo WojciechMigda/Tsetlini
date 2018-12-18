@@ -143,7 +143,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         return probas
 
 
-    def DISABLED_partial_fit(self, X, y):
+    def partial_fit(self, X, y, classes=None):
         """Fit using existing state of the classifier for online-learning.
         Parameters
         ----------
