@@ -118,7 +118,7 @@ script:
   - popd
   - pushd bindings/python
   - export CC=${CXX:-c++}
-  - python3 setup.py build
+  - python3 setup.py build -t .build-${CXX:-c++}
   - python3 setup.py pytest
   - python3 setup.py install --user
   - popd
