@@ -26,6 +26,10 @@ struct Classifier
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs = 100)
         __attribute__((warn_unused_result));
 
+    status_message_t
+    partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs = 100)
+        __attribute__((warn_unused_result));
+
     Either<status_message_t, real_type>
     evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
         __attribute__((warn_unused_result));

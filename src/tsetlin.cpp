@@ -721,33 +721,12 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
 
 
 status_message_t
-fit_impl(
+fit_online_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int epochs)
 {
-    (void)unique_labels;
-//    auto const labels = unique_labels(y);
-//    auto const number_of_labels = labels.rightMap([](auto const & labels) -> int { return labels.size(); });
-//
-//    validate_params();
-//
-//    initialize_state();
-
-
-    // let it crash - no input validation for now
-    {
-        int const number_of_labels = *std::max_element(y.cbegin(), y.cend()) + 1;
-        state.m_params["number_of_labels"] = param_value_t(number_of_labels);
-
-        int const number_of_features = X.front().size();
-        state.m_params["number_of_features"] = param_value_t(number_of_features);
-
-        initialize_state(state);
-    }
-
-
     auto const number_of_examples = X.size();
 
     std::vector<int> ix(number_of_examples);
@@ -794,6 +773,50 @@ fit_impl(
     }
 
     return {S_OK, ""};
+}
+
+
+status_message_t
+partial_fit_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int epochs)
+{
+    // TODO do verification whether we've fit anything before and either
+    // do fit_online_impl or fit_impl
+    return fit_online_impl(state, X, y, epochs);
+}
+
+
+status_message_t
+fit_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int epochs)
+{
+    (void)unique_labels;
+//    auto const labels = unique_labels(y);
+//    auto const number_of_labels = labels.rightMap([](auto const & labels) -> int { return labels.size(); });
+//
+//    validate_params();
+//
+//    initialize_state();
+
+
+    // let it crash - no input validation for now
+    {
+        int const number_of_labels = *std::max_element(y.cbegin(), y.cend()) + 1;
+        state.m_params["number_of_labels"] = param_value_t(number_of_labels);
+
+        int const number_of_features = X.front().size();
+        state.m_params["number_of_features"] = param_value_t(number_of_features);
+
+        initialize_state(state);
+    }
+
+    return fit_online_impl(state, X, y, epochs);
 }
 
 
@@ -995,6 +1018,13 @@ Either<status_message_t, real_type>
 Classifier::evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
 {
     return evaluate_impl(m_state, X, y);
+}
+
+
+status_message_t
+Classifier::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs)
+{
+    return partial_fit_impl(m_state, X, y, epochs);
 }
 
 
