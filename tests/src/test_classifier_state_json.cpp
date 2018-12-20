@@ -19,7 +19,7 @@ TEST(ClassifierState, can_be_serialized_and_deserialized_via_json)
                 .leftMap([](Tsetlin::status_message_t && sm){ throw(sm.second); return sm; })
                 .rightMap([&clf1](Tsetlin::Classifier && clf2)
                 {
-                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1});
+                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
                     auto s1 = clf1.read_state();
 
                     auto s2 = clf2.read_state();

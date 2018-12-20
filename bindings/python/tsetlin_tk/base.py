@@ -42,7 +42,7 @@ def _params_as_json_bytes(params):
     return json.dumps(params).encode('UTF-8')
 
 
-def _classifier_fit(X, y, params, n_iter):
+def _classifier_fit(X, y, params, number_of_labels, n_iter):
     """
     "number_of_labels" and "number_of_features" will be derived from X and y
     """
@@ -54,6 +54,24 @@ def _classifier_fit(X, y, params, n_iter):
         X, X_is_sparse,
         y, y_is_sparse,
         _params_as_json_bytes(params),
+        number_of_labels,
+        n_iter)
+
+    return js_state
+
+
+def _classifier_partial_fit(X, y, js_model, n_iter):
+    """
+    "number_of_labels" and "number_of_features" will be derived from X and y
+    """
+
+    X_is_sparse = sp.issparse(X)
+    y_is_sparse = sp.issparse(y)
+
+    js_state = libtsetlin.classifier_partial_fit(
+        X, X_is_sparse,
+        y, y_is_sparse,
+        js_model,
         n_iter)
 
     return js_state

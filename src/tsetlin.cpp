@@ -725,7 +725,7 @@ fit_online_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int epochs)
+    unsigned int epochs)
 {
     auto const number_of_examples = X.size();
 
@@ -745,7 +745,7 @@ fit_online_impl(
 
     std::mt19937 gen(state.igen());
 
-    for (int epoch = 0; epoch < epochs; ++epoch)
+    for (unsigned int epoch = 0; epoch < epochs; ++epoch)
     {
         std::shuffle(ix.begin(), ix.end(), gen);
 
@@ -781,7 +781,7 @@ partial_fit_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int epochs)
+    unsigned int epochs)
 {
     // TODO do verification whether we've fit anything before and either
     // do fit_online_impl or fit_impl
@@ -794,7 +794,8 @@ fit_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int epochs)
+    int max_number_of_labels,
+    unsigned int epochs)
 {
     (void)unique_labels;
 //    auto const labels = unique_labels(y);
@@ -807,7 +808,7 @@ fit_impl(
 
     // let it crash - no input validation for now
     {
-        int const number_of_labels = *std::max_element(y.cbegin(), y.cend()) + 1;
+        int const number_of_labels = std::max(*std::max_element(y.cbegin(), y.cend()) + 1, max_number_of_labels);
         state.m_params["number_of_labels"] = param_value_t(number_of_labels);
 
         int const number_of_features = X.front().size();
@@ -1029,9 +1030,9 @@ Classifier::partial_fit(std::vector<aligned_vector_char> const & X, label_vector
 
 
 status_message_t
-Classifier::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs)
+Classifier::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(m_state, X, y, epochs);
+    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
 }
 
 

@@ -32,6 +32,17 @@ class XTsetlinMachineClassifier(TsetlinMachineClassifier):
         return self
 
 
+    def partial_fit(self, X, y, classes=None, n_iter=500):
+
+        try:
+            X = self._fit_transform(X)
+        except:
+            pass
+
+        super(type(self), self).partial_fit(X, y, classes=classes, n_iter=n_iter)
+        return self
+
+
     def predict(self, X):
 
         try:

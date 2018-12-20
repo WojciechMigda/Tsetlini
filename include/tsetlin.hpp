@@ -23,7 +23,7 @@ struct Classifier
 //    void fit_batch(std::vector<aligned_vector_char> const & X, label_vector_type const & y);
 
     status_message_t
-    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs = 100)
+    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs = 100)
         __attribute__((warn_unused_result));
 
     status_message_t

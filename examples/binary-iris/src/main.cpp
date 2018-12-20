@@ -167,7 +167,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
         })").leftMap(error_printer)
             .rightMap([&](auto && clf)
             {
-                auto status = clf.fit(train_X, train_y, 500);
+                auto status = clf.fit(train_X, train_y, 3, 500);
 
                 clf.evaluate(test_X, test_y)
                     .leftMap(error_printer)

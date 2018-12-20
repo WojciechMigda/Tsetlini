@@ -66,14 +66,14 @@ cdef label_vector_type y_as_vector(np.ndarray y, bint is_sparse):
 
 cdef extern from "tsetlin_private.hpp":
     cdef Either[status_message_t, string] train_lambda """
-[](std::string const & params, std::vector<Tsetlin::aligned_vector_char> const & X, Tsetlin::label_vector_type const & y, int n_epochs)
+[](std::string const & params, std::vector<Tsetlin::aligned_vector_char> const & X, Tsetlin::label_vector_type const & y, int number_of_labels, unsigned int n_epochs)
 {
     return
     Tsetlin::make_params_from_json(params)
         .rightMap([](auto && params){ return Tsetlin::ClassifierState(params); })
-        .rightFlatMap([&X, &y, n_epochs](auto && state)
+        .rightFlatMap([&X, &y, number_of_labels, n_epochs](auto && state)
         {
-            auto status = Tsetlin::fit_impl(state, X, y, n_epochs);
+            auto status = Tsetlin::fit_impl(state, X, y, number_of_labels, n_epochs);
 
             if (status.first == Tsetlin::S_OK)
             {
@@ -88,7 +88,31 @@ cdef extern from "tsetlin_private.hpp":
         })
         ;
 }
-"""(string params, vector[aligned_vector_char] X, label_vector_type y, int n_epochs)
+"""(string params, vector[aligned_vector_char] X, label_vector_type y, int number_of_labels, unsigned int n_epochs)
+
+
+cdef extern from "tsetlin_private.hpp":
+    cdef Either[status_message_t, string] train_partial_lambda """
+[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X, Tsetlin::label_vector_type const & y, int n_epochs)
+{
+    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+
+    Tsetlin::from_json_string(state, js_model);
+
+    auto status = Tsetlin::partial_fit_impl(state, X, y, n_epochs);
+
+    if (status.first == Tsetlin::S_OK)
+    {
+        std::string js_state = Tsetlin::to_json_string(state);
+
+        return neither::Either<Tsetlin::status_message_t, std::string>::rightOf(js_state);
+    }
+    else
+    {
+        return neither::Either<Tsetlin::status_message_t, std::string>::leftOf(status);
+    }
+}
+"""(string js_model, vector[aligned_vector_char] X, label_vector_type y, int n_epochs)
 
 
 cdef extern from "tsetlin_private.hpp":
@@ -145,7 +169,7 @@ cdef extern from *:
 
 
 
-def classifier_fit(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_params, int n_epochs):
+def classifier_fit(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_params, int number_of_labels, unsigned int n_epochs):
 
     """
     Going with the most basic and general input preparation - deep copy X and y into c++ vectors
@@ -154,7 +178,24 @@ def classifier_fit(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_s
     cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
 
     cdef string js_state = \
-        train_lambda(<string>js_params, X, y, n_epochs) \
+        train_lambda(<string>js_params, X, y, number_of_labels, n_epochs) \
+            .leftMap(raise_value_error) \
+            .leftFlatMap(reduce_status_message_to_string) \
+            ._join[string]()
+
+    return js_state
+
+
+def classifier_partial_fit(np.ndarray npX, bint X_is_sparse, np.ndarray npy, bint y_is_sparse, bytes js_model, int n_epochs):
+
+    """
+    Going with the most basic and general input preparation - deep copy X and y into c++ vectors
+    """
+    cdef label_vector_type y = y_as_vector(npy, y_is_sparse)
+    cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
+
+    cdef string js_state = \
+        train_partial_lambda(<string>js_model, X, y, n_epochs) \
             .leftMap(raise_value_error) \
             .leftFlatMap(reduce_status_message_to_string) \
             ._join[string]()

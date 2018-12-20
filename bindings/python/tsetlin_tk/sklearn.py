@@ -1,13 +1,15 @@
 # coding: utf-8
 import numpy as np
+
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.validation import (check_X_y, check_array, check_is_fitted,
     column_or_1d)
 from sklearn.utils.multiclass import unique_labels, check_classification_targets
+from sklearn.preprocessing import LabelEncoder
 
 from .base import (
-    _validate_params, _classifier_fit, _classifier_predict,
-    _classifier_predict_proba)
+    _validate_params, _classifier_fit, _classifier_partial_fit,
+    _classifier_predict, _classifier_predict_proba)
 
 
 class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
@@ -84,32 +86,88 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         self : object
             Returns self.
         """
-
-        self.set_params(**_validate_params(self.get_params()))
-        n_iter = int(n_iter)
-        assert(n_iter > 0)
-
         # Check that X and y have correct shape
         X, y = check_X_y(X, y)
 
-        self.n_features_ = X.shape[1]
+        checked_y = column_or_1d(y, warn=True)
+        check_classification_targets(checked_y)
+
+        return self._fit(X, checked_y, classes=checked_y, n_iter=n_iter)
+
+
+    def partial_fit(self, X, y, classes=None, n_iter=500):
+        """Fit using existing state of the classifier for online-learning.
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape (n_samples, n_features)
+            Subset of the training data
+        y : numpy array, shape (n_samples,)
+            Subset of the target values
+
+        Returns
+        -------
+        self : returns an instance of self.
+        """
+        # Check that X and y have correct shape
+        X, y = check_X_y(X, y)
 
         checked_y = column_or_1d(y, warn=True)
-        check_classification_targets(y)
+        check_classification_targets(checked_y)
 
-        # Store the classes seen during fit
-        # I will need this for partial_fit to verify absence of unseen labels
-        # for y=[1, 4, 7, 99, 7] this produces a tuple
-        # (array([ 1,  4,  7, 99]), array([0, 1, 2, 3, 2]))
-        self.classes_, y = np.unique(checked_y, return_inverse=True)
+        if classes is None:
+            classes = y
 
-        if len(self.classes_) < 2:
+        # if not fitted:
+        if not hasattr(self, 'model_'):
+            self._fit(X, y, classes=classes, n_iter=n_iter)
+        else:
+            if X.shape[1] != self.n_features_:
+                raise ValueError("Number of features in X and"
+                                 " fitted array does not match."
+                                 " X: {}, fitted: {}".format(
+                                 X.shape[1], self.n_features_))
+            self._partial_fit(X, y, classes=classes, n_iter=n_iter)
+
+        return self
+
+
+    def _fit(self, X, y, classes, n_iter):
+        n_iter = int(n_iter)
+        if n_iter <= 0:
+            raise ValueError("Number of iterations must be a positive"
+                             " integer but fit was called with"
+                             " n_iter: {}".format(n_iter))
+
+        encoder = LabelEncoder().fit(classes)
+        y = encoder.transform(y)
+
+        if len(encoder.classes_) < 2:
             raise ValueError("This estimator needs samples of at least 2 classes"
                              " in the data, but the data contains only one"
-                             " class: {}".format(self.classes_[0]))
+                             " class: {}".format(encoder.classes_[0]))
+
+        self.set_params(**_validate_params(self.get_params()))
 
         self.model_ = _classifier_fit(
-            X, y, self.get_params(), n_iter)
+            X, y, self.get_params(), len(encoder.classes_), n_iter)
+
+        self.encoder_ = encoder
+        self.classes_ = encoder.classes_
+        self.n_features_ = X.shape[1]
+
+        return self
+
+
+    def _partial_fit(self, X, y, classes, n_iter):
+        n_iter = int(n_iter)
+        if n_iter <= 0:
+            raise ValueError("Number of iterations must be a positive"
+                             " integer but fit was called with"
+                             " n_iter: {}".format(n_iter))
+        y = self.encoder_.transform(y)
+
+        self.model_ = _classifier_partial_fit(
+            X, y, self.model_, n_iter)
 
         return self
 
@@ -132,7 +190,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
 
         y_hat_raw = _classifier_predict(X, self.model_)
 
-        y_hat = self.classes_[y_hat_raw]
+        y_hat = self.encoder_.inverse_transform(y_hat_raw)
 
         return y_hat
 
@@ -141,22 +199,6 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         X = self._validate_for_predict(X)
         probas = _classifier_predict_proba(X, self.model_)
         return probas
-
-
-    def partial_fit(self, X, y, classes=None):
-        """Fit using existing state of the classifier for online-learning.
-        Parameters
-        ----------
-        X : {array-like, sparse matrix}, shape (n_samples, n_features)
-            Subset of the training data
-        y : numpy array, shape (n_samples,)
-            Subset of the target values
-
-        Returns
-        -------
-        self : returns an instance of self.
-        """
-        return self
 
 
     def _validate_for_predict(self, X):
