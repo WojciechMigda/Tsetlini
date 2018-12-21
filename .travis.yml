@@ -97,6 +97,10 @@ install:
     sudo apt-get install python-pip python3-pip
     pip install --user setuptools numpy Cython
     pip3 install --user setuptools numpy Cython
+  - |
+    pushd bindings/python
+    python3 setup.py build_clib
+    popd
 
 before_script:
   - if [[ ${TRAVIS_OS_NAME} == linux ]]; then export NODE_LABELS="Linux Ubuntu Ubuntu-16.04"; fi
@@ -118,7 +122,7 @@ script:
   - popd
   - pushd bindings/python
   - export CC=${CXX:-c++}
-  - python3 setup.py build -t .build-${CXX:-c++}
+  - python3 setup.py build
   - python3 setup.py pytest
   - python3 setup.py install --user
   - popd
