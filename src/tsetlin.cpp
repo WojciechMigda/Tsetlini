@@ -33,6 +33,7 @@ namespace Tsetlin
 namespace
 {
 
+
 status_message_t check_X_y(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y)
@@ -41,8 +42,54 @@ status_message_t check_X_y(
     {
         return {StatusCode::S_VALUE_ERROR, "X cannot be empty"};
     }
+    else if (y.empty())
+    {
+        return {StatusCode::S_VALUE_ERROR, "y cannot be empty"};
+    }
+    else if (y.size() != X.size())
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "X and y must have the same lengths, got " + std::to_string(X.size()) +
+            " and " + std::to_string(y.size())};
+    }
+    else if (auto first = X.cbegin();
+        not std::all_of(std::next(first), X.cend(),
+            [&first](auto const & row){ return row.size() == first->size(); }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "All rows of X must have the same number of feature columns"};
+    }
+    else if (not std::all_of(X.cbegin(), X.cend(),
+        [](auto const & row)
+        {
+            return std::all_of(
+                row.cbegin(), row.cend(), [](auto v){ return v == 0 || v == 1; });
+        }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Only values of 0 and 1 can be used in X"};
+    }
 
     return {StatusCode::S_OK, ""};
+}
+
+
+status_message_t check_labels(label_vector_type const & labels)
+{
+    if (*std::min_element(labels.cbegin(), labels.cend()) < 0)
+    {
+        return {StatusCode::S_VALUE_ERROR, "Labels in y cannot be negative"};
+    }
+
+    return {StatusCode::S_OK, ""};
+}
+
+
+label_vector_type unique_labels(label_vector_type const & y)
+{
+    std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
+
+    return label_vector_type(uniq.cbegin(), uniq.cend());
 }
 
 
@@ -164,39 +211,39 @@ void update_impl(
 }
 
 
-Either<status_message_t, std::unordered_set<label_type>>
-unique_labels(label_vector_type const & y)
-{
-    if (y.size() == 0u)
-    {
-        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-            {S_BAD_LABELS, "Labels are empty"s});
-    }
-
-    std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
-
-    auto const [lo, hi] = std::minmax_element(uniq.cbegin(), uniq.cend());
-
-    if (*lo != 0)
-    {
-        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-            {S_BAD_LABELS, "Smallest label is not zero: "s + std::to_string(*lo)});
-    }
-    else if (*hi >= ssize_t(uniq.size()))
-    {
-        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-            {S_BAD_LABELS, "Unique labels are not a contiguous set"});
-    }
-    else if (uniq.size() == 1u)
-    {
-        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-            {S_BAD_LABELS, "One label is too few"});
-    }
-    else
-    {
-        return Either<status_message_t, std::unordered_set<label_type>>::rightOf(uniq);
-    }
-}
+//Either<status_message_t, std::unordered_set<label_type>>
+//unique_labels(label_vector_type const & y)
+//{
+//    if (y.size() == 0u)
+//    {
+//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
+//            {S_BAD_LABELS, "Labels are empty"s});
+//    }
+//
+//    std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
+//
+//    auto const [lo, hi] = std::minmax_element(uniq.cbegin(), uniq.cend());
+//
+//    if (*lo != 0)
+//    {
+//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
+//            {S_BAD_LABELS, "Smallest label is not zero: "s + std::to_string(*lo)});
+//    }
+//    else if (*hi >= ssize_t(uniq.size()))
+//    {
+//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
+//            {S_BAD_LABELS, "Unique labels are not a contiguous set"});
+//    }
+//    else if (uniq.size() == 1u)
+//    {
+//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
+//            {S_BAD_LABELS, "One label is too few"});
+//    }
+//    else
+//    {
+//        return Either<status_message_t, std::unordered_set<label_type>>::rightOf(uniq);
+//    }
+//}
 
 
 Either<status_message_t, real_type>
@@ -495,25 +542,27 @@ fit_impl(
         return sm;
     }
 
-    (void)unique_labels;
-//    auto const labels = unique_labels(y);
-//    auto const number_of_labels = labels.rightMap([](auto const & labels) -> int { return labels.size(); });
-//
-//    validate_params();
-//
-//    initialize_state();
+    auto labels = unique_labels(y);
 
+    int const number_of_labels = std::max(
+        *std::max_element(labels.cbegin(), labels.cend()) + 1,
+        max_number_of_labels);
 
-    // let it crash - no input validation for now
+    if (auto sm = check_labels(labels);
+        sm.first != StatusCode::S_OK)
     {
-        int const number_of_labels = std::max(*std::max_element(y.cbegin(), y.cend()) + 1, max_number_of_labels);
-        state.m_params["number_of_labels"] = param_value_t(number_of_labels);
-
-        int const number_of_features = X.front().size();
-        state.m_params["number_of_features"] = param_value_t(number_of_features);
-
-        initialize_state(state);
+        return sm;
     }
+
+    // Let it crash for now
+//    validate_params();
+
+    state.m_params["number_of_labels"] = param_value_t(number_of_labels);
+
+    int const number_of_features = X.front().size();
+    state.m_params["number_of_features"] = param_value_t(number_of_features);
+
+    initialize_state(state);
 
     return fit_online_impl(state, X, y, epochs);
 }
