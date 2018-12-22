@@ -405,4 +405,360 @@ TEST(TsetlinClassifierNextPartialFit, rejects_y_with_label_outside_range)
 }
 
 
+///     Predict matrix
+
+TEST(TsetlinClassifierPredictMatrix, fails_without_train)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+
+            auto const rv = clf.predict(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictMatrix, fails_for_empty_X)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X;
+
+            auto const rv = clf.predict(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictMatrix, rejects_X_with_uneven_row_sizes)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+
+            auto const rv = clf.predict(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictMatrix, rejects_X_with_invalid_number_of_features)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}};
+
+            auto const rv = clf.predict(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictMatrix, rejects_X_with_values_not_0_1)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 0, 2}};
+
+            auto const rv = clf.predict(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+///     Predict sample
+
+TEST(TsetlinClassifierPredictSample, fails_without_train)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            Tsetlin::aligned_vector_char sample{1, 0, 1};
+
+            auto const rv = clf.predict(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictSample, rejects_sample_with_invalid_number_of_features)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            Tsetlin::aligned_vector_char sample{1, 0, 1, 0};
+
+            auto const rv = clf.predict(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictSample, rejects_sample_with_values_not_0_1)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            Tsetlin::aligned_vector_char sample{1, -1, 2};
+
+            auto const rv = clf.predict(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+///     PredictRaw matrix
+
+TEST(TsetlinClassifierPredictRawMatrix, fails_without_train)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+
+            auto const rv = clf.predict_raw(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawMatrix, fails_for_empty_X)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X;
+
+            auto const rv = clf.predict_raw(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_uneven_row_sizes)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+
+            auto const rv = clf.predict_raw(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_invalid_number_of_features)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}};
+
+            auto const rv = clf.predict_raw(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_values_not_0_1)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 0, 2}};
+
+            auto const rv = clf.predict_raw(X);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+///     Predict sample
+
+TEST(TsetlinClassifierPredictRawSample, fails_without_train)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            Tsetlin::aligned_vector_char sample{1, 0, 1};
+
+            auto const rv = clf.predict_raw(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_invalid_number_of_features)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            Tsetlin::aligned_vector_char sample{1, 0, 1, 0};
+
+            auto const rv = clf.predict_raw(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
+TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_values_not_0_1)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+
+            auto const rv0 = clf.fit(X0, y0, 2);
+
+            Tsetlin::aligned_vector_char sample{1, -1, 2};
+
+            auto const rv = clf.predict_raw(sample);
+
+            EXPECT_FALSE(rv);
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+
+            return clf;
+        });
+}
+
+
 }

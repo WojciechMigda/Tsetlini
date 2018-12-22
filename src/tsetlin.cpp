@@ -22,6 +22,7 @@
 #include <unordered_set>
 #include <string>
 #include <numeric>
+#include <cstddef>
 
 
 using namespace neither;
@@ -110,6 +111,78 @@ label_vector_type unique_labels(label_vector_type const & y)
     std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
 
     return label_vector_type(uniq.cbegin(), uniq.cend());
+}
+
+
+bool is_fitted(ClassifierState const & state)
+{
+    return state.ta_state.size() != 0;
+}
+
+
+status_message_t check_for_predict(
+    ClassifierState const & state,
+    std::vector<aligned_vector_char> const & X)
+{
+    if (not is_fitted(state))
+    {
+        return {StatusCode::S_NOT_FITTED_ERROR,
+            "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
+    }
+    else if (X.size() == 0)
+    {
+        return {StatusCode::S_VALUE_ERROR, "Cannot predict for empty X"};
+    }
+    else if (auto first = X.cbegin();
+        not std::all_of(std::next(first), X.cend(),
+            [&first](auto const & row){ return row.size() == first->size(); }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "All rows of X must have the same number of feature columns"};
+    }
+    else if (X.front().size() - Params::number_of_features(state.m_params) != 0)
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Predict called with X, which number of features " + std::to_string(X.front().size()) +
+            " does not match that from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+    }
+    else if (not std::all_of(X.cbegin(), X.cend(),
+        [](auto const & row)
+        {
+            return std::all_of(
+                row.cbegin(), row.cend(), [](auto v){ return v == 0 || v == 1; });
+        }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Only values of 0 and 1 can be used in X"};
+    }
+
+    return {StatusCode::S_OK, ""};
+}
+
+
+status_message_t check_for_predict(
+    ClassifierState const & state,
+    aligned_vector_char const & sample)
+{
+    if (not is_fitted(state))
+    {
+        return {StatusCode::S_NOT_FITTED_ERROR,
+            "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
+    }
+    else if (sample.size() - Params::number_of_features(state.m_params) != 0)
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Predict called with sample, which size " + std::to_string(sample.size()) +
+            " does not match number of features from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+    }
+    else if (not std::all_of(sample.cbegin(), sample.cend(), [](auto v){ return v == 0 || v == 1; }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Only values of 0 and 1 can be used in sample for prediction"};
+    }
+
+    return {StatusCode::S_OK, ""};
 }
 
 
@@ -231,41 +304,6 @@ void update_impl(
 }
 
 
-//Either<status_message_t, std::unordered_set<label_type>>
-//unique_labels(label_vector_type const & y)
-//{
-//    if (y.size() == 0u)
-//    {
-//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-//            {S_BAD_LABELS, "Labels are empty"s});
-//    }
-//
-//    std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
-//
-//    auto const [lo, hi] = std::minmax_element(uniq.cbegin(), uniq.cend());
-//
-//    if (*lo != 0)
-//    {
-//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-//            {S_BAD_LABELS, "Smallest label is not zero: "s + std::to_string(*lo)});
-//    }
-//    else if (*hi >= ssize_t(uniq.size()))
-//    {
-//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-//            {S_BAD_LABELS, "Unique labels are not a contiguous set"});
-//    }
-//    else if (uniq.size() == 1u)
-//    {
-//        return Either<status_message_t, std::unordered_set<label_type>>::leftOf(
-//            {S_BAD_LABELS, "One label is too few"});
-//    }
-//    else
-//    {
-//        return Either<status_message_t, std::unordered_set<label_type>>::rightOf(uniq);
-//    }
-//}
-
-
 Either<status_message_t, real_type>
 evaluate_impl(
     ClassifierState const & state,
@@ -323,6 +361,12 @@ evaluate_impl(
 Either<status_message_t, label_type>
 predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
 {
+    if (auto sm = check_for_predict(state, sample);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, label_type>::leftOf(std::move(sm));
+    }
+
     calculate_clause_output(
         sample,
         state.cache.clause_output,
@@ -354,6 +398,12 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
 Either<status_message_t, label_vector_type>
 predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
 {
+    if (auto sm = check_for_predict(state, X);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, label_vector_type>::leftOf(std::move(sm));
+    }
+
     // let it crash - no state validation for now
 
     auto const number_of_examples = X.size();
@@ -403,6 +453,12 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
 Either<status_message_t, aligned_vector_int>
 predict_raw_impl(ClassifierState const & state, aligned_vector_char const & sample)
 {
+    if (auto sm = check_for_predict(state, sample);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, aligned_vector_int>::leftOf(std::move(sm));
+    }
+
     // let it crash - no state validation for now
 
     auto const & params = state.m_params;
@@ -438,6 +494,12 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
 Either<status_message_t, std::vector<aligned_vector_int>>
 predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
 {
+    if (auto sm = check_for_predict(state, X);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, std::vector<aligned_vector_int>>::leftOf(std::move(sm));
+    }
+
     // let it crash - no state validation for now
 
     auto const number_of_examples = X.size();
@@ -597,7 +659,7 @@ partial_fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
-    if (state.ta_state.size() != 0)
+    if (is_fitted(state))
     {
         return fit_online_impl(state, X, y, epochs);
     }
