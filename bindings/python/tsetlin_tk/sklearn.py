@@ -115,7 +115,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         check_classification_targets(checked_y)
 
         if classes is None:
-            classes = y
+            classes = checked_y
 
         # if not fitted:
         if not hasattr(self, 'model_'):

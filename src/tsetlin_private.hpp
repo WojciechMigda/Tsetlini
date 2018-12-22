@@ -27,6 +27,7 @@ partial_fit_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
+    int max_number_of_labels,
     unsigned int epochs)
     __attribute__((warn_unused_result));
 

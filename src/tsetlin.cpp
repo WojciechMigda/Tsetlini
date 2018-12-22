@@ -1,6 +1,7 @@
 #define LOG_MODULE "tsetlin"
 #include "logger.hpp"
 
+#include "tsetlin_private.hpp"
 #include "tsetlin_algo.hpp"
 
 #include "tsetlin_params.hpp"
@@ -466,6 +467,22 @@ fit_online_impl(
     label_vector_type const & y,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    auto labels = unique_labels(y);
+
+//    int const passed_number_of_labels = *std::max_element(labels.cbegin(), labels.cend()) + 1;
+
+    if (auto sm = check_labels(labels);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     auto const number_of_examples = X.size();
 
     std::vector<int> ix(number_of_examples);
@@ -516,19 +533,6 @@ fit_online_impl(
 
 
 status_message_t
-partial_fit_impl(
-    ClassifierState & state,
-    std::vector<aligned_vector_char> const & X,
-    label_vector_type const & y,
-    unsigned int epochs)
-{
-    // TODO do verification whether we've fit anything before and either
-    // do fit_online_impl or fit_impl
-    return fit_online_impl(state, X, y, epochs);
-}
-
-
-status_message_t
 fit_impl(
     ClassifierState & state,
     std::vector<aligned_vector_char> const & X,
@@ -566,6 +570,27 @@ fit_impl(
 
     return fit_online_impl(state, X, y, epochs);
 }
+
+
+status_message_t
+partial_fit_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    if (state.ta_state.size() != 0)
+    {
+        return fit_online_impl(state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, max_number_of_labels, epochs);
+    }
+}
+
+
 
 
 Classifier::Classifier(params_t const & params) :
@@ -770,9 +795,9 @@ Classifier::evaluate(std::vector<aligned_vector_char> const & X, label_vector_ty
 
 
 status_message_t
-Classifier::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int epochs)
+Classifier::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(m_state, X, y, epochs);
+    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
 }
 
 

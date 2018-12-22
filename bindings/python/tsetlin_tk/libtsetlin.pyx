@@ -99,7 +99,7 @@ cdef extern from "tsetlin_private.hpp":
 
     Tsetlin::from_json_string(state, js_model);
 
-    auto status = Tsetlin::partial_fit_impl(state, X, y, n_epochs);
+    auto status = Tsetlin::partial_fit_impl(state, X, y, 0, n_epochs);
 
     if (status.first == Tsetlin::S_OK)
     {
