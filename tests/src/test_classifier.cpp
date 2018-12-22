@@ -383,4 +383,26 @@ TEST(TsetlinClassifierNextPartialFit, rejects_y_with_negative_label)
         });
 }
 
+
+TEST(TsetlinClassifierNextPartialFit, rejects_y_with_label_outside_range)
+{
+    Tsetlin::make_classifier("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlin::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y0{1, 0, 1};
+            auto const rv0 = clf.partial_fit(X0, y0, 3);
+
+            std::vector<Tsetlin::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlin::label_vector_type y{1, 0, 4};
+
+            auto const rv = clf.partial_fit(X, y, 4);
+
+            EXPECT_EQ(Tsetlin::StatusCode::S_VALUE_ERROR, rv.first);
+            return clf;
+        });
+}
+
+
 }

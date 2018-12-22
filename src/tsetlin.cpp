@@ -86,6 +86,25 @@ status_message_t check_labels(label_vector_type const & labels)
 }
 
 
+status_message_t check_labels(label_vector_type const & labels, int max_label)
+{
+    auto [lo, hi] = std::minmax(labels.cbegin(), labels.cend());
+
+    if (*lo < 0)
+    {
+        return {StatusCode::S_VALUE_ERROR, "Labels in y cannot be negative"};
+    }
+    else if (*hi > max_label)
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Max allowed label is " + std::to_string(max_label) +
+            " but y has value as high as " + std::to_string(*hi)};
+    }
+
+    return {StatusCode::S_OK, ""};
+}
+
+
 label_vector_type unique_labels(label_vector_type const & y)
 {
     std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
@@ -475,19 +494,6 @@ fit_online_impl(
 
     auto labels = unique_labels(y);
 
-//    int const passed_number_of_labels = *std::max_element(labels.cbegin(), labels.cend()) + 1;
-
-    if (auto sm = check_labels(labels);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    auto const number_of_examples = X.size();
-
-    std::vector<int> ix(number_of_examples);
-    std::iota(ix.begin(), ix.end(), 0);
-
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
@@ -498,6 +504,17 @@ fit_online_impl(
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
+
+    if (auto sm = check_labels(labels, number_of_labels);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    auto const number_of_examples = X.size();
+
+    std::vector<int> ix(number_of_examples);
+    std::iota(ix.begin(), ix.end(), 0);
 
     std::mt19937 gen(state.igen());
 
