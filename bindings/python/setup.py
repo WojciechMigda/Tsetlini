@@ -194,7 +194,7 @@ Return value:
         compile_args.insert( 0, openmp_compile_args )
         link_args.insert( 0, openmp_link_args )
 
-    compile_args += ['-std=c++17']
+    compile_args += ['-std=c++17', '-Wall']
     libraries += ['tktsetlin']
 
     # See
@@ -260,13 +260,10 @@ except MyFileNotFoundError:
 # declare Cython extension modules here
 #
 ext_module_libtsetlin = declare_cython_extension( "tsetlin_tk.libtsetlin",            use_math=False, use_openmp=False , include_dirs=my_include_dirs )
-#ext_module_helloworld = declare_cython_extension( "tsetlin_tk.subpackage.helloworld", use_math=False, use_openmp=False , include_dirs=my_include_dirs )
 
 # this is mainly to allow a manual logical ordering of the declared modules
 #
-cython_ext_modules = [ext_module_libtsetlin,
-                      #ext_module_helloworld
-                     ]
+cython_ext_modules = [ext_module_libtsetlin]
 
 # Call cythonize() explicitly, as recommended in the Cython documentation. See
 #     http://cython.readthedocs.io/en/latest/src/reference/compilation.html#compiling-with-distutils
@@ -347,15 +344,14 @@ setup(
     #
     # This **does not** automatically recurse into subpackages, so they must also be declared.
     #
-    packages = ["tsetlin_tk", "tsetlin_tk.subpackage"],
+    packages = ["tsetlin_tk"],
 
     # Install also Cython headers so that other Cython modules can cimport ours
     #
     # Fileglobs relative to each package, **does not** automatically recurse into subpackages.
     #    
     # FIXME: force sdist, but sdist only, to keep the .pyx files (this puts them also in the bdist)
-    package_data={'tsetlin_tk': ['*.pxd', '*.pyx'],
-                  'tsetlin_tk.subpackage': ['*.pxd', '*.pyx']},
+    package_data={'tsetlin_tk': ['*.pxd', '*.pyx']},
 
     # Disable zip_safe, because:
     #   - Cython won't find .pxd files inside installed .egg, hard to compile libs depending on this one

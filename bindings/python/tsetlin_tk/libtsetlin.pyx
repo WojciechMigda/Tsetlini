@@ -7,7 +7,6 @@
 
 import  numpy as np
 cimport numpy as np
-cimport tsetlin_tk.libtsetlin
 
 from tsetlin_tk.either cimport Either
 
