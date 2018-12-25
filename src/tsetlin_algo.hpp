@@ -86,16 +86,14 @@ void sum_up_all_class_votes(
 
 
 inline
-void calculate_clause_output(
+void calculate_clause_output_for_predict(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    bool predict,
     int const number_of_clauses,
     int const number_of_features,
     std::vector<aligned_vector_int> const & ta_state)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
-//    char const * clause_output_p = assume_aligned<alignment>(clause_output.data());
 
     for (int j = 0; j < number_of_clauses; ++j)
     {
@@ -114,7 +112,36 @@ void calculate_clause_output(
             output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
         }
 
-        output = (predict == true and all_exclude == true) ? false : output;
+        output = (all_exclude == true) ? false : output;
+
+        clause_output[j] = output;
+    }
+}
+
+
+inline
+void calculate_clause_output(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    int const number_of_features,
+    std::vector<aligned_vector_int> const & ta_state)
+{
+    char const * X_p = assume_aligned<alignment>(X.data());
+
+    for (int j = 0; j < number_of_clauses; ++j)
+    {
+        bool output = true;
+
+        int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+
+        for (int k = 0; k < number_of_features and output == true; ++k)
+        {
+            bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+            bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+            output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
+        }
 
         clause_output[j] = output;
     }

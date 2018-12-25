@@ -216,7 +216,6 @@ void update_impl(
     calculate_clause_output(
         X,
         cache.clause_output,
-        false,
         number_of_clauses,
         number_of_features,
         ta_state
@@ -325,10 +324,9 @@ evaluate_impl(
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output(
+        calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            true,
             number_of_clauses,
             number_of_features,
             state.ta_state
@@ -364,10 +362,9 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
         return Either<status_message_t, label_type>::leftOf(std::move(sm));
     }
 
-    calculate_clause_output(
+    calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        true,
         Params::number_of_clauses(state.m_params),
         Params::number_of_features(state.m_params),
         state.ta_state
@@ -416,10 +413,9 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output(
+        calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            true,
             number_of_clauses,
             number_of_features,
             state.ta_state
@@ -463,10 +459,9 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
 
-    calculate_clause_output(
+    calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        true,
         number_of_clauses,
         number_of_features,
         state.ta_state
@@ -508,10 +503,9 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output(
+        calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            true,
             number_of_clauses,
             number_of_features,
             state.ta_state
@@ -705,10 +699,9 @@ Classifier::predict_raw(std::vector<aligned_vector_char> const & X) const
 #if 0
 aligned_vector_int Classifier::predict_raw(aligned_vector_char const & sample) const
 {
-    calculate_clause_output(
+    calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        true,
         Config::number_of_clauses(state.config),
         Config::number_of_features(state.config),
         Config::number_of_states(state.config),
@@ -733,10 +726,9 @@ void Classifier::predict_raw(aligned_vector_char const & sample, int * out_p) co
         return;
     }
 
-    calculate_clause_output(
+    calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        true,
         Config::number_of_clauses(state.config),
         Config::number_of_features(state.config),
         Config::number_of_states(state.config),
