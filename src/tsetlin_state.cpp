@@ -56,7 +56,7 @@ void initialize_state(ClassifierState & state)
             std::generate_n(std::back_inserter(rv), Params::number_of_features(params) * 2,
                 [&params, &igen]()
                 {
-                    return igen.next(Params::number_of_states(params), Params::number_of_states(params) + 1);
+                    return igen.next(-1, 0);
                 }
             );
 

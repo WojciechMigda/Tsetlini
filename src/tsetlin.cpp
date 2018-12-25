@@ -219,7 +219,6 @@ void update_impl(
         false,
         number_of_clauses,
         number_of_features,
-        number_of_states,
         ta_state
     );
 
@@ -321,7 +320,6 @@ evaluate_impl(
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
-    auto const number_of_states = Params::number_of_states(params);
 
     int errors = 0;
 
@@ -333,7 +331,6 @@ evaluate_impl(
             true,
             number_of_clauses,
             number_of_features,
-            number_of_states,
             state.ta_state
         );
 
@@ -373,7 +370,6 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
         true,
         Params::number_of_clauses(state.m_params),
         Params::number_of_features(state.m_params),
-        Params::number_of_states(state.m_params),
         state.ta_state
     );
 
@@ -415,7 +411,6 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
-    auto const number_of_states = Params::number_of_states(params);
 
     label_vector_type rv(number_of_examples);
 
@@ -427,7 +422,6 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
             true,
             number_of_clauses,
             number_of_features,
-            number_of_states,
             state.ta_state
         );
 
@@ -468,7 +462,6 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
-    auto const number_of_states = Params::number_of_states(params);
 
     calculate_clause_output(
         sample,
@@ -476,7 +469,6 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
         true,
         number_of_clauses,
         number_of_features,
-        number_of_states,
         state.ta_state
     );
 
@@ -511,7 +503,6 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
-    auto const number_of_states = Params::number_of_states(params);
 
     std::vector<aligned_vector_int> rv(number_of_examples);
 
@@ -523,7 +514,6 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
             true,
             number_of_clauses,
             number_of_features,
-            number_of_states,
             state.ta_state
         );
 

@@ -25,9 +25,9 @@ int neg_feat_index(int k, int number_of_features)
 
 
 inline
-bool action(int state, int number_of_states)
+bool action(int state)
 {
-    return state > number_of_states;
+    return state >= 0;
 }
 
 
@@ -92,7 +92,6 @@ void calculate_clause_output(
     bool predict,
     int const number_of_clauses,
     int const number_of_features,
-    int const number_of_states,
     std::vector<aligned_vector_int> const & ta_state)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
@@ -107,8 +106,8 @@ void calculate_clause_output(
 
         for (int k = 0; k < number_of_features and output == true; ++k)
         {
-            bool const action_include = action(ta_state_j[pos_feat_index(k)], number_of_states);
-            bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)], number_of_states);
+            bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+            bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
 
             all_exclude = (action_include == true or action_include_negated == true) ? false : all_exclude;
 
@@ -125,6 +124,7 @@ void calculate_clause_output(
 // Feedback Type I, negative
 int block1(
     int const number_of_features,
+    int const number_of_states,
     float const S_inv,
     int * __restrict ta_state_j,
     float const * __restrict fcache,
@@ -139,24 +139,14 @@ int block1(
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
             auto tix = pos_feat_index(k);
-// slower
-//            if (cond)
-//            {
-//                ta_state_j[tix] = (ta_state_j[tix] > 1 ? ta_state_j[tix] - 1 : ta_state_j[tix]);
-//            }
 
-            ta_state_j[tix] = cond ? (ta_state_j[tix] > 1 ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
+            ta_state_j[tix] = cond ? (ta_state_j[tix] > -number_of_states ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
         }
 
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
             auto tix = neg_feat_index(k, number_of_features);
-// slower
-//            if (cond)
-//            {
-//                ta_state_j[tix] = (ta_state_j[tix] > 1 ? ta_state_j[tix] - 1 : ta_state_j[tix]);
-//            }
-            ta_state_j[tix] = cond ? (ta_state_j[tix] > 1 ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
+            ta_state_j[tix] = cond ? (ta_state_j[tix] > -number_of_states ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
         }
     }
     return fcache_pos;
@@ -189,14 +179,14 @@ int block2(
         {
             if (cond1)
             {
-                if (ta_state_j[pos_feat_index(k)] < number_of_states * 2)
+                if (ta_state_j[pos_feat_index(k)] < number_of_states - 1)
                 {
                     ta_state_j[pos_feat_index(k)]++;
                 }
             }
             if (cond2)
             {
-                if (ta_state_j[neg_feat_index(k, number_of_features)] > 1)
+                if (ta_state_j[neg_feat_index(k, number_of_features)] > -number_of_states)
                 {
                     ta_state_j[neg_feat_index(k, number_of_features)]--;
                 }
@@ -206,7 +196,7 @@ int block2(
         {
             if (cond1)
             {
-                if (ta_state_j[neg_feat_index(k, number_of_features)] < number_of_states * 2)
+                if (ta_state_j[neg_feat_index(k, number_of_features)] < number_of_states - 1)
                 {
                     ta_state_j[neg_feat_index(k, number_of_features)]++;
                 }
@@ -214,7 +204,7 @@ int block2(
 
             if (cond2)
             {
-                if (ta_state_j[pos_feat_index(k)] > 1)
+                if (ta_state_j[pos_feat_index(k)] > -number_of_states)
                 {
                     ta_state_j[pos_feat_index(k)]--;
                 }
@@ -229,7 +219,6 @@ int block2(
 // Feedback Type II
 void block3(
     int const number_of_features,
-    int const number_of_states,
     int * __restrict ta_state_j,
     char const * __restrict X
 )
@@ -242,7 +231,7 @@ void block3(
         if (X[k] == 0)
         {
             auto tix = pos_feat_index(k);
-            auto action_include = (ta_state_j[tix]) > number_of_states;
+            auto action_include = (ta_state_j[tix]) >= 0;
             if (action_include == false)
             {
                 ta_state_j[tix]++;
@@ -251,7 +240,7 @@ void block3(
         else //if(X[k] == 1)
         {
             auto tix = neg_feat_index(k, number_of_features);
-            auto action_include_negated = (ta_state_j[tix]) > number_of_states;
+            auto action_include_negated = (ta_state_j[tix]) >= 0;
             if (action_include_negated == false)
             {
                 ta_state_j[tix]++;
@@ -310,7 +299,7 @@ void train_automata_batch(
             {
                 fcache.refill();
 
-                fcache.m_pos = block1(number_of_features, S_inv, ta_state_j, fcache_, fcache.m_pos);
+                fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_j, fcache_, fcache.m_pos);
             }
             else if (clause_output[j] == 1)
             {
@@ -326,7 +315,7 @@ void train_automata_batch(
         {
             if (clause_output[j] == 1)
             {
-                block3(number_of_features, number_of_states, ta_state_j, X);
+                block3(number_of_features, ta_state_j, X);
             }
         }
     }
