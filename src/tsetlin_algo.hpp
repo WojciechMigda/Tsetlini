@@ -120,7 +120,7 @@ void calculate_clause_output_for_predict(
 
 
 inline
-void calculate_clause_output(
+void calculate_clause_output_OLD(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
@@ -144,6 +144,75 @@ void calculate_clause_output(
         }
 
         clause_output[j] = output;
+    }
+}
+
+
+template<int BATCH_SZ=16>
+inline
+void calculate_clause_output(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    int const number_of_features,
+    std::vector<aligned_vector_int> const & ta_state)
+{
+    char const * X_p = assume_aligned<alignment>(X.data());
+
+    if (number_of_features < BATCH_SZ)
+    {
+        for (int j = 0; j < number_of_clauses; ++j)
+        {
+            bool output = true;
+
+            int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+
+            for (int k = 0; k < number_of_features and output == true; ++k)
+            {
+                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
+            }
+
+            clause_output[j] = output;
+        }
+    }
+    else
+    {
+        for (int j = 0; j < number_of_clauses; ++j)
+        {
+            char toggle_output = 0;
+
+            int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+
+            int kk = 0;
+            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            {
+                for (int k = kk; k < BATCH_SZ + kk; ++k)
+                {
+                    bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                    bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                    char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                    toggle_output = flag > toggle_output ? flag : toggle_output;
+                }
+                if (toggle_output != 0)
+                {
+                    break;
+                }
+            }
+            for (int k = kk; k < number_of_features and toggle_output == false; ++k)
+            {
+                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                toggle_output = flag > toggle_output ? flag : toggle_output;
+            }
+
+            clause_output[j] = !toggle_output;
+        }
     }
 }
 
