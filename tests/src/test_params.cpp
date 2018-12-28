@@ -83,6 +83,19 @@ TEST(Params, can_be_created_from_json_with_one_boolean_item)
     auto params = rv.right().value;
 
     EXPECT_EQ(true, std::get<bool>(params.at("verbose")));
+
+}
+
+
+TEST(Params, can_be_created_from_json_with_string_item)
+{
+    auto const rv = Tsetlin::make_params_from_json(R"({"counting_type": "int16"})");
+
+    EXPECT_TRUE(rv);
+
+    auto params = rv.right().value;
+
+    EXPECT_EQ("int16", std::get<std::string>(params.at("counting_type")));
 }
 
 
@@ -117,6 +130,7 @@ TEST(Params, can_be_created_from_json_with_full_config)
 "s": 6.3 ,
 "threshold": 8,
 "boost_true_positive_feedback": 1,
+"counting_type": "int32",
 "n_jobs": 3,
 "random_state": 123
 }
@@ -132,6 +146,7 @@ TEST(Params, can_be_created_from_json_with_full_config)
     EXPECT_EQ(8, std::get<int>(params.at("threshold")));
     EXPECT_EQ(3, std::get<int>(params.at("n_jobs")));
     EXPECT_EQ(1, std::get<int>(params.at("boost_true_positive_feedback")));
+    EXPECT_EQ("int32", std::get<std::string>(params.at("counting_type")));
     EXPECT_FLOAT_EQ(6.3, std::get<Tsetlin::real_type>(params.at("s")));
     EXPECT_EQ(123u, std::get<Tsetlin::seed_type>(params.at("random_state")));
 }

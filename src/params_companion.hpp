@@ -3,6 +3,7 @@
 #include "tsetlin_params.hpp"
 
 #include <variant>
+#include <string>
 
 namespace Tsetlin
 {
@@ -15,6 +16,13 @@ inline
 int n_jobs(params_t const & params)
 {
     return std::get<int>(params.at("n_jobs"));
+}
+
+
+inline
+std::string counting_type(params_t const & params)
+{
+    return std::get<std::string>(params.at("counting_type"));
 }
 
 

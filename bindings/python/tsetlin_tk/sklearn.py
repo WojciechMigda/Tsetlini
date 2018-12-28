@@ -58,6 +58,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
                  s=2.0,
                  threshold=15,
                  boost_true_positive_feedback=0,
+                 counting_type='auto',
                  n_jobs=-1,
                  verbose=False,
                  random_state=None):
@@ -66,6 +67,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
         self.s = s
         self.threshold = threshold
         self.boost_true_positive_feedback = boost_true_positive_feedback
+        self.counting_type = counting_type
         self.n_jobs = n_jobs
         self.verbose = verbose
         self.random_state = random_state

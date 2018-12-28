@@ -15,6 +15,11 @@ namespace Tsetlin
 struct ClassifierState
 {
     using frand_cache_type = frand_cache<FRNG, alignment>;
+    using ta_state_v_type = std::variant<
+        std::vector<aligned_vector_int32>
+        , std::vector<aligned_vector_int16>
+        , std::vector<aligned_vector_int8>
+    >;
 
     struct Cache
     {
@@ -27,7 +32,7 @@ struct ClassifierState
 
     params_t m_params;
 
-    std::vector<aligned_vector_int> ta_state;
+    ta_state_v_type ta_state;
 
     mutable Cache cache;
 

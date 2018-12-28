@@ -3,6 +3,7 @@
 #include "tsetlin_types.hpp"
 #include "tsetlin_params.hpp"
 #include "tsetlin_classifier_state_private.hpp"
+#include "params_companion.hpp"
 
 #include "json.hpp"
 
@@ -61,19 +62,53 @@ static void from_json(json const & j, FRNG & p)
 }
 
 
-static void to_json(json & j, std::vector<Tsetlin::aligned_vector_int> const & p)
+void to_json(json & j, Tsetlin::ClassifierState::ta_state_v_type const & p)
 {
     json ta_state;
-    std::transform(p.cbegin(), p.cend(), std::back_inserter(ta_state), [](auto const & v){ return json(v); });
+
+    ta_state["width"] = std::visit([](auto const & p)
+        {
+            using row_type = typename std::decay<decltype(p)>::type::value_type;
+            return sizeof (typename row_type::value_type);
+        }, p);
+    ta_state["data"] = json::array_t{};
+
+    std::visit([&](auto const & p)
+        {
+            std::transform(p.cbegin(), p.cend(), std::back_inserter(ta_state["data"]), [](auto const & v){ return json(v); });
+        }, p);
 
     j = ta_state;
 }
 
 
-static void from_json(json const & j, std::vector<Tsetlin::aligned_vector_int> & p)
+static void from_json(json const & j, Tsetlin::ClassifierState::ta_state_v_type & p)
 {
-    p.resize(j.size());
-    std::transform(j.cbegin(), j.cend(), p.begin(), [](json const & j){ return Tsetlin::aligned_vector_int(j.cbegin(), j.cend()); });
+    std::size_t width = 0u;
+    j.at("width").get_to(width);
+
+    if (width == 1)
+    {
+        p = std::vector<Tsetlin::aligned_vector_int8>();
+    }
+    else if (width == 2)
+    {
+        p = std::vector<Tsetlin::aligned_vector_int16>();
+    }
+    else // if (width == 4)
+    {
+        p = std::vector<Tsetlin::aligned_vector_int32>();
+    }
+
+    std::visit([&](auto & p)
+        {
+            using row_type = typename std::decay<decltype(p)>::type::value_type;
+
+            auto const & data = j["data"];
+
+            p.resize(data.size());
+            std::transform(data.cbegin(), data.cend(), p.begin(), [](json const & j){ return row_type(j.cbegin(), j.cend()); });
+        }, p);
 }
 
 
@@ -101,6 +136,10 @@ struct adl_serializer<Tsetlin::param_value_t>
         else if (std::holds_alternative<bool>(p))
         {
             j = std::get<bool>(p);
+        }
+        else if (std::holds_alternative<std::string>(p))
+        {
+            j = std::get<std::string>(p);
         }
         else if (std::holds_alternative<Tsetlin::none_type>(p))
         {
@@ -130,6 +169,10 @@ struct adl_serializer<Tsetlin::param_value_t>
         else if (j.is_number_integer())
         {
             p = j.get<int>();
+        }
+        else if (j.is_string())
+        {
+            p = j.get<std::string>();
         }
         else if (j.is_null())
         {
@@ -164,7 +207,7 @@ void from_json_string(ClassifierState & state, std::string const & jss)
 
     state.igen = js.at("igen").get<IRNG>();
     state.fgen = js.at("fgen").get<FRNG>();
-    state.ta_state = js.at("ta_state").get<std::vector<Tsetlin::aligned_vector_int>>();
+    state.ta_state = js.at("ta_state").get<Tsetlin::ClassifierState::ta_state_v_type>();
     state.m_params = js.at("params").get<params_t>();
 
     // So, we need a hack, since stringified json doesn't distinguish
@@ -181,6 +224,7 @@ void from_json_string(ClassifierState & state, std::string const & jss)
             state.m_params[k] = static_cast<int>(std::get<seed_type>(v));
         }
     }
+    // end-of-hack
 
     reset_state_cache(state);
 }

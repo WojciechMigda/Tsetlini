@@ -48,6 +48,38 @@ TEST(TsetlinClassifier, cannot_be_created_from_json_with_unrecognized_param)
 }
 
 
+TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int8)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"counting_type": "int8"})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int16)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"counting_type": "int16"})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int32)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"counting_type": "int32"})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_auto)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"counting_type": "auto"})");
+
+    EXPECT_TRUE(clf);
+}
+
+
 ///     Partial Fit
 
 TEST(TsetlinClassifierFit, rejects_empty_X)

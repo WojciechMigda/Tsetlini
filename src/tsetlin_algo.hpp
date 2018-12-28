@@ -24,8 +24,9 @@ int neg_feat_index(int k, int number_of_features)
 }
 
 
+template<typename state_type>
 inline
-bool action(int state)
+bool action(state_type state)
 {
     return state >= 0;
 }
@@ -85,13 +86,14 @@ void sum_up_all_class_votes(
 }
 
 
+template<typename state_type>
 inline
 void calculate_clause_output_for_predict(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector_int> const & ta_state)
+    std::vector<aligned_vector<state_type>> const & ta_state)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
@@ -100,7 +102,7 @@ void calculate_clause_output_for_predict(
         bool output = true;
         bool all_exclude = true;
 
-        int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+        state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
 
         for (int k = 0; k < number_of_features and output == true; ++k)
         {
@@ -119,13 +121,14 @@ void calculate_clause_output_for_predict(
 }
 
 
+template<typename state_type>
 inline
 void calculate_clause_output_OLD(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector_int> const & ta_state)
+    std::vector<aligned_vector<state_type>> const & ta_state)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
@@ -133,7 +136,7 @@ void calculate_clause_output_OLD(
     {
         bool output = true;
 
-        int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+        state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
 
         for (int k = 0; k < number_of_features and output == true; ++k)
         {
@@ -148,14 +151,14 @@ void calculate_clause_output_OLD(
 }
 
 
-template<int BATCH_SZ=16>
+template<typename state_type, int BATCH_SZ=16>
 inline
 void calculate_clause_output(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector_int> const & ta_state)
+    std::vector<aligned_vector<state_type>> const & ta_state)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
@@ -165,7 +168,7 @@ void calculate_clause_output(
         {
             bool output = true;
 
-            int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
 
             for (int k = 0; k < number_of_features and output == true; ++k)
             {
@@ -184,7 +187,7 @@ void calculate_clause_output(
         {
             char toggle_output = 0;
 
-            int const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
 
             int kk = 0;
             for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
@@ -218,11 +221,12 @@ void calculate_clause_output(
 
 
 // Feedback Type I, negative
+template<typename state_type>
 int block1(
     int const number_of_features,
     int const number_of_states,
     float const S_inv,
-    int * __restrict ta_state_j,
+    state_type * __restrict ta_state_j,
     float const * __restrict fcache,
     int fcache_pos
 )
@@ -250,12 +254,12 @@ int block1(
 
 
 // Feedback Type I, positive
-template<bool boost_true_positive_feedback>
+template<bool boost_true_positive_feedback, typename state_type>
 int block2(
     int const number_of_features,
     int const number_of_states,
     float const S_inv,
-    int * __restrict ta_state_j,
+    state_type * __restrict ta_state_j,
     char const * __restrict X,
     float const * __restrict fcache,
     int fcache_pos
@@ -313,9 +317,10 @@ int block2(
 
 
 // Feedback Type II
+template<typename state_type>
 void block3(
     int const number_of_features,
-    int * __restrict ta_state_j,
+    state_type * __restrict ta_state_j,
     char const * __restrict X
 )
 {
@@ -368,9 +373,9 @@ void block3(
 }
 
 
-
+template<typename state_type>
 void train_automata_batch(
-    aligned_vector_int * __restrict ta_state,
+    aligned_vector<state_type> * __restrict ta_state,
     int const begin,
     int const end,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
@@ -387,7 +392,7 @@ void train_automata_batch(
 
     for (int j = begin; j < end; ++j)
     {
-        int * ta_state_j = ::assume_aligned<alignment>(ta_state[j].data());
+        state_type * ta_state_j = ::assume_aligned<alignment>(ta_state[j].data());
 
         if (feedback_to_clauses[j] > 0)
         {

@@ -116,7 +116,7 @@ label_vector_type unique_labels(label_vector_type const & y)
 
 bool is_fitted(ClassifierState const & state)
 {
-    return state.ta_state.size() != 0;
+    return std::visit([](auto const & ta_state){ return ta_state.size() != 0; }, state.ta_state);
 }
 
 
@@ -186,6 +186,7 @@ status_message_t check_for_predict(
 }
 
 
+template<typename state_type>
 void update_impl(
     aligned_vector_char const & X,
     label_type target_label,
@@ -200,7 +201,7 @@ void update_impl(
     int const boost_true_positive_feedback,
 
     FRNG & fgen,
-    std::vector<aligned_vector_int> & ta_state,
+    std::vector<aligned_vector<state_type>> & ta_state,
     ClassifierState::Cache & cache
     )
 {
@@ -315,13 +316,15 @@ evaluate_impl(
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
-            X[it],
-            state.cache.clause_output,
-            number_of_clauses,
-            number_of_features,
-            state.ta_state
-        );
+        std::visit([&](auto & ta_state)
+            {
+                calculate_clause_output_for_predict(
+                    X[it],
+                    state.cache.clause_output,
+                    number_of_clauses,
+                    number_of_features,
+                    ta_state);
+            }, state.ta_state);
 
         sum_up_all_class_votes(
             state.cache.clause_output,
@@ -353,13 +356,15 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
         return Either<status_message_t, label_type>::leftOf(std::move(sm));
     }
 
-    calculate_clause_output_for_predict(
-        sample,
-        state.cache.clause_output,
-        Params::number_of_clauses(state.m_params),
-        Params::number_of_features(state.m_params),
-        state.ta_state
-    );
+    std::visit([&](auto & ta_state)
+        {
+            calculate_clause_output_for_predict(
+                sample,
+                state.cache.clause_output,
+                Params::number_of_clauses(state.m_params),
+                Params::number_of_features(state.m_params),
+                ta_state);
+        }, state.ta_state);
 
     sum_up_all_class_votes(
         state.cache.clause_output,
@@ -404,13 +409,15 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
-            X[it],
-            state.cache.clause_output,
-            number_of_clauses,
-            number_of_features,
-            state.ta_state
-        );
+        std::visit([&](auto & ta_state)
+            {
+                calculate_clause_output_for_predict(
+                    X[it],
+                    state.cache.clause_output,
+                    number_of_clauses,
+                    number_of_features,
+                    ta_state);
+            }, state.ta_state);
 
         sum_up_all_class_votes(
             state.cache.clause_output,
@@ -450,13 +457,15 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
 
-    calculate_clause_output_for_predict(
-        sample,
-        state.cache.clause_output,
-        number_of_clauses,
-        number_of_features,
-        state.ta_state
-    );
+    std::visit([&](auto & ta_state)
+        {
+            calculate_clause_output_for_predict(
+                sample,
+                state.cache.clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state);
+        }, state.ta_state);
 
     sum_up_all_class_votes(
         state.cache.clause_output,
@@ -494,13 +503,15 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
-            X[it],
-            state.cache.clause_output,
-            number_of_clauses,
-            number_of_features,
-            state.ta_state
-        );
+        std::visit([&](auto & ta_state)
+            {
+                calculate_clause_output_for_predict(
+                    X[it],
+                    state.cache.clause_output,
+                    number_of_clauses,
+                    number_of_features,
+                    ta_state);
+            }, state.ta_state);
 
         sum_up_all_class_votes(
             state.cache.clause_output,
@@ -578,23 +589,26 @@ fit_online_impl(
 
         for (auto i = 0u; i < number_of_examples; ++i)
         {
-            update_impl(
-                X[ix[i]],
-                y[ix[i]],
-                opposite_y[ix[i]],
+            std::visit([&](auto & ta_state)
+                {
+                    update_impl(
+                        X[ix[i]],
+                        y[ix[i]],
+                        opposite_y[ix[i]],
 
-                number_of_pos_neg_clauses_per_label,
-                threshold,
-                number_of_clauses,
-                number_of_features,
-                number_of_states,
-                s,
-                boost_true_positive_feedback,
+                        number_of_pos_neg_clauses_per_label,
+                        threshold,
+                        number_of_clauses,
+                        number_of_features,
+                        number_of_states,
+                        s,
+                        boost_true_positive_feedback,
 
-                state.fgen,
-                state.ta_state,
-                state.cache
-            );
+                        state.fgen,
+                        ta_state,
+                        state.cache
+                    );
+                }, state.ta_state);
         }
     }
 

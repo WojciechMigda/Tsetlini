@@ -30,6 +30,7 @@ static const params_t default_params =
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
+    {"counting_type", param_value_t("auto"s)},
 
     {"random_state", param_value_t(std::nullopt)},
 
@@ -125,6 +126,10 @@ json_to_params(json const & js)
         {
             rv[key] = value.get<bool>();
         }
+        else if (key == "counting_type")
+        {
+            rv[key] = value.get<std::string>();
+        }
         else
         {
             return Either<status_message_t, params_t>::leftOf({S_BAD_JSON, "Unknown key [" + key + "] in config\n"});
@@ -158,6 +163,26 @@ params_t normalize_random_state(params_t params)
     return params;
 }
 
+static
+Either<status_message_t, params_t>
+assert_counting_type_enumeration(params_t const & params)
+{
+    auto value = std::get<std::string>(params.at("counting_type"));
+
+    if (not (value == "auto"
+        or value == "int8"
+        or value == "int16"
+        or value == "int32"))
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'counting_type got value " + value + ", instead of allowed int8, int16, int32, or auto\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
 
 Either<status_message_t, params_t>
 make_params_from_json(std::string const & json_params)
@@ -169,6 +194,7 @@ make_params_from_json(std::string const & json_params)
         .rightMap([](auto p){ return merge(params_t{default_params}, p); })
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
+        .rightFlatMap(assert_counting_type_enumeration)
         ;
 
     return rv;

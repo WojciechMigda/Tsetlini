@@ -11,6 +11,7 @@
 #include <iterator>
 #include <thread>
 #include <random>
+#include <limits>
 
 
 namespace std
@@ -41,28 +42,57 @@ void initialize_state(ClassifierState & state)
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
 
     // convenience reference variables
-    auto & ta_state = state.ta_state;
+    auto & ta_state_v = state.ta_state;
     auto & igen = state.igen;
 
-    std::generate_n(std::back_inserter(ta_state), Params::number_of_clauses(params),
-        [&params, &igen]()
-        {
-            aligned_vector_int rv;
+    auto const number_of_states = Params::number_of_states(params);
+    auto const & counting_type = Params::counting_type(params);
 
-            std::generate_n(std::back_inserter(rv), Params::number_of_features(params) * 2,
-                [&params, &igen]()
-                {
-                    return igen.next(-1, 0);
-                }
-            );
+    if (number_of_states <= std::numeric_limits<std::int8_t>::max()
+        and ("auto" == counting_type or "int8" == counting_type))
+    {
+        LOG(trace) << "Selected int8 for ta_state\n";
+        ta_state_v = std::vector<aligned_vector_int8>();
+    }
+    else if (number_of_states <= std::numeric_limits<std::int16_t>::max()
+        and ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
+    {
+        LOG(trace) << "Selected int16 for ta_state\n";
+        ta_state_v = std::vector<aligned_vector_int16>();
+    }
+    else
+    {
+        LOG(trace) << "Selected int32 for ta_state\n";
+        ta_state_v = std::vector<aligned_vector_int32>();
+    }
 
-            return rv;
-        }
-    );
+    auto ta_state_gen = [&params, &igen](auto & ta_state)
+    {
+        using row_type = typename std::decay<decltype(ta_state)>::type::value_type;
+
+        std::generate_n(std::back_inserter(ta_state), Params::number_of_clauses(params),
+            [&params, &igen]()
+            {
+                row_type rv;
+
+                std::generate_n(std::back_inserter(rv), Params::number_of_features(params) * 2,
+                    [&params, &igen]()
+                    {
+                        return igen.next(-1, 0);
+                    }
+                );
+
+                return rv;
+            }
+        );
+    };
+
+    std::visit(ta_state_gen, ta_state_v);
 
     reset_state_cache(state);
 }
