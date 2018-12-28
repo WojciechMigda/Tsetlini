@@ -89,7 +89,7 @@ status_message_t check_labels(label_vector_type const & labels)
 
 status_message_t check_labels(label_vector_type const & labels, int max_label)
 {
-    auto [lo, hi] = std::minmax(labels.cbegin(), labels.cend());
+    auto [lo, hi] = std::minmax_element(labels.cbegin(), labels.cend());
 
     if (*lo < 0)
     {
