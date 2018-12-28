@@ -189,8 +189,8 @@ status_message_t check_for_predict(
 void update_impl(
     aligned_vector_char const & X,
     label_type target_label,
+    label_type opposite_label,
 
-    int const number_of_labels,
     int const number_of_pos_neg_clauses_per_label,
     int const threshold,
     int const number_of_clauses,
@@ -199,20 +199,11 @@ void update_impl(
     real_type s,
     int const boost_true_positive_feedback,
 
-    IRNG & igen,
     FRNG & fgen,
     std::vector<aligned_vector_int> & ta_state,
     ClassifierState::Cache & cache
     )
 {
-    // TODO: this is not good for partial fit
-    // Randomly pick one of the other classes, for pairwise learning of class output
-    int negative_target_label = igen.next(0, number_of_labels - 1);
-    while (negative_target_label == target_label)
-    {
-        negative_target_label = igen.next(0, number_of_labels - 1);
-    }
-
     calculate_clause_output(
         X,
         cache.clause_output,
@@ -231,7 +222,7 @@ void update_impl(
     sum_up_label_votes(
         cache.clause_output,
         cache.label_sum,
-        negative_target_label,
+        opposite_label,
         number_of_pos_neg_clauses_per_label,
         threshold);
 
@@ -243,7 +234,7 @@ void update_impl(
 
     const auto THR2_inv = (ONE / (threshold * 2));
     const auto THR_pos = THR2_inv * (threshold - cache.label_sum[target_label]);
-    const auto THR_neg = THR2_inv * (threshold + cache.label_sum[negative_target_label]);
+    const auto THR_neg = THR2_inv * (threshold + cache.label_sum[opposite_label]);
 
     for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
@@ -273,7 +264,7 @@ void update_impl(
             continue;
         }
 
-        cache.feedback_to_clauses[pos_clause_index(negative_target_label, j, number_of_pos_neg_clauses_per_label)]--;
+        cache.feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)]--;
     }
     for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
@@ -282,7 +273,7 @@ void update_impl(
             continue;
         }
 
-        cache.feedback_to_clauses[neg_clause_index(negative_target_label, j, number_of_pos_neg_clauses_per_label)]++;
+        cache.feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)]++;
     }
 
 
@@ -525,6 +516,20 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
 }
 
 
+template<typename Gen>
+void generate_opposite_y(
+    label_vector_type const & y,
+    label_vector_type & opposite_y,
+    int number_of_labels,
+    Gen & g)
+{
+    for (auto it = 0u; it < y.size(); ++it)
+    {
+        opposite_y[it] = (y[it] + 1 + g() % (number_of_labels - 1)) % number_of_labels;
+    }
+}
+
+
 status_message_t
 fit_online_impl(
     ClassifierState & state,
@@ -564,8 +569,11 @@ fit_online_impl(
 
     std::mt19937 gen(state.igen());
 
+    label_vector_type opposite_y(y.size());
+
     for (unsigned int epoch = 0; epoch < epochs; ++epoch)
     {
+        generate_opposite_y(y, opposite_y, number_of_labels, state.igen);
         std::shuffle(ix.begin(), ix.end(), gen);
 
         for (auto i = 0u; i < number_of_examples; ++i)
@@ -573,8 +581,8 @@ fit_online_impl(
             update_impl(
                 X[ix[i]],
                 y[ix[i]],
+                opposite_y[ix[i]],
 
-                number_of_labels,
                 number_of_pos_neg_clauses_per_label,
                 threshold,
                 number_of_clauses,
@@ -583,7 +591,6 @@ fit_online_impl(
                 s,
                 boost_true_positive_feedback,
 
-                state.igen,
                 state.fgen,
                 state.ta_state,
                 state.cache
