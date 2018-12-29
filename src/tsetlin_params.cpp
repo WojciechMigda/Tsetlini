@@ -30,7 +30,9 @@ static const params_t default_params =
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
+
     {"counting_type", param_value_t("auto"s)},
+    {"clause_output_tile_size", param_value_t(16)},
 
     {"random_state", param_value_t(std::nullopt)},
 
@@ -106,7 +108,8 @@ json_to_params(json const & js)
             (key == "number_of_states") or
             (key == "boost_true_positive_feedback") or
             (key == "threshold") or
-            (key == "n_jobs")
+            (key == "n_jobs") or
+            (key == "clause_output_tile_size")
             )
         {
             rv[key] = value.get<int>();
@@ -175,7 +178,28 @@ assert_counting_type_enumeration(params_t const & params)
         or value == "int32"))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'counting_type got value " + value + ", instead of allowed int8, int16, int32, or auto\n"});
+            "Param 'counting_type' got value " + value + ", instead of allowed int8, int16, int32, or auto\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
+static
+Either<status_message_t, params_t>
+assert_clause_output_tile_size_enumeration(params_t const & params)
+{
+    auto value = std::get<int>(params.at("clause_output_tile_size"));
+
+    if (not (value == 16
+        or value == 32
+        or value == 64
+        or value == 128))
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'clause_output_tile_size' got value " + std::to_string(value) + ", instead of allowed 16, 32, 64, or 128\n"});
     }
     else
     {
@@ -195,6 +219,7 @@ make_params_from_json(std::string const & json_params)
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
+        .rightFlatMap(assert_clause_output_tile_size_enumeration)
         ;
 
     return rv;

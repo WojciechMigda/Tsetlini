@@ -27,6 +27,13 @@ std::string counting_type(params_t const & params)
 
 
 inline
+int clause_output_tile_size(params_t const & params)
+{
+    return std::get<int>(params.at("clause_output_tile_size"));
+}
+
+
+inline
 seed_type random_state(params_t const & params)
 {
     return std::get<seed_type>(params.at("random_state"));

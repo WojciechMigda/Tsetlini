@@ -131,6 +131,7 @@ TEST(Params, can_be_created_from_json_with_full_config)
 "threshold": 8,
 "boost_true_positive_feedback": 1,
 "counting_type": "int32",
+"clause_output_tile_size": 32,
 "n_jobs": 3,
 "random_state": 123
 }
@@ -147,6 +148,7 @@ TEST(Params, can_be_created_from_json_with_full_config)
     EXPECT_EQ(3, std::get<int>(params.at("n_jobs")));
     EXPECT_EQ(1, std::get<int>(params.at("boost_true_positive_feedback")));
     EXPECT_EQ("int32", std::get<std::string>(params.at("counting_type")));
+    EXPECT_EQ(32, std::get<int>(params.at("clause_output_tile_size")));
     EXPECT_FLOAT_EQ(6.3, std::get<Tsetlin::real_type>(params.at("s")));
     EXPECT_EQ(123u, std::get<Tsetlin::seed_type>(params.at("random_state")));
 }

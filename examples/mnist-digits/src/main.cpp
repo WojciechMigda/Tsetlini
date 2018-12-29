@@ -140,6 +140,7 @@ either is not readable or does not exist.)";
                 "number_of_states": 1000,
                 "boost_true_positive_feedback": 0,
                 "random_state": 1,
+                "clause_output_tile_size": 64,
                 "verbose": false
             })")
             .leftMap(error_printer)

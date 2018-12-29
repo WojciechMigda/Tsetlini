@@ -35,6 +35,9 @@ def _validate_params(params):
         elif k == "counting_type":
             v = str(v)
             assert(v in ["auto", "int8", "int16", "int32"])
+        elif k == "clause_output_tile_size":
+            v = int(v)
+            assert(v in [16, 32, 64, 128])
 
         rv[k] = v
 

@@ -202,16 +202,41 @@ void update_impl(
 
     FRNG & fgen,
     std::vector<aligned_vector<state_type>> & ta_state,
-    ClassifierState::Cache & cache
+    ClassifierState::Cache & cache,
+
+    int clause_output_tile_size
     )
 {
-    calculate_clause_output(
-        X,
-        cache.clause_output,
-        number_of_clauses,
-        number_of_features,
-        ta_state
-    );
+    switch (clause_output_tile_size)
+    {
+        case 64:
+            calculate_clause_output<state_type, 64>(
+                X,
+                cache.clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state
+            );
+            break;
+        case 32:
+            calculate_clause_output<state_type, 32>(
+                X,
+                cache.clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state
+            );
+            break;
+        default:
+            calculate_clause_output<state_type, 16>(
+                X,
+                cache.clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state
+            );
+            break;
+    }
 
     sum_up_label_votes(
         cache.clause_output,
@@ -566,6 +591,7 @@ fit_online_impl(
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
     if (auto sm = check_labels(labels, number_of_labels);
         sm.first != StatusCode::S_OK)
@@ -606,7 +632,9 @@ fit_online_impl(
 
                         state.fgen,
                         ta_state,
-                        state.cache
+                        state.cache,
+
+                        clause_output_tile_size
                     );
                 }, state.ta_state);
         }

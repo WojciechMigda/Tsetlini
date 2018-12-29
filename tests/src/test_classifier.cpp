@@ -80,6 +80,46 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_auto)
 }
 
 
+TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_16)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"clause_output_tile_size": 16})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_32)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"clause_output_tile_size": 32})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_64)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"clause_output_tile_size": 64})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_128)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"clause_output_tile_size": 128})");
+
+    EXPECT_TRUE(clf);
+}
+
+
+TEST(TsetlinClassifier, cannot_be_created_from_json_with_bad_clause_output_tile_size)
+{
+    auto const clf = Tsetlin::make_classifier(R"({"clause_output_tile_size": 24})");
+
+    EXPECT_FALSE(clf);
+}
+
+
 ///     Partial Fit
 
 TEST(TsetlinClassifierFit, rejects_empty_X)
