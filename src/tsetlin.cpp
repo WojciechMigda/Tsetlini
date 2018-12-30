@@ -209,6 +209,15 @@ void update_impl(
 {
     switch (clause_output_tile_size)
     {
+        case 128:
+            calculate_clause_output<state_type, 128>(
+                X,
+                cache.clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state
+            );
+            break;
         case 64:
             calculate_clause_output<state_type, 64>(
                 X,
@@ -228,6 +237,9 @@ void update_impl(
             );
             break;
         default:
+//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
+//                       << clause_output_tile_size << ", fallback to 16.\n";
+        case 16:
             calculate_clause_output<state_type, 16>(
                 X,
                 cache.clause_output,
