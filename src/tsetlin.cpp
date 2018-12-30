@@ -199,6 +199,7 @@ void update_impl(
     int const number_of_states,
     real_type s,
     int const boost_true_positive_feedback,
+    int const n_jobs,
 
     FRNG & fgen,
     std::vector<aligned_vector<state_type>> & ta_state,
@@ -215,7 +216,8 @@ void update_impl(
                 cache.clause_output,
                 number_of_clauses,
                 number_of_features,
-                ta_state
+                ta_state,
+                n_jobs
             );
             break;
         case 64:
@@ -224,7 +226,8 @@ void update_impl(
                 cache.clause_output,
                 number_of_clauses,
                 number_of_features,
-                ta_state
+                ta_state,
+                n_jobs
             );
             break;
         case 32:
@@ -233,7 +236,8 @@ void update_impl(
                 cache.clause_output,
                 number_of_clauses,
                 number_of_features,
-                ta_state
+                ta_state,
+                n_jobs
             );
             break;
         default:
@@ -245,7 +249,8 @@ void update_impl(
                 cache.clause_output,
                 number_of_clauses,
                 number_of_features,
-                ta_state
+                ta_state,
+                n_jobs
             );
             break;
     }
@@ -606,6 +611,7 @@ fit_online_impl(
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
+    auto const n_jobs = Params::n_jobs(params);
 
     if (auto sm = check_labels(labels, number_of_labels);
         sm.first != StatusCode::S_OK)
@@ -641,6 +647,7 @@ fit_online_impl(
                 number_of_states,
                 s,
                 boost_true_positive_feedback,
+                n_jobs,
 
                 state.fgen,
                 ta_state,

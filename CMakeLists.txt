@@ -6,6 +6,11 @@ if(NOT MARCH)
   set(MARCH "native" CACHE STRING "-march flag for the compiler")
 endif()
 
+include(FindOpenMP)
+if(NOT OpenMP_CXX_FOUND)
+    message(FATAL_ERROR "OpenMP for C++ is required but is missing")
+endif()
+
 set(SOURCES
     src/tsetlin.cpp
     src/tsetlin_params.cpp
@@ -33,8 +38,10 @@ target_include_directories(tktsetlin
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(tktsetlin_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH} -std=c++17>)
-target_compile_options(tktsetlin PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH} -std=c++17>)
+target_compile_options(tktsetlin_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH} -std=c++17> ${OpenMP_CXX_FLAGS})
+target_compile_options(tktsetlin PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH} -std=c++17> ${OpenMP_CXX_FLAGS})
+target_link_libraries(tktsetlin_static PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(tktsetlin PRIVATE ${OpenMP_CXX_FLAGS})
 set_property(TARGET tktsetlin_static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(examples)

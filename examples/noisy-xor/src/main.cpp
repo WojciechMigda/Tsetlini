@@ -131,6 +131,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
             "boost_true_positive_feedback": 0,
             "random_state": 1,
             "counting_type": "int32",
+            "n_jobs": 1,
             "verbose": false
         })")
         .leftMap(error_printer)

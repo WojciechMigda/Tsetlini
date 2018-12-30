@@ -141,6 +141,7 @@ either is not readable or does not exist.)";
                 "boost_true_positive_feedback": 0,
                 "random_state": 1,
                 "clause_output_tile_size": 64,
+                "n_jobs": 2,
                 "verbose": false
             })")
             .leftMap(error_printer)

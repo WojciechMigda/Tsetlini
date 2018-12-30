@@ -163,6 +163,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
             "number_of_states": 100,
             "boost_true_positive_feedback": 1,
             "random_state": 1,
+            "n_jobs": 1,
             "verbose": false
         })").leftMap(error_printer)
             .rightMap([&](auto && clf)

@@ -158,7 +158,8 @@ void calculate_clause_output(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state)
+    std::vector<aligned_vector<state_type>> const & ta_state,
+    int const n_jobs)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
@@ -183,6 +184,7 @@ void calculate_clause_output(
     }
     else
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int j = 0; j < number_of_clauses; ++j)
         {
             char toggle_output = 0;
