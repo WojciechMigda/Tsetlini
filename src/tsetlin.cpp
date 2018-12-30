@@ -578,9 +578,11 @@ void generate_opposite_y(
 }
 
 
+template<typename state_type>
 status_message_t
 fit_online_impl(
     ClassifierState & state,
+    std::vector<aligned_vector<state_type>> & ta_state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     unsigned int epochs)
@@ -627,32 +629,43 @@ fit_online_impl(
 
         for (auto i = 0u; i < number_of_examples; ++i)
         {
-            std::visit([&](auto & ta_state)
-                {
-                    update_impl(
-                        X[ix[i]],
-                        y[ix[i]],
-                        opposite_y[ix[i]],
+            update_impl(
+                X[ix[i]],
+                y[ix[i]],
+                opposite_y[ix[i]],
 
-                        number_of_pos_neg_clauses_per_label,
-                        threshold,
-                        number_of_clauses,
-                        number_of_features,
-                        number_of_states,
-                        s,
-                        boost_true_positive_feedback,
+                number_of_pos_neg_clauses_per_label,
+                threshold,
+                number_of_clauses,
+                number_of_features,
+                number_of_states,
+                s,
+                boost_true_positive_feedback,
 
-                        state.fgen,
-                        ta_state,
-                        state.cache,
+                state.fgen,
+                ta_state,
+                state.cache,
 
-                        clause_output_tile_size
-                    );
-                }, state.ta_state);
+                clause_output_tile_size
+            );
         }
     }
 
     return {S_OK, ""};
+}
+
+
+status_message_t
+fit_online_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    unsigned int epochs)
+{
+    return std::visit([&](auto & ta_state)
+        {
+            return fit_online_impl(state, ta_state, X, y, epochs);
+        }, state.ta_state);
 }
 
 
