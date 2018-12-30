@@ -9,5 +9,5 @@ target_include_directories(mnist-digits
 )
 
 target_link_libraries(mnist-digits tktsetlin_static)
-target_compile_options(mnist-digits PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
+target_compile_options(mnist-digits PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=${MARCH} -std=c++17>)
 target_compile_definitions(mnist-digits PRIVATE DATA_DIR=${CMAKE_CURRENT_SOURCE_DIR}/src)

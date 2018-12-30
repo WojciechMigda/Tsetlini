@@ -41,7 +41,7 @@ target_include_directories(tsetlin-test
 )
 
 target_link_libraries(tsetlin-test gtest_main tktsetlin_static)
-target_compile_options(tsetlin-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
+target_compile_options(tsetlin-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=${MARCH} -std=c++17>)
 
 gtest_discover_tests(tsetlin-test)
 add_test(NAME monolithic COMMAND tsetlin-test)

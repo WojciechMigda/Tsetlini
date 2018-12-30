@@ -9,4 +9,4 @@ target_include_directories(binary-iris
 )
 
 target_link_libraries(binary-iris tktsetlin_static)
-target_compile_options(binary-iris PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=native -std=c++17>)
+target_compile_options(binary-iris PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=${MARCH} -std=c++17>)
