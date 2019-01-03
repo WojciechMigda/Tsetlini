@@ -96,7 +96,8 @@ install:
   - |
     sudo apt-get install python-pip python3-pip
     pip install --user setuptools numpy Cython
-    pip3 install --user setuptools numpy Cython
+    pip3 install --user setuptools numpy #Cython
+    pip3 install https://github.com/cython/cython/archive/0.29.2.zip
   - |
     pushd bindings/python
     python3 setup.py build_clib
