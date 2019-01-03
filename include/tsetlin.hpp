@@ -22,35 +22,35 @@ struct Classifier
 //
 //    void fit_batch(std::vector<aligned_vector_char> const & X, label_vector_type const & y);
 
-    status_message_t
+    [[nodiscard]]
+     status_message_t
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100)
-        __attribute__((warn_unused_result));
+        int max_number_of_labels, unsigned int epochs = 100);
 
+    [[nodiscard]]
     status_message_t
     partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100)
-        __attribute__((warn_unused_result));
+        int max_number_of_labels, unsigned int epochs = 100);
 
+    [[nodiscard]]
     Either<status_message_t, real_type>
-    evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
-        __attribute__((warn_unused_result));
+    evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const;
 
+    [[nodiscard]]
     Either<status_message_t, label_type>
-    predict(aligned_vector_char const & sample) const
-        __attribute__((warn_unused_result));
+    predict(aligned_vector_char const & sample) const;
 
+    [[nodiscard]]
     Either<status_message_t, label_vector_type>
-    predict(std::vector<aligned_vector_char> const & X) const
-        __attribute__((warn_unused_result));
+    predict(std::vector<aligned_vector_char> const & X) const;
 
+    [[nodiscard]]
     Either<status_message_t, aligned_vector_int>
-    predict_raw(aligned_vector_char const & sample) const
-        __attribute__((warn_unused_result));
+    predict_raw(aligned_vector_char const & sample) const;
 
+    [[nodiscard]]
     Either<status_message_t, std::vector<aligned_vector_int>>
-    predict_raw(std::vector<aligned_vector_char> const & X) const
-        __attribute__((warn_unused_result));
+    predict_raw(std::vector<aligned_vector_char> const & X) const;
 
 //    void predict_raw(aligned_vector_char const & sample, int * out_p) const;
 //
