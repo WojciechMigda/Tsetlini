@@ -208,52 +208,15 @@ void update_impl(
     int clause_output_tile_size
     )
 {
-    switch (clause_output_tile_size)
-    {
-        case 128:
-            calculate_clause_output<state_type, 128>(
-                X,
-                cache.clause_output,
-                number_of_clauses,
-                number_of_features,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 64:
-            calculate_clause_output<state_type, 64>(
-                X,
-                cache.clause_output,
-                number_of_clauses,
-                number_of_features,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 32:
-            calculate_clause_output<state_type, 32>(
-                X,
-                cache.clause_output,
-                number_of_clauses,
-                number_of_features,
-                ta_state,
-                n_jobs
-            );
-            break;
-        default:
-//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
-//                       << clause_output_tile_size << ", fallback to 16.\n";
-        case 16:
-            calculate_clause_output<state_type, 16>(
-                X,
-                cache.clause_output,
-                number_of_clauses,
-                number_of_features,
-                ta_state,
-                n_jobs
-            );
-            break;
-    }
+    calculate_clause_output(
+        X,
+        cache.clause_output,
+        number_of_clauses,
+        number_of_features,
+        ta_state,
+        n_jobs,
+        clause_output_tile_size
+    );
 
     sum_up_label_votes(
         cache.clause_output,
@@ -287,7 +250,7 @@ void update_impl(
         }
 
         // Type I Feedback
-        cache.feedback_to_clauses[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)]++;
+        cache.feedback_to_clauses[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = 1;
     }
     for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
@@ -297,7 +260,7 @@ void update_impl(
         }
 
         // Type II Feedback
-        cache.feedback_to_clauses[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)]--;
+        cache.feedback_to_clauses[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = -1;
     }
 
     for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
@@ -307,7 +270,7 @@ void update_impl(
             continue;
         }
 
-        cache.feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)]--;
+        cache.feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = -1;
     }
     for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
@@ -316,7 +279,7 @@ void update_impl(
             continue;
         }
 
-        cache.feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)]++;
+        cache.feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = 1;
     }
 
 
@@ -353,6 +316,8 @@ evaluate_impl(
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
     int errors = 0;
 
@@ -365,7 +330,9 @@ evaluate_impl(
                     state.cache.clause_output,
                     number_of_clauses,
                     number_of_features,
-                    ta_state);
+                    ta_state,
+                    n_jobs,
+                    clause_output_tile_size);
             }, state.ta_state);
 
         sum_up_all_class_votes(
@@ -398,6 +365,9 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
         return Either<status_message_t, label_type>::leftOf(std::move(sm));
     }
 
+    auto const n_jobs = Params::n_jobs(state.m_params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(state.m_params);
+
     std::visit([&](auto & ta_state)
         {
             calculate_clause_output_for_predict(
@@ -405,7 +375,9 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
                 state.cache.clause_output,
                 Params::number_of_clauses(state.m_params),
                 Params::number_of_features(state.m_params),
-                ta_state);
+                ta_state,
+                n_jobs,
+                clause_output_tile_size);
         }, state.ta_state);
 
     sum_up_all_class_votes(
@@ -446,6 +418,8 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
     label_vector_type rv(number_of_examples);
 
@@ -458,7 +432,9 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
                     state.cache.clause_output,
                     number_of_clauses,
                     number_of_features,
-                    ta_state);
+                    ta_state,
+                    n_jobs,
+                    clause_output_tile_size);
             }, state.ta_state);
 
         sum_up_all_class_votes(
@@ -498,6 +474,9 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
+
 
     std::visit([&](auto & ta_state)
         {
@@ -506,7 +485,9 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
                 state.cache.clause_output,
                 number_of_clauses,
                 number_of_features,
-                ta_state);
+                ta_state,
+                n_jobs,
+                clause_output_tile_size);
         }, state.ta_state);
 
     sum_up_all_class_votes(
@@ -540,6 +521,8 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
     std::vector<aligned_vector_int> rv(number_of_examples);
 
@@ -552,7 +535,9 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
                     state.cache.clause_output,
                     number_of_clauses,
                     number_of_features,
-                    ta_state);
+                    ta_state,
+                    n_jobs,
+                    clause_output_tile_size);
             }, state.ta_state);
 
         sum_up_all_class_votes(
@@ -775,158 +760,6 @@ Classifier::predict_raw(std::vector<aligned_vector_char> const & X) const
 {
     return predict_raw_impl(m_state, X);
 }
-
-
-#if 0
-aligned_vector_int Classifier::predict_raw(aligned_vector_char const & sample) const
-{
-    calculate_clause_output_for_predict(
-        sample,
-        state.cache.clause_output,
-        Config::number_of_clauses(state.config),
-        Config::number_of_features(state.config),
-        Config::number_of_states(state.config),
-        state.ta_state
-    );
-
-    sum_up_all_class_votes(
-        state.cache.clause_output,
-        state.cache.label_sum,
-        Config::number_of_labels(state.config),
-        Config::number_of_pos_neg_clauses_per_label(state.config),
-        Config::threshold(state.config));
-
-    return state.cache.label_sum;
-}
-
-
-void Classifier::predict_raw(aligned_vector_char const & sample, int * out_p) const
-{
-    if (out_p == nullptr)
-    {
-        return;
-    }
-
-    calculate_clause_output_for_predict(
-        sample,
-        state.cache.clause_output,
-        Config::number_of_clauses(state.config),
-        Config::number_of_features(state.config),
-        Config::number_of_states(state.config),
-        state.ta_state
-    );
-
-    sum_up_all_class_votes(
-        state.cache.clause_output,
-        state.cache.label_sum,
-        Config::number_of_labels(state.config),
-        Config::number_of_pos_neg_clauses_per_label(state.config),
-        Config::threshold(state.config));
-
-    std::copy(state.cache.label_sum.cbegin(), state.cache.label_sum.cend(), out_p);
-}
-
-
-void Classifier::update(aligned_vector_char const & X, label_type target_label)
-{
-    auto const & config = state.config;
-
-    update_impl(
-        X,
-        target_label,
-
-        Config::number_of_labels(config),
-        Config::number_of_pos_neg_clauses_per_label(config),
-        Config::threshold(config),
-        Config::number_of_clauses(config),
-        Config::number_of_features(config),
-        Config::number_of_states(config),
-        Config::s(config),
-        Config::boost_true_positive_feedback(config),
-
-        state.igen,
-        state.fgen,
-        state.ta_state,
-        state.cache
-    );
-}
-
-
-void Classifier::fit_batch(std::vector<aligned_vector_char> const & X, label_vector_type const & y)
-{
-    auto const & config = state.config;
-
-    for (auto i = 0u; i < std::min(X.size(), y.size()); ++i)
-    {
-        update_impl(
-            X[i],
-            y[i],
-
-            Config::number_of_labels(config),
-            Config::number_of_pos_neg_clauses_per_label(config),
-            Config::threshold(config),
-            Config::number_of_clauses(config),
-            Config::number_of_features(config),
-            Config::number_of_states(config),
-            Config::s(config),
-            Config::boost_true_positive_feedback(config),
-
-            state.igen,
-            state.fgen,
-            state.ta_state,
-            state.cache
-        );
-    }
-}
-
-
-void Classifier::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, std::size_t number_of_examples, int epochs)
-{
-    std::vector<int> ix(X.size());
-    std::iota(ix.begin(), ix.end(), 0);
-
-    auto const & config = state.config;
-
-    auto const number_of_labels = Config::number_of_labels(config);
-    auto const number_of_pos_neg_clauses_per_label = Config::number_of_pos_neg_clauses_per_label(config);
-    auto const threshold = Config::threshold(config);
-    auto const number_of_clauses = Config::number_of_clauses(config);
-    auto const number_of_features = Config::number_of_features(config);
-    auto const number_of_states = Config::number_of_states(config);
-    auto const s = Config::s(config);
-    auto const boost_true_positive_feedback = Config::boost_true_positive_feedback(config);
-
-    for (int epoch = 0; epoch < epochs; ++epoch)
-    {
-        std::shuffle(ix.begin(), ix.end(), std::mt19937(state.gen));
-
-        for (auto i = 0u; i < number_of_examples; ++i)
-        {
-            update_impl(
-                X[ix[i]],
-                y[ix[i]],
-
-                number_of_labels,
-                number_of_pos_neg_clauses_per_label,
-                threshold,
-                number_of_clauses,
-                number_of_features,
-                number_of_states,
-                s,
-                boost_true_positive_feedback,
-
-                state.igen,
-                state.fgen,
-                state.ta_state,
-                state.cache
-            );
-        }
-    }
-
-}
-
-
-#endif
 
 
 Either<status_message_t, real_type>

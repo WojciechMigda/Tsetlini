@@ -86,6 +86,89 @@ void sum_up_all_class_votes(
 }
 
 
+template<typename state_type, int BATCH_SZ>
+inline
+void calculate_clause_output_for_predict(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    int const number_of_features,
+    std::vector<aligned_vector<state_type>> const & ta_state,
+    int const n_jobs)
+{
+    char const * X_p = assume_aligned<alignment>(X.data());
+
+    if (number_of_features < BATCH_SZ)
+    {
+        for (int j = 0; j < number_of_clauses; ++j)
+        {
+            bool output = true;
+            bool all_exclude = true;
+
+            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+
+            for (int k = 0; k < number_of_features and output == true; ++k)
+            {
+                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                all_exclude = (action_include == true or action_include_negated == true) ? false : all_exclude;
+
+                output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
+            }
+
+            output = (all_exclude == true) ? false : output;
+
+            clause_output[j] = output;
+        }
+    }
+    else
+    {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+        for (int j = 0; j < number_of_clauses; ++j)
+        {
+            char toggle_output = 0;
+            char neg_all_exclude = 0;
+
+            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+
+            int kk = 0;
+            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            {
+                for (int k = kk; k < BATCH_SZ + kk; ++k)
+                {
+                    bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                    bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                    char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                    toggle_output = flag > toggle_output ? flag : toggle_output;
+
+                    char xflag = action_include + action_include_negated;
+                    neg_all_exclude = xflag > neg_all_exclude ? xflag : neg_all_exclude;
+                }
+                if (toggle_output != 0)
+                {
+                    break;
+                }
+            }
+            for (int k = kk; k < number_of_features and toggle_output == false; ++k)
+            {
+                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
+                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+
+                char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                toggle_output = flag > toggle_output ? flag : toggle_output;
+
+                char xflag = action_include + action_include_negated;
+                neg_all_exclude = xflag > neg_all_exclude ? xflag : neg_all_exclude;
+            }
+
+            clause_output[j] = neg_all_exclude == 0 ? 0 : !toggle_output;
+        }
+    }
+}
+
+
 template<typename state_type>
 inline
 void calculate_clause_output_for_predict(
@@ -93,30 +176,55 @@ void calculate_clause_output_for_predict(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state)
+    std::vector<aligned_vector<state_type>> const & ta_state,
+    int const n_jobs,
+    int const TILE_SZ)
 {
-    char const * X_p = assume_aligned<alignment>(X.data());
-
-    for (int j = 0; j < number_of_clauses; ++j)
+    switch (TILE_SZ)
     {
-        bool output = true;
-        bool all_exclude = true;
-
-        state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
-
-        for (int k = 0; k < number_of_features and output == true; ++k)
-        {
-            bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-            bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
-
-            all_exclude = (action_include == true or action_include_negated == true) ? false : all_exclude;
-
-            output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
-        }
-
-        output = (all_exclude == true) ? false : output;
-
-        clause_output[j] = output;
+        case 128:
+            calculate_clause_output_for_predict<state_type, 128>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 64:
+            calculate_clause_output_for_predict<state_type, 64>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 32:
+            calculate_clause_output_for_predict<state_type, 32>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        default:
+//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
+//                       << clause_output_tile_size << ", fallback to 16.\n";
+        case 16:
+            calculate_clause_output_for_predict<state_type, 16>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
     }
 }
 
@@ -151,7 +259,7 @@ void calculate_clause_output_OLD(
 }
 
 
-template<typename state_type, int BATCH_SZ=16>
+template<typename state_type, int BATCH_SZ>
 inline
 void calculate_clause_output(
     aligned_vector_char const & X,
@@ -218,6 +326,66 @@ void calculate_clause_output(
 
             clause_output[j] = !toggle_output;
         }
+    }
+}
+
+
+template<typename state_type>
+inline
+void calculate_clause_output(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    int const number_of_features,
+    std::vector<aligned_vector<state_type>> const & ta_state,
+    int const n_jobs,
+    int const TILE_SZ)
+{
+    switch (TILE_SZ)
+    {
+        case 128:
+            calculate_clause_output<state_type, 128>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 64:
+            calculate_clause_output<state_type, 64>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 32:
+            calculate_clause_output<state_type, 32>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
+        default:
+//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
+//                       << clause_output_tile_size << ", fallback to 16.\n";
+        case 16:
+            calculate_clause_output<state_type, 16>(
+                X,
+                clause_output,
+                number_of_clauses,
+                number_of_features,
+                ta_state,
+                n_jobs
+            );
+            break;
     }
 }
 
