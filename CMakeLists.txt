@@ -7,7 +7,7 @@ if(NOT MARCH)
 endif()
 
 include(FindOpenMP)
-if(NOT OpenMP_CXX_FOUND)
+if(NOT OpenMP_FOUND)
     message(FATAL_ERROR "OpenMP for C++ is required but is missing")
 endif()
 
