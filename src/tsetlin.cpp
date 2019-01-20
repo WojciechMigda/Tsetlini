@@ -335,7 +335,7 @@ evaluate_impl(
                     clause_output_tile_size);
             }, state.ta_state);
 
-        sum_up_all_class_votes(
+        sum_up_all_label_votes(
             state.cache.clause_output,
             state.cache.label_sum,
             number_of_labels,
@@ -380,7 +380,7 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
                 clause_output_tile_size);
         }, state.ta_state);
 
-    sum_up_all_class_votes(
+    sum_up_all_label_votes(
         state.cache.clause_output,
         state.cache.label_sum,
         Params::number_of_labels(state.m_params),
@@ -437,7 +437,7 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
                     clause_output_tile_size);
             }, state.ta_state);
 
-        sum_up_all_class_votes(
+        sum_up_all_label_votes(
             state.cache.clause_output,
             state.cache.label_sum,
             number_of_labels,
@@ -490,7 +490,7 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
                 clause_output_tile_size);
         }, state.ta_state);
 
-    sum_up_all_class_votes(
+    sum_up_all_label_votes(
         state.cache.clause_output,
         state.cache.label_sum,
         number_of_labels,
@@ -540,7 +540,7 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
                     clause_output_tile_size);
             }, state.ta_state);
 
-        sum_up_all_class_votes(
+        sum_up_all_label_votes(
             state.cache.clause_output,
             state.cache.label_sum,
             number_of_labels,

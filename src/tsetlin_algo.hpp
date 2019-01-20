@@ -71,7 +71,7 @@ void sum_up_label_votes(
 
 
 inline
-void sum_up_all_class_votes(
+void sum_up_all_label_votes(
     aligned_vector_char const & clause_output,
     aligned_vector_int & label_sum,
 
