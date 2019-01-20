@@ -186,9 +186,9 @@ status_message_t check_for_predict(
 }
 
 
-template<typename state_type>
+template<typename state_type, typename row_type>
 void update_impl(
-    aligned_vector_char const & X,
+    row_type const & X,
     label_type target_label,
     label_type opposite_label,
 
@@ -292,7 +292,7 @@ void update_impl(
         number_of_features,
         number_of_states,
         S_inv,
-        X.data(),
+        X,
         boost_true_positive_feedback,
         cache.fcache[0]
     );
@@ -568,12 +568,12 @@ void generate_opposite_y(
 }
 
 
-template<typename state_type>
+template<typename state_type, typename row_type>
 status_message_t
 fit_online_impl(
     ClassifierState & state,
     std::vector<aligned_vector<state_type>> & ta_state,
-    std::vector<aligned_vector_char> const & X,
+    std::vector<row_type> const & X,
     label_vector_type const & y,
     unsigned int epochs)
 {
@@ -647,10 +647,11 @@ fit_online_impl(
 }
 
 
+template<typename RowType>
 status_message_t
 fit_online_impl(
     ClassifierState & state,
-    std::vector<aligned_vector_char> const & X,
+    std::vector<RowType> const & X,
     label_vector_type const & y,
     unsigned int epochs)
 {
@@ -661,10 +662,11 @@ fit_online_impl(
 }
 
 
+template<typename RowType>
 status_message_t
-fit_impl(
+fit_impl_T(
     ClassifierState & state,
-    std::vector<aligned_vector_char> const & X,
+    std::vector<RowType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
     unsigned int epochs)
@@ -780,6 +782,18 @@ status_message_t
 Classifier::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
     return fit_impl(m_state, X, y, max_number_of_labels, epochs);
+}
+
+
+status_message_t
+fit_impl(
+    ClassifierState & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    return fit_impl_T(state, X, y, max_number_of_labels, epochs);
 }
 
 

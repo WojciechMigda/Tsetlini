@@ -88,7 +88,7 @@ void sum_up_all_label_votes(
 
 template<typename state_type, int BATCH_SZ>
 inline
-void calculate_clause_output_for_predict(
+void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
@@ -183,7 +183,7 @@ void calculate_clause_output_for_predict(
     switch (TILE_SZ)
     {
         case 128:
-            calculate_clause_output_for_predict<state_type, 128>(
+            calculate_clause_output_for_predict_T<state_type, 128>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -193,7 +193,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 64:
-            calculate_clause_output_for_predict<state_type, 64>(
+            calculate_clause_output_for_predict_T<state_type, 64>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -203,7 +203,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 32:
-            calculate_clause_output_for_predict<state_type, 32>(
+            calculate_clause_output_for_predict_T<state_type, 32>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -216,7 +216,7 @@ void calculate_clause_output_for_predict(
 //            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output_for_predict<state_type, 16>(
+            calculate_clause_output_for_predict_T<state_type, 16>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -261,7 +261,7 @@ void calculate_clause_output_OLD(
 
 template<typename state_type, int BATCH_SZ>
 inline
-void calculate_clause_output(
+void calculate_clause_output_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
@@ -330,10 +330,10 @@ void calculate_clause_output(
 }
 
 
-template<typename state_type>
+template<typename state_type, typename RowType>
 inline
 void calculate_clause_output(
-    aligned_vector_char const & X,
+    RowType const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
@@ -344,7 +344,7 @@ void calculate_clause_output(
     switch (TILE_SZ)
     {
         case 128:
-            calculate_clause_output<state_type, 128>(
+            calculate_clause_output_T<state_type, 128>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -354,7 +354,7 @@ void calculate_clause_output(
             );
             break;
         case 64:
-            calculate_clause_output<state_type, 64>(
+            calculate_clause_output_T<state_type, 64>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -364,7 +364,7 @@ void calculate_clause_output(
             );
             break;
         case 32:
-            calculate_clause_output<state_type, 32>(
+            calculate_clause_output_T<state_type, 32>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -377,7 +377,7 @@ void calculate_clause_output(
 //            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output<state_type, 16>(
+            calculate_clause_output_T<state_type, 16>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -518,28 +518,6 @@ void block3(
             }
         }
     }
-#if 0
-    for (int k = 0; k < number_of_features; ++k)
-    {
-        bool const action_include = action(ta_state[j][pos_feat_index(k)]);
-        bool const action_include_negated = action(ta_state[j][neg_feat_index(k)]);
-
-        if (X[k] == 0)
-        {
-            if (action_include == false and ta_state[j][pos_feat_index(k)] < number_of_states * 2)
-            {
-                ta_state[j][pos_feat_index(k)]++;
-            }
-        }
-        else if(X[k] == 1)
-        {
-            if (action_include_negated == false and ta_state[j][neg_feat_index(k)] < number_of_states * 2)
-            {
-                ta_state[j][neg_feat_index(k)]++;
-            }
-        }
-    }
-#endif
 }
 
 
@@ -591,6 +569,28 @@ void train_automata_batch(
         }
     }
 }
+
+
+template<typename state_type>
+void train_automata_batch(
+    aligned_vector<state_type> * __restrict ta_state,
+    int const begin,
+    int const end,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_features,
+    int const number_of_states,
+    float const S_inv,
+    aligned_vector_char const & X,
+    bool const boost_true_positive_feedback,
+    ClassifierState::frand_cache_type & fcache
+    )
+{
+    train_automata_batch(ta_state, begin, end, feedback_to_clauses,
+        clause_output, number_of_features, number_of_states, S_inv, X.data(),
+        boost_true_positive_feedback, fcache);
+}
+
 
 }
 
