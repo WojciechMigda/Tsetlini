@@ -17,6 +17,7 @@ static constexpr unsigned int alignment = 64;
 using real_type = float;
 using seed_type = std::random_device::result_type;
 using none_type = std::nullopt_t;
+using size_type = decltype (sizeof (0));
 
 // aligned vectors
 template <typename T>
