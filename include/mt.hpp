@@ -4,7 +4,7 @@
  * Distributed under the terms of the MIT License
  *******************************************************************************
  *
- * Filename: likely.h
+ * Filename: mt.hpp
  *
  * Description:
  *      SIMD-friendly Mersenne Twister PRNG
@@ -25,17 +25,12 @@
 
 #include "likely.h"
 #include "assume_aligned.hpp"
+#include "is_power_of_two.hpp"
 
 #include <type_traits>
 #include <cstddef>
 #include <limits>
 #include <algorithm>
-
-
-constexpr bool is_power_of_two(unsigned long long x)
-{
-    return x && !(x & (x - 1));
-}
 
 
 template<typename ValueType, unsigned int Alignment, unsigned int NumberOfStreams, typename DerivedT>

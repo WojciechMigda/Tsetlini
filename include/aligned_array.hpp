@@ -1,15 +1,11 @@
 #pragma once
 
 #include "assume_aligned.hpp"
+#include "is_power_of_two.hpp"
 
 #include <cstddef>
 #include <algorithm>
 #include <type_traits>
-
-constexpr bool is_power_of_two(unsigned long long x)
-{
-    return x && !(x & (x - 1));
-}
 
 
 template <typename Tp, std::size_t Nelem, std::size_t Alignment>
