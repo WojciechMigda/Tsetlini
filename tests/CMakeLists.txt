@@ -31,6 +31,7 @@ add_executable(tsetlin-test
     src/test_classifier_state_json.cpp
     src/test_params.cpp
     src/test_bit_matrix.cpp
+    src/test_numeric_matrix.cpp
 )
 
 target_include_directories(tsetlin-test

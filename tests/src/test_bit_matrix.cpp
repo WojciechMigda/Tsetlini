@@ -79,7 +79,7 @@ TEST(BitMatrix, row_blocks_is_correct_for_data_larger_than_block_with_equal_alig
 }
 
 
-TEST(BitMatrix, row_blocks_is_correct_4)
+TEST(BitMatrix, row_blocks_is_correct_for_data_larger_than_alignment_and_block)
 {
     // block < alignment < data
 
