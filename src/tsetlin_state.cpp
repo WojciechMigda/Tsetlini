@@ -52,44 +52,41 @@ void initialize_state(ClassifierState & state)
 
     auto const number_of_states = Params::number_of_states(params);
     auto const & counting_type = Params::counting_type(params);
+    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
 
     if (number_of_states <= std::numeric_limits<std::int8_t>::max()
         and ("auto" == counting_type or "int8" == counting_type))
     {
         LOG(trace) << "Selected int8 for ta_state\n";
-        ta_state_v = std::vector<aligned_vector_int8>();
+        ta_state_v = numeric_matrix_int8(2 * number_of_clauses, number_of_features);
     }
     else if (number_of_states <= std::numeric_limits<std::int16_t>::max()
         and ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
     {
         LOG(trace) << "Selected int16 for ta_state\n";
-        ta_state_v = std::vector<aligned_vector_int16>();
+        ta_state_v = numeric_matrix_int16(2 * number_of_clauses, number_of_features);
     }
     else
     {
         LOG(trace) << "Selected int32 for ta_state\n";
-        ta_state_v = std::vector<aligned_vector_int32>();
+        ta_state_v = numeric_matrix_int32(2 * number_of_clauses, number_of_features);
     }
 
     auto ta_state_gen = [&params, &igen](auto & ta_state)
     {
-        using row_type = typename std::decay<decltype(ta_state)>::type::value_type;
+        auto const number_of_clauses = Params::number_of_clauses(params);
+        auto const number_of_features = Params::number_of_features(params);
 
-        std::generate_n(std::back_inserter(ta_state), Params::number_of_clauses(params),
-            [&params, &igen]()
+        for (auto rit = 0; rit < 2 * number_of_clauses; ++rit)
+        {
+            auto row_data = ta_state.row_data(rit);
+
+            for (auto cit = 0; cit < number_of_features; ++cit)
             {
-                row_type rv;
-
-                std::generate_n(std::back_inserter(rv), Params::number_of_features(params) * 2,
-                    [&params, &igen]()
-                    {
-                        return igen.next(-1, 0);
-                    }
-                );
-
-                return rv;
+                row_data[cit] = igen.next(-1, 0);
             }
-        );
+        }
     };
 
     std::visit(ta_state_gen, ta_state_v);

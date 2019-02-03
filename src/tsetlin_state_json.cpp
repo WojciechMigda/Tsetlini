@@ -68,14 +68,26 @@ void to_json(json & j, Tsetlin::ClassifierState::ta_state_v_type const & p)
 
     ta_state["width"] = std::visit([](auto const & p)
         {
-            using row_type = typename std::decay<decltype(p)>::type::value_type;
-            return sizeof (typename row_type::value_type);
+            using value_type = typename std::decay<decltype(p)>::type::value_type;
+            return sizeof (value_type);
         }, p);
     ta_state["data"] = json::array_t{};
 
     std::visit([&](auto const & p)
         {
-            std::transform(p.cbegin(), p.cend(), std::back_inserter(ta_state["data"]), [](auto const & v){ return json(v); });
+            auto const [nr, nc] = p.shape();
+
+            for (auto rit = 0u; rit < nr; ++rit)
+            {
+                // ugly, but as for now json cannot be easily created
+                // from a range of pointers
+                auto jrow = json(nc, 0);
+
+                auto row_data = p.row_data(rit);
+                std::copy(row_data, row_data + nc, jrow.begin());
+
+                ta_state["data"].push_back(jrow);
+            }
         }, p);
 
     j = ta_state;
@@ -87,27 +99,32 @@ static void from_json(json const & j, Tsetlin::ClassifierState::ta_state_v_type 
     std::size_t width = 0u;
     j.at("width").get_to(width);
 
+    auto const nr = j["data"].size();
+    auto const nc = j["data"][0].size();
+
     if (width == 1)
     {
-        p = std::vector<Tsetlin::aligned_vector_int8>();
+        p = Tsetlin::numeric_matrix_int8(nr, nc);
     }
     else if (width == 2)
     {
-        p = std::vector<Tsetlin::aligned_vector_int16>();
+        p = Tsetlin::numeric_matrix_int16(nr, nc);
     }
     else // if (width == 4)
     {
-        p = std::vector<Tsetlin::aligned_vector_int32>();
+        p = Tsetlin::numeric_matrix_int32(nr, nc);
     }
 
     std::visit([&](auto & p)
         {
-            using row_type = typename std::decay<decltype(p)>::type::value_type;
-
             auto const & data = j["data"];
 
-            p.resize(data.size());
-            std::transform(data.cbegin(), data.cend(), p.begin(), [](json const & j){ return row_type(j.cbegin(), j.cend()); });
+            for (auto rit = 0u; rit < nr; ++rit)
+            {
+                auto row_data = p.row_data(rit);
+
+                std::copy(data[rit].cbegin(), data[rit].cend(), row_data);
+            }
         }, p);
 }
 

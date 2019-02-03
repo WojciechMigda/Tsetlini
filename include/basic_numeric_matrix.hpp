@@ -12,7 +12,7 @@
 
 
 template<typename ValueType, unsigned int Alignment = 64>
-struct numeric_matrix
+struct basic_numeric_matrix
 {
     using value_type = ValueType;
     using size_type = decltype (sizeof (0));
@@ -25,21 +25,21 @@ struct numeric_matrix
     static_assert(is_power_of_two(alignment), "Alignment must be a power of 2");
 
 
-    numeric_matrix()
+    basic_numeric_matrix()
         : m_nrows(0)
         , m_ncols(0)
         , m_v()
     {
     }
 
-    numeric_matrix(uint const nrows, uint const ncols)
+    basic_numeric_matrix(uint const nrows, uint const ncols)
         : m_nrows(nrows)
         , m_ncols(ncols)
         , m_v(row_items() * nrows)
     {
     }
 
-    numeric_matrix(numeric_matrix && rhs)
+    basic_numeric_matrix(basic_numeric_matrix && rhs)
         : m_nrows(rhs.m_nrows)
         , m_ncols(rhs.m_ncols)
         , m_v(std::move(rhs.m_v))
@@ -48,14 +48,14 @@ struct numeric_matrix
         rhs.m_ncols = 0;
     }
 
-    numeric_matrix(numeric_matrix const & rhs)
+    basic_numeric_matrix(basic_numeric_matrix const & rhs)
         : m_nrows(rhs.m_nrows)
         , m_ncols(rhs.m_ncols)
         , m_v(rhs.m_v)
     {
     }
 
-    numeric_matrix & operator=(numeric_matrix && rhs)
+    basic_numeric_matrix & operator=(basic_numeric_matrix && rhs)
     {
         this->m_nrows = rhs.m_nrows;
         rhs.m_nrows = 0;
@@ -69,7 +69,7 @@ struct numeric_matrix
     }
 
 
-    numeric_matrix & operator=(numeric_matrix const & rhs)
+    basic_numeric_matrix & operator=(basic_numeric_matrix const & rhs)
     {
         this->m_nrows = rhs.m_nrows;
         this->m_ncols = rhs.m_ncols;
@@ -122,6 +122,29 @@ struct numeric_matrix
         return m_v.data();
     }
 
+    value_type * data()
+    {
+        return m_v.data();
+    }
+
+
+    value_type const * row_data(size_type nr) const
+    {
+        return &m_v.data()[row_offset(nr)];
+    }
+
+    value_type * row_data(size_type nr)
+    {
+        return &m_v.data()[row_offset(nr)];
+    }
+
+    bool operator==(basic_numeric_matrix const & other) const
+    {
+        return
+            m_nrows == other.m_nrows
+            and m_ncols == other.m_ncols
+            and m_v == other.m_v;
+    }
 
     uint m_nrows;
     uint m_ncols;

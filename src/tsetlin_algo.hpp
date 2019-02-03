@@ -86,31 +86,32 @@ void sum_up_all_label_votes(
 }
 
 
-template<typename state_type, int BATCH_SZ>
+template<typename state_type, unsigned int BATCH_SZ>
 inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state,
+    numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
-    if (number_of_features < BATCH_SZ)
+    if (number_of_features < (int)BATCH_SZ)
     {
         for (int j = 0; j < number_of_clauses; ++j)
         {
             bool output = true;
             bool all_exclude = true;
 
-            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
 
             for (int k = 0; k < number_of_features and output == true; ++k)
             {
-                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                bool const action_include = action(ta_state_pos_j[k]);
+                bool const action_include_negated = action(ta_state_neg_j[k]);
 
                 all_exclude = (action_include == true or action_include_negated == true) ? false : all_exclude;
 
@@ -130,15 +131,16 @@ void calculate_clause_output_for_predict_T(
             char toggle_output = 0;
             char neg_all_exclude = 0;
 
-            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
 
-            int kk = 0;
+            unsigned int kk = 0;
             for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
-                for (int k = kk; k < BATCH_SZ + kk; ++k)
+                for (auto k = kk; k < BATCH_SZ + kk; ++k)
                 {
-                    bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                    bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                    bool const action_include = action(ta_state_pos_j[k]);
+                    bool const action_include_negated = action(ta_state_neg_j[k]);
 
                     char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
                     toggle_output = flag > toggle_output ? flag : toggle_output;
@@ -153,8 +155,8 @@ void calculate_clause_output_for_predict_T(
             }
             for (int k = kk; k < number_of_features and toggle_output == false; ++k)
             {
-                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                bool const action_include = action(ta_state_pos_j[k]);
+                bool const action_include_negated = action(ta_state_neg_j[k]);
 
                 char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
                 toggle_output = flag > toggle_output ? flag : toggle_output;
@@ -176,7 +178,7 @@ void calculate_clause_output_for_predict(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state,
+    numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
     int const TILE_SZ)
 {
@@ -259,30 +261,31 @@ void calculate_clause_output_OLD(
 }
 
 
-template<typename state_type, int BATCH_SZ>
+template<typename state_type, unsigned int BATCH_SZ>
 inline
 void calculate_clause_output_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state,
+    numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
     char const * X_p = assume_aligned<alignment>(X.data());
 
-    if (number_of_features < BATCH_SZ)
+    if (number_of_features < (int)BATCH_SZ)
     {
         for (int j = 0; j < number_of_clauses; ++j)
         {
             bool output = true;
 
-            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
 
             for (int k = 0; k < number_of_features and output == true; ++k)
             {
-                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                bool const action_include = action(ta_state_pos_j[k]);
+                bool const action_include_negated = action(ta_state_neg_j[k]);
 
                 output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
             }
@@ -297,15 +300,16 @@ void calculate_clause_output_T(
         {
             char toggle_output = 0;
 
-            state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
 
-            int kk = 0;
+            unsigned int kk = 0;
             for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
-                for (int k = kk; k < BATCH_SZ + kk; ++k)
+                for (auto k = kk; k < BATCH_SZ + kk; ++k)
                 {
-                    bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                    bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                    bool const action_include = action(ta_state_pos_j[k]);
+                    bool const action_include_negated = action(ta_state_neg_j[k]);
 
                     char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
                     toggle_output = flag > toggle_output ? flag : toggle_output;
@@ -317,8 +321,8 @@ void calculate_clause_output_T(
             }
             for (int k = kk; k < number_of_features and toggle_output == false; ++k)
             {
-                bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-                bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
+                bool const action_include = action(ta_state_pos_j[k]);
+                bool const action_include_negated = action(ta_state_neg_j[k]);
 
                 char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
                 toggle_output = flag > toggle_output ? flag : toggle_output;
@@ -337,7 +341,7 @@ void calculate_clause_output(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state,
+    numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
     int const TILE_SZ)
 {
@@ -396,27 +400,28 @@ int block1(
     int const number_of_features,
     int const number_of_states,
     float const S_inv,
-    state_type * __restrict ta_state_j,
+    state_type * __restrict ta_state_pos_j,
+    state_type * __restrict ta_state_neg_j,
     float const * __restrict fcache,
     int fcache_pos
 )
 {
     fcache = assume_aligned<alignment>(fcache);
-    ta_state_j = assume_aligned<alignment>(ta_state_j);
+    ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
+    ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 
     for (int k = 0; k < number_of_features; ++k)
     {
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
-            auto tix = pos_feat_index(k);
 
-            ta_state_j[tix] = cond ? (ta_state_j[tix] > -number_of_states ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
+            ta_state_pos_j[k] = cond ? (ta_state_pos_j[k] > -number_of_states ? ta_state_pos_j[k] - 1 : ta_state_pos_j[k]) : ta_state_pos_j[k];
         }
 
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
-            auto tix = neg_feat_index(k, number_of_features);
-            ta_state_j[tix] = cond ? (ta_state_j[tix] > -number_of_states ? ta_state_j[tix] - 1 : ta_state_j[tix]) : ta_state_j[tix];
+
+            ta_state_neg_j[k] = cond ? (ta_state_neg_j[k] > -number_of_states ? ta_state_neg_j[k] - 1 : ta_state_neg_j[k]) : ta_state_neg_j[k];
         }
     }
     return fcache_pos;
@@ -429,7 +434,8 @@ int block2(
     int const number_of_features,
     int const number_of_states,
     float const S_inv,
-    state_type * __restrict ta_state_j,
+    state_type * __restrict ta_state_pos_j,
+    state_type * __restrict ta_state_neg_j,
     char const * __restrict X,
     float const * __restrict fcache,
     int fcache_pos
@@ -437,7 +443,8 @@ int block2(
 {
     constexpr float ONE = 1.0f;
     fcache = assume_aligned<alignment>(fcache);
-    ta_state_j = assume_aligned<alignment>(ta_state_j);
+    ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
+    ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 //    X = assume_aligned(X);
 
     for (int k = 0; k < number_of_features; ++k)
@@ -449,16 +456,16 @@ int block2(
         {
             if (cond1)
             {
-                if (ta_state_j[pos_feat_index(k)] < number_of_states - 1)
+                if (ta_state_pos_j[k] < number_of_states - 1)
                 {
-                    ta_state_j[pos_feat_index(k)]++;
+                    ta_state_pos_j[k]++;
                 }
             }
             if (cond2)
             {
-                if (ta_state_j[neg_feat_index(k, number_of_features)] > -number_of_states)
+                if (ta_state_neg_j[k] > -number_of_states)
                 {
-                    ta_state_j[neg_feat_index(k, number_of_features)]--;
+                    ta_state_neg_j[k]--;
                 }
             }
         }
@@ -466,17 +473,17 @@ int block2(
         {
             if (cond1)
             {
-                if (ta_state_j[neg_feat_index(k, number_of_features)] < number_of_states - 1)
+                if (ta_state_neg_j[k] < number_of_states - 1)
                 {
-                    ta_state_j[neg_feat_index(k, number_of_features)]++;
+                    ta_state_neg_j[k]++;
                 }
             }
 
             if (cond2)
             {
-                if (ta_state_j[pos_feat_index(k)] > -number_of_states)
+                if (ta_state_pos_j[k] > -number_of_states)
                 {
-                    ta_state_j[pos_feat_index(k)]--;
+                    ta_state_pos_j[k]--;
                 }
             }
         }
@@ -490,31 +497,31 @@ int block2(
 template<typename state_type>
 void block3(
     int const number_of_features,
-    state_type * __restrict ta_state_j,
+    state_type * __restrict ta_state_pos_j,
+    state_type * __restrict ta_state_neg_j,
     char const * __restrict X
 )
 {
-    ta_state_j = assume_aligned<alignment>(ta_state_j);
+    ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
+    ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
     X = assume_aligned<alignment>(X);
 
     for (int k = 0; k < number_of_features; ++k)
     {
         if (X[k] == 0)
         {
-            auto tix = pos_feat_index(k);
-            auto action_include = (ta_state_j[tix]) >= 0;
+            auto action_include = (ta_state_pos_j[k]) >= 0;
             if (action_include == false)
             {
-                ta_state_j[tix]++;
+                ta_state_pos_j[k]++;
             }
         }
         else //if(X[k] == 1)
         {
-            auto tix = neg_feat_index(k, number_of_features);
-            auto action_include_negated = (ta_state_j[tix]) >= 0;
+            auto action_include_negated = (ta_state_neg_j[k]) >= 0;
             if (action_include_negated == false)
             {
-                ta_state_j[tix]++;
+                ta_state_neg_j[k]++;
             }
         }
     }
@@ -523,7 +530,7 @@ void block3(
 
 template<typename state_type>
 void train_automata_batch(
-    aligned_vector<state_type> * __restrict ta_state,
+    numeric_matrix<state_type> & ta_state,
     int const begin,
     int const end,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
@@ -540,7 +547,8 @@ void train_automata_batch(
 
     for (int j = begin; j < end; ++j)
     {
-        state_type * ta_state_j = ::assume_aligned<alignment>(ta_state[j].data());
+        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
+        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
 
         if (feedback_to_clauses[j] > 0)
         {
@@ -548,23 +556,23 @@ void train_automata_batch(
             {
                 fcache.refill();
 
-                fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_j, fcache_, fcache.m_pos);
+                fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, fcache_, fcache.m_pos);
             }
             else if (clause_output[j] == 1)
             {
                 fcache.refill();
 
                 if (boost_true_positive_feedback)
-                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_j, X, fcache_, fcache.m_pos);
+                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
                 else
-                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_j, X, fcache_, fcache.m_pos);
+                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
             }
         }
         else if (feedback_to_clauses[j] < 0)
         {
             if (clause_output[j] == 1)
             {
-                block3(number_of_features, ta_state_j, X);
+                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X);
             }
         }
     }
@@ -573,7 +581,7 @@ void train_automata_batch(
 
 template<typename state_type>
 void train_automata_batch(
-    aligned_vector<state_type> * __restrict ta_state,
+    numeric_matrix<state_type> & ta_state,
     int const begin,
     int const end,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,

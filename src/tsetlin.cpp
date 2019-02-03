@@ -116,7 +116,7 @@ label_vector_type unique_labels(label_vector_type const & y)
 
 bool is_fitted(ClassifierState const & state)
 {
-    return std::visit([](auto const & ta_state){ return ta_state.size() != 0; }, state.ta_state);
+    return std::visit([](auto const & ta_state){ return ta_state.shape().first != 0; }, state.ta_state);
 }
 
 
@@ -202,7 +202,7 @@ void update_impl(
     int const n_jobs,
 
     FRNG & fgen,
-    std::vector<aligned_vector<state_type>> & ta_state,
+    numeric_matrix<state_type> & ta_state,
     ClassifierState::Cache & cache,
 
     int clause_output_tile_size
@@ -284,7 +284,7 @@ void update_impl(
 
 
     train_automata_batch(
-        ta_state.data(),
+        ta_state,
         0,
         number_of_clauses,
         cache.feedback_to_clauses.data(),
@@ -572,7 +572,7 @@ template<typename state_type, typename row_type>
 status_message_t
 fit_online_impl(
     ClassifierState & state,
-    std::vector<aligned_vector<state_type>> & ta_state,
+    numeric_matrix<state_type> & ta_state,
     std::vector<row_type> const & X,
     label_vector_type const & y,
     unsigned int epochs)

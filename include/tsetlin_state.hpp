@@ -16,9 +16,9 @@ struct ClassifierState
 {
     using frand_cache_type = frand_cache<FRNG, alignment>;
     using ta_state_v_type = std::variant<
-        std::vector<aligned_vector_int32>
-        , std::vector<aligned_vector_int16>
-        , std::vector<aligned_vector_int8>
+        numeric_matrix_int32
+        , numeric_matrix_int16
+        , numeric_matrix_int8
     >;
 
     struct Cache
