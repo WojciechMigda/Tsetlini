@@ -92,9 +92,9 @@ def _classifier_predict(X, js_model):
     return y_hat
 
 
-def _classifier_predict_proba(X, js_model):
+def _classifier_predict_proba(X, js_model, threshold):
     X_is_sparse = sp.issparse(X)
 
-    probas = libtsetlin.classifier_predict_proba(X, X_is_sparse, js_model)
+    probas = libtsetlin.classifier_predict_proba(X, X_is_sparse, js_model, threshold)
 
     return probas

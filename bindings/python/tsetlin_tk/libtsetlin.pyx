@@ -219,19 +219,22 @@ def classifier_predict(np.ndarray npX, bint X_is_sparse, bytes js_model):
 
 cdef extern from *:
     cdef void counts_to_probas """
-[](Tsetlin::aligned_vector_int const & counts, double * f_p)
+[](Tsetlin::aligned_vector_int const & counts, double * f_p, int const threshold)
 {
     auto const N = counts.size();
 
-    std::transform(counts.cbegin(), counts.cend(), f_p, [](int cnt){ return std::exp((float(cnt))); });
-    auto const sigma = std::accumulate(f_p, f_p + N, 0.0);
+    double const mean = std::accumulate(counts.cbegin(), counts.cend(), 0.0) / N;
 
-    std::transform(f_p, f_p + N, f_p, [sigma](auto x){ return x / sigma; });
+    std::transform(counts.cbegin(), counts.cend(), f_p,
+        [mean, threshold, N](auto x)
+        {
+            return (x - mean + threshold) / ((double)N * threshold);
+        });
 }
-""" (aligned_vector_int counts, double * fp)
+""" (aligned_vector_int counts, double * fp, int threshold)
 
 
-def classifier_predict_proba(np.ndarray npX, bint X_is_sparse, bytes js_model):
+def classifier_predict_proba(np.ndarray npX, bint X_is_sparse, bytes js_model, int threshold):
 
     cdef vector[aligned_vector_char] X = X_as_vectors(npX, X_is_sparse)
 
@@ -249,6 +252,6 @@ def classifier_predict_proba(np.ndarray npX, bint X_is_sparse, bytes js_model):
     cdef double[:, ::1] oview = rv
 
     for rit in range(nrows):
-        counts_to_probas(label_counts[rit], &oview[rit, 0])
+        counts_to_probas(label_counts[rit], &oview[rit, 0], threshold)
 
     return rv

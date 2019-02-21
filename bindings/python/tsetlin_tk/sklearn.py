@@ -201,7 +201,7 @@ class TsetlinMachineClassifier(BaseEstimator, ClassifierMixin):
 
     def predict_proba(self, X):
         X = self._validate_for_predict(X)
-        probas = _classifier_predict_proba(X, self.model_)
+        probas = _classifier_predict_proba(X, self.model_, self.threshold)
         return probas
 
 
