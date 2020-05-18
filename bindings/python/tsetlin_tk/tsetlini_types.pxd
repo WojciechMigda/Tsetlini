@@ -5,7 +5,7 @@
 from libcpp.vector cimport vector
 
 
-cdef extern from "tsetlin_types.hpp" namespace "Tsetlin":
+cdef extern from "tsetlini_types.hpp" namespace "Tsetlini":
     ctypedef vector[int] aligned_vector_int
     ctypedef vector[char] aligned_vector_char
     ctypedef vector[float] aligned_vector_float

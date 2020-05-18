@@ -10,11 +10,11 @@ cimport numpy as np
 
 from tsetlin_tk.either cimport Either
 
-from tsetlin_tk.tsetlin_status_code cimport status_message_t
-from tsetlin_tk.tsetlin_classifier_state cimport ClassifierState
-from tsetlin_tk.tsetlin_types cimport (aligned_vector_char, label_vector_type,
+from tsetlin_tk.tsetlini_status_code cimport status_message_t
+from tsetlin_tk.tsetlini_classifier_state cimport ClassifierState
+from tsetlin_tk.tsetlini_types cimport (aligned_vector_char, label_vector_type,
     label_type, aligned_vector_int)
-from tsetlin_tk.tsetlin_state_json cimport to_json_string
+from tsetlin_tk.tsetlini_state_json cimport to_json_string
 
 from libcpp.string cimport string
 from libcpp.vector cimport vector
@@ -63,26 +63,26 @@ cdef label_vector_type y_as_vector(np.ndarray y, bint is_sparse):
     return rv
 
 
-cdef extern from "tsetlin_private.hpp":
+cdef extern from "tsetlini_private.hpp":
     cdef Either[status_message_t, string] train_lambda """
-[](std::string const & params, std::vector<Tsetlin::aligned_vector_char> const & X, Tsetlin::label_vector_type const & y, int number_of_labels, unsigned int n_epochs)
+[](std::string const & params, std::vector<Tsetlini::aligned_vector_char> const & X, Tsetlini::label_vector_type const & y, int number_of_labels, unsigned int n_epochs)
 {
     return
-    Tsetlin::make_params_from_json(params)
-        .rightMap([](auto && params){ return Tsetlin::ClassifierState(params); })
+    Tsetlini::make_params_from_json(params)
+        .rightMap([](auto && params){ return Tsetlini::ClassifierState(params); })
         .rightFlatMap([&X, &y, number_of_labels, n_epochs](auto && state)
         {
-            auto status = Tsetlin::fit_impl(state, X, y, number_of_labels, n_epochs);
+            auto status = Tsetlini::fit_impl(state, X, y, number_of_labels, n_epochs);
 
-            if (status.first == Tsetlin::S_OK)
+            if (status.first == Tsetlini::S_OK)
             {
-                std::string js_state = Tsetlin::to_json_string(state);
+                std::string js_state = Tsetlini::to_json_string(state);
 
-                return neither::Either<Tsetlin::status_message_t, std::string>::rightOf(js_state);
+                return neither::Either<Tsetlini::status_message_t, std::string>::rightOf(js_state);
             }
             else
             {
-                return neither::Either<Tsetlin::status_message_t, std::string>::leftOf(status);
+                return neither::Either<Tsetlini::status_message_t, std::string>::leftOf(status);
             }
         })
         ;
@@ -90,59 +90,59 @@ cdef extern from "tsetlin_private.hpp":
 """(string params, vector[aligned_vector_char] X, label_vector_type y, int number_of_labels, unsigned int n_epochs)
 
 
-cdef extern from "tsetlin_private.hpp":
+cdef extern from "tsetlini_private.hpp":
     cdef Either[status_message_t, string] train_partial_lambda """
-[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X, Tsetlin::label_vector_type const & y, int n_epochs)
+[](std::string const & js_model, std::vector<Tsetlini::aligned_vector_char> const & X, Tsetlini::label_vector_type const & y, int n_epochs)
 {
-    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+    Tsetlini::ClassifierState state(Tsetlini::params_t{});
 
-    Tsetlin::from_json_string(state, js_model);
+    Tsetlini::from_json_string(state, js_model);
 
-    auto status = Tsetlin::partial_fit_impl(state, X, y, 0, n_epochs);
+    auto status = Tsetlini::partial_fit_impl(state, X, y, 0, n_epochs);
 
-    if (status.first == Tsetlin::S_OK)
+    if (status.first == Tsetlini::S_OK)
     {
-        std::string js_state = Tsetlin::to_json_string(state);
+        std::string js_state = Tsetlini::to_json_string(state);
 
-        return neither::Either<Tsetlin::status_message_t, std::string>::rightOf(js_state);
+        return neither::Either<Tsetlini::status_message_t, std::string>::rightOf(js_state);
     }
     else
     {
-        return neither::Either<Tsetlin::status_message_t, std::string>::leftOf(status);
+        return neither::Either<Tsetlini::status_message_t, std::string>::leftOf(status);
     }
 }
 """(string js_model, vector[aligned_vector_char] X, label_vector_type y, int n_epochs)
 
 
-cdef extern from "tsetlin_private.hpp":
+cdef extern from "tsetlini_private.hpp":
     cdef Either[status_message_t, label_vector_type] predict_lambda """
-[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X)
+[](std::string const & js_model, std::vector<Tsetlini::aligned_vector_char> const & X)
 {
-    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+    Tsetlini::ClassifierState state(Tsetlini::params_t{});
 
-    Tsetlin::from_json_string(state, js_model);
+    Tsetlini::from_json_string(state, js_model);
 
-    return Tsetlin::predict_impl(state, X);
+    return Tsetlini::predict_impl(state, X);
 }
 """(string js_model, vector[aligned_vector_char] X)
 
 
-cdef extern from "tsetlin_private.hpp":
+cdef extern from "tsetlini_private.hpp":
     cdef Either[status_message_t, vector[aligned_vector_int]] predict_raw_lambda """
-[](std::string const & js_model, std::vector<Tsetlin::aligned_vector_char> const & X)
+[](std::string const & js_model, std::vector<Tsetlini::aligned_vector_char> const & X)
 {
-    Tsetlin::ClassifierState state(Tsetlin::params_t{});
+    Tsetlini::ClassifierState state(Tsetlini::params_t{});
 
-    Tsetlin::from_json_string(state, js_model);
+    Tsetlini::from_json_string(state, js_model);
 
-    return Tsetlin::predict_raw_impl(state, X);
+    return Tsetlini::predict_raw_impl(state, X);
 }
 """(string js_model, vector[aligned_vector_char] X)
 
 
 cdef extern from *:
     cdef Either[string, string] reduce_status_message_to_string """
-[](Tsetlin::status_message_t && msg)
+[](Tsetlini::status_message_t && msg)
 {
     return neither::Either<std::string, std::string>::leftOf(std::string());
 }
@@ -151,18 +151,18 @@ cdef extern from *:
 
 cdef extern from *:
     cdef Either[label_vector_type, label_vector_type] reduce_status_message_to_label_vector """
-[](Tsetlin::status_message_t && msg)
+[](Tsetlini::status_message_t && msg)
 {
-    return neither::Either<Tsetlin::label_vector_type, Tsetlin::label_vector_type>::leftOf(Tsetlin::label_vector_type());
+    return neither::Either<Tsetlini::label_vector_type, Tsetlini::label_vector_type>::leftOf(Tsetlini::label_vector_type());
 }
 """ (status_message_t msg)
 
 
 cdef extern from *:
     cdef Either[vector[aligned_vector_int], vector[aligned_vector_int]] reduce_status_message_to_label_counts """
-[](Tsetlin::status_message_t && msg)
+[](Tsetlini::status_message_t && msg)
 {
-    return neither::Either<std::vector<Tsetlin::aligned_vector_int>, std::vector<Tsetlin::aligned_vector_int>>::leftOf(std::vector<Tsetlin::aligned_vector_int>());
+    return neither::Either<std::vector<Tsetlini::aligned_vector_int>, std::vector<Tsetlini::aligned_vector_int>>::leftOf(std::vector<Tsetlini::aligned_vector_int>());
 }
 """ (status_message_t msg)
 
@@ -219,7 +219,7 @@ def classifier_predict(np.ndarray npX, bint X_is_sparse, bytes js_model):
 
 cdef extern from *:
     cdef void counts_to_probas """
-[](Tsetlin::aligned_vector_int const & counts, double * f_p, int const threshold)
+[](Tsetlini::aligned_vector_int const & counts, double * f_p, int const threshold)
 {
     auto const N = counts.size();
 

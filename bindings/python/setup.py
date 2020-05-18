@@ -195,7 +195,7 @@ Return value:
         link_args.insert( 0, openmp_link_args )
 
     compile_args += ['-std=c++17', '-Wall']
-    libraries += ['tktsetlin']
+    libraries += ['tsetlini']
 
     # See
     #    http://docs.cython.org/src/tutorial/external.html

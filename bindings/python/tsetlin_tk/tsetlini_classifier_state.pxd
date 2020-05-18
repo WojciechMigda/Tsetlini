@@ -2,5 +2,5 @@
 # distutils: language = c++
 
 
-cdef extern from "tsetlin_state.hpp" namespace "Tsetlin":
+cdef extern from "tsetlini_state.hpp" namespace "Tsetlini":
     cdef cppclass ClassifierState
