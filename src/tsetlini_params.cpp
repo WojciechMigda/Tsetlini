@@ -1,5 +1,5 @@
-#include "tsetlin_params.hpp"
-#include "tsetlin_status_code.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_status_code.hpp"
 #include "params_companion.hpp"
 
 #include "neither/either.hpp"
@@ -17,7 +17,7 @@ using namespace neither;
 using namespace std::string_literals;
 using json = nlohmann::json;
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -226,4 +226,4 @@ make_params_from_json(std::string const & json_params)
 }
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

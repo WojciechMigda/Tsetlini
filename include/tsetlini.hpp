@@ -2,15 +2,15 @@
 
 #include "neither/either.hpp"
 
-#include "tsetlin_params.hpp"
-#include "tsetlin_status_code.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_status_code.hpp"
 
-#include "tsetlin_types.hpp"
-#include "tsetlin_state.hpp"
+#include "tsetlini_types.hpp"
+#include "tsetlini_state.hpp"
 
 #include <vector>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 using namespace neither;
@@ -70,4 +70,4 @@ private:
 Either<status_message_t, Classifier> make_classifier(std::string const & json_params = "{}");
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

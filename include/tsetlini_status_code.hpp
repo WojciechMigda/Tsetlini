@@ -3,7 +3,7 @@
 #include <utility>
 #include <string>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 enum StatusCode
@@ -18,4 +18,4 @@ enum StatusCode
 using status_message_t = std::pair<StatusCode, std::string>;
 
 
-}
+} // namespace Tsetlini

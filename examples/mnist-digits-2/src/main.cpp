@@ -1,6 +1,6 @@
 #undef NDEBUG // I want assert to work
 
-#include "tsetlin.hpp"
+#include "tsetlini.hpp"
 
 #include <vector>
 #include <string>
@@ -15,8 +15,8 @@
 #include <chrono>
 
 
-using aligned_vector_char = Tsetlin::aligned_vector_char;
-using label_vector_type = Tsetlin::label_vector_type;
+using aligned_vector_char = Tsetlini::aligned_vector_char;
+using label_vector_type = Tsetlini::label_vector_type;
 
 std::vector<std::string>
 read_file(std::string const & fname)
@@ -136,7 +136,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae4
     assert(test2_X.front().size() == SAMPLE_SZ);
 
 
-    auto error_printer = [](Tsetlin::status_message_t && msg)
+    auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
         return msg;
@@ -148,7 +148,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae4
         return std::chrono::duration_cast<std::chrono::milliseconds>(tp).count() / 1000.f;
     };
 
-    Tsetlin::make_classifier(R"({
+    Tsetlini::make_classifier(R"({
             "threshold": 25,
             "s": 10.0,
             "number_of_pos_neg_clauses_per_label": 500,
@@ -160,7 +160,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae4
             "verbose": false
         })")
         .leftMap(error_printer)
-        .rightMap([&](Tsetlin::Classifier && clf)
+        .rightMap([&](Tsetlini::Classifier && clf)
         {
             std::chrono::high_resolution_clock::time_point time0{};
 

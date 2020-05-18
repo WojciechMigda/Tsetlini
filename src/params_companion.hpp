@@ -1,11 +1,11 @@
 #pragma once
 
-#include "tsetlin_params.hpp"
+#include "tsetlini_params.hpp"
 
 #include <variant>
 #include <string>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 namespace Params

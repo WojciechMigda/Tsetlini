@@ -1,11 +1,11 @@
-#define LOG_MODULE "tsetlin-core"
+#define LOG_MODULE "tsetlini-core"
 #include "logger.hpp"
 
-#include "tsetlin_state.hpp"
-#include "tsetlin_types.hpp"
+#include "tsetlini_state.hpp"
+#include "tsetlini_types.hpp"
 #include "params_companion.hpp"
-#include "tsetlin_params.hpp"
-#include "tsetlin_classifier_state_private.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_classifier_state_private.hpp"
 
 #include <algorithm>
 #include <iterator>
@@ -23,7 +23,7 @@ bool operator==(nullopt_t const & lhs, nullopt_t const & rhs){ return true; }
 }
 
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -144,4 +144,4 @@ bool ClassifierState::operator==(ClassifierState const & other) const
     }
 }
 
-} // namespace Tsetlin
+} // namespace Tsetlino

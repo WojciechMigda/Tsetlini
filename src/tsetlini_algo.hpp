@@ -1,9 +1,9 @@
 #pragma once
 
-#include "tsetlin_state.hpp"
-#include "tsetlin_types.hpp"
+#include "tsetlini_state.hpp"
+#include "tsetlini_types.hpp"
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 namespace
@@ -602,4 +602,4 @@ void train_automata_batch(
 
 }
 
-}
+} // namespace Tsetlini

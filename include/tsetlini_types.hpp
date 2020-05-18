@@ -9,7 +9,7 @@
 #include <optional>
 #include <cstdint>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -45,4 +45,4 @@ static constexpr real_type ONE = 1.;
 static constexpr real_type ZERO = 0.;
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

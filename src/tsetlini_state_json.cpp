@@ -1,8 +1,8 @@
-#include "tsetlin_state_json.hpp"
-#include "tsetlin_state.hpp"
-#include "tsetlin_types.hpp"
-#include "tsetlin_params.hpp"
-#include "tsetlin_classifier_state_private.hpp"
+#include "tsetlini_state_json.hpp"
+#include "tsetlini_state.hpp"
+#include "tsetlini_types.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_classifier_state_private.hpp"
 #include "params_companion.hpp"
 
 #include "json.hpp"
@@ -62,7 +62,7 @@ static void from_json(json const & j, FRNG & p)
 }
 
 
-void to_json(json & j, Tsetlin::ClassifierState::ta_state_v_type const & p)
+void to_json(json & j, Tsetlini::ClassifierState::ta_state_v_type const & p)
 {
     json ta_state;
 
@@ -94,7 +94,7 @@ void to_json(json & j, Tsetlin::ClassifierState::ta_state_v_type const & p)
 }
 
 
-static void from_json(json const & j, Tsetlin::ClassifierState::ta_state_v_type & p)
+static void from_json(json const & j, Tsetlini::ClassifierState::ta_state_v_type & p)
 {
     std::size_t width = 0u;
     j.at("width").get_to(width);
@@ -104,15 +104,15 @@ static void from_json(json const & j, Tsetlin::ClassifierState::ta_state_v_type 
 
     if (width == 1)
     {
-        p = Tsetlin::numeric_matrix_int8(nr, nc);
+        p = Tsetlini::numeric_matrix_int8(nr, nc);
     }
     else if (width == 2)
     {
-        p = Tsetlin::numeric_matrix_int16(nr, nc);
+        p = Tsetlini::numeric_matrix_int16(nr, nc);
     }
     else // if (width == 4)
     {
-        p = Tsetlin::numeric_matrix_int32(nr, nc);
+        p = Tsetlini::numeric_matrix_int32(nr, nc);
     }
 
     std::visit([&](auto & p)
@@ -134,21 +134,21 @@ namespace nlohmann
 
 
 template<>
-struct adl_serializer<Tsetlin::param_value_t>
+struct adl_serializer<Tsetlini::param_value_t>
 {
-    static void to_json(json & j, Tsetlin::param_value_t const & p)
+    static void to_json(json & j, Tsetlini::param_value_t const & p)
     {
         if (std::holds_alternative<int>(p))
         {
             j = std::get<int>(p);
         }
-        else if (std::holds_alternative<Tsetlin::seed_type>(p))
+        else if (std::holds_alternative<Tsetlini::seed_type>(p))
         {
-            j = std::get<Tsetlin::seed_type>(p);
+            j = std::get<Tsetlini::seed_type>(p);
         }
-        else if (std::holds_alternative<Tsetlin::real_type>(p))
+        else if (std::holds_alternative<Tsetlini::real_type>(p))
         {
-            j = std::get<Tsetlin::real_type>(p);
+            j = std::get<Tsetlini::real_type>(p);
         }
         else if (std::holds_alternative<bool>(p))
         {
@@ -158,7 +158,7 @@ struct adl_serializer<Tsetlin::param_value_t>
         {
             j = std::get<std::string>(p);
         }
-        else if (std::holds_alternative<Tsetlin::none_type>(p))
+        else if (std::holds_alternative<Tsetlini::none_type>(p))
         {
             j = nullptr;
         }
@@ -169,7 +169,7 @@ struct adl_serializer<Tsetlin::param_value_t>
         }
     }
 
-    static void from_json(json const & j, Tsetlin::param_value_t & p)
+    static void from_json(json const & j, Tsetlini::param_value_t & p)
     {
         if (j.is_boolean())
         {
@@ -177,11 +177,11 @@ struct adl_serializer<Tsetlin::param_value_t>
         }
         else if (j.is_number_unsigned())
         {
-            p = j.get<Tsetlin::seed_type>();
+            p = j.get<Tsetlini::seed_type>();
         }
         else if (j.is_number_float())
         {
-            p = j.get<Tsetlin::real_type>();
+            p = j.get<Tsetlini::real_type>();
         }
         else if (j.is_number_integer())
         {
@@ -201,7 +201,7 @@ struct adl_serializer<Tsetlin::param_value_t>
 } // namespace nlohmann
 
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -224,7 +224,7 @@ void from_json_string(ClassifierState & state, std::string const & jss)
 
     state.igen = js.at("igen").get<IRNG>();
     state.fgen = js.at("fgen").get<FRNG>();
-    state.ta_state = js.at("ta_state").get<Tsetlin::ClassifierState::ta_state_v_type>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::ClassifierState::ta_state_v_type>();
     state.m_params = js.at("params").get<params_t>();
 
     // So, we need a hack, since stringified json doesn't distinguish
@@ -247,4 +247,4 @@ void from_json_string(ClassifierState & state, std::string const & jss)
 }
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

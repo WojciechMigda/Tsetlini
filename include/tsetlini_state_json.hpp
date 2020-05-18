@@ -3,7 +3,7 @@
 #include <string>
 
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -13,4 +13,4 @@ std::string to_json_string(ClassifierState const & state);
 void from_json_string(ClassifierState & state, std::string const & js);
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

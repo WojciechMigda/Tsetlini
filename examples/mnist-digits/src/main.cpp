@@ -4,7 +4,7 @@
 #error "DATA_DIR is not defined"
 #endif
 
-#include "tsetlin.hpp"
+#include "tsetlini.hpp"
 
 #include <vector>
 #include <string>
@@ -18,8 +18,8 @@
 #include <cstdlib>
 
 
-using aligned_vector_char = Tsetlin::aligned_vector_char;
-using label_vector_type = Tsetlin::label_vector_type;
+using aligned_vector_char = Tsetlini::aligned_vector_char;
+using label_vector_type = Tsetlini::label_vector_type;
 
 std::vector<std::string>
 read_file(std::string const & fname)
@@ -108,14 +108,14 @@ either is not readable or does not exist.)";
     }
 
 
-    auto error_printer = [](Tsetlin::status_message_t && msg)
+    auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
         return msg;
     };
 
 
-    std::vector<Tsetlin::real_type> accuracies(NFOLDS);
+    std::vector<Tsetlini::real_type> accuracies(NFOLDS);
 
     for (auto it = 0u; it < NFOLDS; ++it)
     {
@@ -133,7 +133,7 @@ either is not readable or does not exist.)";
             y_train.insert(y_train.end(), y_folds[fit].cbegin(), y_folds[fit].cend());
         }
 
-        Tsetlin::make_classifier(R"({
+        Tsetlini::make_classifier(R"({
                 "threshold": 10,
                 "s": 3.0,
                 "number_of_pos_neg_clauses_per_label": 50,
@@ -145,7 +145,7 @@ either is not readable or does not exist.)";
                 "verbose": false
             })")
             .leftMap(error_printer)
-            .rightMap([&](Tsetlin::Classifier && clf)
+            .rightMap([&](Tsetlini::Classifier && clf)
             {
                 auto status = clf.fit(X_train, y_train, 10, 300);
 

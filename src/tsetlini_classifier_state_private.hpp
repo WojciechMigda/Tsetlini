@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -10,4 +10,4 @@ void initialize_state(ClassifierState & state);
 void reset_state_cache(ClassifierState & state);
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

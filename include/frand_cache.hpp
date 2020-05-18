@@ -1,12 +1,12 @@
 #pragma once
 
-#include "tsetlin_types.hpp"
+#include "tsetlini_types.hpp"
 #include "aligned_allocator.hpp"
 #include "assume_aligned.hpp"
 
 #include <vector>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 template<typename RNG, int alignment=32, typename real_type=float>
@@ -50,4 +50,4 @@ struct frand_cache
 };
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

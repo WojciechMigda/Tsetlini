@@ -1,6 +1,6 @@
 #undef NDEBUG // I want assert to work
 
-#include "tsetlin.hpp"
+#include "tsetlini.hpp"
 
 #include <vector>
 #include <string>
@@ -14,8 +14,8 @@
 #include <cstdlib>
 
 
-using aligned_vector_char = Tsetlin::aligned_vector_char;
-using aligned_vector_int = Tsetlin::aligned_vector_int;
+using aligned_vector_char = Tsetlini::aligned_vector_char;
+using aligned_vector_int = Tsetlini::aligned_vector_int;
 
 std::vector<std::string>
 read_file(std::string && fname)
@@ -116,14 +116,14 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     assert(train_X.front().size() == 12);
     assert(test_X.front().size() == 12);
 
-    auto error_printer = [](Tsetlin::status_message_t && msg)
+    auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
         return msg;
     };
 
 
-    Tsetlin::make_classifier(R"({
+    Tsetlini::make_classifier(R"({
             "threshold": 15,
             "s": 3.9,
             "number_of_pos_neg_clauses_per_label": 5,
@@ -135,7 +135,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
             "verbose": false
         })")
         .leftMap(error_printer)
-        .rightMap([&](Tsetlin::Classifier && clf)
+        .rightMap([&](Tsetlini::Classifier && clf)
         {
             // Training of the Tsetlin Machine in batch mode. The Tsetlin Machine can also be trained online
             auto status = clf.fit(train_X, train_y, 2, 200);

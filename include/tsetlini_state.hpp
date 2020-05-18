@@ -3,12 +3,12 @@
 #include "frand_cache.hpp"
 #include "mt.hpp"
 
-#include "tsetlin_params.hpp"
-#include "tsetlin_types.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_types.hpp"
 
 #include <vector>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -45,4 +45,4 @@ struct ClassifierState
 };
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

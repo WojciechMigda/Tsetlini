@@ -1,5 +1,5 @@
-#include "tsetlin_params.hpp"
-#include "tsetlin_types.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini_types.hpp"
 
 #include <gtest/gtest.h>
 #include <variant>
@@ -12,7 +12,7 @@ namespace
 
 TEST(Params, can_be_created)
 {
-    auto const rv = Tsetlin::make_params_from_json();
+    auto const rv = Tsetlini::make_params_from_json();
 
     EXPECT_TRUE(rv);
 }
@@ -20,7 +20,7 @@ TEST(Params, can_be_created)
 
 TEST(Params, cannot_be_created_from_empty_string_json)
 {
-    auto const rv = Tsetlin::make_params_from_json("");
+    auto const rv = Tsetlini::make_params_from_json("");
 
     EXPECT_FALSE(rv);
 }
@@ -28,7 +28,7 @@ TEST(Params, cannot_be_created_from_empty_string_json)
 
 TEST(Params, can_be_created_from_empty_dict_json)
 {
-    auto const rv = Tsetlin::make_params_from_json("{}");
+    auto const rv = Tsetlini::make_params_from_json("{}");
 
     EXPECT_TRUE(rv);
 }
@@ -36,7 +36,7 @@ TEST(Params, can_be_created_from_empty_dict_json)
 
 TEST(Params, cannot_be_created_from_invalid_json)
 {
-    auto const rv = Tsetlin::make_params_from_json("[]");
+    auto const rv = Tsetlini::make_params_from_json("[]");
 
     EXPECT_FALSE(rv);
 }
@@ -44,7 +44,7 @@ TEST(Params, cannot_be_created_from_invalid_json)
 
 TEST(Params, cannot_be_created_from_malformed_json)
 {
-    auto const rv = Tsetlin::make_params_from_json("5\"}");
+    auto const rv = Tsetlini::make_params_from_json("5\"}");
 
     EXPECT_FALSE(rv);
 }
@@ -52,7 +52,7 @@ TEST(Params, cannot_be_created_from_malformed_json)
 
 TEST(Params, can_be_created_from_json_with_one_integer_item)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"number_of_states": 200})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"number_of_states": 200})");
 
     EXPECT_TRUE(rv);
 
@@ -64,19 +64,19 @@ TEST(Params, can_be_created_from_json_with_one_integer_item)
 
 TEST(Params, can_be_created_from_json_with_one_float_item)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"s": 3.9})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"s": 3.9})");
 
     EXPECT_TRUE(rv);
 
     auto params = rv.right().value;
 
-    EXPECT_FLOAT_EQ(3.9, std::get<Tsetlin::real_type>(params.at("s")));
+    EXPECT_FLOAT_EQ(3.9, std::get<Tsetlini::real_type>(params.at("s")));
 }
 
 
 TEST(Params, can_be_created_from_json_with_one_boolean_item)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"verbose": true})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"verbose": true})");
 
     EXPECT_TRUE(rv);
 
@@ -89,7 +89,7 @@ TEST(Params, can_be_created_from_json_with_one_boolean_item)
 
 TEST(Params, can_be_created_from_json_with_string_item)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"counting_type": "int16"})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"counting_type": "int16"})");
 
     EXPECT_TRUE(rv);
 
@@ -101,20 +101,20 @@ TEST(Params, can_be_created_from_json_with_string_item)
 
 TEST(Params, can_be_created_from_json_with_null_random_state)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"random_state": null})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"random_state": null})");
 
     EXPECT_TRUE(rv);
 
     auto params = rv.right().value;
 
     // null random_state is normalized with random seed
-    EXPECT_TRUE(std::holds_alternative<Tsetlin::seed_type>(params.at("random_state")));
+    EXPECT_TRUE(std::holds_alternative<Tsetlini::seed_type>(params.at("random_state")));
 }
 
 
 TEST(Params, cannot_be_created_from_json_with_unrecognized_item)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"foobar": true})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"foobar": true})");
 
     EXPECT_FALSE(rv);
 }
@@ -122,7 +122,7 @@ TEST(Params, cannot_be_created_from_json_with_unrecognized_item)
 
 TEST(Params, can_be_created_from_json_with_full_config)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"(
+    auto const rv = Tsetlini::make_params_from_json(R"(
 {
 "verbose": true,
 "number_of_pos_neg_clauses_per_label": 17,
@@ -149,14 +149,14 @@ TEST(Params, can_be_created_from_json_with_full_config)
     EXPECT_EQ(1, std::get<int>(params.at("boost_true_positive_feedback")));
     EXPECT_EQ("int32", std::get<std::string>(params.at("counting_type")));
     EXPECT_EQ(32, std::get<int>(params.at("clause_output_tile_size")));
-    EXPECT_FLOAT_EQ(6.3, std::get<Tsetlin::real_type>(params.at("s")));
-    EXPECT_EQ(123u, std::get<Tsetlin::seed_type>(params.at("random_state")));
+    EXPECT_FLOAT_EQ(6.3, std::get<Tsetlini::real_type>(params.at("s")));
+    EXPECT_EQ(123u, std::get<Tsetlini::seed_type>(params.at("random_state")));
 }
 
 
 TEST(Params, n_jobs_equal_neg_one_is_normalized)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({"n_jobs": -1})");
+    auto const rv = Tsetlini::make_params_from_json(R"({"n_jobs": -1})");
 
     EXPECT_TRUE(rv);
 
@@ -170,7 +170,7 @@ TEST(Params, n_jobs_equal_neg_one_is_normalized)
 
 TEST(Params, unspecified_random_state_is_initialized)
 {
-    auto const rv = Tsetlin::make_params_from_json(R"({})");
+    auto const rv = Tsetlini::make_params_from_json(R"({})");
 
     EXPECT_TRUE(rv);
 
@@ -178,7 +178,7 @@ TEST(Params, unspecified_random_state_is_initialized)
 
     auto random_state = params.at("random_state");
 
-    EXPECT_TRUE(std::holds_alternative<Tsetlin::seed_type>(random_state));
+    EXPECT_TRUE(std::holds_alternative<Tsetlini::seed_type>(random_state));
 }
 
 

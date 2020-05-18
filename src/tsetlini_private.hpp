@@ -1,14 +1,14 @@
 #pragma once
 
-#include "tsetlin_status_code.hpp"
-#include "tsetlin_state.hpp"
-#include "tsetlin_types.hpp"
+#include "tsetlini_status_code.hpp"
+#include "tsetlini_state.hpp"
+#include "tsetlini_types.hpp"
 
 #include "neither/either.hpp"
 
 #include <vector>
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 
@@ -53,4 +53,4 @@ predict_raw_impl(
     std::vector<aligned_vector_char> const & X);
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

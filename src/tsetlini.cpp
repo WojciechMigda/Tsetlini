@@ -1,18 +1,18 @@
-#define LOG_MODULE "tsetlin"
+#define LOG_MODULE "tsetlini"
 #include "logger.hpp"
 
-#include "tsetlin_private.hpp"
-#include "tsetlin_algo.hpp"
+#include "tsetlini_private.hpp"
+#include "tsetlini_algo.hpp"
 
-#include "tsetlin_params.hpp"
-#include "tsetlin.hpp"
+#include "tsetlini_params.hpp"
+#include "tsetlini.hpp"
 #include "mt.hpp"
 #include "assume_aligned.hpp"
 #include "params_companion.hpp"
-#include "tsetlin_types.hpp"
-#include "tsetlin_state.hpp"
-#include "tsetlin_status_code.hpp"
-#include "tsetlin_classifier_state_private.hpp"
+#include "tsetlini_types.hpp"
+#include "tsetlini_state.hpp"
+#include "tsetlini_status_code.hpp"
+#include "tsetlini_classifier_state_private.hpp"
 
 #include "neither/either.hpp"
 
@@ -29,7 +29,7 @@ using namespace neither;
 using namespace std::string_literals;
 
 
-namespace Tsetlin
+namespace Tsetlini
 {
 
 namespace
@@ -821,4 +821,4 @@ make_classifier(std::string const & json_params)
 }
 
 
-} // namespace Tsetlin
+} // namespace Tsetlini

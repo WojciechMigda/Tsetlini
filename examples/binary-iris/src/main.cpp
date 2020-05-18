@@ -1,6 +1,6 @@
 #undef NDEBUG // I want assert to work
 
-#include "tsetlin.hpp"
+#include "tsetlini.hpp"
 
 #include <vector>
 #include <string>
@@ -15,8 +15,8 @@
 #include <random>
 #include <cmath>
 
-using aligned_vector_char = Tsetlin::aligned_vector_char;
-using aligned_vector_int = Tsetlin::aligned_vector_int;
+using aligned_vector_char = Tsetlini::aligned_vector_char;
+using aligned_vector_int = Tsetlini::aligned_vector_int;
 
 std::vector<std::string>
 read_file(std::string && fname)
@@ -118,8 +118,8 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
 
 
     constexpr auto ensemble_size = 1000u;
-    std::vector<Tsetlin::real_type> accuracy_train(ensemble_size);
-    std::vector<Tsetlin::real_type> accuracy_test(ensemble_size);
+    std::vector<Tsetlini::real_type> accuracy_train(ensemble_size);
+    std::vector<Tsetlini::real_type> accuracy_test(ensemble_size);
 
     std::vector<int> ix(df_X.size());
     std::iota(ix.begin(), ix.end(), 0);
@@ -132,7 +132,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
     std::vector<aligned_vector_char> test_X(df_X.size() - PIVOT);
     std::vector<int> test_y(df_y.size() - PIVOT);
 
-    auto error_printer = [](Tsetlin::status_message_t const & msg)
+    auto error_printer = [](Tsetlini::status_message_t const & msg)
     {
         std::cout << msg.second << '\n';
         return msg;
@@ -156,7 +156,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
             test_y[rit - PIVOT] = df_y[ix[rit]];
         }
 
-        auto clf = Tsetlin::make_classifier(R"({
+        auto clf = Tsetlini::make_classifier(R"({
             "threshold": 10,
             "s": 3.0,
             "number_of_pos_neg_clauses_per_label": 50,
