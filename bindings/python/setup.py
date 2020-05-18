@@ -191,11 +191,11 @@ Return value:
 
     # OpenMP
     if use_openmp:
-        compile_args.insert( 0, openmp_compile_args )
-        link_args.insert( 0, openmp_link_args )
+        compile_args.insert( 0, *openmp_compile_args )
+        link_args.insert( 0, *openmp_link_args )
 
     compile_args += ['-std=c++17', '-Wall']
-    libraries += ['tsetlini']
+    link_args += ['../../.build/libtsetlini_static.a']
 
     # See
     #    http://docs.cython.org/src/tutorial/external.html
@@ -259,7 +259,7 @@ except MyFileNotFoundError:
 
 # declare Cython extension modules here
 #
-ext_module_libtsetlin = declare_cython_extension( "tsetlin_tk.libtsetlin",            use_math=False, use_openmp=False , include_dirs=my_include_dirs )
+ext_module_libtsetlin = declare_cython_extension( "tsetlin_tk.libtsetlin",            use_math=False, use_openmp=True, include_dirs=my_include_dirs)
 
 # this is mainly to allow a manual logical ordering of the declared modules
 #
