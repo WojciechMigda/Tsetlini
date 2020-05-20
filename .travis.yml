@@ -96,8 +96,8 @@ install:
   - sudo apt-get install python3-pip
   - pip3 install --user setuptools #==40.8.0
   - pip3 install --user numpy #==1.16.1 # current version: cython errors + , segfault + 
-  - pip3 install https://github.com/cython/cython/archive/0.29.2.zip
-  #- pip3 install Cython
+  #- pip3 install https://github.com/cython/cython/archive/0.29.2.zip
+  - pip3 install Cython
   - pip3 install --user scikit_learn==0.20.2
   - pip3 install --user pytest
   - pip3 install --user py
