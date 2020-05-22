@@ -121,7 +121,7 @@ script:
   - pushd .build
   - cmake -DCMAKE_CXX_COMPILER=${CXX:-c++} -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF ..
   - cmake --build .
-  - ctest
+  - pushd lib && ctest && popd
   - sudo make install
   - sudo ldconfig
   - popd
