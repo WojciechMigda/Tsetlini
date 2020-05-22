@@ -20,9 +20,16 @@ set(SOURCES
     src/tsetlini_state_json.cpp
 )
 
-add_library(tsetlini_static ${SOURCES})
+add_library(tsetlini_static src/dummy.cpp)
+target_sources( tsetlini_static PRIVATE
+  ${SOURCES}
+)
 
-add_library(tsetlini SHARED ${SOURCES})
+
+add_library(tsetlini SHARED src/dummy.cpp)
+target_sources( tsetlini PRIVATE
+  ${SOURCES}
+)
 
 target_include_directories(tsetlini_static
     PUBLIC 
@@ -44,7 +51,6 @@ target_compile_options(tsetlini_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror 
 target_compile_options(tsetlini PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH}> ${OpenMP_CXX_FLAGS})
 target_link_libraries(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(tsetlini PRIVATE ${OpenMP_CXX_FLAGS})
-set_property(TARGET tsetlini_static PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 add_subdirectory(examples)
 
