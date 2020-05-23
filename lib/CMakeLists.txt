@@ -4,10 +4,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 
-if(NOT MARCH)
-  set(MARCH "native" CACHE STRING "-march flag for the compiler")
-endif()
-
 include(FindOpenMP)
 if(NOT OpenMP_FOUND)
     message(FATAL_ERROR "OpenMP for C++ is required but is missing")
@@ -47,8 +43,8 @@ target_include_directories(tsetlini
         ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_compile_options(tsetlini_static PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH}> ${OpenMP_CXX_FLAGS})
-target_compile_options(tsetlini PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Werror -Wall -march=${MARCH}> ${OpenMP_CXX_FLAGS})
+target_compile_options(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
+target_compile_options(tsetlini PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(tsetlini PRIVATE ${OpenMP_CXX_FLAGS})
 
@@ -57,7 +53,7 @@ add_subdirectory(examples)
 enable_testing()
 add_subdirectory(tests)
 
-# Unit tests
+# Unit tests (future?)
 add_executable( utests "utests/dummy.cpp" )
 target_sources( utests PRIVATE
   "utests/main.cpp"

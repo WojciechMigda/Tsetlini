@@ -43,7 +43,6 @@ target_include_directories(tsetlini-test
 )
 
 target_link_libraries(tsetlini-test gtest_main tsetlini_static)
-target_compile_options(tsetlini-test PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=${MARCH} -std=c++17>)
 
 gtest_discover_tests(tsetlini-test)
 add_test(NAME monolithic COMMAND tsetlini-test)

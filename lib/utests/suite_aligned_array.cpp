@@ -9,4 +9,6 @@ void aligned_array_suite()
     {
 
     };
+
+    (void)aligned_array;
 }

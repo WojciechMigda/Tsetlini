@@ -9,4 +9,3 @@ target_include_directories(noisy-xor
 )
 
 target_link_libraries(noisy-xor tsetlini_static)
-target_compile_options(noisy-xor PRIVATE $<$<CXX_COMPILER_ID:GNU>:-Wall -march=${MARCH} -std=c++17>)
