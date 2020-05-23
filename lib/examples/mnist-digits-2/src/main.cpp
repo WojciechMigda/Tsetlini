@@ -90,11 +90,11 @@ int main()
         std::cout << R"(
 Could not read from file MNISTTraining.txt. It either does not exist
 or is not readable.
-Please download it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
+Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
 You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 )";
         return 1;
     }
@@ -103,11 +103,11 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae4
         std::cout << R"(
 Could not read from file MNISTTest.txt. It either does not exist
 or is not readable.
-Please download it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
+Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
 You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 )";
         return 1;
     }
@@ -116,11 +116,11 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae4
         std::cout << R"(
 Could not read from file MNISTTest.txt. It either does not exist
 or is not readable.
-Please download it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
+Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
 You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/blob/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
 )";
         return 1;
     }
