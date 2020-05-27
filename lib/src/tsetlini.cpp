@@ -597,6 +597,7 @@ fit_online_impl(
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
     auto const n_jobs = Params::n_jobs(params);
+    auto const verbose = Params::verbose(params);
 
     if (auto sm = check_labels(labels, number_of_labels);
         sm.first != StatusCode::S_OK)
@@ -615,6 +616,8 @@ fit_online_impl(
 
     for (unsigned int epoch = 0; epoch < epochs; ++epoch)
     {
+        LOG(info) << "Epoch " << epoch + 1 << '\n';
+
         generate_opposite_y(y, opposite_y, number_of_labels, state.igen);
         std::shuffle(ix.begin(), ix.end(), gen);
 
