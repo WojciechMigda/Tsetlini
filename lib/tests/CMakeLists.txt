@@ -27,6 +27,7 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(tsetlini-test
     src/main.cpp
+    src/test_algo_classic.cpp
     src/test_classifier.cpp
     src/test_classifier_state_json.cpp
     src/test_params.cpp
@@ -37,12 +38,13 @@ add_executable(tsetlini-test
 target_include_directories(tsetlini-test
     PUBLIC
         $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/include>
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/lib/src
 )
 
-target_link_libraries(tsetlini-test gtest_main tsetlini_static)
+target_compile_options(tsetlini-test PRIVATE ${OpenMP_CXX_FLAGS})
+target_link_libraries(tsetlini-test gtest_main tsetlini_static ${OpenMP_CXX_FLAGS})
 
 gtest_discover_tests(tsetlini-test)
 add_test(NAME monolithic COMMAND tsetlini-test)
