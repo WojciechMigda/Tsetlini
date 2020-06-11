@@ -231,36 +231,6 @@ void calculate_clause_output_for_predict(
 }
 
 
-template<typename state_type>
-inline
-void calculate_clause_output_OLD(
-    aligned_vector_char const & X,
-    aligned_vector_char & clause_output,
-    int const number_of_clauses,
-    int const number_of_features,
-    std::vector<aligned_vector<state_type>> const & ta_state)
-{
-    char const * X_p = assume_aligned<alignment>(X.data());
-
-    for (int j = 0; j < number_of_clauses; ++j)
-    {
-        bool output = true;
-
-        state_type const * ta_state_j = assume_aligned<alignment>(ta_state[j].data());
-
-        for (int k = 0; k < number_of_features and output == true; ++k)
-        {
-            bool const action_include = action(ta_state_j[pos_feat_index(k)]);
-            bool const action_include_negated = action(ta_state_j[neg_feat_index(k, number_of_features)]);
-
-            output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
-        }
-
-        clause_output[j] = output;
-    }
-}
-
-
 template<typename state_type, unsigned int BATCH_SZ>
 inline
 void calculate_clause_output_T(
@@ -333,7 +303,30 @@ void calculate_clause_output_T(
     }
 }
 
-
+/**
+ * @param X
+ *      Vector of 0s and 1s, with size equal to @c number_of_features .
+ *
+ * @param clause_output
+ *      Output vector of 0s and 1s, with size equal to @c number_of_clauses .
+ *
+ * @param number_of_clauses
+ *      Positive integer equal to size of @c clause_output .
+ *
+ * @param number_of_features
+ *      Positive integer equal to size of @c X .
+ *
+ * @param ta_state
+ *      @c numeric_matrix with 2 * @c number_of_clauses rows and
+ *      @c number_of_features columns.
+ *
+ * @param n_jobs
+ *      Number of parallel jobs.
+ *
+ * @param TILE_SZ
+ *      Positive integer {16, 32, 64, 128} that specifies batch size of
+ *      data processed in @c X .
+ */
 template<typename state_type, typename RowType>
 inline
 void calculate_clause_output(
