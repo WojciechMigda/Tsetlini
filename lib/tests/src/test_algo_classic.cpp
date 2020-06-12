@@ -86,10 +86,105 @@ void calculate_clause_output(
 }
 
 
+/*
+
+# Sum up the votes for each class (this is the multiclass version of the Tsetlin Machine)
+cdef void sum_up_class_votes(self):
+    cdef int target_class
+    cdef int j
+
+    for target_class in xrange(self.number_of_classes):
+        self.class_sum[target_class] = 0
+
+        for j in xrange(self.clause_count[target_class]):
+            self.class_sum[target_class] += self.clause_output[self.clause_sign[target_class,j,0]]*self.clause_sign[target_class,j,1]
+
+        if self.class_sum[target_class] > self.threshold:
+            self.class_sum[target_class] = self.threshold
+        elif self.class_sum[target_class] < -self.threshold:
+            self.class_sum[target_class] = -self.threshold
+
+ */
+void sum_up_class_votes(
+    Tsetlini::aligned_vector_char const & clause_output,
+    Tsetlini::aligned_vector_int & class_sum,
+
+    int const number_of_classes,
+    int const number_of_pos_neg_clauses_per_label,
+    int const threshold)
+{
+    // replicating clause_sign
+    // self.clause_sign = np.zeros((self.number_of_classes, self.number_of_clauses/self.number_of_classes, 2), dtype=np.int32)
+    std::vector<std::vector<int>> clause_sign_0(number_of_classes);
+    std::vector<std::vector<int>> clause_sign_1(number_of_classes);
+    // replicating clause_count
+    // self.clause_count = np.zeros((self.number_of_classes,), dtype=np.int32)
+    std::vector<int> clause_count(number_of_classes);
+
+    for (auto i = 0u; i < clause_sign_0.size(); ++i)
+    {
+        clause_sign_0[i].resize(2 * number_of_pos_neg_clauses_per_label);
+        clause_sign_1[i].resize(2 * number_of_pos_neg_clauses_per_label);
+
+        for (auto j = 0; j < 2 * number_of_pos_neg_clauses_per_label; ++j)
+        {
+            clause_sign_0[i][clause_count[i]] = i * 2 * number_of_pos_neg_clauses_per_label + j;
+#if 0
+            // Exact CAIR implementation orders positive and negative clauses
+            // by interleaving them
+            if (j % 2 == 0)
+            {
+                clause_sign_1[i][clause_count[i]] = 1;
+            }
+            else
+            {
+                clause_sign_1[i][clause_count[i]] = -1;
+            }
+#endif
+            // This implementation aggregates positive and negative clauses
+            // together in two continuous but separate regions.
+            // See pos_clause_index and neg_clause_index
+            if (j < number_of_pos_neg_clauses_per_label)
+            {
+                clause_sign_1[i][clause_count[i]] = 1;
+            }
+            else
+            {
+                clause_sign_1[i][clause_count[i]] = -1;
+            }
+
+            clause_count[i] += 1;
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    for (auto target_class = 0; target_class < number_of_classes; ++target_class)
+    {
+        class_sum[target_class] = 0;
+
+        auto const clause_count = 2 * number_of_pos_neg_clauses_per_label;
+
+        for (auto j = 0; j < clause_count; ++j)
+        {
+            class_sum[target_class] += clause_output[clause_sign_0[target_class][j]] * clause_sign_1[target_class][j];
+        }
+
+        if (class_sum[target_class] > threshold)
+        {
+            class_sum[target_class] = threshold;
+        }
+        else if (class_sum[target_class] < -threshold)
+        {
+            class_sum[target_class] = -threshold;
+        }
+    }
+}
+
 } // namespace CAIR
 
 
-TEST(CalculateClauseOutput, gives_same_result_as_CAIR_version)
+TEST(CalculateClauseOutput, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
 
@@ -135,7 +230,7 @@ TEST(CalculateClauseOutput, gives_same_result_as_CAIR_version)
 }
 
 
-TEST(CalculateClauseOutput, gives_same_prediction_result_as_CAIR_version)
+TEST(CalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
 
@@ -177,6 +272,30 @@ TEST(CalculateClauseOutput, gives_same_prediction_result_as_CAIR_version)
         }
 
         EXPECT_TRUE(clause_output_CAIR == clause_output);
+    }
+}
+
+
+TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
+{
+    IRNG    irng(1234);
+
+    for (auto it = 0u; it < 1000; ++it)
+    {
+        int const number_of_pos_neg_clauses = irng.next(1, 20);
+        int const number_of_labels = irng.next(2, 12);
+        int const threshold = irng.next(1, 127);
+
+        Tsetlini::aligned_vector_char clause_output(2 * number_of_pos_neg_clauses * number_of_labels);
+        std::generate(clause_output.begin(), clause_output.end(), [&irng](){ return irng.next(0, 1); });
+
+        Tsetlini::aligned_vector_int label_sum(number_of_labels);
+        Tsetlini::aligned_vector_int label_sum_CAIR(number_of_labels);
+
+        CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_pos_neg_clauses, threshold);
+        Tsetlini::sum_up_all_label_votes(clause_output, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
+
+        EXPECT_TRUE(label_sum_CAIR == label_sum);
     }
 }
 

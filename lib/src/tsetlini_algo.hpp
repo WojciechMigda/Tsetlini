@@ -70,6 +70,24 @@ void sum_up_label_votes(
 }
 
 
+/**
+ * @param clause_output
+ *      Calculated output of clauses, vector of 0s and 1s, with size equal
+ *      to 2 * @c number_of_labels * @c number_of_pos_neg_clauses_per_label .
+ *
+ * @param label_sum
+ *      Output vector of integers of @c @c number_of_labels length where
+ *      calculated vote scores will be placed.
+ *
+ * @param number_of_labels
+ *      Integer count of labels the model was trained for.
+ *
+ * @param number_of_pos_neg_clauses_per_label
+ *      Integer count of wither positive or negative clauses used for training.
+ *
+ * @param threshold
+ *      Integer threshold to count votes against.
+ */
 inline
 void sum_up_all_label_votes(
     aligned_vector_char const & clause_output,
