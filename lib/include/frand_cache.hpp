@@ -5,6 +5,7 @@
 #include "assume_aligned.hpp"
 
 #include <vector>
+#include <algorithm>
 
 namespace Tsetlini
 {
@@ -19,12 +20,19 @@ struct frand_cache
     {
     }
 
+    frand_cache()
+        : m_pos(0)
+        , m_fcache(0)
+        , m_rng(0)
+    {
+    }
+
     inline
     void refill()
     {
         real_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
 
-        for (auto it = 0; it < m_pos; ++it)
+        for (auto it = 0u; it < std::min<unsigned int>(m_pos, m_fcache.size()); ++it)
         {
             fcache_p[it] = m_rng.next();
         }
@@ -44,7 +52,7 @@ struct frand_cache
         return next();
     }
 
-    int m_pos;
+    unsigned int m_pos;
     aligned_vector_float m_fcache;
     RNG m_rng;
 };
