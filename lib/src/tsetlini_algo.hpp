@@ -611,6 +611,66 @@ void train_automata_batch(
 }
 
 
+template<typename TFRNG>
+inline
+void calculate_feedback_to_clauses(
+    feedback_vector_type & feedback_to_clauses,
+    label_type const target_label,
+    label_type const opposite_label,
+    int const target_label_votes,
+    int const opposite_label_votes,
+    int const number_of_pos_neg_clauses_per_label,
+    int const threshold,
+    TFRNG & fgen)
+{
+    const auto THR2_inv = (ONE / (threshold * 2));
+    const auto THR_pos = THR2_inv * (threshold - target_label_votes);
+    const auto THR_neg = THR2_inv * (threshold + opposite_label_votes);
+
+    std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
+
+    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+    {
+        if (fgen.next() > THR_pos)
+        {
+            continue;
+        }
+
+        // Type I Feedback
+        feedback_to_clauses[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = 1;
+    }
+    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+    {
+        if (fgen.next() > THR_pos)
+        {
+            continue;
+        }
+
+        // Type II Feedback
+        feedback_to_clauses[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = -1;
+    }
+
+    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+    {
+        if (fgen.next() > THR_neg)
+        {
+            continue;
+        }
+
+        feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = -1;
+    }
+    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+    {
+        if (fgen.next() > THR_neg)
+        {
+            continue;
+        }
+
+        feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = 1;
+    }
+}
+
+
 }
 
 } // namespace Tsetlini

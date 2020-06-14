@@ -189,8 +189,8 @@ status_message_t check_for_predict(
 template<typename state_type, typename row_type>
 void update_impl(
     row_type const & X,
-    label_type target_label,
-    label_type opposite_label,
+    label_type const target_label,
+    label_type const opposite_label,
 
     int const number_of_pos_neg_clauses_per_label,
     int const threshold,
@@ -233,55 +233,18 @@ void update_impl(
         threshold);
 
 
-    std::fill(cache.feedback_to_clauses.begin(), cache.feedback_to_clauses.end(), 0);
 
+    calculate_feedback_to_clauses(
+        cache.feedback_to_clauses,
+        target_label,
+        opposite_label,
+        cache.label_sum[target_label],
+        cache.label_sum[opposite_label],
+        number_of_pos_neg_clauses_per_label,
+        threshold,
+        fgen);
 
     const auto S_inv = ONE / s;
-
-    const auto THR2_inv = (ONE / (threshold * 2));
-    const auto THR_pos = THR2_inv * (threshold - cache.label_sum[target_label]);
-    const auto THR_neg = THR2_inv * (threshold + cache.label_sum[opposite_label]);
-
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_pos)
-        {
-            continue;
-        }
-
-        // Type I Feedback
-        cache.feedback_to_clauses[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = 1;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_pos)
-        {
-            continue;
-        }
-
-        // Type II Feedback
-        cache.feedback_to_clauses[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = -1;
-    }
-
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_neg)
-        {
-            continue;
-        }
-
-        cache.feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = -1;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_neg)
-        {
-            continue;
-        }
-
-        cache.feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = 1;
-    }
-
 
     train_automata_batch(
         ta_state,
