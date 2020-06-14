@@ -257,7 +257,7 @@ void update_impl(
         S_inv,
         X,
         boost_true_positive_feedback,
-        cache.fcache[0]
+        cache.fcache
     );
 }
 

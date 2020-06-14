@@ -27,7 +27,7 @@ struct ClassifierState
         aligned_vector_char clause_output; // shape=(number of clauses)
         aligned_vector_int label_sum; // shape=(number of labels)
 
-        std::vector<frand_cache_type> fcache;
+        frand_cache_type fcache;
     };
 
     params_t m_params;

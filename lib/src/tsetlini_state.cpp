@@ -107,13 +107,8 @@ void reset_state_cache(ClassifierState & state)
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_clauses(params));
 
-    // initialize frand caches instances for use by all thread jobs
-    cache.fcache.reserve(Params::n_jobs(params));
-
-    for (auto it = 0; it < Params::n_jobs(params); ++it)
-    {
-        cache.fcache.emplace_back(2 * Params::number_of_features(params), state.igen.peek() + it);
-    }
+    // initialize frand cache
+    cache.fcache = ClassifierState::frand_cache_type(2 * Params::number_of_features(params), state.igen.peek());
 }
 
 
@@ -139,7 +134,6 @@ bool ClassifierState::operator==(ClassifierState const & other) const
             and cache.feedback_to_clauses.size() == other.cache.feedback_to_clauses.size()
             and cache.clause_output.size() == other.cache.clause_output.size()
             and cache.label_sum.size() == other.cache.label_sum.size()
-            and cache.fcache.size() == other.cache.fcache.size()
             ;
     }
 }
