@@ -571,7 +571,6 @@ fit_online_impl(
     auto const number_of_examples = X.size();
 
     std::vector<int> ix(number_of_examples);
-    std::iota(ix.begin(), ix.end(), 0);
 
     std::mt19937 gen(state.igen());
 
@@ -582,6 +581,8 @@ fit_online_impl(
         LOG(info) << "Epoch " << epoch + 1 << '\n';
 
         generate_opposite_y(y, opposite_y, number_of_labels, state.igen);
+
+        std::iota(ix.begin(), ix.end(), 0);
         std::shuffle(ix.begin(), ix.end(), gen);
 
         for (auto i = 0u; i < number_of_examples; ++i)
