@@ -14,10 +14,11 @@ template<typename RNG, int alignment=32, typename real_type=float>
 struct frand_cache
 {
     explicit frand_cache(int sz, seed_type seed) :
-        m_pos(0),
+        m_pos(sz),
         m_fcache(sz),
         m_rng(seed)
     {
+        refill();
     }
 
     frand_cache()
