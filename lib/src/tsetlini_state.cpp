@@ -108,7 +108,7 @@ void reset_state_cache(ClassifierState & state)
     cache.feedback_to_clauses.resize(Params::number_of_clauses(params));
 
     // initialize frand cache
-    cache.fcache = ClassifierState::frand_cache_type(2 * Params::number_of_features(params), state.igen.peek());
+    cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());
 }
 
 

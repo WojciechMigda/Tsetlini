@@ -10,32 +10,31 @@
 namespace Tsetlini
 {
 
-template<typename RNG, int alignment=32, typename real_type=float>
+template<int alignment=32, typename real_type=float>
 struct frand_cache
 {
-    explicit frand_cache(int sz, seed_type seed) :
+    template<typename TFRNG>
+    explicit frand_cache(TFRNG & frng, int sz, seed_type seed) :
         m_pos(sz),
-        m_fcache(sz),
-        m_rng(seed)
+        m_fcache(sz)
     {
-        refill();
     }
 
     frand_cache()
         : m_pos(0)
         , m_fcache(0)
-        , m_rng(0)
     {
     }
 
+    template<typename TFRNG>
     inline
-    void refill()
+    void refill(TFRNG & frng)
     {
         real_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
 
         for (auto it = 0u; it < std::min<unsigned int>(m_pos, m_fcache.size()); ++it)
         {
-            fcache_p[it] = m_rng.next();
+            fcache_p[it] = frng();
         }
         m_pos = 0;
     }
@@ -55,7 +54,6 @@ struct frand_cache
 
     unsigned int m_pos;
     aligned_vector_float m_fcache;
-    RNG m_rng;
 };
 
 
