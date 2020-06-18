@@ -14,7 +14,7 @@ namespace Tsetlini
 
 struct ClassifierState
 {
-    using frand_cache_type = frand_cache<FRNG, alignment>;
+    using frand_cache_type = frand_cache<alignment>;
     using ta_state_v_type = std::variant<
         numeric_matrix_int32
         , numeric_matrix_int16

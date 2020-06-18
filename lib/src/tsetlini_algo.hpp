@@ -551,6 +551,7 @@ void train_automata_batch(
     float const S_inv,
     char const * __restrict X,
     bool const boost_true_positive_feedback,
+    FRNG & frng,
     ClassifierState::frand_cache_type & fcache
     )
 {
@@ -565,13 +566,13 @@ void train_automata_batch(
         {
             if (clause_output[j] == 0)
             {
-                fcache.refill();
+                fcache.refill(frng);
 
                 fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, fcache_, fcache.m_pos);
             }
             else if (clause_output[j] == 1)
             {
-                fcache.refill();
+                fcache.refill(frng);
 
                 if (boost_true_positive_feedback)
                     fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
@@ -602,12 +603,13 @@ void train_automata_batch(
     float const S_inv,
     aligned_vector_char const & X,
     bool const boost_true_positive_feedback,
+    FRNG & frng,
     ClassifierState::frand_cache_type & fcache
     )
 {
     train_automata_batch(ta_state, begin, end, feedback_to_clauses,
         clause_output, number_of_features, number_of_states, S_inv, X.data(),
-        boost_true_positive_feedback, fcache);
+        boost_true_positive_feedback, frng, fcache);
 }
 
 

@@ -257,6 +257,7 @@ void update_impl(
         S_inv,
         X,
         boost_true_positive_feedback,
+        fgen,
         cache.fcache
     );
 }
