@@ -17,11 +17,6 @@ using namespace neither;
 
 struct Classifier
 {
-
-//    void update(aligned_vector_char const & X, label_vector_type::value_type target_label);
-//
-//    void fit_batch(std::vector<aligned_vector_char> const & X, label_vector_type const & y);
-
     [[nodiscard]]
      status_message_t
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
@@ -52,10 +47,11 @@ struct Classifier
     Either<status_message_t, std::vector<aligned_vector_int>>
     predict_raw(std::vector<aligned_vector_char> const & X) const;
 
-//    void predict_raw(aligned_vector_char const & sample, int * out_p) const;
-//
+
     params_t read_params() const;
     ClassifierState read_state() const;
+
+    Classifier(ClassifierState const & state);
 
 friend Either<status_message_t, Classifier> make_classifier(std::string const & json_params);
 

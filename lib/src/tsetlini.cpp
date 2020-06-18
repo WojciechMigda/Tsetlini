@@ -702,6 +702,12 @@ Classifier::Classifier(params_t && params) :
 }
 
 
+Classifier::Classifier(ClassifierState const & state) :
+    m_state(state)
+{
+}
+
+
 Either<status_message_t, label_type>
 Classifier::predict(aligned_vector_char const & sample) const
 {
