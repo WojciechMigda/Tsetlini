@@ -3,6 +3,7 @@
 
 #include <gtest/gtest.h>
 #include <vector>
+#include <cmath>
 
 namespace
 {
@@ -198,6 +199,57 @@ TEST(TsetlinRegressorClassicFit, rejects_X_and_y_with_different_lengths)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::response_vector_type y{1, 0, 0, 1};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_y_with_pos_inf)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{1, 0, INFINITY};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_y_with_neg_inf)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{1, -INFINITY, 1};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_y_with_nan)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{NAN, 0, 1};
 
             auto const rv = reg.fit(X, y);
 

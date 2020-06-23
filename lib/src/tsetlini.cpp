@@ -77,6 +77,18 @@ status_message_t check_X_y(
 }
 
 
+status_message_t check_finite_y(response_vector_type const & y)
+{
+    if (not std::all_of(y.cbegin(), y.cend(), [](auto v){ return (not std::isinf(v)) and (not std::isnan(v)); }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Only finite values can be used in y"};
+    }
+
+    return {StatusCode::S_OK, ""};
+}
+
+
 status_message_t check_labels(label_vector_type const & labels)
 {
     if (*std::min_element(labels.cbegin(), labels.cend()) < 0)
@@ -978,26 +990,24 @@ fit_impl_T(
         return sm;
     }
 
-//    auto labels = unique_labels(y);
-//
+    if (auto sm = check_finite_y(y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
 //    int const number_of_labels = std::max(
 //        *std::max_element(labels.cbegin(), labels.cend()) + 1,
 //        max_number_of_labels);
-//
-//    if (auto sm = check_labels(labels);
-//        sm.first != StatusCode::S_OK)
-//    {
-//        return sm;
-//    }
-//
-//    // Let it crash for now
-////    validate_params();
-//
+
+    // Let it crash for now
+//    validate_params();
+
 //    state.m_params["number_of_labels"] = param_value_t(number_of_labels);
 //
-//    int const number_of_features = X.front().size();
-//    state.m_params["number_of_features"] = param_value_t(number_of_features);
-//
+    int const number_of_features = X.front().size();
+    state.m_params["number_of_features"] = param_value_t(number_of_features);
+
 //    initialize_state(state);
 
     return fit_online_impl(state, X, y, epochs);
