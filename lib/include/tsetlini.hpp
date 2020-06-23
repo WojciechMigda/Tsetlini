@@ -15,10 +15,10 @@ namespace Tsetlini
 
 using namespace neither;
 
-struct Classifier
+struct ClassifierClassic
 {
     [[nodiscard]]
-     status_message_t
+    status_message_t
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
         int max_number_of_labels, unsigned int epochs = 100);
 
@@ -51,19 +51,19 @@ struct Classifier
     params_t read_params() const;
     ClassifierState read_state() const;
 
-    Classifier(ClassifierState const & state);
+    ClassifierClassic(ClassifierState const & state);
 
-friend Either<status_message_t, Classifier> make_classifier(std::string const & json_params);
+friend Either<status_message_t, ClassifierClassic> make_classifier(std::string const & json_params);
 
 
 private:
     ClassifierState m_state;
 
-    Classifier(params_t const & params);
-    Classifier(params_t && params);
+    ClassifierClassic(params_t const & params);
+    ClassifierClassic(params_t && params);
 };
 
-Either<status_message_t, Classifier> make_classifier(std::string const & json_params = "{}");
+Either<status_message_t, ClassifierClassic> make_classifier(std::string const & json_params = "{}");
 
 
 } // namespace Tsetlini

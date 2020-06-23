@@ -135,7 +135,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 2;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -151,14 +151,14 @@ Please run make_data.py to generate this file and copy it to the current working
 
             return clf;
         })
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
             Tsetlini::ClassifierState new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 
-            Tsetlini::Classifier clf2(new_state);
+            Tsetlini::ClassifierClassic clf2(new_state);
 
             auto const NEPOCHS = 3u;
             auto status = clf2.partial_fit(train_X, train_y, 0, NEPOCHS);
@@ -177,7 +177,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 5;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -197,7 +197,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 49;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -213,14 +213,14 @@ Please run make_data.py to generate this file and copy it to the current working
 
             return clf;
         })
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
             Tsetlini::ClassifierState new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 
-            Tsetlini::Classifier clf2(new_state);
+            Tsetlini::ClassifierClassic clf2(new_state);
 
             auto const NEPOCHS = 1u;
             auto status = clf2.partial_fit(train_X, train_y, 0, NEPOCHS);
@@ -239,7 +239,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 50;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
