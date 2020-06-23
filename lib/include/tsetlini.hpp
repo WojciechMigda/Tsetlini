@@ -68,11 +68,11 @@ Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string 
 
 struct RegressorClassic
 {
-//    [[nodiscard]]
-//     status_message_t
-//    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-//        int max_number_of_labels, unsigned int epochs = 100);
-//
+    [[nodiscard]]
+    status_message_t
+    fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y,
+        unsigned int epochs = 100);
+
 //    [[nodiscard]]
 //    status_message_t
 //    partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,

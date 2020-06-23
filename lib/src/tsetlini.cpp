@@ -36,9 +36,10 @@ namespace
 {
 
 
+template<typename T>
 status_message_t check_X_y(
     std::vector<aligned_vector_char> const & X,
-    label_vector_type const & y)
+    std::vector<T> const & y)
 {
     if (X.empty())
     {
@@ -858,6 +859,162 @@ make_regressor_classic(std::string const & json_params)
 
     return rv;
 }
+
+
+status_message_t
+RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
+{
+    return fit_impl(m_state, X, y, epochs);
+}
+
+
+template<typename state_type, typename row_type>
+status_message_t
+fit_online_impl(
+    RegressorState & state,
+    numeric_matrix<state_type> & ta_state,
+    std::vector<row_type> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+//    if (auto sm = check_X_y(X, y);
+//        sm.first != StatusCode::S_OK)
+//    {
+//        return sm;
+//    }
+//
+//    auto labels = unique_labels(y);
+//
+//    auto const & params = state.m_params;
+//
+//    auto const number_of_labels = Params::number_of_labels(params);
+//    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+//    auto const threshold = Params::threshold(params);
+//    auto const number_of_clauses = Params::number_of_clauses(params);
+//    auto const number_of_features = Params::number_of_features(params);
+//    auto const number_of_states = Params::number_of_states(params);
+//    auto const s = Params::s(params);
+//    auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
+//    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
+//    auto const n_jobs = Params::n_jobs(params);
+//    auto const verbose = Params::verbose(params);
+//
+//    if (auto sm = check_labels(labels, number_of_labels);
+//        sm.first != StatusCode::S_OK)
+//    {
+//        return sm;
+//    }
+//
+//    auto const number_of_examples = X.size();
+//
+//    std::vector<int> ix(number_of_examples);
+//
+//    label_vector_type opposite_y(y.size());
+//
+//    for (unsigned int epoch = 0; epoch < epochs; ++epoch)
+//    {
+//        LOG(info) << "Epoch " << epoch + 1 << '\n';
+//
+//        generate_opposite_y(y, opposite_y, number_of_labels, state.igen);
+//
+//        std::iota(ix.begin(), ix.end(), 0);
+//        std::shuffle(ix.begin(), ix.end(), state.igen);
+//
+//        for (auto i = 0u; i < number_of_examples; ++i)
+//        {
+//            update_impl(
+//                X[ix[i]],
+//                y[ix[i]],
+//                opposite_y[ix[i]],
+//
+//                number_of_pos_neg_clauses_per_label,
+//                threshold,
+//                number_of_clauses,
+//                number_of_features,
+//                number_of_states,
+//                s,
+//                boost_true_positive_feedback,
+//                n_jobs,
+//
+//                state.fgen,
+//                ta_state,
+//                state.cache,
+//
+//                clause_output_tile_size
+//            );
+//        }
+//    }
+
+    return {S_OK, ""};
+}
+
+
+template<typename RowType>
+status_message_t
+fit_online_impl(
+    RegressorState & state,
+    std::vector<RowType> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    return std::visit([&](auto & ta_state)
+        {
+            return fit_online_impl(state, ta_state, X, y, epochs);
+        }, state.ta_state);
+}
+
+
+template<typename RowType>
+status_message_t
+fit_impl_T(
+    RegressorState & state,
+    std::vector<RowType> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+//    auto labels = unique_labels(y);
+//
+//    int const number_of_labels = std::max(
+//        *std::max_element(labels.cbegin(), labels.cend()) + 1,
+//        max_number_of_labels);
+//
+//    if (auto sm = check_labels(labels);
+//        sm.first != StatusCode::S_OK)
+//    {
+//        return sm;
+//    }
+//
+//    // Let it crash for now
+////    validate_params();
+//
+//    state.m_params["number_of_labels"] = param_value_t(number_of_labels);
+//
+//    int const number_of_features = X.front().size();
+//    state.m_params["number_of_features"] = param_value_t(number_of_features);
+//
+//    initialize_state(state);
+
+    return fit_online_impl(state, X, y, epochs);
+}
+
+
+status_message_t
+fit_impl(
+    RegressorState & state,
+    std::vector<aligned_vector_char> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    return fit_impl_T(state, X, y, epochs);
+}
+
+
 
 
 } // namespace Tsetlini

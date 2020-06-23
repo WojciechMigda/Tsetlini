@@ -120,4 +120,91 @@ TEST(TsetlinRegressorClassic, cannot_be_created_from_json_with_bad_clause_output
 }
 
 
+///     Fit
+
+TEST(TsetlinRegressorClassicFit, rejects_empty_X)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X;
+            Tsetlini::response_vector_type y{1, 0, 1, 0};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_empty_y)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y;
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_X_with_uneven_row_sizes)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_X_with_values_not_0_1)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicFit, rejects_X_and_y_with_different_lengths)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0, 1};
+
+            auto const rv = reg.fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
 } // anonymous namespace

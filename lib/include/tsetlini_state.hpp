@@ -47,7 +47,15 @@ struct ClassifierState
 
 struct RegressorState
 {
+    using ta_state_v_type = std::variant<
+        numeric_matrix_int32
+        , numeric_matrix_int16
+        , numeric_matrix_int8
+    >;
+
     params_t m_params;
+
+    ta_state_v_type ta_state;
 
     explicit RegressorState(params_t const & params);
 };
