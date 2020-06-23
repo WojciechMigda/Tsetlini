@@ -11,11 +11,11 @@ namespace
 
 TEST(ClassifierState, can_be_serialized_and_deserialized_via_json)
 {
-    Tsetlini::make_classifier()
+    Tsetlini::make_classifier_classic()
         .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
         .rightMap([](Tsetlini::ClassifierClassic && clf1)
         {
-            Tsetlini::make_classifier()
+            Tsetlini::make_classifier_classic()
                 .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
                 .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
                 {

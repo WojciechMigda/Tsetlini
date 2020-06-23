@@ -123,7 +123,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     };
 
 
-    Tsetlini::make_classifier(R"({
+    Tsetlini::make_classifier_classic(R"({
             "threshold": 15,
             "s": 3.9,
             "number_of_pos_neg_clauses_per_label": 5,
