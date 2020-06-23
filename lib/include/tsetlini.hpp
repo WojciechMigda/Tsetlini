@@ -53,7 +53,7 @@ struct ClassifierClassic
 
     ClassifierClassic(ClassifierState const & state);
 
-friend Either<status_message_t, ClassifierClassic> make_classifier(std::string const & json_params);
+friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params);
 
 
 private:
@@ -63,7 +63,7 @@ private:
     ClassifierClassic(params_t && params);
 };
 
-Either<status_message_t, ClassifierClassic> make_classifier(std::string const & json_params = "{}");
+Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params = "{}");
 
 
 } // namespace Tsetlini

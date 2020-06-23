@@ -133,7 +133,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     puts("===[ 2 + 3 epoch fit ]=============================================");
 
-    Tsetlini::make_classifier(params)
+    Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
         .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
@@ -175,7 +175,7 @@ Please run make_data.py to generate this file and copy it to the current working
             return clf2;
         });
 
-    Tsetlini::make_classifier(params)
+    Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
         .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
@@ -195,7 +195,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     puts("===[ 49 + 1 epoch fit ]============================================");
 
-    Tsetlini::make_classifier(params)
+    Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
         .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
@@ -237,7 +237,7 @@ Please run make_data.py to generate this file and copy it to the current working
             return clf2;
         });
 
-    Tsetlini::make_classifier(params)
+    Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
         .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {

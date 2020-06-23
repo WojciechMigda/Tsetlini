@@ -156,7 +156,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
             test_y[rit - PIVOT] = df_y[ix[rit]];
         }
 
-        auto clf = Tsetlini::make_classifier(R"({
+        auto clf = Tsetlini::make_classifier_classic(R"({
             "threshold": 10,
             "s": 3.0,
             "number_of_pos_neg_clauses_per_label": 50,
