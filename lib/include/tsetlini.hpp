@@ -66,4 +66,55 @@ private:
 Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params = "{}");
 
 
+struct RegressorClassic
+{
+//    [[nodiscard]]
+//     status_message_t
+//    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
+//        int max_number_of_labels, unsigned int epochs = 100);
+//
+//    [[nodiscard]]
+//    status_message_t
+//    partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
+//        int max_number_of_labels, unsigned int epochs = 100);
+//
+//    [[nodiscard]]
+//    Either<status_message_t, real_type>
+//    evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const;
+//
+//    [[nodiscard]]
+//    Either<status_message_t, label_type>
+//    predict(aligned_vector_char const & sample) const;
+//
+//    [[nodiscard]]
+//    Either<status_message_t, label_vector_type>
+//    predict(std::vector<aligned_vector_char> const & X) const;
+//
+//    [[nodiscard]]
+//    Either<status_message_t, aligned_vector_int>
+//    predict_raw(aligned_vector_char const & sample) const;
+//
+//    [[nodiscard]]
+//    Either<status_message_t, std::vector<aligned_vector_int>>
+//    predict_raw(std::vector<aligned_vector_char> const & X) const;
+//
+//
+//    params_t read_params() const;
+//    ClassifierState read_state() const;
+//
+//    RegressorClassic(ClassifierState const & state);
+//
+friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
+
+
+private:
+    RegressorState m_state;
+
+    RegressorClassic(params_t const & params);
+    RegressorClassic(params_t && params);
+};
+
+Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params = "{}");
+
+
 } // namespace Tsetlini

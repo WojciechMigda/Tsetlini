@@ -824,12 +824,36 @@ ClassifierState ClassifierClassic::read_state() const
 }
 
 
+RegressorClassic::RegressorClassic(params_t const & params) :
+    m_state(params)
+{
+}
+
+
+RegressorClassic::RegressorClassic(params_t && params) :
+    m_state(params)
+{
+}
+
+
 Either<status_message_t, ClassifierClassic>
 make_classifier_classic(std::string const & json_params)
 {
     auto rv =
         make_classifier_params_from_json(json_params)
         .rightMap([](params_t && params){ return ClassifierClassic(params); })
+        ;
+
+    return rv;
+}
+
+
+Either<status_message_t, RegressorClassic>
+make_regressor_classic(std::string const & json_params)
+{
+    auto rv =
+        make_params_from_json(json_params)
+        .rightMap([](params_t && params){ return RegressorClassic(params); })
         ;
 
     return rv;

@@ -45,4 +45,12 @@ struct ClassifierState
 };
 
 
+struct RegressorState
+{
+    params_t m_params;
+
+    explicit RegressorState(params_t const & params);
+};
+
+
 } // namespace Tsetlini

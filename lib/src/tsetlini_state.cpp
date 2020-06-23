@@ -135,4 +135,11 @@ bool ClassifierState::operator==(ClassifierState const & other) const
     }
 }
 
+
+RegressorState::RegressorState(params_t const & params) :
+    m_params(params)
+{
+}
+
+
 } // namespace Tsetlino
