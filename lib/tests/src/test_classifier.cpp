@@ -120,7 +120,7 @@ TEST(TsetlinClassifierClassic, cannot_be_created_from_json_with_bad_clause_outpu
 }
 
 
-///     Partial Fit
+///     Fit
 
 TEST(TsetlinClassifierClassicFit, rejects_empty_X)
 {
@@ -833,4 +833,4 @@ TEST(TsetlinClassifierClassicPredictRawSample, rejects_sample_with_values_not_0_
 }
 
 
-}
+} // anonymous namespace
