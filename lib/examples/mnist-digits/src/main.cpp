@@ -145,7 +145,7 @@ either is not readable or does not exist.)";
                 "verbose": false
             })")
             .leftMap(error_printer)
-            .rightMap([&](Tsetlini::Classifier && clf)
+            .rightMap([&](Tsetlini::ClassifierClassic && clf)
             {
                 auto status = clf.fit(X_train, y_train, 10, 300);
 

@@ -160,7 +160,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
             "verbose": false
         })")
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::Classifier && clf)
+        .rightMap([&](Tsetlini::ClassifierClassic && clf)
         {
             std::chrono::high_resolution_clock::time_point time0{};
 
