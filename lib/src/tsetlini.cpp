@@ -187,7 +187,7 @@ status_message_t check_for_predict(
 
 
 template<typename state_type, typename row_type>
-void update_impl(
+void classifier_update_impl(
     row_type const & X,
     label_type const target_label,
     label_type const opposite_label,
@@ -278,7 +278,7 @@ evaluate_impl(
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
@@ -337,7 +337,7 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
             calculate_clause_output_for_predict(
                 sample,
                 state.cache.clause_output,
-                Params::number_of_clauses(state.m_params),
+                Params::number_of_classifier_clauses(state.m_params),
                 Params::number_of_features(state.m_params),
                 ta_state,
                 n_jobs,
@@ -380,7 +380,7 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
@@ -436,7 +436,7 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
@@ -483,7 +483,7 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
@@ -554,7 +554,7 @@ fit_online_impl(
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
@@ -586,7 +586,7 @@ fit_online_impl(
 
         for (auto i = 0u; i < number_of_examples; ++i)
         {
-            update_impl(
+            classifier_update_impl(
                 X[ix[i]],
                 y[ix[i]],
                 opposite_y[ix[i]],
@@ -785,7 +785,7 @@ Either<status_message_t, ClassifierClassic>
 make_classifier_classic(std::string const & json_params)
 {
     auto rv =
-        make_params_from_json(json_params)
+        make_classifier_params_from_json(json_params)
         .rightMap([](params_t && params){ return ClassifierClassic(params); })
         ;
 

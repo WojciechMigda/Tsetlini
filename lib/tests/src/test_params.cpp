@@ -10,49 +10,49 @@ namespace
 {
 
 
-TEST(Params, can_be_created)
+TEST(ClassifierParams, can_be_created)
 {
-    auto const rv = Tsetlini::make_params_from_json();
+    auto const rv = Tsetlini::make_classifier_params_from_json();
 
     EXPECT_TRUE(rv);
 }
 
 
-TEST(Params, cannot_be_created_from_empty_string_json)
+TEST(ClassifierParams, cannot_be_created_from_empty_string_json)
 {
-    auto const rv = Tsetlini::make_params_from_json("");
+    auto const rv = Tsetlini::make_classifier_params_from_json("");
 
     EXPECT_FALSE(rv);
 }
 
 
-TEST(Params, can_be_created_from_empty_dict_json)
+TEST(ClassifierParams, can_be_created_from_empty_dict_json)
 {
-    auto const rv = Tsetlini::make_params_from_json("{}");
+    auto const rv = Tsetlini::make_classifier_params_from_json("{}");
 
     EXPECT_TRUE(rv);
 }
 
 
-TEST(Params, cannot_be_created_from_invalid_json)
+TEST(ClassifierParams, cannot_be_created_from_invalid_json)
 {
-    auto const rv = Tsetlini::make_params_from_json("[]");
+    auto const rv = Tsetlini::make_classifier_params_from_json("[]");
 
     EXPECT_FALSE(rv);
 }
 
 
-TEST(Params, cannot_be_created_from_malformed_json)
+TEST(ClassifierParams, cannot_be_created_from_malformed_json)
 {
-    auto const rv = Tsetlini::make_params_from_json("5\"}");
+    auto const rv = Tsetlini::make_classifier_params_from_json("5\"}");
 
     EXPECT_FALSE(rv);
 }
 
 
-TEST(Params, can_be_created_from_json_with_one_integer_item)
+TEST(ClassifierParams, can_be_created_from_json_with_one_integer_item)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"number_of_states": 200})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"number_of_states": 200})");
 
     EXPECT_TRUE(rv);
 
@@ -62,9 +62,9 @@ TEST(Params, can_be_created_from_json_with_one_integer_item)
 }
 
 
-TEST(Params, can_be_created_from_json_with_one_float_item)
+TEST(ClassifierParams, can_be_created_from_json_with_one_float_item)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"s": 3.9})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"s": 3.9})");
 
     EXPECT_TRUE(rv);
 
@@ -74,9 +74,9 @@ TEST(Params, can_be_created_from_json_with_one_float_item)
 }
 
 
-TEST(Params, can_be_created_from_json_with_one_boolean_item)
+TEST(ClassifierParams, can_be_created_from_json_with_one_boolean_item)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"verbose": true})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"verbose": true})");
 
     EXPECT_TRUE(rv);
 
@@ -87,9 +87,9 @@ TEST(Params, can_be_created_from_json_with_one_boolean_item)
 }
 
 
-TEST(Params, can_be_created_from_json_with_string_item)
+TEST(ClassifierParams, can_be_created_from_json_with_string_item)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"counting_type": "int16"})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"counting_type": "int16"})");
 
     EXPECT_TRUE(rv);
 
@@ -99,9 +99,9 @@ TEST(Params, can_be_created_from_json_with_string_item)
 }
 
 
-TEST(Params, can_be_created_from_json_with_null_random_state)
+TEST(ClassifierParams, can_be_created_from_json_with_null_random_state)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"random_state": null})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"random_state": null})");
 
     EXPECT_TRUE(rv);
 
@@ -112,17 +112,17 @@ TEST(Params, can_be_created_from_json_with_null_random_state)
 }
 
 
-TEST(Params, cannot_be_created_from_json_with_unrecognized_item)
+TEST(ClassifierParams, cannot_be_created_from_json_with_unrecognized_item)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"foobar": true})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"foobar": true})");
 
     EXPECT_FALSE(rv);
 }
 
 
-TEST(Params, can_be_created_from_json_with_full_config)
+TEST(ClassifierParams, can_be_created_from_json_with_full_config)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"(
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"(
 {
 "verbose": true,
 "number_of_pos_neg_clauses_per_label": 17,
@@ -154,9 +154,9 @@ TEST(Params, can_be_created_from_json_with_full_config)
 }
 
 
-TEST(Params, n_jobs_equal_neg_one_is_normalized)
+TEST(ClassifierParams, n_jobs_equal_neg_one_is_normalized)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({"n_jobs": -1})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({"n_jobs": -1})");
 
     EXPECT_TRUE(rv);
 
@@ -168,9 +168,9 @@ TEST(Params, n_jobs_equal_neg_one_is_normalized)
 }
 
 
-TEST(Params, unspecified_random_state_is_initialized)
+TEST(ClassifierParams, unspecified_random_state_is_initialized)
 {
-    auto const rv = Tsetlini::make_params_from_json(R"({})");
+    auto const rv = Tsetlini::make_classifier_params_from_json(R"({})");
 
     EXPECT_TRUE(rv);
 

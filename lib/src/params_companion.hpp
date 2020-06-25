@@ -104,7 +104,7 @@ int number_of_clauses_per_label(params_t const & params)
 
 
 inline
-int number_of_clauses(params_t const & params)
+int number_of_classifier_clauses(params_t const & params)
 {
     return number_of_clauses_per_label(params) * number_of_labels(params);
 }

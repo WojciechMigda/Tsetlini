@@ -37,7 +37,7 @@ void initialize_state(ClassifierState & state)
     state.fgen.init(Params::random_state(params));
 
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
-    LOG(info) << "number_of_clauses: " << Params::number_of_clauses(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
@@ -52,7 +52,7 @@ void initialize_state(ClassifierState & state)
 
     auto const number_of_states = Params::number_of_states(params);
     auto const & counting_type = Params::counting_type(params);
-    auto const number_of_clauses = Params::number_of_clauses(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
 
     if (number_of_states <= std::numeric_limits<std::int8_t>::max()
@@ -75,7 +75,7 @@ void initialize_state(ClassifierState & state)
 
     auto ta_state_gen = [&params, &igen](auto & ta_state)
     {
-        auto const number_of_clauses = Params::number_of_clauses(params);
+        auto const number_of_clauses = Params::number_of_classifier_clauses(params);
         auto const number_of_features = Params::number_of_features(params);
 
         for (auto rit = 0; rit < 2 * number_of_clauses; ++rit)
@@ -101,11 +101,11 @@ void reset_state_cache(ClassifierState & state)
     auto & params = state.m_params;
 
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_clauses(params));
+    cache.clause_output.resize(Params::number_of_classifier_clauses(params));
     cache.label_sum.clear();
     cache.label_sum.resize(Params::number_of_labels(params));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_clauses(params));
+    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params));
 
     // initialize frand cache
     cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());
