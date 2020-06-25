@@ -785,7 +785,7 @@ Either<status_message_t, ClassifierClassic>
 make_classifier_classic(std::string const & json_params)
 {
     auto rv =
-        make_params_from_json(json_params)
+        make_classifier_params_from_json(json_params)
         .rightMap([](params_t && params){ return ClassifierClassic(params); })
         ;
 

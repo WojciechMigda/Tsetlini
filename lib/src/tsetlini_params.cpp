@@ -21,7 +21,7 @@ namespace Tsetlini
 {
 
 
-static const params_t default_params =
+static const params_t default_classifier_params =
 {
     {"number_of_pos_neg_clauses_per_label", param_value_t(5)},
     {"number_of_states", param_value_t(100)},
@@ -209,13 +209,13 @@ assert_clause_output_tile_size_enumeration(params_t const & params)
 
 
 Either<status_message_t, params_t>
-make_params_from_json(std::string const & json_params)
+make_classifier_params_from_json(std::string const & json_params)
 {
     auto rv =
         json_parse(json_params)
         .rightFlatMap(assert_json_dictionary)
         .rightFlatMap(json_to_params)
-        .rightMap([](auto p){ return merge(params_t{default_params}, p); })
+        .rightMap([](auto p){ return merge(params_t{default_classifier_params}, p); })
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
