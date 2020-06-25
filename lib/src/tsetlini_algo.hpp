@@ -233,7 +233,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         default:
-//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
+//            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
             calculate_clause_output_for_predict_T<state_type, 16>(
@@ -389,7 +389,7 @@ void calculate_clause_output(
             );
             break;
         default:
-//            LOG_(warn) << "update_impl: unrecognized clause_output_tile_size value "
+//            LOG_(warn) << "calculate_clause_output: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
             calculate_clause_output_T<state_type, 16>(
