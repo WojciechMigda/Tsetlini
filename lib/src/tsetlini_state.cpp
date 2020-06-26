@@ -183,8 +183,6 @@ void reset_state_cache(RegressorState & state)
 
     cache.clause_output.clear();
     cache.clause_output.resize(Params::number_of_classifier_clauses(params));
-//    cache.label_sum.clear();
-//    cache.label_sum.resize(Params::number_of_labels(params));
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params));
 

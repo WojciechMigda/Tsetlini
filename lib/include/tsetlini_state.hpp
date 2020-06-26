@@ -58,7 +58,6 @@ struct RegressorState
     {
         feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
         aligned_vector_char clause_output; // shape=(number of clauses)
-//        aligned_vector_int label_sum; // shape=(number of labels)
 
         frand_cache_type fcache;
     };

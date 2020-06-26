@@ -3,7 +3,6 @@
 
 #include <gtest/gtest.h>
 #include <vector>
-#include <cmath>
 
 namespace
 {
@@ -208,14 +207,14 @@ TEST(TsetlinRegressorClassicFit, rejects_X_and_y_with_different_lengths)
 }
 
 
-TEST(TsetlinRegressorClassicFit, rejects_y_with_pos_inf)
+TEST(TsetlinRegressorClassicFit, rejects_y_with_negative_response)
 {
     Tsetlini::make_regressor_classic("{}")
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
-            Tsetlini::response_vector_type y{1, 0, INFINITY};
+            Tsetlini::response_vector_type y{1, 0, -1};
 
             auto const rv = reg.fit(X, y);
 
@@ -225,14 +224,14 @@ TEST(TsetlinRegressorClassicFit, rejects_y_with_pos_inf)
 }
 
 
-TEST(TsetlinRegressorClassicFit, rejects_y_with_neg_inf)
+TEST(TsetlinRegressorClassicFit, rejects_y_with_response_over_threshold)
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
-            Tsetlini::response_vector_type y{1, -INFINITY, 1};
+            Tsetlini::response_vector_type y{1, 15 + 1, 1};
 
             auto const rv = reg.fit(X, y);
 
@@ -242,18 +241,18 @@ TEST(TsetlinRegressorClassicFit, rejects_y_with_neg_inf)
 }
 
 
-TEST(TsetlinRegressorClassicFit, rejects_y_with_nan)
+TEST(TsetlinRegressorClassicFit, accepts_y_within_valid_range)
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
-            Tsetlini::response_vector_type y{NAN, 0, 1};
+            Tsetlini::response_vector_type y{0, 1, 15};
 
             auto const rv = reg.fit(X, y);
 
-            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            EXPECT_EQ(Tsetlini::StatusCode::S_OK, rv.first);
             return reg;
         });
 }

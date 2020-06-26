@@ -36,6 +36,7 @@ static const params_t default_classifier_params =
 
     {"random_state", param_value_t(std::nullopt)},
 
+    // internal
     {"number_of_labels", param_value_t(std::nullopt)},
     {"number_of_features", param_value_t(std::nullopt)},
 };
@@ -56,6 +57,7 @@ static const params_t default_regressor_params =
 
     {"random_state", param_value_t(std::nullopt)},
 
+    // internal
     {"number_of_features", param_value_t(std::nullopt)},
 };
 

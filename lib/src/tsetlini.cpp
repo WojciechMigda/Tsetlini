@@ -77,12 +77,12 @@ status_message_t check_X_y(
 }
 
 
-status_message_t check_finite_y(response_vector_type const & y)
+status_message_t check_response_y(response_vector_type const & y, int const T)
 {
-    if (not std::all_of(y.cbegin(), y.cend(), [](auto v){ return (not std::isinf(v)) and (not std::isnan(v)); }))
+    if (not std::all_of(y.cbegin(), y.cend(), [T](auto v){ return v >= 0 and v <= T; }))
     {
         return {StatusCode::S_VALUE_ERROR,
-            "Only finite values can be used in y"};
+            "Only values within [0, threshold] range can be used in y"};
     }
 
     return {StatusCode::S_OK, ""};
@@ -886,8 +886,7 @@ RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vecto
 template<typename state_type, typename row_type>
 void regressor_update_impl(
     row_type const & X,
-//    label_type const target_label,
-//    label_type const opposite_label,
+    label_type const target_response,
 
     int const threshold,
     int const number_of_clauses,
@@ -904,16 +903,16 @@ void regressor_update_impl(
     int clause_output_tile_size
     )
 {
-//    calculate_clause_output(
-//        X,
-//        cache.clause_output,
-//        number_of_clauses,
-//        number_of_features,
-//        ta_state,
-//        n_jobs,
-//        clause_output_tile_size
-//    );
-//
+    calculate_clause_output(
+        X,
+        cache.clause_output,
+        number_of_clauses,
+        number_of_features,
+        ta_state,
+        n_jobs,
+        clause_output_tile_size
+    );
+
 //    sum_up_label_votes(
 //        cache.clause_output,
 //        cache.label_sum,
@@ -974,8 +973,6 @@ fit_online_impl(
         return sm;
     }
 
-//    auto labels = unique_labels(y);
-
     auto const & params = state.m_params;
 
     auto const number_of_clauses = Params::number_of_regressor_clauses(params);
@@ -988,23 +985,19 @@ fit_online_impl(
     auto const n_jobs = Params::n_jobs(params);
     auto const verbose = Params::verbose(params);
 
-//    if (auto sm = check_labels(labels, number_of_labels);
-//        sm.first != StatusCode::S_OK)
-//    {
-//        return sm;
-//    }
-//
+    if (auto sm = check_response_y(y, threshold);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     auto const number_of_examples = X.size();
 
     std::vector<int> ix(number_of_examples);
 
-//    label_vector_type opposite_y(y.size());
-
     for (unsigned int epoch = 0; epoch < epochs; ++epoch)
     {
         LOG(info) << "Epoch " << epoch + 1 << '\n';
-//
-//        generate_opposite_y(y, opposite_y, number_of_labels, state.igen);
 
         std::iota(ix.begin(), ix.end(), 0);
         std::shuffle(ix.begin(), ix.end(), state.igen);
@@ -1013,10 +1006,8 @@ fit_online_impl(
         {
             regressor_update_impl(
                 X[ix[i]],
-//                y[ix[i]],
-//                opposite_y[ix[i]],
-//
-//                number_of_pos_neg_clauses_per_label,
+                y[ix[i]],
+
                 threshold,
                 number_of_clauses,
                 number_of_features,
@@ -1067,21 +1058,15 @@ fit_impl_T(
         return sm;
     }
 
-    if (auto sm = check_finite_y(y);
+    if (auto sm = check_response_y(y, Params::threshold(state.m_params));
         sm.first != StatusCode::S_OK)
     {
         return sm;
     }
 
-//    int const number_of_labels = std::max(
-//        *std::max_element(labels.cbegin(), labels.cend()) + 1,
-//        max_number_of_labels);
-
     // Let it crash for now
 //    validate_params();
 
-//    state.m_params["number_of_labels"] = param_value_t(number_of_labels);
-//
     int const number_of_features = X.front().size();
     state.m_params["number_of_features"] = param_value_t(number_of_features);
 
