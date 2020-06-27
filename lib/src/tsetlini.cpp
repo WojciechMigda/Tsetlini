@@ -913,32 +913,15 @@ void regressor_update_impl(
         clause_output_tile_size
     );
 
-//    sum_up_label_votes(
-//        cache.clause_output,
-//        cache.label_sum,
-//        target_label,
-//        number_of_pos_neg_clauses_per_label,
-//        threshold);
-//
-//    sum_up_label_votes(
-//        cache.clause_output,
-//        cache.label_sum,
-//        opposite_label,
-//        number_of_pos_neg_clauses_per_label,
-//        threshold);
-//
-//
-//
-//    calculate_feedback_to_clauses(
-//        cache.feedback_to_clauses,
-//        target_label,
-//        opposite_label,
-//        cache.label_sum[target_label],
-//        cache.label_sum[opposite_label],
-//        number_of_pos_neg_clauses_per_label,
-//        threshold,
-//        fgen);
-//
+    auto const votes = sum_up_regressor_votes(cache.clause_output, threshold);
+    int const response_error = votes - target_response;
+
+    calculate_regressor_feedback_to_clauses(
+        cache.feedback_to_clauses,
+        response_error,
+        threshold,
+        fgen);
+
 //    const auto S_inv = ONE / s;
 //
 //    train_automata_batch(

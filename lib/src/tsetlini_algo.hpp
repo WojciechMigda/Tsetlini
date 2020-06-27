@@ -661,6 +661,31 @@ void calculate_classifier_feedback_to_clauses(
 }
 
 
+inline
+response_type sum_up_regressor_votes(
+    aligned_vector_char const & clause_output,
+    int const threshold)
+{
+    auto const sum = std::accumulate(clause_output.cbegin(), clause_output.cend(), 0);
+
+    return std::clamp(sum, 0, threshold);
+}
+
+
+template<typename TFRNG>
+inline
+void calculate_regressor_feedback_to_clauses(
+    feedback_vector_type & feedback_to_clauses,
+    int const response_error,
+    int const threshold,
+    TFRNG & fgen)
+{
+    real_type const P = static_cast<real_type>(response_error) * response_error / (threshold * threshold);
+
+    std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&fgen, P](){ return fgen.next() < P; });
+}
+
+
 }
 
 } // namespace Tsetlini
