@@ -429,7 +429,7 @@ TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
             threshold,
             fgen_CAIR);
 
-        Tsetlini::calculate_feedback_to_clauses(
+        Tsetlini::calculate_classifier_feedback_to_clauses(
             feedback_to_clauses,
             target_label,
             opposite_label,
