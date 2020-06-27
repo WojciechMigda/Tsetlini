@@ -248,14 +248,13 @@ void classifier_update_impl(
 
     train_classifier_automata(
         ta_state,
-        0,
         number_of_clauses,
         cache.feedback_to_clauses.data(),
         cache.clause_output.data(),
         number_of_features,
         number_of_states,
         S_inv,
-        X,
+        X.data(),
         boost_true_positive_feedback,
         fgen,
         cache.fcache

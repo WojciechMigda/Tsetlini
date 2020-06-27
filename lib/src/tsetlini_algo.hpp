@@ -542,8 +542,7 @@ void block3(
 template<typename state_type>
 void train_classifier_automata(
     numeric_matrix<state_type> & ta_state,
-    int const begin,
-    int const end,
+    int const number_of_clauses,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_features,
@@ -557,7 +556,7 @@ void train_classifier_automata(
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
-    for (int j = begin; j < end; ++j)
+    for (int j = 0; j < number_of_clauses; ++j)
     {
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
@@ -588,28 +587,6 @@ void train_classifier_automata(
             }
         }
     }
-}
-
-
-template<typename state_type>
-void train_classifier_automata(
-    numeric_matrix<state_type> & ta_state,
-    int const begin,
-    int const end,
-    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
-    char const * __restrict clause_output,
-    int const number_of_features,
-    int const number_of_states,
-    float const S_inv,
-    aligned_vector_char const & X,
-    bool const boost_true_positive_feedback,
-    FRNG & frng,
-    ClassifierState::frand_cache_type & fcache
-    )
-{
-    train_classifier_automata(ta_state, begin, end, feedback_to_clauses,
-        clause_output, number_of_features, number_of_states, S_inv, X.data(),
-        boost_true_positive_feedback, frng, fcache);
 }
 
 
