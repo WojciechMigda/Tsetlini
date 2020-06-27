@@ -234,7 +234,7 @@ void classifier_update_impl(
 
 
 
-    calculate_feedback_to_clauses(
+    calculate_classifier_feedback_to_clauses(
         cache.feedback_to_clauses,
         target_label,
         opposite_label,
@@ -246,7 +246,7 @@ void classifier_update_impl(
 
     const auto S_inv = ONE / s;
 
-    train_automata_batch(
+    train_classifier_automata(
         ta_state,
         0,
         number_of_clauses,

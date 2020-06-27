@@ -540,7 +540,7 @@ void block3(
 
 
 template<typename state_type>
-void train_automata_batch(
+void train_classifier_automata(
     numeric_matrix<state_type> & ta_state,
     int const begin,
     int const end,
@@ -592,7 +592,7 @@ void train_automata_batch(
 
 
 template<typename state_type>
-void train_automata_batch(
+void train_classifier_automata(
     numeric_matrix<state_type> & ta_state,
     int const begin,
     int const end,
@@ -607,7 +607,7 @@ void train_automata_batch(
     ClassifierState::frand_cache_type & fcache
     )
 {
-    train_automata_batch(ta_state, begin, end, feedback_to_clauses,
+    train_classifier_automata(ta_state, begin, end, feedback_to_clauses,
         clause_output, number_of_features, number_of_states, S_inv, X.data(),
         boost_true_positive_feedback, frng, fcache);
 }
@@ -615,7 +615,7 @@ void train_automata_batch(
 
 template<typename TFRNG>
 inline
-void calculate_feedback_to_clauses(
+void calculate_classifier_feedback_to_clauses(
     feedback_vector_type & feedback_to_clauses,
     label_type const target_label,
     label_type const opposite_label,
