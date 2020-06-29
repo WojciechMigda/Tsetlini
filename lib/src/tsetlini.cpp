@@ -906,6 +906,7 @@ void regressor_update_impl(
     calculate_clause_output(
         X,
         cache.clause_output,
+        0,
         number_of_clauses,
         number_of_features,
         ta_state,
