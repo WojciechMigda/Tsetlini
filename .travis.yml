@@ -3,7 +3,7 @@ dist: xenial
 
 branches:
   only:
-    - master
+    - main
 
 env:
   global:
