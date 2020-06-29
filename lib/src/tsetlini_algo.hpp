@@ -47,6 +47,15 @@ int neg_clause_index(int target_label, int j, int number_of_pos_neg_clauses_per_
 
 
 inline
+auto clause_range_for_label(int label, int number_of_pos_neg_clauses_per_label) -> std::pair<int, int>
+{
+    auto const begin = pos_clause_index(label, 0, number_of_pos_neg_clauses_per_label);
+
+    return std::make_pair(begin, begin + 2 * number_of_pos_neg_clauses_per_label);
+}
+
+
+inline
 void sum_up_label_votes(
     aligned_vector_char const & clause_output,
     aligned_vector_int & label_sum,
@@ -254,7 +263,8 @@ inline
 void calculate_clause_output_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    int const clause_begin_ix,
+    int const clause_end_ix,
     int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
@@ -263,7 +273,7 @@ void calculate_clause_output_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
-        for (int j = 0; j < number_of_clauses; ++j)
+        for (int j = clause_begin_ix; j < clause_end_ix; ++j)
         {
             bool output = true;
 
@@ -284,7 +294,7 @@ void calculate_clause_output_T(
     else
     {
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
-        for (int j = 0; j < number_of_clauses; ++j)
+        for (int j = clause_begin_ix; j < clause_end_ix; ++j)
         {
             char toggle_output = 0;
 
@@ -350,7 +360,8 @@ inline
 void calculate_clause_output(
     RowType const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    int const clause_begin_ix,
+    int const clause_end_ix,
     int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
@@ -362,7 +373,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 128>(
                 X,
                 clause_output,
-                number_of_clauses,
+                clause_begin_ix,
+                clause_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -372,7 +384,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 64>(
                 X,
                 clause_output,
-                number_of_clauses,
+                clause_begin_ix,
+                clause_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -382,7 +395,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 32>(
                 X,
                 clause_output,
-                number_of_clauses,
+                clause_begin_ix,
+                clause_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -395,7 +409,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 16>(
                 X,
                 clause_output,
-                number_of_clauses,
+                clause_begin_ix,
+                clause_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -542,7 +557,8 @@ void block3(
 template<typename state_type>
 void train_classifier_automata(
     numeric_matrix<state_type> & ta_state,
-    int const number_of_clauses,
+    int const clause_begin_ix,
+    int const clause_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_features,
@@ -556,7 +572,7 @@ void train_classifier_automata(
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
-    for (int j = 0; j < number_of_clauses; ++j)
+    for (int j = clause_begin_ix; j < clause_end_ix; ++j)
     {
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 1));

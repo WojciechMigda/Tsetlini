@@ -208,15 +208,35 @@ void classifier_update_impl(
     int clause_output_tile_size
     )
 {
-    calculate_clause_output(
-        X,
-        cache.clause_output,
-        number_of_clauses,
-        number_of_features,
-        ta_state,
-        n_jobs,
-        clause_output_tile_size
-    );
+    {
+        auto const [clause_ix_begin, clause_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+
+        calculate_clause_output(
+            X,
+            cache.clause_output,
+            clause_ix_begin,
+            clause_ix_end,
+            number_of_features,
+            ta_state,
+            n_jobs,
+            clause_output_tile_size
+        );
+    }
+
+    {
+        auto const [clause_ix_begin, clause_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+
+        calculate_clause_output(
+            X,
+            cache.clause_output,
+            clause_ix_begin,
+            clause_ix_end,
+            number_of_features,
+            ta_state,
+            n_jobs,
+            clause_output_tile_size
+        );
+    }
 
     sum_up_label_votes(
         cache.clause_output,
@@ -246,19 +266,43 @@ void classifier_update_impl(
 
     const auto S_inv = ONE / s;
 
-    train_classifier_automata(
-        ta_state,
-        number_of_clauses,
-        cache.feedback_to_clauses.data(),
-        cache.clause_output.data(),
-        number_of_features,
-        number_of_states,
-        S_inv,
-        X.data(),
-        boost_true_positive_feedback,
-        fgen,
-        cache.fcache
-    );
+    {
+        auto const [clause_ix_begin, clause_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+
+        train_classifier_automata(
+            ta_state,
+            clause_ix_begin,
+            clause_ix_end,
+            cache.feedback_to_clauses.data(),
+            cache.clause_output.data(),
+            number_of_features,
+            number_of_states,
+            S_inv,
+            X.data(),
+            boost_true_positive_feedback,
+            fgen,
+            cache.fcache
+        );
+    }
+
+    {
+        auto const [clause_ix_begin, clause_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+
+        train_classifier_automata(
+            ta_state,
+            clause_ix_begin,
+            clause_ix_end,
+            cache.feedback_to_clauses.data(),
+            cache.clause_output.data(),
+            number_of_features,
+            number_of_states,
+            S_inv,
+            X.data(),
+            boost_true_positive_feedback,
+            fgen,
+            cache.fcache
+        );
+    }
 }
 
 
