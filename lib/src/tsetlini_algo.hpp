@@ -127,49 +127,49 @@ void calculate_clause_output_for_predict_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
-        for (int j = 0; j < number_of_clauses; ++j)
+        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
             bool all_exclude = true;
 
-            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
-            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
-            for (int k = 0; k < number_of_features and output == true; ++k)
+            for (int fidx = 0; fidx < number_of_features and output == true; ++fidx)
             {
-                bool const action_include = action(ta_state_pos_j[k]);
-                bool const action_include_negated = action(ta_state_neg_j[k]);
+                bool const action_include = action(ta_state_pos_j[fidx]);
+                bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
                 all_exclude = (action_include == true or action_include_negated == true) ? false : all_exclude;
 
-                output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
+                output = ((action_include == true and X_p[fidx] == 0) or (action_include_negated == true and X_p[fidx] != 0)) ? false : output;
             }
 
             output = (all_exclude == true) ? false : output;
 
-            clause_output[j] = output;
+            clause_output[oidx] = output;
         }
     }
     else
     {
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
-        for (int j = 0; j < number_of_clauses; ++j)
+        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             char toggle_output = 0;
             char neg_all_exclude = 0;
 
-            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
-            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
-                for (auto k = kk; k < BATCH_SZ + kk; ++k)
+                for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bool const action_include = action(ta_state_pos_j[k]);
-                    bool const action_include_negated = action(ta_state_neg_j[k]);
+                    bool const action_include = action(ta_state_pos_j[fidx]);
+                    bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
-                    char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                    char flag = ((X_p[fidx] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[fidx] ^ 1)) ^ 1);
                     toggle_output = flag > toggle_output ? flag : toggle_output;
 
                     char xflag = action_include + action_include_negated;
@@ -180,19 +180,19 @@ void calculate_clause_output_for_predict_T(
                     break;
                 }
             }
-            for (int k = kk; k < number_of_features and toggle_output == false; ++k)
+            for (int fidx = kk; fidx < number_of_features and toggle_output == false; ++fidx)
             {
-                bool const action_include = action(ta_state_pos_j[k]);
-                bool const action_include_negated = action(ta_state_neg_j[k]);
+                bool const action_include = action(ta_state_pos_j[fidx]);
+                bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
-                char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                char flag = ((X_p[fidx] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[fidx] ^ 1)) ^ 1);
                 toggle_output = flag > toggle_output ? flag : toggle_output;
 
                 char xflag = action_include + action_include_negated;
                 neg_all_exclude = xflag > neg_all_exclude ? xflag : neg_all_exclude;
             }
 
-            clause_output[j] = neg_all_exclude == 0 ? 0 : !toggle_output;
+            clause_output[oidx] = neg_all_exclude == 0 ? 0 : !toggle_output;
         }
     }
 }
@@ -273,43 +273,43 @@ void calculate_clause_output_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
-        for (int j = clause_begin_ix; j < clause_end_ix; ++j)
+        for (int oidx = clause_begin_ix; oidx < clause_end_ix; ++oidx)
         {
             bool output = true;
 
-            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
-            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
-            for (int k = 0; k < number_of_features and output == true; ++k)
+            for (int fidx = 0; fidx < number_of_features and output == true; ++fidx)
             {
-                bool const action_include = action(ta_state_pos_j[k]);
-                bool const action_include_negated = action(ta_state_neg_j[k]);
+                bool const action_include = action(ta_state_pos_j[fidx]);
+                bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
-                output = ((action_include == true and X_p[k] == 0) or (action_include_negated == true and X_p[k] != 0)) ? false : output;
+                output = ((action_include == true and X_p[fidx] == 0) or (action_include_negated == true and X_p[fidx] != 0)) ? false : output;
             }
 
-            clause_output[j] = output;
+            clause_output[oidx] = output;
         }
     }
     else
     {
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
-        for (int j = clause_begin_ix; j < clause_end_ix; ++j)
+        for (int oidx = clause_begin_ix; oidx < clause_end_ix; ++oidx)
         {
             char toggle_output = 0;
 
-            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
-            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
+            state_type const * ta_state_pos_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 0));
+            state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
-                for (auto k = kk; k < BATCH_SZ + kk; ++k)
+                for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bool const action_include = action(ta_state_pos_j[k]);
-                    bool const action_include_negated = action(ta_state_neg_j[k]);
+                    bool const action_include = action(ta_state_pos_j[fidx]);
+                    bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
-                    char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                    char flag = ((X_p[fidx] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[fidx] ^ 1)) ^ 1);
                     toggle_output = flag > toggle_output ? flag : toggle_output;
                 }
                 if (toggle_output != 0)
@@ -317,16 +317,16 @@ void calculate_clause_output_T(
                     break;
                 }
             }
-            for (int k = kk; k < number_of_features and toggle_output == false; ++k)
+            for (int fidx = kk; fidx < number_of_features and toggle_output == false; ++fidx)
             {
-                bool const action_include = action(ta_state_pos_j[k]);
-                bool const action_include_negated = action(ta_state_neg_j[k]);
+                bool const action_include = action(ta_state_pos_j[fidx]);
+                bool const action_include_negated = action(ta_state_neg_j[fidx]);
 
-                char flag = ((X_p[k] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[k] ^ 1)) ^ 1);
+                char flag = ((X_p[fidx] | !action_include) ^ 1) | (((!action_include_negated) | (X_p[fidx] ^ 1)) ^ 1);
                 toggle_output = flag > toggle_output ? flag : toggle_output;
             }
 
-            clause_output[j] = !toggle_output;
+            clause_output[oidx] = !toggle_output;
         }
     }
 }
@@ -360,8 +360,8 @@ inline
 void calculate_clause_output(
     RowType const & X,
     aligned_vector_char & clause_output,
-    int const clause_begin_ix,
-    int const clause_end_ix,
+    int const output_begin_ix,
+    int const output_end_ix,
     int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
@@ -373,8 +373,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 128>(
                 X,
                 clause_output,
-                clause_begin_ix,
-                clause_end_ix,
+                output_begin_ix,
+                output_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -384,8 +384,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 64>(
                 X,
                 clause_output,
-                clause_begin_ix,
-                clause_end_ix,
+                output_begin_ix,
+                output_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -395,8 +395,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 32>(
                 X,
                 clause_output,
-                clause_begin_ix,
-                clause_end_ix,
+                output_begin_ix,
+                output_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -409,8 +409,8 @@ void calculate_clause_output(
             calculate_clause_output_T<state_type, 16>(
                 X,
                 clause_output,
-                clause_begin_ix,
-                clause_end_ix,
+                output_begin_ix,
+                output_end_ix,
                 number_of_features,
                 ta_state,
                 n_jobs
@@ -557,8 +557,8 @@ void block3(
 template<typename state_type>
 void train_classifier_automata(
     numeric_matrix<state_type> & ta_state,
-    int const clause_begin_ix,
-    int const clause_end_ix,
+    int const input_begin_ix,
+    int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_features,
@@ -572,7 +572,7 @@ void train_classifier_automata(
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
-    for (int j = clause_begin_ix; j < clause_end_ix; ++j)
+    for (int j = input_begin_ix; j < input_end_ix; ++j)
     {
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
