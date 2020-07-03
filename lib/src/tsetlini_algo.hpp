@@ -263,8 +263,8 @@ inline
 void calculate_clause_output_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const clause_begin_ix,
-    int const clause_end_ix,
+    int const output_begin_ix,
+    int const output_end_ix,
     int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
@@ -273,7 +273,7 @@ void calculate_clause_output_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
-        for (int oidx = clause_begin_ix; oidx < clause_end_ix; ++oidx)
+        for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
 
@@ -294,7 +294,7 @@ void calculate_clause_output_T(
     else
     {
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
-        for (int oidx = clause_begin_ix; oidx < clause_end_ix; ++oidx)
+        for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             char toggle_output = 0;
 
