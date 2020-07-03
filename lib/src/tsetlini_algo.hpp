@@ -572,20 +572,20 @@ void train_classifier_automata(
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
-    for (int j = input_begin_ix; j < input_end_ix; ++j)
+    for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
-        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 0));
-        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * j + 1));
+        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 0));
+        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 1));
 
-        if (feedback_to_clauses[j] > 0)
+        if (feedback_to_clauses[iidx] > 0)
         {
-            if (clause_output[j] == 0)
+            if (clause_output[iidx] == 0)
             {
                 fcache.refill(frng);
 
                 fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, fcache_, fcache.m_pos);
             }
-            else if (clause_output[j] == 1)
+            else if (clause_output[iidx] == 1)
             {
                 fcache.refill(frng);
 
@@ -595,9 +595,9 @@ void train_classifier_automata(
                     fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
             }
         }
-        else if (feedback_to_clauses[j] < 0)
+        else if (feedback_to_clauses[iidx] < 0)
         {
-            if (clause_output[j] == 1)
+            if (clause_output[iidx] == 1)
             {
                 block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X);
             }
