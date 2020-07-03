@@ -46,12 +46,18 @@ int neg_clause_index(int target_label, int j, int number_of_pos_neg_clauses_per_
 }
 
 
+/*
+ * for use with clause output and clause feedback
+ */
 inline
 auto clause_range_for_label(int label, int number_of_pos_neg_clauses_per_label) -> std::pair<int, int>
 {
-    auto const begin = pos_clause_index(label, 0, number_of_pos_neg_clauses_per_label);
+    // in contrary to pos_clause_index we do not double, because there is no
+    // distinction into positive and negative entries for clause output
+    // and feedback
+    auto const begin = label * number_of_pos_neg_clauses_per_label;
 
-    return std::make_pair(begin, begin + 2 * number_of_pos_neg_clauses_per_label);
+    return std::make_pair(begin, begin + number_of_pos_neg_clauses_per_label);
 }
 
 
@@ -64,18 +70,17 @@ void sum_up_label_votes(
     int const number_of_pos_neg_clauses_per_label,
     int const threshold)
 {
-    label_sum[target_label] = 0;
+    int rv = 0;
 
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+    auto const [output_begin_ix, output_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+
+    for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
     {
-        label_sum[target_label] += clause_output[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)];
+        auto const val = clause_output[oidx];
+        rv += oidx % 2 == 0 ? val : -val;
     }
 
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        label_sum[target_label] -= clause_output[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)];
-    }
-    label_sum[target_label] = std::clamp(label_sum[target_label], -threshold, threshold);
+    label_sum[target_label] = std::clamp(rv, -threshold, threshold);
 }
 
 
@@ -536,7 +541,7 @@ void block3(
     {
         if (X[k] == 0)
         {
-            auto action_include = (ta_state_pos_j[k]) >= 0;
+            auto action_include = (ta_state_pos_j[k] >= 0);
             if (action_include == false)
             {
                 ta_state_pos_j[k]++;
@@ -544,7 +549,7 @@ void block3(
         }
         else //if(X[k] == 1)
         {
-            auto action_include_negated = (ta_state_neg_j[k]) >= 0;
+            auto action_include_negated = (ta_state_neg_j[k] >= 0);
             if (action_include_negated == false)
             {
                 ta_state_neg_j[k]++;
@@ -585,7 +590,7 @@ void train_classifier_automata(
 
                 fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, fcache_, fcache.m_pos);
             }
-            else if (clause_output[iidx] == 1)
+            else // if (clause_output[iidx] == 1)
             {
                 fcache.refill(frng);
 
@@ -624,44 +629,34 @@ void calculate_classifier_feedback_to_clauses(
 
     std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
 
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
-        if (fgen.next() > THR_pos)
-        {
-            continue;
-        }
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
 
-        // Type I Feedback
-        feedback_to_clauses[pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = 1;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_pos)
+        for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {
-            continue;
-        }
+            if (fgen.next() > THR_pos)
+            {
+                continue;
+            }
 
-        // Type II Feedback
-        feedback_to_clauses[neg_clause_index(target_label, j, number_of_pos_neg_clauses_per_label)] = -1;
+            // Type I and II Feedback
+            feedback_to_clauses[fidx] = fidx % 2 == 0 ? 1 : -1;
+        }
     }
 
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
     {
-        if (fgen.next() > THR_neg)
-        {
-            continue;
-        }
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
 
-        feedback_to_clauses[pos_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = -1;
-    }
-    for (int j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
-    {
-        if (fgen.next() > THR_neg)
+        for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {
-            continue;
-        }
+            if (fgen.next() > THR_neg)
+            {
+                continue;
+            }
 
-        feedback_to_clauses[neg_clause_index(opposite_label, j, number_of_pos_neg_clauses_per_label)] = 1;
+            // Type I and II Feedback
+            feedback_to_clauses[fidx] = fidx % 2 == 0 ? -1 : 1;
+        }
     }
 }
 

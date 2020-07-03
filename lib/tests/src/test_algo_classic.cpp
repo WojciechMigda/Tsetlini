@@ -97,28 +97,14 @@ struct ClauseProxy
     {
         for (auto i = 0u; i < clause_sign_0.size(); ++i)
         {
-            clause_sign_0[i].resize(2 * number_of_pos_neg_clauses_per_label);
-            clause_sign_1[i].resize(2 * number_of_pos_neg_clauses_per_label);
+            clause_sign_0[i].resize(number_of_pos_neg_clauses_per_label);
+            clause_sign_1[i].resize(number_of_pos_neg_clauses_per_label);
 
-            for (auto j = 0; j < 2 * number_of_pos_neg_clauses_per_label; ++j)
+            for (auto j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
             {
-                clause_sign_0[i][clause_count[i]] = i * 2 * number_of_pos_neg_clauses_per_label + j;
-    #if 0
-                // Exact CAIR implementation orders positive and negative clauses
-                // by interleaving them
+                clause_sign_0[i][clause_count[i]] = i * number_of_pos_neg_clauses_per_label + j;
+
                 if (j % 2 == 0)
-                {
-                    clause_sign_1[i][clause_count[i]] = 1;
-                }
-                else
-                {
-                    clause_sign_1[i][clause_count[i]] = -1;
-                }
-    #endif
-                // This implementation aggregates positive and negative clauses
-                // together in two contiguous but separate regions.
-                // See pos_clause_index and neg_clause_index
-                if (j < number_of_pos_neg_clauses_per_label)
                 {
                     clause_sign_1[i][clause_count[i]] = 1;
                 }
@@ -175,7 +161,7 @@ void sum_up_class_votes(
     {
         class_sum[target_class] = 0;
 
-        auto const clause_count = 2 * number_of_pos_neg_clauses_per_label;
+        auto const clause_count = number_of_pos_neg_clauses_per_label;
 
         for (auto j = 0; j < clause_count; ++j)
         {
@@ -237,7 +223,7 @@ void calculate_feedback_to_clauses(
 {
     CAIR::ClauseProxy const proxy(number_of_classes, number_of_pos_neg_clauses_per_class);
 
-    for (auto j = 0; j < 2 * number_of_pos_neg_clauses_per_class; ++j)
+    for (auto j = 0; j < proxy.clause_count[target_class]; ++j)
     {
         if (fgen.next() > (1.0 / (threshold * 2)) * (threshold - target_class_votes))
         {
@@ -256,7 +242,7 @@ void calculate_feedback_to_clauses(
         }
     }
 
-    for (auto j = 0; j < 2 * number_of_pos_neg_clauses_per_class; ++j)
+    for (auto j = 0; j < proxy.clause_count[negative_target_class]; ++j)
     {
         if (fgen.next() > (1.0 / (threshold * 2)) * (threshold + negative_target_class_votes))
         {
@@ -277,6 +263,172 @@ void calculate_feedback_to_clauses(
 }
 
 
+/*
+
+for j in xrange(self.number_of_clauses):
+    if self.feedback_to_clauses[j] > 0:
+        ####################################################
+        ### Type I Feedback (Combats False Negatives) ###
+        ####################################################
+
+        if self.clause_output[j] == 0:
+            for k in xrange(self.number_of_features):
+                if 1.0*rand()/RAND_MAX <= 1.0/self.s:
+                    if self.ta_state[j,k,0] > 1:
+                        self.ta_state[j,k,0] -= 1
+
+                if 1.0*rand()/RAND_MAX <= 1.0/self.s:
+                    if self.ta_state[j,k,1] > 1:
+                        self.ta_state[j,k,1] -= 1
+
+        elif self.clause_output[j] == 1:
+            for k in xrange(self.number_of_features):
+                if X[k] == 1:
+                    if self.boost_true_positive_feedback == 1 or 1.0*rand()/RAND_MAX <= (self.s-1)/self.s:
+                        if self.ta_state[j,k,0] < self.number_of_states*2:
+                            self.ta_state[j,k,0] += 1
+
+                    if 1.0*rand()/RAND_MAX <= 1.0/self.s:
+                        if self.ta_state[j,k,1] > 1:
+                            self.ta_state[j,k,1] -= 1
+
+                elif X[k] == 0:
+                    if self.boost_true_positive_feedback == 1 or 1.0*rand()/RAND_MAX <= (self.s-1)/self.s:
+                        if self.ta_state[j,k,1] < self.number_of_states*2:
+                            self.ta_state[j,k,1] += 1
+
+                    if 1.0*rand()/RAND_MAX <= 1.0/self.s:
+                        if self.ta_state[j,k,0] > 1:
+                            self.ta_state[j,k,0] -= 1
+
+    elif self.feedback_to_clauses[j] < 0:
+        #####################################################
+        ### Type II Feedback (Combats False Positives) ###
+        #####################################################
+        if self.clause_output[j] == 1:
+            for k in xrange(self.number_of_features):
+                action_include = self.action(self.ta_state[j,k,0])
+                action_include_negated = self.action(self.ta_state[j,k,1])
+
+                if X[k] == 0:
+                    if action_include == 0 and self.ta_state[j,k,0] < self.number_of_states*2:
+                        self.ta_state[j,k,0] += 1
+                elif X[k] == 1:
+                    if action_include_negated == 0 and self.ta_state[j,k,1] < self.number_of_states*2:
+                        self.ta_state[j,k,1] += 1
+
+ */
+template<typename state_type>
+void train_classifier_automata(
+    Tsetlini::numeric_matrix<state_type> & ta_state,
+    int const input_ix_begin,
+    int const input_ix_end,
+    Tsetlini::feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_features,
+    int const number_of_states,
+    float const S_inv,
+    char const * __restrict X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng
+)
+{
+    for (int j = input_ix_begin; j < input_ix_end; ++j)
+    {
+        state_type * ta_state_pos_j = assume_aligned<Tsetlini::alignment>(ta_state.row_data(2 * j + 0));
+        state_type * ta_state_neg_j = assume_aligned<Tsetlini::alignment>(ta_state.row_data(2 * j + 1));
+
+        if (feedback_to_clauses[j] > 0)
+        {
+            if (clause_output[j] == 0)
+            {
+                for (int k = 0; k < number_of_features; ++k)
+                {
+                    if (frng() <= S_inv)
+                    {
+                        if (ta_state_pos_j[k] > -number_of_states)
+                        {
+                            ta_state_pos_j[k] -= 1;
+                        }
+                    }
+                    if (frng() <= S_inv)
+                    {
+                        if (ta_state_neg_j[k] > -number_of_states)
+                        {
+                            ta_state_neg_j[k] -= 1;
+                        }
+                    }
+                }
+            }
+            else if (clause_output[j] == 1)
+            {
+                for (int k = 0; k < number_of_features; ++k)
+                {
+                    if (X[k] == 1)
+                    {
+                        if (boost_true_positive_feedback == 1 or frng() <= (1 - S_inv))
+                        {
+                            if (ta_state_pos_j[k] < number_of_states - 1)
+                            {
+                                ta_state_pos_j[k] += 1;
+                            }
+                        }
+                        if (frng() <= S_inv)
+                        {
+                            if (ta_state_neg_j[k] > -number_of_states)
+                            {
+                                ta_state_neg_j[k] -= 1;
+                            }
+                        }
+                    }
+                    else if (X[k] == 0)
+                    {
+                        if (boost_true_positive_feedback == 1 or frng() <= (1 - S_inv))
+                        {
+                            if (ta_state_neg_j[k] < number_of_states - 1)
+                                ta_state_neg_j[k] += 1;
+                        }
+                        if (frng() <= S_inv)
+                        {
+                            if (ta_state_pos_j[k] > -number_of_states)
+                            {
+                                ta_state_pos_j[k] -= 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (feedback_to_clauses[j] < 0)
+        {
+            if (clause_output[j] == 1)
+            {
+                for (int k = 0; k < number_of_features; ++k)
+                {
+                    auto const action_include = Tsetlini::action(ta_state_pos_j[k]);
+                    auto const action_include_negated = Tsetlini::action(ta_state_neg_j[k]);
+
+                    if (X[k] == 0)
+                    {
+                        if (action_include == 0 and ta_state_pos_j[k] < number_of_states - 1)
+                        {
+                            ta_state_pos_j[k] += 1;
+                        }
+                    }
+                    else if (X[k] == 1)
+                    {
+                        if (action_include_negated == 0 and ta_state_neg_j[k] < number_of_states - 1)
+                        {
+                            ta_state_neg_j[k] += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 } // namespace CAIR
 
 
@@ -287,7 +439,7 @@ TEST(CalculateClauseOutput, replicates_result_of_CAIR_code)
     for (auto it = 0u; it < 1000; /* nop */)
     {
         int const number_of_features = irng.next(1, 200);
-        int const number_of_clauses = irng.next(1, 20);
+        int const number_of_clauses = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
 
@@ -295,13 +447,13 @@ TEST(CalculateClauseOutput, replicates_result_of_CAIR_code)
 
         Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
 
-        auto ta_state_gen = [number_of_clauses, number_of_features, &irng](auto & ta_state)
+        auto ta_state_gen = [&irng](auto & ta_state)
         {
-            for (auto rit = 0; rit < 2 * number_of_clauses; ++rit)
+            for (auto rit = 0u; rit < ta_state.rows(); ++rit)
             {
                 auto row_data = ta_state.row_data(rit);
 
-                for (auto cit = 0; cit < number_of_features; ++cit)
+                for (auto cit = 0u; cit < ta_state.cols(); ++cit)
                 {
                     row_data[cit] = irng.next(-1, 0);
                 }
@@ -333,7 +485,7 @@ TEST(CalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
     for (auto it = 0u; it < 1000; /* nop */)
     {
         int const number_of_features = irng.next(1, 200);
-        int const number_of_clauses = irng.next(1, 20);
+        int const number_of_clauses = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
 
@@ -341,13 +493,13 @@ TEST(CalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
 
         Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
 
-        auto ta_state_gen = [number_of_clauses, number_of_features, &irng](auto & ta_state)
+        auto ta_state_gen = [&irng](auto & ta_state)
         {
-            for (auto rit = 0; rit < 2 * number_of_clauses; ++rit)
+            for (auto rit = 0u; rit < ta_state.rows(); ++rit)
             {
                 auto row_data = ta_state.row_data(rit);
 
-                for (auto cit = 0; cit < number_of_features; ++cit)
+                for (auto cit = 0u; cit < ta_state.cols(); ++cit)
                 {
                     row_data[cit] = irng.next(-1, 0);
                 }
@@ -378,11 +530,11 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 
     for (auto it = 0u; it < 1000; ++it)
     {
-        int const number_of_pos_neg_clauses = irng.next(1, 20);
+        int const number_of_pos_neg_clauses = irng.next(1, 10) * 2; // must be even
         int const number_of_labels = irng.next(2, 12);
         int const threshold = irng.next(1, 127);
 
-        Tsetlini::aligned_vector_char clause_output(2 * number_of_pos_neg_clauses * number_of_labels);
+        Tsetlini::aligned_vector_char clause_output(number_of_pos_neg_clauses * number_of_labels);
         std::generate(clause_output.begin(), clause_output.end(), [&irng](){ return irng.next(0, 1); });
 
         Tsetlini::aligned_vector_int label_sum(number_of_labels);
@@ -399,6 +551,8 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
+    FRNG    fgen(4567);
+    FRNG    fgen_CAIR(4567);
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -410,13 +564,10 @@ TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
         int const target_label_votes = irng.next(-threshold, threshold);
         int const opposite_label_votes = irng.next(-threshold, threshold);
 
-        int const number_of_pos_neg_clauses_per_label = irng.next(1, 20);
+        int const number_of_pos_neg_clauses_per_label = irng.next(1, 10) * 2; // must be even
 
-        Tsetlini::feedback_vector_type feedback_to_clauses(2 * number_of_pos_neg_clauses_per_label * number_of_labels);
-        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(2 * number_of_pos_neg_clauses_per_label * number_of_labels);
-
-        FRNG fgen(4567);
-        FRNG fgen_CAIR(4567);
+        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_pos_neg_clauses_per_label * number_of_labels);
+        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_pos_neg_clauses_per_label * number_of_labels);
 
         CAIR::calculate_feedback_to_clauses(
             feedback_to_clauses_CAIR,
@@ -440,6 +591,69 @@ TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
             fgen);
 
         EXPECT_TRUE(feedback_to_clauses_CAIR == feedback_to_clauses);
+    }
+}
+
+
+TEST(TrainAutomata, replicates_result_of_CAIR_code)
+{
+    IRNG    irng(1234);
+    FRNG    fgen(4567);
+    FRNG    frng(4567);
+    FRNG    frng_CAIR(4567);
+
+    for (auto it = 0u; it < 1000; ++it)
+    {
+        int const number_of_features = irng.next(1, 200);
+        int const number_of_clauses = irng.next(1, 50) * 2; // must be even
+        int const number_of_states = irng.next(2, 127);
+
+        Tsetlini::aligned_vector_char X(number_of_features);
+
+        std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
+
+        Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
+
+        auto ta_state_gen = [number_of_states, &irng](auto & ta_state)
+        {
+            for (auto rit = 0u; rit < ta_state.rows(); ++rit)
+            {
+                auto row_data = ta_state.row_data(rit);
+
+                for (auto cit = 0u; cit < ta_state.cols(); ++cit)
+                {
+                    row_data[cit] = irng.next(-number_of_states, number_of_states - 1);
+                }
+            }
+        };
+
+        ta_state_gen(ta_state);
+
+        Tsetlini::numeric_matrix_int8 ta_state_CAIR = ta_state;
+
+        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clauses);
+        std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&irng](){ return irng.next(-1, +1); });
+
+        Tsetlini::aligned_vector_char clause_output(number_of_clauses);
+        std::generate(clause_output.begin(), clause_output.end(), [&irng](){ return irng.next(0, 1); });
+
+        bool const boost_true_positive_feedback = irng.next(0, 1) != 0;
+        /*
+         * Setting S_inv to either 0.0 or 1.0 removes stochasticity from testing
+         */
+        Tsetlini::real_type const S_inv = irng.next(0, 1);
+
+        Tsetlini::ClassifierState::frand_cache_type fcache(fgen, 2 * number_of_features, 0);
+
+        CAIR::train_classifier_automata(
+            ta_state_CAIR, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
+            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, frng_CAIR);
+
+        Tsetlini::train_classifier_automata(
+            ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
+            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, frng, fcache);
+
+        EXPECT_TRUE(ta_state == ta_state_CAIR);
     }
 }
 

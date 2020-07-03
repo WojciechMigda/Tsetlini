@@ -59,30 +59,27 @@ void initialize_state(ClassifierState & state)
         and ("auto" == counting_type or "int8" == counting_type))
     {
         LOG(trace) << "Selected int8 for ta_state\n";
-        ta_state_v = numeric_matrix_int8(2 * number_of_clauses, number_of_features);
+        ta_state_v = numeric_matrix_int8(number_of_clauses, number_of_features);
     }
     else if (number_of_states <= std::numeric_limits<std::int16_t>::max()
         and ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
     {
         LOG(trace) << "Selected int16 for ta_state\n";
-        ta_state_v = numeric_matrix_int16(2 * number_of_clauses, number_of_features);
+        ta_state_v = numeric_matrix_int16(number_of_clauses, number_of_features);
     }
     else
     {
         LOG(trace) << "Selected int32 for ta_state\n";
-        ta_state_v = numeric_matrix_int32(2 * number_of_clauses, number_of_features);
+        ta_state_v = numeric_matrix_int32(number_of_clauses, number_of_features);
     }
 
-    auto ta_state_gen = [&params, &igen](auto & ta_state)
+    auto ta_state_gen = [&igen](auto & ta_state)
     {
-        auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-        auto const number_of_features = Params::number_of_features(params);
-
-        for (auto rit = 0; rit < 2 * number_of_clauses; ++rit)
+        for (auto rit = 0u; rit < ta_state.rows(); ++rit)
         {
             auto row_data = ta_state.row_data(rit);
 
-            for (auto cit = 0; cit < number_of_features; ++cit)
+            for (auto cit = 0u; cit < ta_state.cols(); ++cit)
             {
                 row_data[cit] = igen.next(-1, 0);
             }
@@ -101,11 +98,11 @@ void reset_state_cache(ClassifierState & state)
     auto & params = state.m_params;
 
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params));
+    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
     cache.label_sum.clear();
     cache.label_sum.resize(Params::number_of_labels(params));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params));
+    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
     // initialize frand cache
     cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());

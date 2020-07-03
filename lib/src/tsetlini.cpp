@@ -335,7 +335,7 @@ evaluate_impl(
                 calculate_clause_output_for_predict(
                     X[it],
                     state.cache.clause_output,
-                    number_of_clauses,
+                    number_of_clauses / 2,
                     number_of_features,
                     ta_state,
                     n_jobs,
@@ -380,7 +380,7 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
             calculate_clause_output_for_predict(
                 sample,
                 state.cache.clause_output,
-                Params::number_of_classifier_clauses(state.m_params),
+                Params::number_of_classifier_clauses(state.m_params) / 2,
                 Params::number_of_features(state.m_params),
                 ta_state,
                 n_jobs,
@@ -437,7 +437,7 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
                 calculate_clause_output_for_predict(
                     X[it],
                     state.cache.clause_output,
-                    number_of_clauses,
+                    number_of_clauses / 2,
                     number_of_features,
                     ta_state,
                     n_jobs,
@@ -490,7 +490,7 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
             calculate_clause_output_for_predict(
                 sample,
                 state.cache.clause_output,
-                number_of_clauses,
+                number_of_clauses / 2,
                 number_of_features,
                 ta_state,
                 n_jobs,
@@ -540,7 +540,7 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
                 calculate_clause_output_for_predict(
                     X[it],
                     state.cache.clause_output,
-                    number_of_clauses,
+                    number_of_clauses / 2,
                     number_of_features,
                     ta_state,
                     n_jobs,
