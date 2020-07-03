@@ -118,8 +118,9 @@ before_script:
   #- cython --version
 
 script:
+  - ${CXX:-c++} -march=native -O3 -Q --help=target | grep march
   - pushd .build
-  - cmake -DCMAKE_CXX_COMPILER=${CXX:-c++} -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_CXX_FLAGS="-Wall -Werror -march=native" ..
+  - cmake -DCMAKE_CXX_COMPILER=${CXX:-c++} -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_CXX_FLAGS="-Wall -Werror -march=native -mno-avx512f" ..
   - cmake --build .
   - pushd lib && ctest && popd
   - sudo make install
