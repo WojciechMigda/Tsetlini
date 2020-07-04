@@ -134,8 +134,9 @@ bool is_fitted(EstimatorStateT const & state)
 }
 
 
+template<typename EstimatorStateT>
 status_message_t check_for_predict(
-    ClassifierState const & state,
+    EstimatorStateT const & state,
     std::vector<aligned_vector_char> const & X)
 {
     if (not is_fitted(state))
@@ -175,8 +176,9 @@ status_message_t check_for_predict(
 }
 
 
+template<typename EstimatorStateT>
 status_message_t check_for_predict(
-    ClassifierState const & state,
+    EstimatorStateT const & state,
     aligned_vector_char const & sample)
 {
     if (not is_fitted(state))
@@ -411,6 +413,36 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
     label_type rv = std::distance(
         state.cache.label_sum.cbegin(),
         std::max_element(state.cache.label_sum.cbegin(), state.cache.label_sum.cend()));
+
+    return Either<status_message_t, label_type>::rightOf(rv);
+}
+
+
+Either<status_message_t, response_type>
+predict_impl(RegressorState const & state, aligned_vector_char const & sample)
+{
+    if (auto sm = check_for_predict(state, sample);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, label_type>::leftOf(std::move(sm));
+    }
+
+    auto const n_jobs = Params::n_jobs(state.m_params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(state.m_params);
+
+    std::visit([&](auto & ta_state)
+        {
+            calculate_clause_output_for_predict(
+                sample,
+                state.cache.clause_output,
+                Params::number_of_classifier_clauses(state.m_params) / 2,
+                Params::number_of_features(state.m_params),
+                ta_state,
+                n_jobs,
+                clause_output_tile_size);
+        }, state.ta_state);
+
+    response_type rv = sum_up_regressor_votes(state.cache.clause_output, Params::threshold(state.m_params));
 
     return Either<status_message_t, label_type>::rightOf(rv);
 }
@@ -887,7 +919,7 @@ RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vecto
 template<typename state_type, typename row_type>
 void regressor_update_impl(
     row_type const & X,
-    label_type const target_response,
+    response_type const target_response,
 
     int const threshold,
     int const number_of_clauses,
@@ -1095,6 +1127,66 @@ status_message_t
 RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
     return partial_fit_impl(m_state, X, y, epochs);
+}
+
+
+Either<status_message_t, response_vector_type>
+predict_impl(RegressorState const & state, std::vector<aligned_vector_char> const & X)
+{
+    if (auto sm = check_for_predict(state, X);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, response_vector_type>::leftOf(std::move(sm));
+    }
+
+    // let it crash - no state validation for now
+
+    auto const number_of_examples = X.size();
+
+    auto const & params = state.m_params;
+
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
+
+    response_vector_type rv(number_of_examples);
+
+    for (auto it = 0u; it < number_of_examples; ++it)
+    {
+        std::visit([&](auto & ta_state)
+            {
+                calculate_clause_output_for_predict(
+                    X[it],
+                    state.cache.clause_output,
+                    number_of_clauses / 2,
+                    number_of_features,
+                    ta_state,
+                    n_jobs,
+                    clause_output_tile_size);
+            }, state.ta_state);
+
+        auto const votes = sum_up_regressor_votes(state.cache.clause_output, threshold);
+
+        rv[it] = votes;
+    }
+
+    return Either<status_message_t, response_vector_type>::rightOf(rv);
+}
+
+
+Either<status_message_t, response_vector_type>
+RegressorClassic::predict(std::vector<aligned_vector_char> const & X) const
+{
+    return predict_impl(m_state, X);
+}
+
+
+Either<status_message_t, response_type>
+RegressorClassic::predict(aligned_vector_char const & sample) const
+{
+    return predict_impl(m_state, sample);
 }
 
 

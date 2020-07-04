@@ -89,28 +89,20 @@ struct RegressorClassic
 //    [[nodiscard]]
 //    Either<status_message_t, real_type>
 //    evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const;
-//
-//    [[nodiscard]]
-//    Either<status_message_t, label_type>
-//    predict(aligned_vector_char const & sample) const;
-//
-//    [[nodiscard]]
-//    Either<status_message_t, label_vector_type>
-//    predict(std::vector<aligned_vector_char> const & X) const;
-//
-//    [[nodiscard]]
-//    Either<status_message_t, aligned_vector_int>
-//    predict_raw(aligned_vector_char const & sample) const;
-//
-//    [[nodiscard]]
-//    Either<status_message_t, std::vector<aligned_vector_int>>
-//    predict_raw(std::vector<aligned_vector_char> const & X) const;
-//
-//
+
+    [[nodiscard]]
+    Either<status_message_t, response_type>
+    predict(aligned_vector_char const & sample) const;
+
+    [[nodiscard]]
+    Either<status_message_t, response_vector_type>
+    predict(std::vector<aligned_vector_char> const & X) const;
+
+
 //    params_t read_params() const;
-//    ClassifierState read_state() const;
+//    RegressorState read_state() const;
 //
-//    RegressorClassic(ClassifierState const & state);
+//    RegressorClassic(RegressorState const & state);
 //
 friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
 
