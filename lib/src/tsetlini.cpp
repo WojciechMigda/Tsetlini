@@ -923,22 +923,23 @@ void regressor_update_impl(
         threshold,
         fgen);
 
-//    const auto S_inv = ONE / s;
-//
-//    train_automata_batch(
-//        ta_state,
-//        0,
-//        number_of_clauses,
-//        cache.feedback_to_clauses.data(),
-//        cache.clause_output.data(),
-//        number_of_features,
-//        number_of_states,
-//        S_inv,
-//        X,
-//        boost_true_positive_feedback,
-//        fgen,
-//        cache.fcache
-//    );
+    const auto S_inv = ONE / s;
+
+    train_regressor_automata(
+        ta_state,
+        0,
+        number_of_clauses,
+        cache.feedback_to_clauses.data(),
+        cache.clause_output.data(),
+        number_of_features,
+        number_of_states,
+        S_inv,
+        response_error,
+        X.data(),
+        boost_true_positive_feedback,
+        fgen,
+        cache.fcache
+    );
 }
 
 
