@@ -897,6 +897,12 @@ RegressorClassic::RegressorClassic(params_t && params) :
 }
 
 
+RegressorClassic::RegressorClassic(RegressorState const & state) :
+    m_state(state)
+{
+}
+
+
 Either<status_message_t, RegressorClassic>
 make_regressor_classic(std::string const & json_params)
 {
@@ -1187,6 +1193,18 @@ Either<status_message_t, response_type>
 RegressorClassic::predict(aligned_vector_char const & sample) const
 {
     return predict_impl(m_state, sample);
+}
+
+
+params_t RegressorClassic::read_params() const
+{
+    return m_state.m_params;
+}
+
+
+RegressorState RegressorClassic::read_state() const
+{
+    return m_state;
 }
 
 

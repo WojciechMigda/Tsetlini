@@ -99,11 +99,11 @@ struct RegressorClassic
     predict(std::vector<aligned_vector_char> const & X) const;
 
 
-//    params_t read_params() const;
-//    RegressorState read_state() const;
-//
-//    RegressorClassic(RegressorState const & state);
-//
+    params_t read_params() const;
+    RegressorState read_state() const;
+
+    RegressorClassic(RegressorState const & state);
+
 friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
 
 
