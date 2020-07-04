@@ -127,7 +127,8 @@ label_vector_type unique_labels(label_vector_type const & y)
 }
 
 
-bool is_fitted(ClassifierState const & state)
+template<typename EstimatorStateT>
+bool is_fitted(EstimatorStateT const & state)
 {
     return std::visit([](auto const & ta_state){ return ta_state.shape().first != 0; }, state.ta_state);
 }
@@ -907,7 +908,7 @@ void regressor_update_impl(
         X,
         cache.clause_output,
         0,
-        number_of_clauses,
+        number_of_clauses / 2,
         number_of_features,
         ta_state,
         n_jobs,
@@ -928,7 +929,7 @@ void regressor_update_impl(
     train_regressor_automata(
         ta_state,
         0,
-        number_of_clauses,
+        number_of_clauses / 2,
         cache.feedback_to_clauses.data(),
         cache.clause_output.data(),
         number_of_features,
@@ -1029,6 +1030,24 @@ fit_online_impl(
 }
 
 
+status_message_t
+partial_fit_impl(
+    RegressorState & state,
+    std::vector<aligned_vector_char> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (is_fitted(state))
+    {
+        return fit_online_impl(state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, epochs);
+    }
+}
+
+
 template<typename RowType>
 status_message_t
 fit_impl_T(
@@ -1072,6 +1091,11 @@ fit_impl(
 }
 
 
+status_message_t
+RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
+{
+    return partial_fit_impl(m_state, X, y, epochs);
+}
 
 
 } // namespace Tsetlini

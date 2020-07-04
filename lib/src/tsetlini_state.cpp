@@ -179,9 +179,9 @@ void reset_state_cache(RegressorState & state)
     auto & params = state.m_params;
 
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 1);
+    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
     // initialize frand cache
     cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());

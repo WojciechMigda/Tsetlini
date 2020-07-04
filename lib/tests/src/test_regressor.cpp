@@ -258,4 +258,314 @@ TEST(TsetlinRegressorClassicFit, accepts_y_within_valid_range)
 }
 
 
+///     Partial Fit
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_empty_X)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X;
+            Tsetlini::response_vector_type y{1, 0, 1, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_empty_y)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y;
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_X_with_uneven_row_sizes)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_X_with_values_not_0_1)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_X_and_y_with_different_lengths)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0, 1};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_y_with_negative_response)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{1, 0, -1};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, rejects_y_with_response_over_threshold)
+{
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{1, 15 + 1, 1};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicPartialFit, accepts_y_within_valid_range)
+{
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{0, 1, 15};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_OK, rv.first);
+            return reg;
+        });
+}
+
+
+///     Next Partial Fit
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_empty_X)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X;
+            Tsetlini::response_vector_type y{1, 0, 1, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_empty_y)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y;
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_X_with_uneven_row_sizes)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_X_with_values_not_0_1)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_X_and_y_with_different_lengths)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y{1, 0, 0, 1};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_y_with_negative_response)
+{
+    Tsetlini::make_regressor_classic("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 1, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{1, 0, -1};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, rejects_y_with_response_over_threshold)
+{
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 1, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{15 + 1, 1, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
+            return reg;
+        });
+}
+
+
+TEST(TsetlinRegressorClassicNextPartialFit, accepts_y_within_valid_range)
+{
+    Tsetlini::make_regressor_classic("{'threshold': 15}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X0{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::response_vector_type y0{1, 0, 1};
+            auto const rv0 = reg.partial_fit(X0, y0);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 1, 1}, {0, 1, 0}};
+            Tsetlini::response_vector_type y{15, 1, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            EXPECT_EQ(Tsetlini::StatusCode::S_OK, rv.first);
+            return reg;
+        });
+}
+
+
+///     Predict matrix
+
 } // anonymous namespace
