@@ -82,8 +82,7 @@ int main()
     auto constexpr NCOL = 28 * 28 + 1;
 
     auto const train_Xy = read_data_as_vec("MNISTTraining.txt", NCOL);
-    auto const test1_Xy = read_data_as_vec("MNISTTest.txt", NCOL);
-    auto const test2_Xy = read_data_as_vec("MNISTTest2.txt", NCOL);
+    auto const test_Xy = read_data_as_vec("MNISTTest.txt", NCOL);
 
     if (train_Xy.size() == 0)
     {
@@ -92,48 +91,33 @@ Could not read from file MNISTTraining.txt. It either does not exist
 or is not readable.
 Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
 You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
 or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
 )";
         return 1;
     }
-    if (test1_Xy.size() == 0)
+    if (test_Xy.size() == 0)
     {
         std::cout << R"(
 Could not read from file MNISTTest.txt. It either does not exist
 or is not readable.
 Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
 You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
 or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
-)";
-        return 1;
-    }
-    if (test2_Xy.size() == 0)
-    {
-        std::cout << R"(
-Could not read from file MNISTTest.txt. It either does not exist
-or is not readable.
-Please download and unzip it from https://github.com/cair/fast-tsetlin-machine-with-mnist-demo
-You can issue the following command:
-$> curl --remote-name-all https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
-or
-$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae464886d75da4247e7108ed4d17ea08845b7/BinarizedMNISTData.zip
+$> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
 )";
         return 1;
     }
 
 
     auto const [train_X, train_y] = split_Xy(train_Xy);
-    auto const [test1_X, test1_y] = split_Xy(test1_Xy);
-    auto const [test2_X, test2_y] = split_Xy(test2_Xy);
+    auto const [test_X, test_y] = split_Xy(test_Xy);
 
     constexpr auto SAMPLE_SZ = NCOL - 1u;
     assert(train_X.front().size() == SAMPLE_SZ);
-    assert(test1_X.front().size() == SAMPLE_SZ);
-    assert(test2_X.front().size() == SAMPLE_SZ);
+    assert(test_X.front().size() == SAMPLE_SZ);
 
 
     auto error_printer = [](Tsetlini::status_message_t && msg)
@@ -149,9 +133,9 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
     };
 
     Tsetlini::make_classifier_classic(R"({
-            "threshold": 25,
+            "threshold": 50,
             "s": 10.0,
-            "number_of_pos_neg_clauses_per_label": 500,
+            "number_of_pos_neg_clauses_per_label": 2000,
             "number_of_states": 127,
             "boost_true_positive_feedback": 1,
             "random_state": 1,
@@ -164,7 +148,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
         {
             std::chrono::high_resolution_clock::time_point time0{};
 
-            for (auto epoch = 1u; epoch <= 250; ++epoch)
+            for (auto epoch = 1u; epoch <= 400; ++epoch)
             {
                 std::cout << "EPOCH " << epoch << '\n';
 
@@ -175,13 +159,9 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
 
                 time0 = now();
 
-                clf.evaluate(test1_X, test1_y)
+                clf.evaluate(test_X, test_y)
                     .leftMap(error_printer)
-                    .rightMap([](auto acc){ printf("Accuracy Dataset I: %.2f\n", acc * 100); return acc; });
-
-                clf.evaluate(test2_X, test2_y)
-                    .leftMap(error_printer)
-                    .rightMap([](auto acc){ printf("Accuracy Dataset II: %.2f\n", acc * 100); return acc; });
+                    .rightMap([](auto acc){ printf("Test Accuracy: %.2f\n", acc * 100); return acc; });
 
                 printf("Evaluation Time: %.1f s\n\n", as_ms(now() - time0) / 2.);
             }
