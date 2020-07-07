@@ -140,7 +140,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         {
             std::chrono::high_resolution_clock::time_point time0{};
 
-            for (auto epoch = 1u; epoch <= 30; ++epoch)
+            for (auto epoch = 1u; epoch <= 50; ++epoch)
             {
                 std::cout << "EPOCH " << epoch << '\n';
 
