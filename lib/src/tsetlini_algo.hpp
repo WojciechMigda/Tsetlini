@@ -733,7 +733,7 @@ void train_regressor_automata(
                     fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
             }
         }
-        else if (response_error < 0)
+        else if (response_error > 0)
         {
             if (clause_output[iidx] == 1)
             {
