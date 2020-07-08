@@ -39,6 +39,8 @@ using numeric_matrix_int8 = numeric_matrix<std::int8_t>;
 
 using label_type = int;
 using label_vector_type = std::vector<label_type>;
+using response_type = int;
+using response_vector_type = std::vector<response_type>;
 using feedback_vector_type = aligned_vector_int;
 
 static constexpr real_type ONE = 1.;

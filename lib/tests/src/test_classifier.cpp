@@ -8,7 +8,7 @@ namespace
 {
 
 
-TEST(TsetlinClassifier, can_be_created)
+TEST(TsetlinClassifierClassic, can_be_created)
 {
     auto const clf = Tsetlini::make_classifier_classic();
 
@@ -16,7 +16,7 @@ TEST(TsetlinClassifier, can_be_created)
 }
 
 
-TEST(TsetlinClassifier, cannot_be_created_from_empty_json)
+TEST(TsetlinClassifierClassic, cannot_be_created_from_empty_json)
 {
     auto const clf = Tsetlini::make_classifier_classic("");
 
@@ -24,7 +24,7 @@ TEST(TsetlinClassifier, cannot_be_created_from_empty_json)
 }
 
 
-TEST(TsetlinClassifier, cannot_be_created_from_bad_json)
+TEST(TsetlinClassifierClassic, cannot_be_created_from_bad_json)
 {
     auto const clf = Tsetlini::make_classifier_classic("[]");
 
@@ -32,7 +32,7 @@ TEST(TsetlinClassifier, cannot_be_created_from_bad_json)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_empty_json_dict)
+TEST(TsetlinClassifierClassic, can_be_created_from_empty_json_dict)
 {
     auto const clf = Tsetlini::make_classifier_classic("{}");
 
@@ -40,7 +40,7 @@ TEST(TsetlinClassifier, can_be_created_from_empty_json_dict)
 }
 
 
-TEST(TsetlinClassifier, cannot_be_created_from_json_with_unrecognized_param)
+TEST(TsetlinClassifierClassic, cannot_be_created_from_json_with_unrecognized_param)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"gotcha": 564})");
 
@@ -48,7 +48,7 @@ TEST(TsetlinClassifier, cannot_be_created_from_json_with_unrecognized_param)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int8)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_counting_type_int8)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int8"})");
 
@@ -56,7 +56,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int8)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int16)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_counting_type_int16)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int16"})");
 
@@ -64,7 +64,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int16)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int32)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_counting_type_int32)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int32"})");
 
@@ -72,7 +72,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_int32)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_auto)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_counting_type_auto)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "auto"})");
 
@@ -80,7 +80,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_counting_type_auto)
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_16)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_clause_output_tile_size_16)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 16})");
 
@@ -88,7 +88,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_16
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_32)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_clause_output_tile_size_32)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 32})");
 
@@ -96,7 +96,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_32
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_64)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_clause_output_tile_size_64)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 64})");
 
@@ -104,7 +104,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_64
 }
 
 
-TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_128)
+TEST(TsetlinClassifierClassic, can_be_created_from_json_with_clause_output_tile_size_128)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 128})");
 
@@ -112,7 +112,7 @@ TEST(TsetlinClassifier, can_be_created_from_json_with_clause_output_tile_size_12
 }
 
 
-TEST(TsetlinClassifier, cannot_be_created_from_json_with_bad_clause_output_tile_size)
+TEST(TsetlinClassifierClassic, cannot_be_created_from_json_with_bad_clause_output_tile_size)
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 24})");
 
@@ -120,9 +120,9 @@ TEST(TsetlinClassifier, cannot_be_created_from_json_with_bad_clause_output_tile_
 }
 
 
-///     Partial Fit
+///     Fit
 
-TEST(TsetlinClassifierFit, rejects_empty_X)
+TEST(TsetlinClassifierClassicFit, rejects_empty_X)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -139,7 +139,7 @@ TEST(TsetlinClassifierFit, rejects_empty_X)
 }
 
 
-TEST(TsetlinClassifierFit, rejects_empty_y)
+TEST(TsetlinClassifierClassicFit, rejects_empty_y)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -156,7 +156,7 @@ TEST(TsetlinClassifierFit, rejects_empty_y)
 }
 
 
-TEST(TsetlinClassifierFit, rejects_X_with_uneven_row_sizes)
+TEST(TsetlinClassifierClassicFit, rejects_X_with_uneven_row_sizes)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -173,7 +173,7 @@ TEST(TsetlinClassifierFit, rejects_X_with_uneven_row_sizes)
 }
 
 
-TEST(TsetlinClassifierFit, rejects_X_with_values_not_0_1)
+TEST(TsetlinClassifierClassicFit, rejects_X_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -190,7 +190,7 @@ TEST(TsetlinClassifierFit, rejects_X_with_values_not_0_1)
 }
 
 
-TEST(TsetlinClassifierFit, rejects_X_and_y_with_different_lengths)
+TEST(TsetlinClassifierClassicFit, rejects_X_and_y_with_different_lengths)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -207,7 +207,7 @@ TEST(TsetlinClassifierFit, rejects_X_and_y_with_different_lengths)
 }
 
 
-TEST(TsetlinClassifierFit, rejects_y_with_negative_label)
+TEST(TsetlinClassifierClassicFit, rejects_y_with_negative_label)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -226,7 +226,7 @@ TEST(TsetlinClassifierFit, rejects_y_with_negative_label)
 
 ///     Partial Fit
 
-TEST(TsetlinClassifierPartialFit, rejects_empty_X)
+TEST(TsetlinClassifierClassicPartialFit, rejects_empty_X)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -243,7 +243,7 @@ TEST(TsetlinClassifierPartialFit, rejects_empty_X)
 }
 
 
-TEST(TsetlinClassifierPartialFit, rejects_empty_y)
+TEST(TsetlinClassifierClassicPartialFit, rejects_empty_y)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -260,7 +260,7 @@ TEST(TsetlinClassifierPartialFit, rejects_empty_y)
 }
 
 
-TEST(TsetlinClassifierPartialFit, rejects_X_with_uneven_row_sizes)
+TEST(TsetlinClassifierClassicPartialFit, rejects_X_with_uneven_row_sizes)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -277,7 +277,7 @@ TEST(TsetlinClassifierPartialFit, rejects_X_with_uneven_row_sizes)
 }
 
 
-TEST(TsetlinClassifierPartialFit, rejects_X_with_values_not_0_1)
+TEST(TsetlinClassifierClassicPartialFit, rejects_X_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -294,7 +294,7 @@ TEST(TsetlinClassifierPartialFit, rejects_X_with_values_not_0_1)
 }
 
 
-TEST(TsetlinClassifierPartialFit, rejects_X_and_y_with_different_lengths)
+TEST(TsetlinClassifierClassicPartialFit, rejects_X_and_y_with_different_lengths)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -311,7 +311,7 @@ TEST(TsetlinClassifierPartialFit, rejects_X_and_y_with_different_lengths)
 }
 
 
-TEST(TsetlinClassifierPartialFit, rejects_y_with_negative_label)
+TEST(TsetlinClassifierClassicPartialFit, rejects_y_with_negative_label)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -330,7 +330,7 @@ TEST(TsetlinClassifierPartialFit, rejects_y_with_negative_label)
 
 ///     Next Partial Fit
 
-TEST(TsetlinClassifierNextPartialFit, rejects_empty_X)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_empty_X)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -351,7 +351,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_empty_X)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_empty_y)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_empty_y)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -372,7 +372,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_empty_y)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_X_with_uneven_row_sizes)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_with_uneven_row_sizes)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -393,7 +393,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_X_with_uneven_row_sizes)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_X_with_values_not_0_1)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -414,7 +414,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_X_with_values_not_0_1)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_X_and_y_with_different_lengths)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_and_y_with_different_lengths)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -435,7 +435,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_X_and_y_with_different_lengths)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_y_with_negative_label)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_y_with_negative_label)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -456,7 +456,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_y_with_negative_label)
 }
 
 
-TEST(TsetlinClassifierNextPartialFit, rejects_y_with_label_outside_range)
+TEST(TsetlinClassifierClassicNextPartialFit, rejects_y_with_label_outside_range)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -479,7 +479,7 @@ TEST(TsetlinClassifierNextPartialFit, rejects_y_with_label_outside_range)
 
 ///     Predict matrix
 
-TEST(TsetlinClassifierPredictMatrix, fails_without_train)
+TEST(TsetlinClassifierClassicPredictMatrix, fails_without_train)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -497,7 +497,7 @@ TEST(TsetlinClassifierPredictMatrix, fails_without_train)
 }
 
 
-TEST(TsetlinClassifierPredictMatrix, fails_for_empty_X)
+TEST(TsetlinClassifierClassicPredictMatrix, fails_for_empty_X)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -520,7 +520,7 @@ TEST(TsetlinClassifierPredictMatrix, fails_for_empty_X)
 }
 
 
-TEST(TsetlinClassifierPredictMatrix, rejects_X_with_uneven_row_sizes)
+TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_uneven_row_sizes)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -543,7 +543,7 @@ TEST(TsetlinClassifierPredictMatrix, rejects_X_with_uneven_row_sizes)
 }
 
 
-TEST(TsetlinClassifierPredictMatrix, rejects_X_with_invalid_number_of_features)
+TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_invalid_number_of_features)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -566,7 +566,7 @@ TEST(TsetlinClassifierPredictMatrix, rejects_X_with_invalid_number_of_features)
 }
 
 
-TEST(TsetlinClassifierPredictMatrix, rejects_X_with_values_not_0_1)
+TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -591,7 +591,7 @@ TEST(TsetlinClassifierPredictMatrix, rejects_X_with_values_not_0_1)
 
 ///     Predict sample
 
-TEST(TsetlinClassifierPredictSample, fails_without_train)
+TEST(TsetlinClassifierClassicPredictSample, fails_without_train)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -609,7 +609,7 @@ TEST(TsetlinClassifierPredictSample, fails_without_train)
 }
 
 
-TEST(TsetlinClassifierPredictSample, rejects_sample_with_invalid_number_of_features)
+TEST(TsetlinClassifierClassicPredictSample, rejects_sample_with_invalid_number_of_features)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -632,7 +632,7 @@ TEST(TsetlinClassifierPredictSample, rejects_sample_with_invalid_number_of_featu
 }
 
 
-TEST(TsetlinClassifierPredictSample, rejects_sample_with_values_not_0_1)
+TEST(TsetlinClassifierClassicPredictSample, rejects_sample_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -657,7 +657,7 @@ TEST(TsetlinClassifierPredictSample, rejects_sample_with_values_not_0_1)
 
 ///     PredictRaw matrix
 
-TEST(TsetlinClassifierPredictRawMatrix, fails_without_train)
+TEST(TsetlinClassifierClassicPredictRawMatrix, fails_without_train)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -675,7 +675,7 @@ TEST(TsetlinClassifierPredictRawMatrix, fails_without_train)
 }
 
 
-TEST(TsetlinClassifierPredictRawMatrix, fails_for_empty_X)
+TEST(TsetlinClassifierClassicPredictRawMatrix, fails_for_empty_X)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -698,7 +698,7 @@ TEST(TsetlinClassifierPredictRawMatrix, fails_for_empty_X)
 }
 
 
-TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_uneven_row_sizes)
+TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_uneven_row_sizes)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -721,7 +721,7 @@ TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_uneven_row_sizes)
 }
 
 
-TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_invalid_number_of_features)
+TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_invalid_number_of_features)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -744,7 +744,7 @@ TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_invalid_number_of_feature
 }
 
 
-TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_values_not_0_1)
+TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -769,7 +769,7 @@ TEST(TsetlinClassifierPredictRawMatrix, rejects_X_with_values_not_0_1)
 
 ///     Predict sample
 
-TEST(TsetlinClassifierPredictRawSample, fails_without_train)
+TEST(TsetlinClassifierClassicPredictRawSample, fails_without_train)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -787,7 +787,7 @@ TEST(TsetlinClassifierPredictRawSample, fails_without_train)
 }
 
 
-TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_invalid_number_of_features)
+TEST(TsetlinClassifierClassicPredictRawSample, rejects_sample_with_invalid_number_of_features)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -810,7 +810,7 @@ TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_invalid_number_of_fe
 }
 
 
-TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_values_not_0_1)
+TEST(TsetlinClassifierClassicPredictRawSample, rejects_sample_with_values_not_0_1)
 {
     Tsetlini::make_classifier_classic("{}")
         .rightMap(
@@ -833,4 +833,4 @@ TEST(TsetlinClassifierPredictRawSample, rejects_sample_with_values_not_0_1)
 }
 
 
-}
+} // anonymous namespace

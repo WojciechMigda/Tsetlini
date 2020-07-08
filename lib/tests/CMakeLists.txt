@@ -33,6 +33,8 @@ add_executable(tsetlini-test
     src/test_params.cpp
     src/test_bit_matrix.cpp
     src/test_numeric_matrix.cpp
+
+    src/test_regressor.cpp
 )
 
 target_include_directories(tsetlini-test

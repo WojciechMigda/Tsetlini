@@ -53,4 +53,13 @@ predict_raw_impl(
     std::vector<aligned_vector_char> const & X);
 
 
+[[nodiscard]]
+status_message_t
+fit_impl(
+    RegressorState & state,
+    std::vector<aligned_vector_char> const & X,
+    response_vector_type const & y,
+    unsigned int epochs);
+
+
 } // namespace Tsetlini

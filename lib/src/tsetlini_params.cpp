@@ -36,7 +36,28 @@ static const params_t default_classifier_params =
 
     {"random_state", param_value_t(std::nullopt)},
 
+    // internal
     {"number_of_labels", param_value_t(std::nullopt)},
+    {"number_of_features", param_value_t(std::nullopt)},
+};
+
+
+static const params_t default_regressor_params =
+{
+    {"number_of_regressor_clauses", param_value_t(20)},
+    {"number_of_states", param_value_t(100)},
+    {"s", param_value_t(2.0f)},
+    {"threshold", param_value_t(15)},
+    {"boost_true_positive_feedback", param_value_t(0)},
+    {"n_jobs", param_value_t(-1)},
+    {"verbose", param_value_t(false)},
+
+    {"counting_type", param_value_t("auto"s)},
+    {"clause_output_tile_size", param_value_t(16)},
+
+    {"random_state", param_value_t(std::nullopt)},
+
+    // internal
     {"number_of_features", param_value_t(std::nullopt)},
 };
 
@@ -105,6 +126,7 @@ json_to_params(json const & js)
 
         if (
             (key == "number_of_pos_neg_clauses_per_label") or
+            (key == "number_of_regressor_clauses") or
             (key == "number_of_states") or
             (key == "boost_true_positive_feedback") or
             (key == "threshold") or
@@ -216,6 +238,24 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_json_dictionary)
         .rightFlatMap(json_to_params)
         .rightMap([](auto p){ return merge(params_t{default_classifier_params}, p); })
+        .rightMap(normalize_n_jobs)
+        .rightMap(normalize_random_state)
+        .rightFlatMap(assert_counting_type_enumeration)
+        .rightFlatMap(assert_clause_output_tile_size_enumeration)
+        ;
+
+    return rv;
+}
+
+
+Either<status_message_t, params_t>
+make_regressor_params_from_json(std::string const & json_params)
+{
+    auto rv =
+        json_parse(json_params)
+        .rightFlatMap(assert_json_dictionary)
+        .rightFlatMap(json_to_params)
+        .rightMap([](auto p){ return merge(params_t{default_regressor_params}, p); })
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)

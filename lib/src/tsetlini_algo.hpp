@@ -661,6 +661,89 @@ void calculate_classifier_feedback_to_clauses(
 }
 
 
+inline
+response_type sum_up_regressor_votes(
+    aligned_vector_char const & clause_output,
+    int const threshold)
+{
+    auto const sum = std::accumulate(clause_output.cbegin(), clause_output.cend(), 0);
+
+    return std::clamp(sum, 0, threshold);
+}
+
+
+template<typename TFRNG>
+inline
+void calculate_regressor_feedback_to_clauses(
+    feedback_vector_type & feedback_to_clauses,
+    int const response_error,
+    int const threshold,
+    TFRNG & fgen)
+{
+    real_type const R2 = static_cast<real_type>(response_error) * response_error / (threshold * threshold);
+
+    std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&fgen, R2](){ return fgen.next() < R2; });
+}
+
+
+template<typename state_type>
+void train_regressor_automata(
+    numeric_matrix<state_type> & ta_state,
+    int const input_begin_ix,
+    int const input_end_ix,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_features,
+    int const number_of_states,
+    float const S_inv,
+    int const response_error,
+    char const * __restrict X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng,
+    ClassifierState::frand_cache_type & fcache
+    )
+{
+    float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
+
+    for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
+    {
+        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 0));
+        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 1));
+
+        if (feedback_to_clauses[iidx] == 0)
+        {
+            continue;
+        }
+
+        if (response_error < 0)
+        {
+            if (clause_output[iidx] == 0)
+            {
+                fcache.refill(frng);
+
+                fcache.m_pos = block1(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, fcache_, fcache.m_pos);
+            }
+            else // if (clause_output[iidx] == 1)
+            {
+                fcache.refill(frng);
+
+                if (boost_true_positive_feedback)
+                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+                else
+                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+            }
+        }
+        else if (response_error > 0)
+        {
+            if (clause_output[iidx] == 1)
+            {
+                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X);
+            }
+        }
+    }
+}
+
+
 }
 
 } // namespace Tsetlini

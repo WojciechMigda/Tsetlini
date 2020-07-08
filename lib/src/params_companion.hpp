@@ -109,6 +109,14 @@ int number_of_classifier_clauses(params_t const & params)
     return number_of_clauses_per_label(params) * number_of_labels(params);
 }
 
+
+inline
+int number_of_regressor_clauses(params_t const & params)
+{
+    return std::get<int>(params.at("number_of_regressor_clauses"));
+}
+
+
 } // namespace Params
 
 } // namespace Tsetlin
