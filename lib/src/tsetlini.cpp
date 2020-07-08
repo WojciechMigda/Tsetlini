@@ -1152,7 +1152,7 @@ predict_impl(RegressorState const & state, std::vector<aligned_vector_char> cons
     auto const & params = state.m_params;
 
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
     auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
