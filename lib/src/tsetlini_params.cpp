@@ -126,7 +126,7 @@ json_to_params(json const & js)
 
         if (
             (key == "number_of_pos_neg_clauses_per_label") or
-            (key == "number_regressor_clauses") or
+            (key == "number_of_regressor_clauses") or
             (key == "number_of_states") or
             (key == "boost_true_positive_feedback") or
             (key == "threshold") or
