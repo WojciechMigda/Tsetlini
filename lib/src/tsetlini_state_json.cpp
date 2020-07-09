@@ -247,4 +247,46 @@ void from_json_string(ClassifierState & state, std::string const & jss)
 }
 
 
+std::string to_json_string(RegressorState const & state)
+{
+    json js;
+
+    js["ta_state"] = state.ta_state;
+    js["igen"] = state.igen;
+    js["fgen"] = state.fgen;
+    js["params"] = state.m_params;
+
+    return js.dump();
+}
+
+
+void from_json_string(RegressorState & state, std::string const & jss)
+{
+    auto js = json::parse(jss);
+
+    state.igen = js.at("igen").get<IRNG>();
+    state.fgen = js.at("fgen").get<FRNG>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::RegressorState::ta_state_v_type>();
+    state.m_params = js.at("params").get<params_t>();
+
+    // So, we need a hack, since stringified json doesn't distinguish
+    // between signed and unsigned types for integer values > 0.
+    // most of our params are signed integers, as wrapped
+    // by std::variant, except for "random_state".
+    // Json parser will report them as unsigned.
+    // Here we will re-cast those integers as signed (contrary to json
+    // enumeration).
+    for (auto & [k, v]: state.m_params)
+    {
+        if (std::holds_alternative<seed_type>(v) and k != "random_state")
+        {
+            state.m_params[k] = static_cast<int>(std::get<seed_type>(v));
+        }
+    }
+    // end-of-hack
+
+    reset_state_cache(state);
+}
+
+
 } // namespace Tsetlini
