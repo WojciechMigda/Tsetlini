@@ -208,7 +208,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     {
         std::cout << "ENSEMBLE " << it + 1 << '\n';
 
-        std::shuffle(ix.begin(), ix.end(), std::mt19937(gen));
+        std::shuffle(ix.begin(), ix.end(), gen);
 
         for (auto rit = 0u; rit < PIVOT; ++rit)
         {
@@ -255,7 +255,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
                         accuracy_test[it] = e;
 
                         auto [mean, stdev] = stdev_mean(accuracy_test.data(), accuracy_test.data() + it + 1);
-                        printf("Average RMSD on test data: %.2f +/- %.2f (%.2fs)\n", mean, 1.96 * stdev / std::sqrt(it + 1), elapsed);
+                        printf("Average RMSD on test data: %.3f +/- %.3f (%.2fs)\n", mean, 1.96 * stdev / std::sqrt(it + 1), elapsed);
 
                         return yi_hat;
                     });
