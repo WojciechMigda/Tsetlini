@@ -10,39 +10,11 @@ namespace
 {
 
 
-inline
-int pos_feat_index(int k)
-{
-    return k;
-}
-
-
-inline
-int neg_feat_index(int k, int number_of_features)
-{
-    return k + number_of_features;
-}
-
-
 template<typename state_type>
 inline
 bool action(state_type state)
 {
     return state >= 0;
-}
-
-
-inline
-int pos_clause_index(int target_label, int j, int number_of_pos_neg_clauses_per_label)
-{
-    return 2 * target_label * number_of_pos_neg_clauses_per_label + j;
-}
-
-
-inline
-int neg_clause_index(int target_label, int j, int number_of_pos_neg_clauses_per_label)
-{
-    return pos_clause_index(target_label, j, number_of_pos_neg_clauses_per_label) + number_of_pos_neg_clauses_per_label;
 }
 
 
