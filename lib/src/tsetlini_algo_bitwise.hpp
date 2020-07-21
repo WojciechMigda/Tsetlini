@@ -15,6 +15,33 @@ namespace
 {
 
 
+template<typename state_type, typename signum_type>
+void
+signum_from_ta_state(numeric_matrix<state_type> const & ta_state, bit_matrix<signum_type> & signum_matrix)
+{
+    auto const [nrows, ncols] = ta_state.shape();
+
+    for (auto rix = 0u; rix < nrows; ++rix)
+    {
+        for (auto cix = 0u; cix < ncols; ++cix)
+        {
+            // x >= 0  --> 1
+            // x < 0   --> 0
+            auto const negative = ta_state[{rix, cix}] < 0;
+
+            if (negative)
+            {
+                signum_matrix.clear(rix, cix);
+            }
+            else
+            {
+                signum_matrix.set(rix, cix);
+            }
+        }
+    }
+}
+
+
 template<typename bit_block_type, unsigned int BATCH_SZ>
 inline
 void calculate_clause_output_T(

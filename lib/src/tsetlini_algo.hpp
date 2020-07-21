@@ -716,6 +716,7 @@ void train_regressor_automata(
 }
 
 
-}
+} // anonymous namespace
+
 
 } // namespace Tsetlini
