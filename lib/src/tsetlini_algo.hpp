@@ -413,18 +413,18 @@ int block1(
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 
-    for (int k = 0; k < number_of_features; ++k)
+    for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
 
-            ta_state_pos_j[k] = cond ? (ta_state_pos_j[k] > -number_of_states ? ta_state_pos_j[k] - 1 : ta_state_pos_j[k]) : ta_state_pos_j[k];
+            ta_state_pos_j[fidx] = cond ? (ta_state_pos_j[fidx] > -number_of_states ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx]) : ta_state_pos_j[fidx];
         }
 
         {
             auto cond = fcache[fcache_pos++] <= S_inv;
 
-            ta_state_neg_j[k] = cond ? (ta_state_neg_j[k] > -number_of_states ? ta_state_neg_j[k] - 1 : ta_state_neg_j[k]) : ta_state_neg_j[k];
+            ta_state_neg_j[fidx] = cond ? (ta_state_neg_j[fidx] > -number_of_states ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx]) : ta_state_neg_j[fidx];
         }
     }
     return fcache_pos;
@@ -450,25 +450,25 @@ int block2(
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 //    X = assume_aligned(X);
 
-    for (int k = 0; k < number_of_features; ++k)
+    for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
         auto cond1 = boost_true_positive_feedback == true or (fcache[fcache_pos++] <= (ONE - S_inv));
         auto cond2 = fcache[fcache_pos++] <= S_inv;
 
-        if (X[k] != 0)
+        if (X[fidx] != 0)
         {
             if (cond1)
             {
-                if (ta_state_pos_j[k] < number_of_states - 1)
+                if (ta_state_pos_j[fidx] < number_of_states - 1)
                 {
-                    ta_state_pos_j[k]++;
+                    ta_state_pos_j[fidx]++;
                 }
             }
             if (cond2)
             {
-                if (ta_state_neg_j[k] > -number_of_states)
+                if (ta_state_neg_j[fidx] > -number_of_states)
                 {
-                    ta_state_neg_j[k]--;
+                    ta_state_neg_j[fidx]--;
                 }
             }
         }
@@ -476,17 +476,17 @@ int block2(
         {
             if (cond1)
             {
-                if (ta_state_neg_j[k] < number_of_states - 1)
+                if (ta_state_neg_j[fidx] < number_of_states - 1)
                 {
-                    ta_state_neg_j[k]++;
+                    ta_state_neg_j[fidx]++;
                 }
             }
 
             if (cond2)
             {
-                if (ta_state_pos_j[k] > -number_of_states)
+                if (ta_state_pos_j[fidx] > -number_of_states)
                 {
-                    ta_state_pos_j[k]--;
+                    ta_state_pos_j[fidx]--;
                 }
             }
         }
@@ -509,22 +509,22 @@ void block3(
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
     X = assume_aligned<alignment>(X);
 
-    for (int k = 0; k < number_of_features; ++k)
+    for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
-        if (X[k] == 0)
+        if (X[fidx] == 0)
         {
-            auto action_include = (ta_state_pos_j[k] >= 0);
+            auto action_include = (ta_state_pos_j[fidx] >= 0);
             if (action_include == false)
             {
-                ta_state_pos_j[k]++;
+                ta_state_pos_j[fidx]++;
             }
         }
         else //if(X[k] == 1)
         {
-            auto action_include_negated = (ta_state_neg_j[k] >= 0);
+            auto action_include_negated = (ta_state_neg_j[fidx] >= 0);
             if (action_include_negated == false)
             {
-                ta_state_neg_j[k]++;
+                ta_state_neg_j[fidx]++;
             }
         }
     }
