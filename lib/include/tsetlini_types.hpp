@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_TSETLINI_TYPES_HPP_
+#define LIB_INCLUDE_TSETLINI_TYPES_HPP_
+
 #include "mt.hpp"
 #include "aligned_allocator.hpp"
 #include "basic_numeric_matrix.hpp"
@@ -57,10 +60,12 @@ using label_type = int;
 using label_vector_type = std::vector<label_type>;
 using response_type = int;
 using response_vector_type = std::vector<response_type>;
-using feedback_vector_type = aligned_vector_int;
+using feedback_vector_type = aligned_vector_char;
 
 static constexpr real_type ONE = 1.;
 static constexpr real_type ZERO = 0.;
 
 
 } // namespace Tsetlini
+
+#endif /* LIB_INCLUDE_TSETLINI_TYPES_HPP_ */
