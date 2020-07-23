@@ -332,10 +332,10 @@ void calculate_clause_output_T(
  *      Positive integer {16, 32, 64, 128} that specifies batch size of
  *      data processed in @c X .
  */
-template<typename state_type, typename RowType>
+template<typename state_type>
 inline
 void calculate_clause_output(
-    RowType const & X,
+    aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
@@ -716,6 +716,7 @@ void train_regressor_automata(
 }
 
 
-}
+} // anonymous namespace
+
 
 } // namespace Tsetlini
