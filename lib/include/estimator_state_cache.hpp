@@ -4,7 +4,9 @@
 #define LIB_INCLUDE_ESTIMATOR_STATE_CACHE_HPP_
 
 #include "tsetlini_types.hpp"
+#include "tsetlini_params.hpp"
 #include "frand_cache.hpp"
+#include "mt.hpp"
 
 #include <type_traits>
 #include <utility>
@@ -24,7 +26,12 @@ struct is_estimator_state_cache
 template<typename T>
 struct is_estimator_state_cache<T, std::void_t<
         typename T::value_type,
-        decltype(T::are_equal(std::declval<typename T::value_type const &>(), std::declval<typename T::value_type const &>()))
+        decltype(T::are_equal(std::declval<typename T::value_type const &>(), std::declval<typename T::value_type const &>())),
+        decltype(T::reset(
+            std::declval<typename T::value_type &>(),
+            std::declval<params_t const &>(),
+            std::declval<FRNG &>(),
+            std::declval<IRNG const &>()))
     >>
     : std::true_type
 {
@@ -51,6 +58,8 @@ struct ClassifierStateCache
             and lhs.clause_output.size() == rhs.clause_output.size()
             and lhs.label_sum.size() == rhs.label_sum.size();
     }
+
+    static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
 };
 
 
@@ -72,6 +81,8 @@ struct RegressorStateCache
             lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
             and lhs.clause_output.size() == rhs.clause_output.size();
     }
+
+    static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
 };
 
 
