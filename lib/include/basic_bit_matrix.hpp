@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_BASIC_BIT_MATRIX_HPP_
+#define LIB_INCLUDE_BASIC_BIT_MATRIX_HPP_
+
 #include "aligned_allocator.hpp"
 #include "is_power_of_two.hpp"
 
@@ -12,7 +15,7 @@
 
 
 template<typename BlockType, unsigned int Alignment = 64>
-struct bit_matrix
+struct basic_bit_matrix
 {
     using block_type = BlockType;
     using size_type = decltype (sizeof (0));
@@ -82,21 +85,21 @@ struct bit_matrix
     };
 
 
-    bit_matrix()
+    basic_bit_matrix()
         : m_nrows(0)
         , m_ncols(0)
         , m_v()
     {
     }
 
-    bit_matrix(uint const nrows, uint const ncols)
+    basic_bit_matrix(uint const nrows, uint const ncols)
         : m_nrows(nrows)
         , m_ncols(ncols)
         , m_v(row_blocks() * nrows)
     {
     }
 
-    bit_matrix(bit_matrix && rhs)
+    basic_bit_matrix(basic_bit_matrix && rhs)
         : m_nrows(rhs.m_nrows)
         , m_ncols(rhs.m_ncols)
         , m_v(std::move(rhs.m_v))
@@ -105,14 +108,14 @@ struct bit_matrix
         rhs.m_ncols = 0;
     }
 
-    bit_matrix(bit_matrix const & rhs)
+    basic_bit_matrix(basic_bit_matrix const & rhs)
         : m_nrows(rhs.m_nrows)
         , m_ncols(rhs.m_ncols)
         , m_v(rhs.m_v)
     {
     }
 
-    bit_matrix & operator=(bit_matrix && rhs)
+    basic_bit_matrix & operator=(basic_bit_matrix && rhs)
     {
         this->m_nrows = rhs.m_nrows;
         rhs.m_nrows = 0;
@@ -126,7 +129,7 @@ struct bit_matrix
     }
 
 
-    bit_matrix & operator=(bit_matrix const & rhs)
+    basic_bit_matrix & operator=(basic_bit_matrix const & rhs)
     {
         this->m_nrows = rhs.m_nrows;
         this->m_ncols = rhs.m_ncols;
@@ -211,6 +214,12 @@ struct bit_matrix
         return test(pos.first, pos.second);
     }
 
+    block_type const * row_data(size_type nr) const
+    {
+        auto data_p = &m_v.data()[row_offset(nr)];
+        return data_p;
+    }
+
     bit_view row(size_type nr)// const
     {
         auto data = &m_v.data()[row_offset(nr)];
@@ -232,3 +241,14 @@ struct bit_matrix
     uint m_ncols;
     aligned_vector m_v;
 };
+
+template<typename BlockType, unsigned int Alignment>
+bool operator==(basic_bit_matrix<BlockType, Alignment> const & lhs, basic_bit_matrix<BlockType, Alignment> const & rhs)
+{
+    return
+        (lhs.m_nrows == rhs.m_nrows) and
+        (lhs.m_ncols == rhs.m_ncols) and
+        (lhs.m_v == rhs.m_v);
+}
+
+#endif /* LIB_INCLUDE_BASIC_BIT_MATRIX_HPP_ */
