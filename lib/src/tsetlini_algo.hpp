@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_SRC_TSETLINI_ALGO_HPP_
+#define LIB_SRC_TSETLINI_ALGO_HPP_
+
 #include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
 
@@ -720,3 +723,5 @@ void train_regressor_automata(
 
 
 } // namespace Tsetlini
+
+#endif /* LIB_SRC_TSETLINI_ALGO_HPP_ */

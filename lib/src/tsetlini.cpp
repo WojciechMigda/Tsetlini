@@ -37,8 +37,22 @@ namespace
 
 
 template<typename T>
+bool check_all_0s_or_1s(aligned_vector<T> const & vec)
+{
+    return std::all_of(vec.cbegin(), vec.cend(), [](T v){ return v == 0 || v == 1; });
+}
+
+
+template<typename T>
+bool check_all_0s_or_1s(bit_vector<T> const & vec)
+{
+    return true;
+}
+
+
+template<typename RowType, typename T>
 status_message_t check_X_y(
-    std::vector<aligned_vector_char> const & X,
+    std::vector<RowType> const & X,
     std::vector<T> const & y)
 {
     if (X.empty())
@@ -62,12 +76,7 @@ status_message_t check_X_y(
         return {StatusCode::S_VALUE_ERROR,
             "All rows of X must have the same number of feature columns"};
     }
-    else if (not std::all_of(X.cbegin(), X.cend(),
-        [](auto const & row)
-        {
-            return std::all_of(
-                row.cbegin(), row.cend(), [](auto v){ return v == 0 || v == 1; });
-        }))
+    else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & row){ return check_all_0s_or_1s(row); }))
     {
         return {StatusCode::S_VALUE_ERROR,
             "Only values of 0 and 1 can be used in X"};
@@ -134,10 +143,10 @@ bool is_fitted(EstimatorStateT const & state)
 }
 
 
-template<typename EstimatorStateT>
+template<typename EstimatorStateT, typename RowType>
 status_message_t check_for_predict(
     EstimatorStateT const & state,
-    std::vector<aligned_vector_char> const & X)
+    std::vector<RowType> const & X)
 {
     if (not is_fitted(state))
     {
@@ -161,12 +170,7 @@ status_message_t check_for_predict(
             "Predict called with X, which number of features " + std::to_string(X.front().size()) +
             " does not match that from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
     }
-    else if (not std::all_of(X.cbegin(), X.cend(),
-        [](auto const & row)
-        {
-            return std::all_of(
-                row.cbegin(), row.cend(), [](auto v){ return v == 0 || v == 1; });
-        }))
+    else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & row){ return check_all_0s_or_1s(row); }))
     {
         return {StatusCode::S_VALUE_ERROR,
             "Only values of 0 and 1 can be used in X"};
