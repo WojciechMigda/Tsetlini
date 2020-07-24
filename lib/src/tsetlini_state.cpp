@@ -1,6 +1,7 @@
 #define LOG_MODULE "tsetlini-core"
 #include "logger.hpp"
 
+#include "estimator_state.hpp"
 #include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
 #include "params_companion.hpp"
@@ -14,19 +15,109 @@
 #include <limits>
 
 
-namespace std
-{
-// this is needed for std::variant comparison, probably illegal. TODO
-static constexpr
-bool operator==(nullopt_t const & lhs, nullopt_t const & rhs){ return true; }
-
-}
+//namespace std
+//{
+//// this is needed for std::variant comparison, probably illegal. TODO
+//static constexpr
+//bool operator==(nullopt_t const & lhs, nullopt_t const & rhs){ return true; }
+//
+//}
 
 
 namespace Tsetlini
 {
 
 
+void log_estimator_params(ClassifierStateNew const & state, bool verbose)
+{
+    auto & params = state.m_params;
+
+    LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
+    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "s: " << Params::s(params) << '\n';
+    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
+    LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
+    LOG(info) << "random_state: " << Params::random_state(params) << '\n';
+}
+
+
+void log_estimator_params(RegressorStateNew const & state, bool verbose)
+{
+    auto & params = state.m_params;
+
+    LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
+    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "s: " << Params::s(params) << '\n';
+    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
+    LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
+    LOG(info) << "random_state: " << Params::random_state(params) << '\n';
+}
+
+
+std::string normalize_counting_type(
+    std::string const & counting_type,
+    int number_of_states,
+    bool verbose)
+{
+    std::string rv;
+
+    if ((number_of_states <= std::numeric_limits<std::int8_t>::max()) and
+        ("auto" == counting_type or "int8" == counting_type))
+    {
+        LOG(trace) << "Selected int8 for ta_state\n";
+        rv = "int8";
+    }
+    else if ((number_of_states <= std::numeric_limits<std::int16_t>::max()) and
+        ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
+    {
+        LOG(trace) << "Selected int16 for ta_state\n";
+        rv = "int16";
+    }
+    else
+    {
+        LOG(trace) << "Selected int32 for ta_state\n";
+        rv = "int32";
+    }
+
+    return rv;
+}
+
+
+template<typename EstimatorStateType>
+void initialize_state_new(EstimatorStateType & state)
+{
+    static_assert(is_estimator_state<EstimatorStateType>::value, "EstimatorStateType requirement is not met");
+
+    auto & params = state.m_params;
+    auto const verbose = Params::verbose(params);
+
+    state.igen.init(Params::random_state(params));
+    state.fgen.init(Params::random_state(params));
+
+    log_estimator_params(state, verbose);
+
+    auto & ta_state = state.ta_state;
+
+    auto const number_of_states = Params::number_of_states(params);
+    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const counting_type =
+        normalize_counting_type(Params::counting_type(params), number_of_states, verbose);
+
+    using ta_state_type = typename EstimatorStateType::ta_state_type;
+    ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, state.igen);
+
+    using cache_type = typename EstimatorStateType::cache_type;
+    cache_type::reset(state.cache, params, state.fgen, state.igen);
+}
+
+
+// DONE
 void initialize_state(ClassifierState & state)
 {
     auto & params = state.m_params;
@@ -92,6 +183,7 @@ void initialize_state(ClassifierState & state)
 }
 
 
+// DONE
 void initialize_state(RegressorState & state)
 {
     auto & params = state.m_params;
@@ -156,6 +248,7 @@ void initialize_state(RegressorState & state)
 }
 
 
+// DONE
 void reset_state_cache(ClassifierState & state)
 {
     auto & cache = state.cache;
@@ -173,6 +266,7 @@ void reset_state_cache(ClassifierState & state)
 }
 
 
+// DONE
 void reset_state_cache(RegressorState & state)
 {
     auto & cache = state.cache;
@@ -188,12 +282,14 @@ void reset_state_cache(RegressorState & state)
 }
 
 
+// DONE
 ClassifierState::ClassifierState(params_t const & params) :
     m_params(params)
 {
 }
 
 
+// DONE
 bool ClassifierState::operator==(ClassifierState const & other) const
 {
     if (this == &other)
@@ -214,7 +310,7 @@ bool ClassifierState::operator==(ClassifierState const & other) const
     }
 }
 
-
+// DONE
 RegressorState::RegressorState(params_t const & params) :
     m_params(params)
 {
