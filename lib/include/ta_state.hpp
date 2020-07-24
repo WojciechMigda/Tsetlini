@@ -30,6 +30,7 @@ struct is_TA_state<T, std::void_t<
 };
 
 
+static inline
 std::variant<
     numeric_matrix_int32
     , numeric_matrix_int16
