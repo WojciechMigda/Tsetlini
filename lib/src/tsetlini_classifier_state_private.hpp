@@ -1,18 +1,15 @@
 #pragma once
 
+#include "estimator_state_fwd.hpp"
+
 namespace Tsetlini
 {
 
 
-struct ClassifierState;
-
-void initialize_state(ClassifierState & state);
-void reset_state_cache(ClassifierState & state);
-
-struct RegressorState;
-
-void initialize_state(RegressorState & state);
-void reset_state_cache(RegressorState & state);
+template<typename EstimatorStateType>
+void initialize_state(EstimatorStateType & state);
+template<typename EstimatorStateType>
+void reset_state_cache(EstimatorStateType & state);
 
 
 } // namespace Tsetlini

@@ -547,7 +547,7 @@ void train_classifier_automata(
     char const * __restrict X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::frand_cache_type & fcache
+    ClassifierState::cache_type::frand_cache_type & fcache
     )
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
@@ -675,7 +675,7 @@ void train_regressor_automata(
     char const * __restrict X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::frand_cache_type & fcache
+    ClassifierState::cache_type::frand_cache_type & fcache
     )
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());

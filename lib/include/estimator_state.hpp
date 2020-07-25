@@ -3,6 +3,7 @@
 #ifndef LIB_INCLUDE_ESTIMATOR_STATE_HPP_
 #define LIB_INCLUDE_ESTIMATOR_STATE_HPP_
 
+#include "estimator_state_fwd.hpp"
 #include "tsetlini_params.hpp"
 #include "ta_state.hpp"
 #include "estimator_state_cache.hpp"
@@ -47,14 +48,14 @@ struct is_estimator_state<T, std::void_t<
 };
 
 
-template<typename TAState, typename EstimatorStateCache>
+template<typename TAStateType, typename EstimatorStateCacheType>
 struct EstimatorState
 {
-    static_assert(is_TA_state<TAState>::value, "TAState requirement not met");
-    static_assert(is_estimator_state_cache<EstimatorStateCache>::value, "EstimatorStateCache requirement not met");
+    static_assert(is_TA_state<TAStateType>::value, "TAState requirement not met");
+    static_assert(is_estimator_state_cache<EstimatorStateCacheType>::value, "EstimatorStateCache requirement not met");
 
-    using ta_state_type = TAState;
-    using cache_type = EstimatorStateCache;
+    using ta_state_type = TAStateType;
+    using cache_type = EstimatorStateCacheType;
 
     params_t m_params;
     typename ta_state_type::value_type ta_state;
@@ -81,15 +82,15 @@ struct EstimatorState
                 and igen == other.igen
                 and fgen == other.fgen
                 and m_params == other.m_params
-                and EstimatorStateCache::are_equal(cache, other.cache)
+                and cache_type::are_equal(cache, other.cache)
                 ;
         }
     }
 };
 
 
-using ClassifierStateNew = EstimatorState<TAState, ClassifierStateCache>;
-using RegressorStateNew = EstimatorState<TAState, RegressorStateCache>;
+using ClassifierState = EstimatorState<TAState, ClassifierStateCache>;
+using RegressorState = EstimatorState<TAState, RegressorStateCache>;
 
 
 }  // namespace Tsetlini
