@@ -1,6 +1,5 @@
 #include "estimator_state.hpp"
 #include "tsetlini_state_json.hpp"
-#include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
 #include "tsetlini_params.hpp"
 #include "tsetlini_classifier_state_private.hpp"

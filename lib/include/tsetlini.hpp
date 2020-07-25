@@ -6,7 +6,7 @@
 #include "tsetlini_status_code.hpp"
 
 #include "tsetlini_types.hpp"
-#include "tsetlini_state.hpp"
+#include "estimator_state.hpp"
 
 #include <vector>
 

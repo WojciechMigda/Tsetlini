@@ -1,7 +1,7 @@
 #pragma once
 
 #include "tsetlini_status_code.hpp"
-#include "tsetlini_state.hpp"
+#include "estimator_state.hpp"
 #include "tsetlini_types.hpp"
 
 #include "neither/either.hpp"

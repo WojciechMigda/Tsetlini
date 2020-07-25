@@ -3,7 +3,7 @@
 #ifndef LIB_SRC_TSETLINI_ALGO_HPP_
 #define LIB_SRC_TSETLINI_ALGO_HPP_
 
-#include "tsetlini_state.hpp"
+#include "estimator_state.hpp"
 #include "tsetlini_types.hpp"
 
 namespace Tsetlini
