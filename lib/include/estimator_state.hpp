@@ -35,14 +35,14 @@ struct is_estimator_state
 
 template<typename T>
 struct is_estimator_state<T, std::void_t<
-        typename T::cache_type
-        , typename T::ta_state_type
-        , decltype(std::declval<T>().m_params)
-        , decltype(std::declval<T>().ta_state)
-        , decltype(std::declval<T>().cache)
-        , decltype(std::declval<T>().igen)
-        , decltype(std::declval<T>().fgen)
-    >>
+    typename T::cache_type
+    , typename T::ta_state_type
+    , decltype(std::declval<T>().m_params)
+    , decltype(std::declval<T>().ta_state)
+    , decltype(std::declval<T>().cache)
+    , decltype(std::declval<T>().igen)
+    , decltype(std::declval<T>().fgen)
+>>
     : std::true_type
 {
 };
@@ -64,30 +64,37 @@ struct EstimatorState
     IRNG igen;
     FRNG fgen;
 
-    explicit EstimatorState(params_t const & params) :
-        m_params(params)
-    {
-    }
+    explicit EstimatorState(params_t const & params);
 
-    bool operator==(EstimatorState const & other) const
-    {
-        if (this == &other)
-        {
-            return true;
-        }
-        else
-        {
-            return
-                ta_state == other.ta_state
-                and igen == other.igen
-                and fgen == other.fgen
-                and m_params == other.m_params
-                and cache_type::are_equal(cache, other.cache)
-                ;
-        }
-    }
+    bool operator==(EstimatorState const & other) const;
 };
 
+
+template<typename TAStateType, typename EstimatorStateCacheType>
+EstimatorState<TAStateType, EstimatorStateCacheType>::EstimatorState(params_t const & params)
+    : m_params(params)
+{
+}
+
+
+template<typename TAStateType, typename EstimatorStateCacheType>
+bool EstimatorState<TAStateType, EstimatorStateCacheType>::operator ==(EstimatorState const & other) const
+{
+    if (this == &other)
+    {
+        return true;
+    }
+    else
+    {
+        return
+            ta_state == other.ta_state
+            and igen == other.igen
+            and fgen == other.fgen
+            and m_params == other.m_params
+            and cache_type::are_equal(cache, other.cache)
+        ;
+    }
+}
 
 using ClassifierState = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorState = EstimatorState<TAState, RegressorStateCache>;
