@@ -2,7 +2,6 @@
 #include "logger.hpp"
 
 #include "estimator_state.hpp"
-#include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
 #include "params_companion.hpp"
 #include "tsetlini_params.hpp"

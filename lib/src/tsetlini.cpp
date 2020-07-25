@@ -10,7 +10,7 @@
 #include "assume_aligned.hpp"
 #include "params_companion.hpp"
 #include "tsetlini_types.hpp"
-#include "tsetlini_state.hpp"
+#include "estimator_state.hpp"
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_classifier_state_private.hpp"
 
