@@ -634,12 +634,6 @@ fit_online_impl(
     label_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     auto labels = unique_labels(y);
 
     auto const & params = state.m_params;
@@ -730,12 +724,6 @@ fit_impl_T(
     int max_number_of_labels,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     auto labels = unique_labels(y);
 
     int const number_of_labels = std::max(
@@ -770,6 +758,12 @@ partial_fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     if (is_fitted(state))
     {
         return fit_online_impl(state, X, y, epochs);
@@ -858,6 +852,12 @@ fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     return fit_impl_T(state, X, y, max_number_of_labels, epochs);
 }
 
@@ -995,12 +995,6 @@ fit_online_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     auto const & params = state.m_params;
 
     auto const number_of_clauses = Params::number_of_regressor_clauses(params);
@@ -1079,6 +1073,12 @@ partial_fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     if (is_fitted(state))
     {
         return fit_online_impl(state, X, y, epochs);
@@ -1098,12 +1098,6 @@ fit_impl_T(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     if (auto sm = check_response_y(y, Params::threshold(state.m_params));
         sm.first != StatusCode::S_OK)
     {
@@ -1129,6 +1123,12 @@ fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     return fit_impl_T(state, X, y, epochs);
 }
 
