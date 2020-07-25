@@ -2,7 +2,7 @@
 #include "logger.hpp"
 
 #include "tsetlini_private.hpp"
-#include "tsetlini_algo.hpp"
+#include "tsetlini_algo_classic.hpp"
 
 #include "tsetlini_params.hpp"
 #include "tsetlini.hpp"
