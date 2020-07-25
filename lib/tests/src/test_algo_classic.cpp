@@ -46,7 +46,7 @@ TEST(ClassicCalculateClauseOutput, replicates_result_of_CAIR_code)
         Tsetlini::aligned_vector_char clause_output(number_of_clauses);
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state, false);
-        Tsetlini::calculate_clause_output(X, clause_output, 0, number_of_clauses, number_of_features, ta_state, 1, 16);
+        Tsetlini::calculate_clause_output(X, clause_output, 0, number_of_clauses, ta_state, 1, 16);
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {
@@ -92,7 +92,7 @@ TEST(ClassicCalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
         Tsetlini::aligned_vector_char clause_output(number_of_clauses);
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state, true);
-        Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses, number_of_features, ta_state, 1, 16);
+        Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses, ta_state, 1, 16);
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {
@@ -128,7 +128,7 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 }
 
 
-TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
+TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
@@ -175,7 +175,7 @@ TEST(CalculateFeedbackToClauses, replicates_result_of_CAIR_code)
 }
 
 
-TEST(TrainAutomata, replicates_result_of_CAIR_code)
+TEST(TrainClassifierAutomata, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
@@ -231,7 +231,7 @@ TEST(TrainAutomata, replicates_result_of_CAIR_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, frng, fcache);
+            number_of_states, S_inv, X, boost_true_positive_feedback, frng, fcache);
 
         EXPECT_TRUE(ta_state == ta_state_CAIR);
     }

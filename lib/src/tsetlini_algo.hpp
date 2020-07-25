@@ -99,10 +99,10 @@ void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
-    int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
+    int const number_of_features = X.size();
     char const * X_p = assume_aligned<alignment>(X.data());
 
     if (number_of_features < (int)BATCH_SZ)
@@ -184,7 +184,6 @@ void calculate_clause_output_for_predict(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
-    int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
     int const TILE_SZ)
@@ -196,7 +195,6 @@ void calculate_clause_output_for_predict(
                 X,
                 clause_output,
                 number_of_clauses,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -206,7 +204,6 @@ void calculate_clause_output_for_predict(
                 X,
                 clause_output,
                 number_of_clauses,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -216,7 +213,6 @@ void calculate_clause_output_for_predict(
                 X,
                 clause_output,
                 number_of_clauses,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -229,7 +225,6 @@ void calculate_clause_output_for_predict(
                 X,
                 clause_output,
                 number_of_clauses,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -245,10 +240,10 @@ void calculate_clause_output_T(
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
-    int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
+    int const number_of_features = X.size();
     char const * X_p = assume_aligned<alignment>(X.data());
 
     if (number_of_features < (int)BATCH_SZ)
@@ -342,7 +337,6 @@ void calculate_clause_output(
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
-    int const number_of_features,
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs,
     int const TILE_SZ)
@@ -355,7 +349,6 @@ void calculate_clause_output(
                 clause_output,
                 output_begin_ix,
                 output_end_ix,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -366,7 +359,6 @@ void calculate_clause_output(
                 clause_output,
                 output_begin_ix,
                 output_end_ix,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -377,7 +369,6 @@ void calculate_clause_output(
                 clause_output,
                 output_begin_ix,
                 output_end_ix,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -391,7 +382,6 @@ void calculate_clause_output(
                 clause_output,
                 output_begin_ix,
                 output_end_ix,
-                number_of_features,
                 ta_state,
                 n_jobs
             );
@@ -541,15 +531,15 @@ void train_classifier_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_features,
     int const number_of_states,
     float const S_inv,
-    char const * __restrict X,
+    aligned_vector_char const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
     ClassifierState::cache_type::frand_cache_type & fcache
     )
 {
+    int const number_of_features = X.size();
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
@@ -570,16 +560,20 @@ void train_classifier_automata(
                 fcache.refill(frng);
 
                 if (boost_true_positive_feedback)
-                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+                {
+                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
                 else
-                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+                {
+                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
             }
         }
         else if (feedback_to_clauses[iidx] < 0)
         {
             if (clause_output[iidx] == 1)
             {
-                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X);
+                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
             }
         }
     }
@@ -668,16 +662,16 @@ void train_regressor_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_features,
     int const number_of_states,
     float const S_inv,
     int const response_error,
-    char const * __restrict X,
+    aligned_vector_char const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
     ClassifierState::cache_type::frand_cache_type & fcache
     )
 {
+    int const number_of_features = X.size();
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
@@ -703,16 +697,16 @@ void train_regressor_automata(
                 fcache.refill(frng);
 
                 if (boost_true_positive_feedback)
-                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+                    fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
                 else
-                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X, fcache_, fcache.m_pos);
+                    fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
             }
         }
         else if (response_error > 0)
         {
             if (clause_output[iidx] == 1)
             {
-                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X);
+                block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
             }
         }
     }

@@ -215,7 +215,6 @@ void classifier_update_impl(
     int const number_of_pos_neg_clauses_per_label,
     int const threshold,
     int const number_of_clauses,
-    int const number_of_features,
     int const number_of_states,
     real_type s,
     int const boost_true_positive_feedback,
@@ -236,7 +235,6 @@ void classifier_update_impl(
             cache.clause_output,
             output_ix_begin,
             output_ix_end,
-            number_of_features,
             ta_state,
             n_jobs,
             clause_output_tile_size
@@ -251,7 +249,6 @@ void classifier_update_impl(
             cache.clause_output,
             output_ix_begin,
             output_ix_end,
-            number_of_features,
             ta_state,
             n_jobs,
             clause_output_tile_size
@@ -295,10 +292,9 @@ void classifier_update_impl(
             input_ix_end,
             cache.feedback_to_clauses.data(),
             cache.clause_output.data(),
-            number_of_features,
             number_of_states,
             S_inv,
-            X.data(),
+            X,
             boost_true_positive_feedback,
             fgen,
             cache.fcache
@@ -314,10 +310,9 @@ void classifier_update_impl(
             input_ix_end,
             cache.feedback_to_clauses.data(),
             cache.clause_output.data(),
-            number_of_features,
             number_of_states,
             S_inv,
-            X.data(),
+            X,
             boost_true_positive_feedback,
             fgen,
             cache.fcache
@@ -342,7 +337,6 @@ evaluate_impl(
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -356,7 +350,6 @@ evaluate_impl(
                     X[it],
                     state.cache.clause_output,
                     number_of_clauses / 2,
-                    number_of_features,
                     ta_state,
                     n_jobs,
                     clause_output_tile_size);
@@ -401,7 +394,6 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
                 sample,
                 state.cache.clause_output,
                 Params::number_of_classifier_clauses(state.m_params) / 2,
-                Params::number_of_features(state.m_params),
                 ta_state,
                 n_jobs,
                 clause_output_tile_size);
@@ -440,7 +432,6 @@ predict_impl(RegressorState const & state, aligned_vector_char const & sample)
                 sample,
                 state.cache.clause_output,
                 Params::number_of_classifier_clauses(state.m_params) / 2,
-                Params::number_of_features(state.m_params),
                 ta_state,
                 n_jobs,
                 clause_output_tile_size);
@@ -474,7 +465,6 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -488,7 +478,6 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
                     X[it],
                     state.cache.clause_output,
                     number_of_clauses / 2,
-                    number_of_features,
                     ta_state,
                     n_jobs,
                     clause_output_tile_size);
@@ -530,7 +519,6 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -541,7 +529,6 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
                 sample,
                 state.cache.clause_output,
                 number_of_clauses / 2,
-                number_of_features,
                 ta_state,
                 n_jobs,
                 clause_output_tile_size);
@@ -577,7 +564,6 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -591,7 +577,6 @@ predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char>
                     X[it],
                     state.cache.clause_output,
                     number_of_clauses / 2,
-                    number_of_features,
                     ta_state,
                     n_jobs,
                     clause_output_tile_size);
@@ -642,7 +627,6 @@ fit_online_impl(
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
@@ -681,7 +665,6 @@ fit_online_impl(
                 number_of_pos_neg_clauses_per_label,
                 threshold,
                 number_of_clauses,
-                number_of_features,
                 number_of_states,
                 s,
                 boost_true_positive_feedback,
@@ -933,7 +916,6 @@ void regressor_update_impl(
 
     int const threshold,
     int const number_of_clauses,
-    int const number_of_features,
     int const number_of_states,
     real_type s,
     int const boost_true_positive_feedback,
@@ -951,7 +933,6 @@ void regressor_update_impl(
         cache.clause_output,
         0,
         number_of_clauses / 2,
-        number_of_features,
         ta_state,
         n_jobs,
         clause_output_tile_size
@@ -974,11 +955,10 @@ void regressor_update_impl(
         number_of_clauses / 2,
         cache.feedback_to_clauses.data(),
         cache.clause_output.data(),
-        number_of_features,
         number_of_states,
         S_inv,
         response_error,
-        X.data(),
+        X,
         boost_true_positive_feedback,
         fgen,
         cache.fcache
@@ -999,7 +979,6 @@ fit_online_impl(
 
     auto const number_of_clauses = Params::number_of_regressor_clauses(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
@@ -1032,7 +1011,6 @@ fit_online_impl(
 
                 threshold,
                 number_of_clauses,
-                number_of_features,
                 number_of_states,
                 s,
                 boost_true_positive_feedback,
@@ -1157,7 +1135,6 @@ predict_impl(RegressorState const & state, std::vector<aligned_vector_char> cons
 
     auto const threshold = Params::threshold(params);
     auto const number_of_clauses = Params::number_of_regressor_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -1171,7 +1148,6 @@ predict_impl(RegressorState const & state, std::vector<aligned_vector_char> cons
                     X[it],
                     state.cache.clause_output,
                     number_of_clauses / 2,
-                    number_of_features,
                     ta_state,
                     n_jobs,
                     clause_output_tile_size);
