@@ -46,7 +46,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
         ta_state_gen(ta_state);
 
         Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, number_of_features, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
@@ -110,7 +110,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
         ta_state_gen(ta_state);
 
         Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, number_of_features, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
@@ -182,7 +182,7 @@ TEST(BitwiseTrainAutomata, replicates_result_of_classic_code)
 
         Tsetlini::train_classifier_automata(
             ta_state_classic, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, frng_classic, fcache_classic);
+            number_of_states, S_inv, X, boost_true_positive_feedback, frng_classic, fcache_classic);
 
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint32_t>(X.cbegin(), X.cend());

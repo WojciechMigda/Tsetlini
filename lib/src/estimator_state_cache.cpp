@@ -22,8 +22,7 @@ void ClassifierStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
     // initialize frand cache
-    using frand_cache_type = decltype(cache.fcache); // TODO use frand_cache_type
-    cache.fcache = frand_cache_type(fgen, 2 * Params::number_of_features(params), igen.peek());
+    cache.fcache = ClassifierStateCache::frand_cache_type(fgen, 2 * Params::number_of_features(params), igen.peek());
 }
 
 
@@ -39,8 +38,7 @@ void RegressorStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
     // initialize frand cache
-    using frand_cache_type = decltype(cache.fcache); // TODO use frand_cache_type
-    cache.fcache = frand_cache_type(fgen, 2 * Params::number_of_features(params), igen.peek());
+    cache.fcache = RegressorStateCache::frand_cache_type(fgen, 2 * Params::number_of_features(params), igen.peek());
 }
 
 
