@@ -93,7 +93,7 @@ void sum_up_all_label_votes(
 }
 
 
-template<typename state_type, unsigned int BATCH_SZ>
+template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
@@ -191,7 +191,7 @@ void calculate_clause_output_for_predict(
     switch (TILE_SZ)
     {
         case 128:
-            calculate_clause_output_for_predict_T<state_type, 128>(
+            calculate_clause_output_for_predict_T<128>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -200,7 +200,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 64:
-            calculate_clause_output_for_predict_T<state_type, 64>(
+            calculate_clause_output_for_predict_T<64>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -209,7 +209,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 32:
-            calculate_clause_output_for_predict_T<state_type, 32>(
+            calculate_clause_output_for_predict_T<32>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -221,7 +221,7 @@ void calculate_clause_output_for_predict(
 //            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output_for_predict_T<state_type, 16>(
+            calculate_clause_output_for_predict_T<16>(
                 X,
                 clause_output,
                 number_of_clauses,
@@ -233,7 +233,7 @@ void calculate_clause_output_for_predict(
 }
 
 
-template<typename state_type, unsigned int BATCH_SZ>
+template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_T(
     aligned_vector_char const & X,
@@ -344,7 +344,7 @@ void calculate_clause_output(
     switch (TILE_SZ)
     {
         case 128:
-            calculate_clause_output_T<state_type, 128>(
+            calculate_clause_output_T<128>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -354,7 +354,7 @@ void calculate_clause_output(
             );
             break;
         case 64:
-            calculate_clause_output_T<state_type, 64>(
+            calculate_clause_output_T<64>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -364,7 +364,7 @@ void calculate_clause_output(
             );
             break;
         case 32:
-            calculate_clause_output_T<state_type, 32>(
+            calculate_clause_output_T<32>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -377,7 +377,7 @@ void calculate_clause_output(
 //            LOG_(warn) << "calculate_clause_output: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output_T<state_type, 16>(
+            calculate_clause_output_T<16>(
                 X,
                 clause_output,
                 output_begin_ix,

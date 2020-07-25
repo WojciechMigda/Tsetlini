@@ -42,7 +42,7 @@ signum_from_ta_state(numeric_matrix<state_type> const & ta_state, bit_matrix<sig
 }
 
 
-template<typename bit_block_type, unsigned int BATCH_SZ>
+template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
 void calculate_clause_output_T(
     bit_vector<bit_block_type> const & X,
@@ -136,7 +136,7 @@ void calculate_clause_output(
     switch (TILE_SZ)
     {
         case 128:
-            calculate_clause_output_T<bit_block_type, 128>(
+            calculate_clause_output_T<128>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -146,7 +146,7 @@ void calculate_clause_output(
             );
             break;
         case 64:
-            calculate_clause_output_T<bit_block_type, 64>(
+            calculate_clause_output_T<64>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -156,7 +156,7 @@ void calculate_clause_output(
             );
             break;
         case 32:
-            calculate_clause_output_T<bit_block_type, 32>(
+            calculate_clause_output_T<32>(
                 X,
                 clause_output,
                 output_begin_ix,
@@ -169,7 +169,7 @@ void calculate_clause_output(
 //            LOG_(warn) << "calculate_clause_output: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output_T<bit_block_type, 16>(
+            calculate_clause_output_T<16>(
                 X,
                 clause_output,
                 output_begin_ix,
