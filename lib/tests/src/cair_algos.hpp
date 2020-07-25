@@ -4,7 +4,7 @@
 #define LIB_TESTS_SRC_CAIR_ALGOS_HPP_
 
 #include "tsetlini_types.hpp"
-#include "tsetlini_algo.hpp"
+#include "tsetlini_algo_classic.hpp"
 
 
 namespace CAIR

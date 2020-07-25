@@ -1,6 +1,6 @@
 #include "basic_bit_vector_companion.hpp"
 #include "tsetlini_types.hpp"
-#include "tsetlini_algo.hpp"
+#include "tsetlini_algo_classic.hpp"
 #include "tsetlini_algo_bitwise.hpp"
 #include "mt.hpp"
 

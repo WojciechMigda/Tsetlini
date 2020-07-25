@@ -1,7 +1,7 @@
 #include "cair_algos.hpp"
 
 #include "tsetlini_types.hpp"
-#include "tsetlini_algo.hpp"
+#include "tsetlini_algo_classic.hpp"
 #include "mt.hpp"
 #include "assume_aligned.hpp"
 
