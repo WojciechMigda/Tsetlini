@@ -20,6 +20,8 @@ if(NOT OpenMP_FOUND)
 endif()
 
 set(SOURCES
+    src/estimator_state_cache.cpp
+    src/ta_state.cpp
     src/tsetlini.cpp
     src/tsetlini_params.cpp
     src/tsetlini_state.cpp

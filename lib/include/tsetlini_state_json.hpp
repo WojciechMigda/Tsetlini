@@ -1,14 +1,13 @@
 #pragma once
 
+#include "estimator_state_fwd.hpp"
+
 #include <string>
 
 
 namespace Tsetlini
 {
 
-
-struct ClassifierState;
-struct RegressorState;
 
 std::string to_json_string(ClassifierState const & state);
 void from_json_string(ClassifierState & state, std::string const & js);

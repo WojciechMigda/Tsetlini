@@ -1,3 +1,4 @@
+#include "estimator_state.hpp"
 #include "tsetlini_state_json.hpp"
 #include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
@@ -62,7 +63,7 @@ static void from_json(json const & j, FRNG & p)
 }
 
 
-void to_json(json & j, Tsetlini::ClassifierState::ta_state_v_type const & p)
+void to_json(json & j, Tsetlini::ClassifierState::ta_state_type::value_type const & p)
 {
     json ta_state;
 
@@ -94,7 +95,7 @@ void to_json(json & j, Tsetlini::ClassifierState::ta_state_v_type const & p)
 }
 
 
-static void from_json(json const & j, Tsetlini::ClassifierState::ta_state_v_type & p)
+static void from_json(json const & j, Tsetlini::ClassifierState::ta_state_type::value_type & p)
 {
     std::size_t width = 0u;
     j.at("width").get_to(width);
@@ -224,7 +225,7 @@ void from_json_string(ClassifierState & state, std::string const & jss)
 
     state.igen = js.at("igen").get<IRNG>();
     state.fgen = js.at("fgen").get<FRNG>();
-    state.ta_state = js.at("ta_state").get<Tsetlini::ClassifierState::ta_state_v_type>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::ClassifierState::ta_state_type::value_type>();
     state.m_params = js.at("params").get<params_t>();
 
     // So, we need a hack, since stringified json doesn't distinguish
@@ -266,7 +267,7 @@ void from_json_string(RegressorState & state, std::string const & jss)
 
     state.igen = js.at("igen").get<IRNG>();
     state.fgen = js.at("fgen").get<FRNG>();
-    state.ta_state = js.at("ta_state").get<Tsetlini::RegressorState::ta_state_v_type>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::RegressorState::ta_state_type::value_type>();
     state.m_params = js.at("params").get<params_t>();
 
     // So, we need a hack, since stringified json doesn't distinguish

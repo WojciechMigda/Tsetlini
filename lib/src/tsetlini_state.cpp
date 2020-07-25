@@ -1,6 +1,7 @@
 #define LOG_MODULE "tsetlini-core"
 #include "logger.hpp"
 
+#include "estimator_state.hpp"
 #include "tsetlini_state.hpp"
 #include "tsetlini_types.hpp"
 #include "params_companion.hpp"
@@ -14,27 +15,14 @@
 #include <limits>
 
 
-namespace std
-{
-// this is needed for std::variant comparison, probably illegal. TODO
-static constexpr
-bool operator==(nullopt_t const & lhs, nullopt_t const & rhs){ return true; }
-
-}
-
-
 namespace Tsetlini
 {
 
 
-void initialize_state(ClassifierState & state)
+static
+void log_estimator_params(ClassifierState const & state, bool verbose)
 {
     auto & params = state.m_params;
-
-    auto const verbose = Params::verbose(params);
-
-    state.igen.init(Params::random_state(params));
-    state.fgen.init(Params::random_state(params));
 
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
@@ -45,61 +33,13 @@ void initialize_state(ClassifierState & state)
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
-
-    // convenience reference variables
-    auto & ta_state_v = state.ta_state;
-    auto & igen = state.igen;
-
-    auto const number_of_states = Params::number_of_states(params);
-    auto const & counting_type = Params::counting_type(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
-
-    if (number_of_states <= std::numeric_limits<std::int8_t>::max()
-        and ("auto" == counting_type or "int8" == counting_type))
-    {
-        LOG(trace) << "Selected int8 for ta_state\n";
-        ta_state_v = numeric_matrix_int8(number_of_clauses, number_of_features);
-    }
-    else if (number_of_states <= std::numeric_limits<std::int16_t>::max()
-        and ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
-    {
-        LOG(trace) << "Selected int16 for ta_state\n";
-        ta_state_v = numeric_matrix_int16(number_of_clauses, number_of_features);
-    }
-    else
-    {
-        LOG(trace) << "Selected int32 for ta_state\n";
-        ta_state_v = numeric_matrix_int32(number_of_clauses, number_of_features);
-    }
-
-    auto ta_state_gen = [&igen](auto & ta_state)
-    {
-        for (auto rit = 0u; rit < ta_state.rows(); ++rit)
-        {
-            auto row_data = ta_state.row_data(rit);
-
-            for (auto cit = 0u; cit < ta_state.cols(); ++cit)
-            {
-                row_data[cit] = igen.next(-1, 0);
-            }
-        }
-    };
-
-    std::visit(ta_state_gen, ta_state_v);
-
-    reset_state_cache(state);
 }
 
 
-void initialize_state(RegressorState & state)
+static
+void log_estimator_params(RegressorState const & state, bool verbose)
 {
     auto & params = state.m_params;
-
-    auto const verbose = Params::verbose(params);
-
-    state.igen.init(Params::random_state(params));
-    state.fgen.init(Params::random_state(params));
 
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
@@ -109,116 +49,93 @@ void initialize_state(RegressorState & state)
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
+}
 
-    // convenience reference variables
-    auto & ta_state_v = state.ta_state;
-    auto & igen = state.igen;
 
-    auto const number_of_states = Params::number_of_states(params);
-    auto const & counting_type = Params::counting_type(params);
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
-    auto const number_of_features = Params::number_of_features(params);
+static
+std::string normalize_counting_type(
+    std::string const & counting_type,
+    int number_of_states,
+    bool verbose)
+{
+    std::string rv;
 
-    if (number_of_states <= std::numeric_limits<std::int8_t>::max()
-        and ("auto" == counting_type or "int8" == counting_type))
+    if ((number_of_states <= std::numeric_limits<std::int8_t>::max()) and
+        ("auto" == counting_type or "int8" == counting_type))
     {
         LOG(trace) << "Selected int8 for ta_state\n";
-        ta_state_v = numeric_matrix_int8(number_of_clauses, number_of_features);
+        rv = "int8";
     }
-    else if (number_of_states <= std::numeric_limits<std::int16_t>::max()
-        and ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
+    else if ((number_of_states <= std::numeric_limits<std::int16_t>::max()) and
+        ("auto" == counting_type or "int8" == counting_type or "int16" == counting_type))
     {
         LOG(trace) << "Selected int16 for ta_state\n";
-        ta_state_v = numeric_matrix_int16(number_of_clauses, number_of_features);
+        rv = "int16";
     }
     else
     {
         LOG(trace) << "Selected int32 for ta_state\n";
-        ta_state_v = numeric_matrix_int32(number_of_clauses, number_of_features);
+        rv = "int32";
     }
 
-    auto ta_state_gen = [&igen](auto & ta_state)
-    {
-        for (auto rit = 0u; rit < ta_state.rows(); ++rit)
-        {
-            auto row_data = ta_state.row_data(rit);
-
-            for (auto cit = 0u; cit < ta_state.cols(); ++cit)
-            {
-                row_data[cit] = igen.next(-1, 0);
-            }
-        }
-    };
-
-    std::visit(ta_state_gen, ta_state_v);
-
-    reset_state_cache(state);
+    return rv;
 }
 
 
-void reset_state_cache(ClassifierState & state)
+int number_of_estimator_clauses(ClassifierState const & est)
 {
-    auto & cache = state.cache;
+    return Params::number_of_classifier_clauses(est.m_params);
+}
+
+
+int number_of_estimator_clauses(RegressorState const & est)
+{
+    return Params::number_of_regressor_clauses(est.m_params);
+}
+
+
+template<typename EstimatorStateType>
+void initialize_state(EstimatorStateType & state)
+{
+    static_assert(is_estimator_state<EstimatorStateType>::value, "EstimatorStateType requirement is not met");
+
     auto & params = state.m_params;
+    auto const verbose = Params::verbose(params);
 
-    cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
-    cache.label_sum.clear();
-    cache.label_sum.resize(Params::number_of_labels(params));
-    cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    state.igen.init(Params::random_state(params));
+    state.fgen.init(Params::random_state(params));
 
-    // initialize frand cache
-    cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());
+    log_estimator_params(state, verbose);
+
+    auto & ta_state = state.ta_state;
+
+    auto const number_of_states = Params::number_of_states(params);
+    auto const number_of_clauses = number_of_estimator_clauses(state);
+    auto const number_of_features = Params::number_of_features(params);
+    auto const counting_type =
+        normalize_counting_type(Params::counting_type(params), number_of_states, verbose);
+
+    using ta_state_type = typename EstimatorStateType::ta_state_type;
+    ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, state.igen);
+
+    using cache_type = typename EstimatorStateType::cache_type;
+    cache_type::reset(state.cache, params, state.fgen, state.igen);
 }
 
 
-void reset_state_cache(RegressorState & state)
+// explicit template instantiations
+template void initialize_state<ClassifierState>(ClassifierState & state);
+template void initialize_state<RegressorState>(RegressorState & state);
+
+template<typename EstimatorStateType>
+void reset_state_cache(EstimatorStateType & state)
 {
-    auto & cache = state.cache;
-    auto & params = state.m_params;
-
-    cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
-    cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
-
-    // initialize frand cache
-    cache.fcache = ClassifierState::frand_cache_type(state.fgen, 2 * Params::number_of_features(params), state.igen.peek());
+    EstimatorStateType::cache_type::reset(state.cache, state.m_params, state.fgen, state.igen);
 }
 
-
-ClassifierState::ClassifierState(params_t const & params) :
-    m_params(params)
-{
-}
-
-
-bool ClassifierState::operator==(ClassifierState const & other) const
-{
-    if (this == &other)
-    {
-        return true;
-    }
-    else
-    {
-        return
-            ta_state == other.ta_state
-            and igen == other.igen
-            and fgen == other.fgen
-            and m_params == other.m_params
-            and cache.feedback_to_clauses.size() == other.cache.feedback_to_clauses.size()
-            and cache.clause_output.size() == other.cache.clause_output.size()
-            and cache.label_sum.size() == other.cache.label_sum.size()
-            ;
-    }
-}
-
-
-RegressorState::RegressorState(params_t const & params) :
-    m_params(params)
-{
-}
+// explicit template instantiations
+template void reset_state_cache<ClassifierState>(ClassifierState & state);
+template void reset_state_cache<RegressorState>(RegressorState & state);
 
 
 } // namespace Tsetlino

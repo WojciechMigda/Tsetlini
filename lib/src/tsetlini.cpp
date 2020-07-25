@@ -223,7 +223,7 @@ void classifier_update_impl(
 
     FRNG & fgen,
     numeric_matrix<state_type> & ta_state,
-    ClassifierState::Cache & cache,
+    ClassifierState::cache_type::value_type & cache,
 
     int clause_output_tile_size
     )
@@ -941,7 +941,7 @@ void regressor_update_impl(
 
     FRNG & fgen,
     numeric_matrix<state_type> & ta_state,
-    RegressorState::Cache & cache,
+    RegressorState::cache_type::value_type & cache,
 
     int clause_output_tile_size
     )

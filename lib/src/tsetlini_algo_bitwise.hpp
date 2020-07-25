@@ -384,7 +384,7 @@ void train_classifier_automata(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::frand_cache_type & fcache
+    ClassifierState::cache_type::frand_cache_type & fcache
     )
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());

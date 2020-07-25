@@ -223,7 +223,7 @@ TEST(TrainAutomata, replicates_result_of_CAIR_code)
          */
         Tsetlini::real_type const S_inv = irng.next(0, 1);
 
-        Tsetlini::ClassifierState::frand_cache_type fcache(fgen, 2 * number_of_features, 0);
+        Tsetlini::ClassifierState::cache_type::frand_cache_type fcache(fgen, 2 * number_of_features, 0);
 
         CAIR::train_classifier_automata(
             ta_state_CAIR, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
