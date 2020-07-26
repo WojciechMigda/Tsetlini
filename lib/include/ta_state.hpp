@@ -23,7 +23,13 @@ struct is_TA_state
 
 template<typename T>
 struct is_TA_state<T, std::void_t<
-        typename T::value_type
+        typename T::value_type,
+        decltype(T::initialize(
+            std::declval<typename T::value_type &>(),
+            std::declval<std::string const &>(),
+            std::declval<int>(),
+            std::declval<int>(),
+            std::declval<IRNG &>()))
     >>
     : std::true_type
 {

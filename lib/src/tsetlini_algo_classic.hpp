@@ -254,6 +254,32 @@ void calculate_clause_output_T(
 }
 
 
+template<unsigned int BATCH_SZ>
+inline
+void calculate_clause_output_T(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const output_begin_ix,
+    int const output_end_ix,
+    TAState::value_type const & ta_state,
+    int const n_jobs)
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            calculate_clause_output_T<BATCH_SZ>(
+                X,
+                clause_output,
+                output_begin_ix,
+                output_end_ix,
+                ta_state_values,
+                n_jobs
+            );
+        },
+        ta_state);
+}
+
+
 // Feedback Type I, negative
 template<typename state_type>
 int block1(
@@ -441,6 +467,43 @@ void train_classifier_automata(
             }
         }
     }
+}
+
+
+inline
+void train_classifier_automata(
+    TAState::value_type & ta_state,
+    int const input_begin_ix,
+    int const input_end_ix,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_states,
+    float const S_inv,
+    aligned_vector_char const & X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng,
+    EstimatorStateCacheBase::frand_cache_type & fcache
+    )
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            train_classifier_automata(
+                ta_state_values,
+                input_begin_ix,
+                input_end_ix,
+                feedback_to_clauses,
+                clause_output,
+                number_of_states,
+                S_inv,
+                X,
+                boost_true_positive_feedback,
+                frng,
+                fcache
+            );
+        },
+        ta_state
+    );
 }
 
 

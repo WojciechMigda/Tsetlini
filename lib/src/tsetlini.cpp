@@ -207,9 +207,9 @@ status_message_t check_for_predict(
 }
 
 
-template<typename state_type, typename row_type>
+template<typename SampleType, typename TAStateValueType>
 void classifier_update_impl(
-    row_type const & X,
+    SampleType const & X,
     label_type const target_label,
     label_type const opposite_label,
 
@@ -222,7 +222,7 @@ void classifier_update_impl(
     int const n_jobs,
 
     FRNG & fgen,
-    numeric_matrix<state_type> & ta_state,
+    TAStateValueType & ta_state,
     ClassifierStateClassic::cache_type::value_type & cache,
 
     int clause_output_tile_size
@@ -611,11 +611,11 @@ void generate_opposite_y(
 }
 
 
-template<typename ClassifierStateType, typename TAStateType, typename SampleType>
+template<typename ClassifierStateType, typename TAStateValueType, typename SampleType>
 status_message_t
 fit_classifier_online_impl(
     ClassifierStateType & state,
-    TAStateType & ta_state,
+    TAStateValueType & ta_state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     unsigned int epochs)
@@ -684,21 +684,6 @@ fit_classifier_online_impl(
 }
 
 
-template<typename SampleType>
-status_message_t
-fit_classifier_online_impl(
-    ClassifierStateClassic & state,
-    std::vector<SampleType> const & X,
-    label_vector_type const & y,
-    unsigned int epochs)
-{
-    return std::visit([&](auto & ta_state)
-        {
-            return fit_classifier_online_impl(state, ta_state, X, y, epochs);
-        }, state.ta_state);
-}
-
-
 template<typename ClassifierStateType, typename SampleType>
 status_message_t
 fit_classifier_impl_T(
@@ -730,7 +715,7 @@ fit_classifier_impl_T(
 
     initialize_state(state);
 
-    return fit_classifier_online_impl(state, X, y, epochs);
+    return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
 }
 
 
@@ -750,7 +735,7 @@ partial_fit_impl(
 
     if (is_fitted(state))
     {
-        return fit_classifier_online_impl(state, X, y, epochs);
+        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
     {
