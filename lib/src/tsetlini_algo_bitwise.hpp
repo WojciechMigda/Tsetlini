@@ -125,6 +125,96 @@ void calculate_clause_output_T(
 }
 
 
+template<unsigned int BATCH_SZ, typename bit_block_type>
+inline
+void calculate_clause_output_for_predict_T(
+    bit_vector<bit_block_type> const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    TAStateWithSignum::value_type const & ta_state,
+    int const n_jobs)
+{
+    auto const & ta_state_signum = ta_state.signum;
+    bit_block_type const * X_p = assume_aligned<alignment>(X.data());
+    int const feature_blocks = X.content_blocks();
+
+    if (feature_blocks < (int)BATCH_SZ)
+    {
+        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        {
+            bool output = true;
+
+            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
+            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+
+            bit_block_type any_inclusions = 0;
+
+            for (int fidx = 0; fidx < feature_blocks and output == true; ++fidx)
+            {
+                bit_block_type const action_include = ta_sign_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const features = X_p[fidx];
+                any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
+
+                bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
+                output = (eval == 0);
+            }
+
+            output = any_inclusions > 0 ? output : false;
+
+            clause_output[oidx] = output;
+        }
+    }
+    else
+    {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        {
+            bit_block_type toggle_output = 0;
+            bit_block_type any_inclusions = 0;
+
+            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
+            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+
+            unsigned int kk = 0;
+            for (; kk < feature_blocks - (BATCH_SZ - 1); kk += BATCH_SZ)
+            {
+                for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
+                {
+                    bit_block_type const action_include = ta_sign_pos_j[fidx];
+                    bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                    bit_block_type const features = X_p[fidx];
+                    any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
+
+                    bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
+
+                    toggle_output = eval > toggle_output ? eval : toggle_output;
+                }
+                if (toggle_output != 0)
+                {
+                    break;
+                }
+            }
+            for (int fidx = kk; fidx < feature_blocks and toggle_output == 0; ++fidx)
+            {
+                bit_block_type const action_include = ta_sign_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const features = X_p[fidx];
+                any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
+
+                bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
+
+                toggle_output = eval > toggle_output ? eval : toggle_output;
+            }
+
+            toggle_output = any_inclusions > 0 ? toggle_output : 1;
+
+            clause_output[oidx] = !toggle_output;
+        }
+    }
+}
+
+
 // Feedback Type I, negative
 template<typename state_type, typename bit_block_type>
 int block1(
