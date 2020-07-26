@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_SRC_TSETLINI_PRIVATE_HPP_
+#define LIB_SRC_TSETLINI_PRIVATE_HPP_
+
 #include "tsetlini_status_code.hpp"
 #include "estimator_state.hpp"
 #include "tsetlini_types.hpp"
@@ -7,6 +10,7 @@
 #include "neither/either.hpp"
 
 #include <vector>
+
 
 namespace Tsetlini
 {
@@ -79,3 +83,5 @@ predict_impl(
 
 
 } // namespace Tsetlini
+
+#endif /* LIB_SRC_TSETLINI_PRIVATE_HPP_ */

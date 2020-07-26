@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_SRC_TSETLINI_ALGO_HPP_
-#define LIB_SRC_TSETLINI_ALGO_HPP_
+#ifndef LIB_SRC_TSETLINI_ALGO_CLASSIC_HPP_
+#define LIB_SRC_TSETLINI_ALGO_CLASSIC_HPP_
 
 #include "estimator_state.hpp"
 #include "estimator_state_cache.hpp"
@@ -637,4 +637,4 @@ void train_regressor_automata(
 
 } // namespace Tsetlini
 
-#endif /* LIB_SRC_TSETLINI_ALGO_HPP_ */
+#endif /* LIB_SRC_TSETLINI_ALGO_CLASSIC_HPP_ */

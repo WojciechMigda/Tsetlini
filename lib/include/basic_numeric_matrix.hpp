@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_BASIC_NUMERIC_MATRIX_HPP_
+#define LIB_INCLUDE_BASIC_NUMERIC_MATRIX_HPP_
+
 #include "aligned_allocator.hpp"
 #include "is_power_of_two.hpp"
 
@@ -150,3 +153,5 @@ struct basic_numeric_matrix
     uint m_ncols;
     aligned_vector m_v;
 };
+
+#endif /* LIB_INCLUDE_BASIC_NUMERIC_MATRIX_HPP_ */

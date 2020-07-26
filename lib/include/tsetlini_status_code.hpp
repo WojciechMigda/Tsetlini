@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_TSETLINI_STATUS_CODE_HPP_
+#define LIB_INCLUDE_TSETLINI_STATUS_CODE_HPP_
+
 #include <utility>
 #include <string>
 
@@ -19,3 +22,6 @@ using status_message_t = std::pair<StatusCode, std::string>;
 
 
 } // namespace Tsetlini
+
+
+#endif /* LIB_INCLUDE_TSETLINI_STATUS_CODE_HPP_ */

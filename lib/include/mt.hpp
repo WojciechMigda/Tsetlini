@@ -23,6 +23,9 @@
 
 #pragma once
 
+#ifndef LIB_INCLUDE_MT_HPP_
+#define LIB_INCLUDE_MT_HPP_
+
 #include "likely.h"
 #include "assume_aligned.hpp"
 #include "is_power_of_two.hpp"
@@ -276,3 +279,6 @@ struct basic_FRNG : public BasePRNG<float, Alignment, NumberOfStreams, basic_FRN
 };
 
 using FRNG = basic_FRNG<64, 8>;
+
+
+#endif /* LIB_INCLUDE_MT_HPP_ */

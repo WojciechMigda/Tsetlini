@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_FRAND_CACHE_HPP_
+#define LIB_INCLUDE_FRAND_CACHE_HPP_
+
 #include "tsetlini_types.hpp"
 #include "aligned_allocator.hpp"
 #include "assume_aligned.hpp"
@@ -58,3 +61,6 @@ struct frand_cache
 
 
 } // namespace Tsetlini
+
+
+#endif /* LIB_INCLUDE_FRAND_CACHE_HPP_ */
