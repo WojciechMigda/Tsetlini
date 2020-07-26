@@ -4,10 +4,12 @@
 #define LIB_SRC_TSETLINI_ALGO_HPP_
 
 #include "estimator_state.hpp"
+#include "estimator_state_cache.hpp"
 #include "tsetlini_types.hpp"
 
 namespace Tsetlini
 {
+
 
 namespace
 {
@@ -306,89 +308,6 @@ void calculate_clause_output_T(
     }
 }
 
-/**
- * @param X
- *      Vector of 0s and 1s, with size equal to @c number_of_features .
- *
- * @param clause_output
- *      Output vector of 0s and 1s, with size equal to @c number_of_clauses .
- *
- * @param number_of_clauses
- *      Positive integer equal to size of @c clause_output .
- *
- * @param number_of_features
- *      Positive integer equal to size of @c X .
- *
- * @param ta_state
- *      @c numeric_matrix with 2 * @c number_of_clauses rows and
- *      @c number_of_features columns.
- *
- * @param n_jobs
- *      Number of parallel jobs.
- *
- * @param TILE_SZ
- *      Positive integer {16, 32, 64, 128} that specifies batch size of
- *      data processed in @c X .
- */
-template<typename state_type>
-inline
-void calculate_clause_output(
-    aligned_vector_char const & X,
-    aligned_vector_char & clause_output,
-    int const output_begin_ix,
-    int const output_end_ix,
-    numeric_matrix<state_type> const & ta_state,
-    int const n_jobs,
-    int const TILE_SZ)
-{
-    switch (TILE_SZ)
-    {
-        case 128:
-            calculate_clause_output_T<128>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 64:
-            calculate_clause_output_T<64>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 32:
-            calculate_clause_output_T<32>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state,
-                n_jobs
-            );
-            break;
-        default:
-//            LOG_(warn) << "calculate_clause_output: unrecognized clause_output_tile_size value "
-//                       << clause_output_tile_size << ", fallback to 16.\n";
-        case 16:
-            calculate_clause_output_T<16>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state,
-                n_jobs
-            );
-            break;
-    }
-}
-
 
 // Feedback Type I, negative
 template<typename state_type>
@@ -536,7 +455,7 @@ void train_classifier_automata(
     aligned_vector_char const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::cache_type::frand_cache_type & fcache
+    EstimatorStateCacheBase::frand_cache_type & fcache
     )
 {
     int const number_of_features = X.size();
@@ -668,7 +587,7 @@ void train_regressor_automata(
     aligned_vector_char const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::cache_type::frand_cache_type & fcache
+    EstimatorStateCacheBase::frand_cache_type & fcache
     )
 {
     int const number_of_features = X.size();
