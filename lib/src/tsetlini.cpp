@@ -223,7 +223,7 @@ void classifier_update_impl(
 
     FRNG & fgen,
     numeric_matrix<state_type> & ta_state,
-    ClassifierState::cache_type::value_type & cache,
+    ClassifierStateClassic::cache_type::value_type & cache,
 
     int clause_output_tile_size
     )
@@ -324,7 +324,7 @@ void classifier_update_impl(
 
 Either<status_message_t, real_type>
 evaluate_impl(
-    ClassifierState const & state,
+    ClassifierStateClassic const & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y)
 {
@@ -378,7 +378,7 @@ evaluate_impl(
 
 
 Either<status_message_t, label_type>
-predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
+predict_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
 {
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
@@ -416,7 +416,7 @@ predict_impl(ClassifierState const & state, aligned_vector_char const & sample)
 
 
 Either<status_message_t, response_type>
-predict_impl(RegressorState const & state, aligned_vector_char const & sample)
+predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sample)
 {
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
@@ -448,7 +448,7 @@ predict_impl(RegressorState const & state, aligned_vector_char const & sample)
 
 
 Either<status_message_t, label_vector_type>
-predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
+predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
 {
     if (auto sm = check_for_predict(state, X);
         sm.first != StatusCode::S_OK)
@@ -504,7 +504,7 @@ predict_impl(ClassifierState const & state, std::vector<aligned_vector_char> con
 
 
 Either<status_message_t, aligned_vector_int>
-predict_raw_impl(ClassifierState const & state, aligned_vector_char const & sample)
+predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
 {
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
@@ -547,7 +547,7 @@ predict_raw_impl(ClassifierState const & state, aligned_vector_char const & samp
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
-predict_raw_impl(ClassifierState const & state, std::vector<aligned_vector_char> const & X)
+predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
 {
     if (auto sm = check_for_predict(state, X);
         sm.first != StatusCode::S_OK)
@@ -614,7 +614,7 @@ void generate_opposite_y(
 template<typename state_type, typename row_type>
 status_message_t
 fit_online_impl(
-    ClassifierState & state,
+    ClassifierStateClassic & state,
     numeric_matrix<state_type> & ta_state,
     std::vector<row_type> const & X,
     label_vector_type const & y,
@@ -687,7 +687,7 @@ fit_online_impl(
 template<typename RowType>
 status_message_t
 fit_online_impl(
-    ClassifierState & state,
+    ClassifierStateClassic & state,
     std::vector<RowType> const & X,
     label_vector_type const & y,
     unsigned int epochs)
@@ -702,7 +702,7 @@ fit_online_impl(
 template<typename RowType>
 status_message_t
 fit_impl_T(
-    ClassifierState & state,
+    ClassifierStateClassic & state,
     std::vector<RowType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
@@ -736,7 +736,7 @@ fit_impl_T(
 
 status_message_t
 partial_fit_impl(
-    ClassifierState & state,
+    ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
@@ -773,7 +773,7 @@ ClassifierClassic::ClassifierClassic(params_t && params) :
 }
 
 
-ClassifierClassic::ClassifierClassic(ClassifierState const & state) :
+ClassifierClassic::ClassifierClassic(ClassifierStateClassic const & state) :
     m_state(state)
 {
 }
@@ -830,7 +830,7 @@ ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_
 
 status_message_t
 fit_impl(
-    ClassifierState & state,
+    ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
@@ -852,7 +852,7 @@ params_t ClassifierClassic::read_params() const
 }
 
 
-ClassifierState ClassifierClassic::read_state() const
+ClassifierStateClassic ClassifierClassic::read_state() const
 {
     return m_state;
 }
@@ -885,7 +885,7 @@ RegressorClassic::RegressorClassic(params_t && params) :
 }
 
 
-RegressorClassic::RegressorClassic(RegressorState const & state) :
+RegressorClassic::RegressorClassic(RegressorStateClassic const & state) :
     m_state(state)
 {
 }
@@ -924,7 +924,7 @@ void regressor_update_impl(
 
     FRNG & fgen,
     numeric_matrix<state_type> & ta_state,
-    RegressorState::cache_type::value_type & cache,
+    RegressorStateClassic::cache_type::value_type & cache,
 
     int clause_output_tile_size
     )
@@ -970,7 +970,7 @@ void regressor_update_impl(
 template<typename state_type, typename row_type>
 status_message_t
 fit_online_impl(
-    RegressorState & state,
+    RegressorStateClassic & state,
     numeric_matrix<state_type> & ta_state,
     std::vector<row_type> const & X,
     response_vector_type const & y,
@@ -1033,7 +1033,7 @@ fit_online_impl(
 template<typename RowType>
 status_message_t
 fit_online_impl(
-    RegressorState & state,
+    RegressorStateClassic & state,
     std::vector<RowType> const & X,
     response_vector_type const & y,
     unsigned int epochs)
@@ -1047,7 +1047,7 @@ fit_online_impl(
 
 status_message_t
 partial_fit_impl(
-    RegressorState & state,
+    RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
     unsigned int epochs)
@@ -1072,7 +1072,7 @@ partial_fit_impl(
 template<typename RowType>
 status_message_t
 fit_impl_T(
-    RegressorState & state,
+    RegressorStateClassic & state,
     std::vector<RowType> const & X,
     response_vector_type const & y,
     unsigned int epochs)
@@ -1097,7 +1097,7 @@ fit_impl_T(
 
 status_message_t
 fit_impl(
-    RegressorState & state,
+    RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
     unsigned int epochs)
@@ -1120,7 +1120,7 @@ RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, respon
 
 
 Either<status_message_t, response_vector_type>
-predict_impl(RegressorState const & state, std::vector<aligned_vector_char> const & X)
+predict_impl(RegressorStateClassic const & state, std::vector<aligned_vector_char> const & X)
 {
     if (auto sm = check_for_predict(state, X);
         sm.first != StatusCode::S_OK)
@@ -1183,7 +1183,7 @@ params_t RegressorClassic::read_params() const
 }
 
 
-RegressorState RegressorClassic::read_state() const
+RegressorStateClassic RegressorClassic::read_state() const
 {
     return m_state;
 }

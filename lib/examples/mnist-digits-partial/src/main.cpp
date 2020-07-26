@@ -155,7 +155,7 @@ Please run make_data.py to generate this file and copy it to the current working
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
-            Tsetlini::ClassifierState new_state(clf.read_params());
+            Tsetlini::ClassifierStateClassic new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 
             Tsetlini::ClassifierClassic clf2(new_state);
@@ -217,7 +217,7 @@ Please run make_data.py to generate this file and copy it to the current working
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
-            Tsetlini::ClassifierState new_state(clf.read_params());
+            Tsetlini::ClassifierStateClassic new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 
             Tsetlini::ClassifierClassic clf2(new_state);

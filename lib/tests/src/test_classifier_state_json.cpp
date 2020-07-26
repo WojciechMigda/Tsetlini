@@ -9,7 +9,7 @@ namespace
 {
 
 
-TEST(ClassifierState, can_be_serialized_and_deserialized_via_json)
+TEST(ClassifierStateClassic, can_be_serialized_and_deserialized_via_json)
 {
     Tsetlini::make_classifier_classic()
         .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
