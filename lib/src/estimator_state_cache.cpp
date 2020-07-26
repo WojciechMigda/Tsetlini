@@ -26,6 +26,15 @@ void ClassifierStateCache::reset(
 }
 
 
+bool ClassifierStateCache::are_equal(value_type const & lhs, value_type const & rhs)
+{
+    return
+        lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
+        and lhs.clause_output.size() == rhs.clause_output.size()
+        and lhs.label_sum.size() == rhs.label_sum.size();
+}
+
+
 void RegressorStateCache::reset(
     RegressorStateCache::value_type & cache,
     params_t const & params,
@@ -39,6 +48,14 @@ void RegressorStateCache::reset(
 
     // initialize frand cache
     cache.fcache = RegressorStateCache::frand_cache_type(fgen, 2 * Params::number_of_features(params), igen.peek());
+}
+
+
+bool RegressorStateCache::are_equal(value_type const & lhs, value_type const & rhs)
+{
+    return
+        lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
+        and lhs.clause_output.size() == rhs.clause_output.size();
 }
 
 

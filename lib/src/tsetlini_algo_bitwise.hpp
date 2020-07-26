@@ -3,6 +3,8 @@
 #ifndef LIB_SRC_TSETLINI_ALGO_BITWISE_HPP_
 #define LIB_SRC_TSETLINI_ALGO_BITWISE_HPP_
 
+#include "ta_state.hpp"
+#include "estimator_state_cache.hpp"
 #include "tsetlini_types.hpp"
 #include "basic_bit_vector.hpp"
 #include "assume_aligned.hpp"
@@ -42,16 +44,17 @@ signum_from_ta_state(numeric_matrix<state_type> const & ta_state, bit_matrix<sig
 }
 
 
-template<typename bit_block_type, unsigned int BATCH_SZ>
+template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
 void calculate_clause_output_T(
     bit_vector<bit_block_type> const & X,
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
-    bit_matrix<bit_block_type> const & ta_state_signum,
+    TAStateWithSignum::value_type const & ta_state,
     int const n_jobs)
 {
+    auto const & ta_state_signum = ta_state.signum;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
@@ -118,66 +121,6 @@ void calculate_clause_output_T(
 
             clause_output[oidx] = !toggle_output;
         }
-    }
-}
-
-
-template<typename bit_block_type>
-inline
-void calculate_clause_output(
-    bit_vector<bit_block_type> const & X,
-    aligned_vector_char & clause_output,
-    int const output_begin_ix,
-    int const output_end_ix,
-    bit_matrix<bit_block_type> const & ta_state_sign,
-    int const n_jobs,
-    int const TILE_SZ)
-{
-    switch (TILE_SZ)
-    {
-        case 128:
-            calculate_clause_output_T<bit_block_type, 128>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state_sign,
-                n_jobs
-            );
-            break;
-        case 64:
-            calculate_clause_output_T<bit_block_type, 64>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state_sign,
-                n_jobs
-            );
-            break;
-        case 32:
-            calculate_clause_output_T<bit_block_type, 32>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state_sign,
-                n_jobs
-            );
-            break;
-        default:
-//            LOG_(warn) << "calculate_clause_output: unrecognized clause_output_tile_size value "
-//                       << clause_output_tile_size << ", fallback to 16.\n";
-        case 16:
-            calculate_clause_output_T<bit_block_type, 16>(
-                X,
-                clause_output,
-                output_begin_ix,
-                output_end_ix,
-                ta_state_sign,
-                n_jobs
-            );
-            break;
     }
 }
 
@@ -372,8 +315,8 @@ void block3(
 
 
 template<typename state_type, typename bit_block_type>
-void train_classifier_automata(
-    numeric_matrix<state_type> & ta_state,
+void train_classifier_automata_T(
+    numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_signum,
     int const input_begin_ix,
     int const input_end_ix,
@@ -384,7 +327,7 @@ void train_classifier_automata(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     FRNG & frng,
-    ClassifierState::cache_type::frand_cache_type & fcache
+    EstimatorStateCacheBase::frand_cache_type & fcache
     )
 {
     float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
@@ -392,8 +335,8 @@ void train_classifier_automata(
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
-        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 0));
-        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 1));
+        state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state_matrix.row_data(2 * iidx + 0));
+        state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state_matrix.row_data(2 * iidx + 1));
 
         if (feedback_to_clauses[iidx] > 0)
         {
@@ -445,6 +388,46 @@ void train_classifier_automata(
             }
         }
     }
+}
+
+
+template<typename bit_block_type>
+void train_classifier_automata(
+    TAStateWithSignum::value_type & ta_state,
+    int const input_begin_ix,
+    int const input_end_ix,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_states,
+    float const S_inv,
+    bit_vector<bit_block_type> const & X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng,
+    EstimatorStateCacheBase::frand_cache_type & fcache
+    )
+{
+    auto & ta_state_variant = ta_state.matrix;
+    auto & ta_state_signum = ta_state.signum;
+
+    std::visit(
+        [&](auto & ta_state_matrix)
+        {
+            train_classifier_automata_T(
+                ta_state_matrix,
+                ta_state_signum,
+                input_begin_ix,
+                input_end_ix,
+                feedback_to_clauses,
+                clause_output,
+                number_of_states,
+                S_inv,
+                X,
+                boost_true_positive_feedback,
+                frng,
+                fcache
+            );
+        },
+        ta_state_variant);
 }
 
 

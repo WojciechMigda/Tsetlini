@@ -38,10 +38,14 @@ struct is_estimator_state_cache<T, std::void_t<
 };
 
 
-struct ClassifierStateCache
+struct EstimatorStateCacheBase
 {
     using frand_cache_type = frand_cache<alignment>;
+};
 
+
+struct ClassifierStateCache : public EstimatorStateCacheBase
+{
     struct value_type
     {
         feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
@@ -51,22 +55,13 @@ struct ClassifierStateCache
         frand_cache_type fcache;
     };
 
-    static bool are_equal(value_type const & lhs, value_type const & rhs)
-    {
-        return
-            lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
-            and lhs.clause_output.size() == rhs.clause_output.size()
-            and lhs.label_sum.size() == rhs.label_sum.size();
-    }
-
+    static bool are_equal(value_type const & lhs, value_type const & rhs);
     static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
 };
 
 
-struct RegressorStateCache
+struct RegressorStateCache : public EstimatorStateCacheBase
 {
-    using frand_cache_type = frand_cache<alignment>;
-
     struct value_type
     {
         feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
@@ -75,13 +70,7 @@ struct RegressorStateCache
         frand_cache_type fcache;
     };
 
-    static bool are_equal(value_type const & lhs, value_type const & rhs)
-    {
-        return
-            lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
-            and lhs.clause_output.size() == rhs.clause_output.size();
-    }
-
+    static bool are_equal(value_type const & lhs, value_type const & rhs);
     static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
 };
 

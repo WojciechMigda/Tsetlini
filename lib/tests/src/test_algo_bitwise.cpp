@@ -1,13 +1,16 @@
+#include "ta_state.hpp"
 #include "basic_bit_vector_companion.hpp"
 #include "tsetlini_types.hpp"
-#include "tsetlini_algo_classic.hpp"
 #include "tsetlini_algo_bitwise.hpp"
+#include "tsetlini_algo_classic.hpp"
+#include "tsetlini_algo_common.hpp"
 #include "mt.hpp"
 
 #include <gtest/gtest.h>
 
 #include <algorithm>
 #include <numeric>
+
 
 namespace
 {
@@ -28,7 +31,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clauses, number_of_features);
 
         auto ta_state_gen = [&irng](auto & ta_state)
         {
@@ -43,22 +46,26 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
             }
         };
 
-        ta_state_gen(ta_state);
+        ta_state_gen(ta_state_values);
 
         Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state_values, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
             ++it;
         }
 
-        auto const bitwise_X = basic_bit_vectors::from_range<std::uint32_t>(X.cbegin(), X.cend());
-        Tsetlini::bit_matrix_uint32 ta_state_signum(2 * number_of_clauses, number_of_features);
-        Tsetlini::signum_from_ta_state(ta_state, ta_state_signum);
+        auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
+        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
+
+        Tsetlini::signum_from_ta_state(ta_state_values, ta_state_signum);
+
+        Tsetlini::TAStateWithSignum::value_type ta_state;
+        ta_state.signum = ta_state_signum;
 
         Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clauses);
-        Tsetlini::calculate_clause_output(bitwise_X, clause_output_bitwise, 0, number_of_clauses, ta_state_signum, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(bitwise_X, clause_output_bitwise, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
 
         EXPECT_TRUE(clause_output_bitwise == clause_output_classic);
     }
@@ -80,7 +87,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clauses, number_of_features);
 
         auto ta_state_gen = [&irng](auto & ta_state)
         {
@@ -107,29 +114,32 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
             }
         };
 
-        ta_state_gen(ta_state);
+        ta_state_gen(ta_state_values);
 
         Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(X, clause_output_classic, 0, number_of_clauses, ta_state_values, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
             ++it;
         }
 
-        auto const bitwise_X = basic_bit_vectors::from_range<std::uint32_t>(X.cbegin(), X.cend());
-        Tsetlini::bit_matrix_uint32 ta_state_signum(2 * number_of_clauses, number_of_features);
-        Tsetlini::signum_from_ta_state(ta_state, ta_state_signum);
+        auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
+        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
+        Tsetlini::signum_from_ta_state(ta_state_values, ta_state_signum);
+
+        Tsetlini::TAStateWithSignum::value_type ta_state;
+        ta_state.signum = ta_state_signum;
 
         Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clauses);
-        Tsetlini::calculate_clause_output(bitwise_X, clause_output_bitwise, 0, number_of_clauses, ta_state_signum, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output(bitwise_X, clause_output_bitwise, 0, number_of_clauses, ta_state, NJOBS, TILE_SZ);
 
         EXPECT_TRUE(clause_output_bitwise == clause_output_classic);
     }
 }
 
 
-TEST(BitwiseTrainAutomata, replicates_result_of_classic_code)
+TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
@@ -146,7 +156,7 @@ TEST(BitwiseTrainAutomata, replicates_result_of_classic_code)
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clauses, number_of_features);
 
         auto ta_state_gen = [number_of_states, &irng](auto & ta_state)
         {
@@ -161,9 +171,9 @@ TEST(BitwiseTrainAutomata, replicates_result_of_classic_code)
             }
         };
 
-        ta_state_gen(ta_state);
+        ta_state_gen(ta_state_values);
 
-        Tsetlini::numeric_matrix_int8 ta_state_classic = ta_state;
+        Tsetlini::numeric_matrix_int8 ta_state_classic = ta_state_values;
 
         Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clauses);
         std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&irng](){ return irng.next(-1, +1); });
@@ -177,29 +187,37 @@ TEST(BitwiseTrainAutomata, replicates_result_of_classic_code)
          */
         Tsetlini::real_type const S_inv = irng.next(0, 1);
 
-        Tsetlini::ClassifierState::cache_type::frand_cache_type fcache_classic(fgen, 2 * number_of_features, 0);
-        Tsetlini::ClassifierState::cache_type::frand_cache_type fcache = fcache_classic;
+        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache_classic(fgen, 2 * number_of_features, 0);
+        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache = fcache_classic;
 
         Tsetlini::train_classifier_automata(
             ta_state_classic, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
             number_of_states, S_inv, X, boost_true_positive_feedback, frng_classic, fcache_classic);
 
 
-        auto const bitwise_X = basic_bit_vectors::from_range<std::uint32_t>(X.cbegin(), X.cend());
-        Tsetlini::bit_matrix_uint32 ta_state_signum(2 * number_of_clauses, number_of_features);
-        Tsetlini::signum_from_ta_state(ta_state, ta_state_signum);
+        auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
+
+        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
+        Tsetlini::signum_from_ta_state(ta_state_values, ta_state_signum);
+
+        // this will be fed to train_classifier_automata
+        Tsetlini::TAStateWithSignum::value_type ta_state;
+        ta_state.signum = ta_state_signum;
+        ta_state.matrix = ta_state_values;
 
         Tsetlini::train_classifier_automata(
-            ta_state, ta_state_signum, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
+            ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
             number_of_states, S_inv, bitwise_X, boost_true_positive_feedback, frng, fcache);
 
-        EXPECT_TRUE(ta_state == ta_state_classic);
+        // retrieve TA State values from ta_state variant for verifiation
+        ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);
+        EXPECT_TRUE(ta_state_values == ta_state_classic);
 
         // assert whether signum was synchronized
-        Tsetlini::bit_matrix_uint32 ta_state_signum_post(2 * number_of_clauses, number_of_features);
-        Tsetlini::signum_from_ta_state(ta_state, ta_state_signum_post);
+        Tsetlini::bit_matrix_uint64 ta_state_signum_post(2 * number_of_clauses, number_of_features);
+        Tsetlini::signum_from_ta_state(ta_state_values, ta_state_signum_post);
 
-        EXPECT_TRUE(ta_state_signum == ta_state_signum_post);
+        EXPECT_TRUE(ta_state.signum == ta_state_signum_post);
     }
 }
 
