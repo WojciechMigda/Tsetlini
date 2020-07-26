@@ -96,8 +96,8 @@ bool EstimatorState<TAStateType, EstimatorStateCacheType>::operator ==(Estimator
     }
 }
 
-using ClassifierState = EstimatorState<TAState, ClassifierStateCache>;
-using RegressorState = EstimatorState<TAState, RegressorStateCache>;
+using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
+using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
 
 
 }  // namespace Tsetlini

@@ -53,15 +53,15 @@ struct ClassifierClassic
 
 
     params_t read_params() const;
-    ClassifierState read_state() const;
+    ClassifierStateClassic read_state() const;
 
-    ClassifierClassic(ClassifierState const & state);
+    ClassifierClassic(ClassifierStateClassic const & state);
 
 friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params);
 
 
 private:
-    ClassifierState m_state;
+    ClassifierStateClassic m_state;
 
     ClassifierClassic(params_t const & params);
     ClassifierClassic(params_t && params);
@@ -104,15 +104,15 @@ struct RegressorClassic
 
 
     params_t read_params() const;
-    RegressorState read_state() const;
+    RegressorStateClassic read_state() const;
 
-    RegressorClassic(RegressorState const & state);
+    RegressorClassic(RegressorStateClassic const & state);
 
 friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
 
 
 private:
-    RegressorState m_state;
+    RegressorStateClassic m_state;
 
     RegressorClassic(params_t const & params);
     RegressorClassic(params_t && params);

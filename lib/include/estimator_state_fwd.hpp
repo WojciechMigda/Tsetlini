@@ -15,8 +15,8 @@ struct RegressorStateCache;
 template<typename TAStateType, typename EstimatorStateCacheType>
 struct EstimatorState;
 
-using ClassifierState = EstimatorState<TAState, ClassifierStateCache>;
-using RegressorState = EstimatorState<TAState, RegressorStateCache>;
+using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
+using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
 
 
 }  // namespace Tsetlini

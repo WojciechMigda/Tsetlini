@@ -19,7 +19,7 @@ namespace Tsetlini
 
 
 static
-void log_estimator_params(ClassifierState const & state, bool verbose)
+void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
 {
     auto & params = state.m_params;
 
@@ -36,7 +36,7 @@ void log_estimator_params(ClassifierState const & state, bool verbose)
 
 
 static
-void log_estimator_params(RegressorState const & state, bool verbose)
+void log_estimator_params(RegressorStateClassic const & state, bool verbose)
 {
     auto & params = state.m_params;
 
@@ -81,13 +81,13 @@ std::string normalize_counting_type(
 }
 
 
-int number_of_estimator_clauses(ClassifierState const & est)
+int number_of_estimator_clauses(ClassifierStateClassic const & est)
 {
     return Params::number_of_classifier_clauses(est.m_params);
 }
 
 
-int number_of_estimator_clauses(RegressorState const & est)
+int number_of_estimator_clauses(RegressorStateClassic const & est)
 {
     return Params::number_of_regressor_clauses(est.m_params);
 }
@@ -123,8 +123,8 @@ void initialize_state(EstimatorStateType & state)
 
 
 // explicit template instantiations
-template void initialize_state<ClassifierState>(ClassifierState & state);
-template void initialize_state<RegressorState>(RegressorState & state);
+template void initialize_state<ClassifierStateClassic>(ClassifierStateClassic & state);
+template void initialize_state<RegressorStateClassic>(RegressorStateClassic & state);
 
 template<typename EstimatorStateType>
 void reset_state_cache(EstimatorStateType & state)
@@ -133,8 +133,8 @@ void reset_state_cache(EstimatorStateType & state)
 }
 
 // explicit template instantiations
-template void reset_state_cache<ClassifierState>(ClassifierState & state);
-template void reset_state_cache<RegressorState>(RegressorState & state);
+template void reset_state_cache<ClassifierStateClassic>(ClassifierStateClassic & state);
+template void reset_state_cache<RegressorStateClassic>(RegressorStateClassic & state);
 
 
 } // namespace Tsetlino
