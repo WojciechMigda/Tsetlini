@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_SRC_PARAMS_COMPANION_HPP_
+#define LIB_SRC_PARAMS_COMPANION_HPP_
+
 #include "tsetlini_params.hpp"
 
 #include <variant>
@@ -7,6 +10,7 @@
 
 namespace Tsetlini
 {
+
 
 namespace Params
 {
@@ -119,4 +123,8 @@ int number_of_regressor_clauses(params_t const & params)
 
 } // namespace Params
 
-} // namespace Tsetlin
+
+} // namespace Tsetlini
+
+
+#endif /* LIB_SRC_PARAMS_COMPANION_HPP_ */

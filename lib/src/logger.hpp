@@ -4,6 +4,7 @@
 // Copytight 2018 Wojciech Migda
 //
 
+#pragma once
 
 #ifndef LOGGER_HPP
 #define LOGGER_HPP

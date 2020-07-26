@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_ALIGNED_ARRAY_HPP_
+#define LIB_INCLUDE_ALIGNED_ARRAY_HPP_
+
+
 #include "assume_aligned.hpp"
 #include "is_power_of_two.hpp"
 
@@ -72,3 +76,5 @@ private:
     size_type offset;
     unsigned char a[Alignment - 1 + nelem * sizeof (value_type)];
 };
+
+#endif /* LIB_INCLUDE_ALIGNED_ARRAY_HPP_ */

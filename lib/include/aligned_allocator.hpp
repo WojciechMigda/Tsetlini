@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_ALIGNED_ALLOCATOR_HPP_
+#define LIB_INCLUDE_ALIGNED_ALLOCATOR_HPP_
+
+
 //#ifdef _WIN32
 #include <mm_malloc.h>
 //#endif
@@ -154,3 +158,5 @@ private:
     aligned_allocator& operator=(const aligned_allocator&);
 };
 
+
+#endif /* LIB_INCLUDE_ALIGNED_ALLOCATOR_HPP_ */

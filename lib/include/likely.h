@@ -25,6 +25,9 @@
 
 #pragma once
 
+#ifndef LIB_INCLUDE_LIKELY_HPP_
+#define LIB_INCLUDE_LIKELY_HPP_
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -42,3 +45,6 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+
+#endif /* LIB_INCLUDE_LIKELY_HPP_ */

@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_TSETLINI_HPP_
+#define LIB_INCLUDE_TSETLINI_HPP_
+
 #include "neither/either.hpp"
 
 #include "tsetlini_params.hpp"
@@ -12,6 +15,7 @@
 
 namespace Tsetlini
 {
+
 
 using namespace neither;
 
@@ -134,3 +138,6 @@ Either<status_message_t, RegressorClassic> make_regressor_classic(std::string co
 
 
 } // namespace Tsetlini
+
+
+#endif /* LIB_INCLUDE_TSETLINI_HPP_ */

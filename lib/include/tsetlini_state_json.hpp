@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef LIB_INCLUDE_TSETLINI_STATE_JSON_HPP_
+#define LIB_INCLUDE_TSETLINI_STATE_JSON_HPP_
+
 #include "estimator_state_fwd.hpp"
 
 #include <string>
@@ -17,3 +20,6 @@ void from_json_string(RegressorState & state, std::string const & js);
 
 
 } // namespace Tsetlini
+
+
+#endif /* LIB_INCLUDE_TSETLINI_STATE_JSON_HPP_ */

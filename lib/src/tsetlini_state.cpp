@@ -5,7 +5,7 @@
 #include "tsetlini_types.hpp"
 #include "params_companion.hpp"
 #include "tsetlini_params.hpp"
-#include "tsetlini_classifier_state_private.hpp"
+#include "tsetlini_estimator_state_private.hpp"
 
 #include <algorithm>
 #include <iterator>

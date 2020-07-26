@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_SRC_BASIC_BIT_VECTOR_HPP_
-#define LIB_SRC_BASIC_BIT_VECTOR_HPP_
+#ifndef LIB_INCLUDE_BASIC_BIT_VECTOR_HPP_
+#define LIB_INCLUDE_BASIC_BIT_VECTOR_HPP_
 
 #include "aligned_allocator.hpp"
 #include "is_power_of_two.hpp"
@@ -92,4 +92,4 @@ struct basic_bit_vector
     aligned_vector m_vector;
 };
 
-#endif /* LIB_SRC_BASIC_BIT_VECTOR_HPP_ */
+#endif /* LIB_INCLUDE_BASIC_BIT_VECTOR_HPP_ */
