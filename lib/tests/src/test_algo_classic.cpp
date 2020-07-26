@@ -178,7 +178,7 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
 }
 
 
-TEST(TrainClassifierAutomata, replicates_result_of_CAIR_code)
+TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
