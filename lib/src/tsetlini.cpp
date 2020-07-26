@@ -1198,8 +1198,7 @@ fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
-//    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
-return {StatusCode::S_OK, ""};
+    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
 
 
