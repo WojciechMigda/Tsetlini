@@ -137,10 +137,15 @@ label_vector_type unique_labels(label_vector_type const & y)
 }
 
 
-template<typename EstimatorStateT>
-bool is_fitted(EstimatorStateT const & state)
+bool is_fitted(TAState::value_type const & ta_state)
 {
-    return std::visit([](auto const & ta_state){ return ta_state.shape().first != 0; }, state.ta_state);
+    return std::visit([](auto const & ta_state_values){ return ta_state_values.shape().first != 0; }, ta_state);
+}
+
+
+bool is_fitted(TAStateWithSignum::value_type const & ta_state)
+{
+    return std::visit([](auto const & ta_state_values){ return ta_state_values.shape().first != 0; }, ta_state.matrix);
 }
 
 
@@ -149,7 +154,7 @@ status_message_t check_for_predict(
     EstimatorStateT const & state,
     std::vector<RowType> const & X)
 {
-    if (not is_fitted(state))
+    if (not is_fitted(state.ta_state))
     {
         return {StatusCode::S_NOT_FITTED_ERROR,
             "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
@@ -186,7 +191,7 @@ status_message_t check_for_predict(
     EstimatorStateT const & state,
     aligned_vector_char const & sample)
 {
-    if (not is_fitted(state))
+    if (not is_fitted(state.ta_state))
     {
         return {StatusCode::S_NOT_FITTED_ERROR,
             "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
@@ -733,7 +738,7 @@ partial_fit_impl(
         return sm;
     }
 
-    if (is_fitted(state))
+    if (is_fitted(state.ta_state))
     {
         return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
     }
@@ -742,8 +747,6 @@ partial_fit_impl(
         return fit_impl(state, X, y, max_number_of_labels, epochs);
     }
 }
-
-
 
 
 ClassifierClassic::ClassifierClassic(params_t const & params) :
@@ -1056,7 +1059,7 @@ partial_fit_impl(
         return sm;
     }
 
-    if (is_fitted(state))
+    if (is_fitted(state.ta_state))
     {
         return fit_online_impl(state, X, y, epochs);
     }
@@ -1206,6 +1209,38 @@ status_message_t
 ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
     return fit_impl(m_state, X, y, max_number_of_labels, epochs);
+}
+
+
+status_message_t
+partial_fit_impl(
+    ClassifierStateBitwise & state,
+    std::vector<bit_vector_uint64> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (is_fitted(state.ta_state))
+    {
+        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, max_number_of_labels, epochs);
+    }
+}
+
+
+status_message_t
+ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+{
+    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
 }
 
 
