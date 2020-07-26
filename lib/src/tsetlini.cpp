@@ -611,12 +611,12 @@ void generate_opposite_y(
 }
 
 
-template<typename state_type, typename row_type>
+template<typename ClassifierStateType, typename TAStateType, typename SampleType>
 status_message_t
-fit_online_impl(
-    ClassifierStateClassic & state,
-    numeric_matrix<state_type> & ta_state,
-    std::vector<row_type> const & X,
+fit_classifier_online_impl(
+    ClassifierStateType & state,
+    TAStateType & ta_state,
+    std::vector<SampleType> const & X,
     label_vector_type const & y,
     unsigned int epochs)
 {
@@ -684,26 +684,26 @@ fit_online_impl(
 }
 
 
-template<typename RowType>
+template<typename SampleType>
 status_message_t
-fit_online_impl(
+fit_classifier_online_impl(
     ClassifierStateClassic & state,
-    std::vector<RowType> const & X,
+    std::vector<SampleType> const & X,
     label_vector_type const & y,
     unsigned int epochs)
 {
     return std::visit([&](auto & ta_state)
         {
-            return fit_online_impl(state, ta_state, X, y, epochs);
+            return fit_classifier_online_impl(state, ta_state, X, y, epochs);
         }, state.ta_state);
 }
 
 
-template<typename RowType>
+template<typename ClassifierStateType, typename SampleType>
 status_message_t
-fit_impl_T(
-    ClassifierStateClassic & state,
-    std::vector<RowType> const & X,
+fit_classifier_impl_T(
+    ClassifierStateType & state,
+    std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
     unsigned int epochs)
@@ -730,7 +730,7 @@ fit_impl_T(
 
     initialize_state(state);
 
-    return fit_online_impl(state, X, y, epochs);
+    return fit_classifier_online_impl(state, X, y, epochs);
 }
 
 
@@ -750,7 +750,7 @@ partial_fit_impl(
 
     if (is_fitted(state))
     {
-        return fit_online_impl(state, X, y, epochs);
+        return fit_classifier_online_impl(state, X, y, epochs);
     }
     else
     {
@@ -828,10 +828,11 @@ ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_
 }
 
 
+template<typename ClassifierStateType, typename SampleType>
 status_message_t
-fit_impl(
-    ClassifierStateClassic & state,
-    std::vector<aligned_vector_char> const & X,
+fit_classifier_impl(
+    ClassifierStateType & state,
+    std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
     unsigned int epochs)
@@ -842,7 +843,19 @@ fit_impl(
         return sm;
     }
 
-    return fit_impl_T(state, X, y, max_number_of_labels, epochs);
+    return fit_classifier_impl_T(state, X, y, max_number_of_labels, epochs);
+}
+
+
+status_message_t
+fit_impl(
+    ClassifierStateClassic & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1186,6 +1199,29 @@ params_t RegressorClassic::read_params() const
 RegressorStateClassic RegressorClassic::read_state() const
 {
     return m_state;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+status_message_t
+fit_impl(
+    ClassifierStateBitwise & state,
+    std::vector<bit_vector_uint64> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+//    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
+return {StatusCode::S_OK, ""};
+}
+
+
+status_message_t
+ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+{
+    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
 }
 
 

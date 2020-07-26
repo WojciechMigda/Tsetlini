@@ -70,6 +70,8 @@ private:
 Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params = "{}");
 
 
+////////////////////////////////////////////////////////////////////////////////
+
 struct RegressorClassic
 {
     /*
@@ -135,6 +137,57 @@ private:
  * number_of_features - [internal] number of features used for initial fit. Used for for X verification in partial fit.
  */
 Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params = "{}");
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+struct ClassifierBitwise
+{
+    [[nodiscard]]
+    status_message_t
+    fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
+        int max_number_of_labels, unsigned int epochs = 100);
+
+    [[nodiscard]]
+    status_message_t
+    partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
+        int max_number_of_labels, unsigned int epochs = 100);
+
+    [[nodiscard]]
+    Either<status_message_t, real_type>
+    evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const;
+
+    [[nodiscard]]
+    Either<status_message_t, label_type>
+    predict(bit_vector_uint64 const & sample) const;
+
+    [[nodiscard]]
+    Either<status_message_t, label_vector_type>
+    predict(std::vector<bit_vector_uint64> const & X) const;
+
+    [[nodiscard]]
+    Either<status_message_t, aligned_vector_int>
+    predict_raw(bit_vector_uint64 const & sample) const;
+
+    [[nodiscard]]
+    Either<status_message_t, std::vector<aligned_vector_int>>
+    predict_raw(std::vector<bit_vector_uint64> const & X) const;
+
+
+    params_t read_params() const;
+    ClassifierStateBitwise read_state() const;
+
+    ClassifierBitwise(ClassifierBitwise const & state);
+
+friend Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params);
+
+
+private:
+    ClassifierStateBitwise m_state;
+
+    ClassifierBitwise(params_t const & params);
+    ClassifierBitwise(params_t && params);
+};
 
 
 } // namespace Tsetlini
