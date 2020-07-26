@@ -36,10 +36,10 @@ namespace Tsetlini
  *      Positive integer {16, 32, 64, 128} that specifies batch size of
  *      data processed in @c X .
  */
-template<typename SampleVectorType, typename TAStateType>
+template<typename SampleType, typename TAStateType>
 inline
 void calculate_clause_output(
-    SampleVectorType const & X,
+    SampleType const & X,
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
@@ -88,6 +88,61 @@ void calculate_clause_output(
                 clause_output,
                 output_begin_ix,
                 output_end_ix,
+                ta_state,
+                n_jobs
+            );
+            break;
+    }
+}
+
+
+template<typename SampleType, typename TAStateType>
+inline
+void calculate_clause_output_for_predict(
+    SampleType const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    TAStateType const & ta_state,
+    int const n_jobs,
+    int const TILE_SZ)
+{
+    switch (TILE_SZ)
+    {
+        case 128:
+            calculate_clause_output_for_predict_T<128>(
+                X,
+                clause_output,
+                number_of_clauses,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 64:
+            calculate_clause_output_for_predict_T<64>(
+                X,
+                clause_output,
+                number_of_clauses,
+                ta_state,
+                n_jobs
+            );
+            break;
+        case 32:
+            calculate_clause_output_for_predict_T<32>(
+                X,
+                clause_output,
+                number_of_clauses,
+                ta_state,
+                n_jobs
+            );
+            break;
+        default:
+//            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
+//                       << clause_output_tile_size << ", fallback to 16.\n";
+        case 16:
+            calculate_clause_output_for_predict_T<16>(
+                X,
+                clause_output,
+                number_of_clauses,
                 ta_state,
                 n_jobs
             );

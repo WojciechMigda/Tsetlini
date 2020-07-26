@@ -180,61 +180,6 @@ void calculate_clause_output_for_predict_T(
 }
 
 
-template<typename state_type>
-inline
-void calculate_clause_output_for_predict(
-    aligned_vector_char const & X,
-    aligned_vector_char & clause_output,
-    int const number_of_clauses,
-    numeric_matrix<state_type> const & ta_state,
-    int const n_jobs,
-    int const TILE_SZ)
-{
-    switch (TILE_SZ)
-    {
-        case 128:
-            calculate_clause_output_for_predict_T<128>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 64:
-            calculate_clause_output_for_predict_T<64>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 32:
-            calculate_clause_output_for_predict_T<32>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-        default:
-//            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
-//                       << clause_output_tile_size << ", fallback to 16.\n";
-        case 16:
-            calculate_clause_output_for_predict_T<16>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-    }
-}
-
-
 template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_T(
