@@ -1234,8 +1234,7 @@ ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_v
 Either<status_message_t, label_type>
 predict_impl(ClassifierStateBitwise const & state, bit_vector_uint64 const & sample)
 {
-    //return predict_classifier_impl(state, sample);
-return Either<status_message_t, label_type>::rightOf(1);
+    return predict_classifier_impl(state, sample);
 }
 
 
