@@ -94,7 +94,8 @@ TEST(ClassicCalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
         Tsetlini::aligned_vector_char clause_output(number_of_clauses);
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state, true);
-        Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses, ta_state, 1, 16);
+        Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses,
+            Tsetlini::TAStateBase::matrix_variant_type(ta_state), 1, 16);
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {

@@ -180,6 +180,30 @@ void calculate_clause_output_for_predict_T(
 }
 
 
+template<unsigned int BATCH_SZ>
+inline
+void calculate_clause_output_for_predict_T(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const number_of_clauses,
+    TAState::value_type const & ta_state,
+    int const n_jobs)
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            calculate_clause_output_for_predict_T<BATCH_SZ>(
+                X,
+                clause_output,
+                number_of_clauses,
+                ta_state_values,
+                n_jobs
+            );
+        },
+        ta_state);
+}
+
+
 template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_T(
