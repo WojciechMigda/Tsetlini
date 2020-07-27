@@ -451,8 +451,9 @@ predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sa
 } // anonymous
 
 
+template<typename ClassifierStateType, typename SampleType>
 Either<status_message_t, label_vector_type>
-predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleType> const & X)
 {
     if (auto sm = check_for_predict(state, X);
         sm.first != StatusCode::S_OK)
@@ -504,8 +505,17 @@ predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_ch
 }
 
 
+
+Either<status_message_t, label_vector_type>
+predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+{
+    return predict_classifier_impl(state, X);
+}
+
+
+template<typename ClassifierStateType, typename SampleType>
 Either<status_message_t, aligned_vector_int>
-predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
+predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const & sample)
 {
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
@@ -544,8 +554,16 @@ predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const
 }
 
 
+Either<status_message_t, aligned_vector_int>
+predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
+{
+    return predict_classifier_raw_impl(state, sample);
+}
+
+
+template<typename ClassifierStateType, typename SampleType>
 Either<status_message_t, std::vector<aligned_vector_int>>
-predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<SampleType> const & X)
 {
     if (auto sm = check_for_predict(state, X);
         sm.first != StatusCode::S_OK)
@@ -589,6 +607,13 @@ predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vecto
     }
 
     return Either<status_message_t, std::vector<aligned_vector_int>>::rightOf(rv);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+{
+    return predict_classifier_raw_impl(state, X);
 }
 
 
@@ -774,7 +799,7 @@ ClassifierClassic::predict(std::vector<aligned_vector_char> const & X) const
 Either<status_message_t, aligned_vector_int>
 ClassifierClassic::predict_raw(aligned_vector_char const & sample) const
 {
-    return predict_raw_impl(m_state, sample);
+    return predict_classifier_raw_impl(m_state, sample);
 }
 
 
@@ -1242,6 +1267,48 @@ Either<status_message_t, label_type>
 ClassifierBitwise::predict(bit_vector_uint64 const & sample) const
 {
     return predict_impl(m_state, sample);
+}
+
+
+Either<status_message_t, label_vector_type>
+predict_impl(ClassifierStateBitwise const & state, std::vector<bit_vector_uint64> const & X)
+{
+    return predict_classifier_impl(state, X);
+}
+
+
+Either<status_message_t, label_vector_type>
+ClassifierBitwise::predict(std::vector<bit_vector_uint64> const & X) const
+{
+    return predict_impl(m_state, X);
+}
+
+
+Either<status_message_t, aligned_vector_int>
+predict_raw_impl(ClassifierStateBitwise const & state, bit_vector_uint64 const & sample)
+{
+    return predict_classifier_raw_impl(state, sample);
+}
+
+
+Either<status_message_t, aligned_vector_int>
+ClassifierBitwise::predict_raw(bit_vector_uint64 const & sample) const
+{
+    return predict_raw_impl(m_state, sample);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+predict_raw_impl(ClassifierStateBitwise const & state, std::vector<bit_vector_uint64> const & X)
+{
+    return predict_classifier_raw_impl(state, X);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+ClassifierBitwise::predict_raw(std::vector<bit_vector_uint64> const & X) const
+{
+    return predict_raw_impl(m_state, X);
 }
 
 
