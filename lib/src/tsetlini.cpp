@@ -416,8 +416,9 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
 }
 
 
+template<typename RegressorStateType, typename SampleType>
 Either<status_message_t, response_type>
-predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sample)
+predict_regressor_impl(RegressorStateType const & state, SampleType const & sample)
 {
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
@@ -873,9 +874,71 @@ fit_regressor_impl_T(
 }
 
 
+template<typename RegressorStateType, typename SampleType>
+status_message_t
+fit_regressor_impl(
+    RegressorStateType & state,
+    std::vector<SampleType> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    return fit_regressor_impl_T(state, X, y, epochs);
+}
+
+
+template<typename RegressorStateType, typename SampleType>
+Either<status_message_t, response_vector_type>
+predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType> const & X)
+{
+    if (auto sm = check_for_predict(state, X);
+        sm.first != StatusCode::S_OK)
+    {
+        return Either<status_message_t, response_vector_type>::leftOf(std::move(sm));
+    }
+
+    // let it crash - no state validation for now
+
+    auto const number_of_examples = X.size();
+
+    auto const & params = state.m_params;
+
+    auto const threshold = Params::threshold(params);
+    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
+    auto const n_jobs = Params::n_jobs(params);
+    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
+
+    response_vector_type rv(number_of_examples);
+
+    for (auto it = 0u; it < number_of_examples; ++it)
+    {
+        calculate_clause_output_for_predict(
+            X[it],
+            state.cache.clause_output,
+            number_of_clauses / 2,
+            state.ta_state,
+            n_jobs,
+            clause_output_tile_size);
+
+        auto const votes = sum_up_regressor_votes(state.cache.clause_output, threshold);
+
+        rv[it] = votes;
+    }
+
+    return Either<status_message_t, response_vector_type>::rightOf(rv);
+}
+
+
 } // anonymous
 
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1099,24 +1162,6 @@ partial_fit_impl(
 }
 
 
-template<typename RegressorStateType, typename SampleType>
-status_message_t
-fit_regressor_impl(
-    RegressorStateType & state,
-    std::vector<SampleType> const & X,
-    response_vector_type const & y,
-    unsigned int epochs)
-{
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    return fit_regressor_impl_T(state, X, y, epochs);
-}
-
-
 status_message_t
 fit_impl(
     RegressorStateClassic & state,
@@ -1138,41 +1183,7 @@ RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, respon
 Either<status_message_t, response_vector_type>
 predict_impl(RegressorStateClassic const & state, std::vector<aligned_vector_char> const & X)
 {
-    if (auto sm = check_for_predict(state, X);
-        sm.first != StatusCode::S_OK)
-    {
-        return Either<status_message_t, response_vector_type>::leftOf(std::move(sm));
-    }
-
-    // let it crash - no state validation for now
-
-    auto const number_of_examples = X.size();
-
-    auto const & params = state.m_params;
-
-    auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
-    auto const n_jobs = Params::n_jobs(params);
-    auto const clause_output_tile_size = Params::clause_output_tile_size(params);
-
-    response_vector_type rv(number_of_examples);
-
-    for (auto it = 0u; it < number_of_examples; ++it)
-    {
-        calculate_clause_output_for_predict(
-            X[it],
-            state.cache.clause_output,
-            number_of_clauses / 2,
-            state.ta_state,
-            n_jobs,
-            clause_output_tile_size);
-
-        auto const votes = sum_up_regressor_votes(state.cache.clause_output, threshold);
-
-        rv[it] = votes;
-    }
-
-    return Either<status_message_t, response_vector_type>::rightOf(rv);
+    return predict_regressor_impl(state, X);
 }
 
 
@@ -1180,6 +1191,13 @@ Either<status_message_t, response_vector_type>
 RegressorClassic::predict(std::vector<aligned_vector_char> const & X) const
 {
     return predict_impl(m_state, X);
+}
+
+
+Either<status_message_t, response_type>
+predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sample)
+{
+    return predict_regressor_impl(state, sample);
 }
 
 
@@ -1361,6 +1379,34 @@ status_message_t
 RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
     return partial_fit_impl(m_state, X, y, epochs);
+}
+
+
+Either<status_message_t, response_type>
+predict_impl(RegressorStateBitwise const & state, bit_vector_uint64 const & sample)
+{
+    return predict_regressor_impl(state, sample);
+}
+
+
+Either<status_message_t, response_type>
+RegressorBitwise::predict(bit_vector_uint64 const & sample) const
+{
+    return predict_impl(m_state, sample);
+}
+
+
+Either<status_message_t, response_vector_type>
+predict_impl(RegressorStateBitwise const & state, std::vector<bit_vector_uint64> const & X)
+{
+    return predict_regressor_impl(state, X);
+}
+
+
+Either<status_message_t, response_vector_type>
+RegressorBitwise::predict(std::vector<bit_vector_uint64> const & X) const
+{
+    return predict_impl(m_state, X);
 }
 
 
