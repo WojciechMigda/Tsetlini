@@ -9,6 +9,7 @@ namespace Tsetlini
 
 
 struct TAState;
+struct TAStateWithSignum;
 struct ClassifierStateCache;
 struct RegressorStateCache;
 
@@ -17,6 +18,9 @@ struct EstimatorState;
 
 using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
+
+using ClassifierStateBitwise = EstimatorState<TAStateWithSignum, ClassifierStateCache>;
+using RegressorStateBitwise = EstimatorState<TAStateWithSignum, RegressorStateCache>;
 
 
 }  // namespace Tsetlini

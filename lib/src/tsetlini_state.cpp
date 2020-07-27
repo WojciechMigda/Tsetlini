@@ -19,10 +19,8 @@ namespace Tsetlini
 
 
 static
-void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
+void log_classifier_params(params_t const & params, bool verbose)
 {
-    auto & params = state.m_params;
-
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
@@ -36,10 +34,22 @@ void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
 
 
 static
-void log_estimator_params(RegressorStateClassic const & state, bool verbose)
+void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
 {
-    auto & params = state.m_params;
+    log_classifier_params(state.m_params, verbose);
+}
 
+
+static
+void log_estimator_params(ClassifierStateBitwise const & state, bool verbose)
+{
+    log_classifier_params(state.m_params, verbose);
+}
+
+
+static
+void log_regressor_params(params_t const & params, bool verbose)
+{
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
@@ -48,6 +58,20 @@ void log_estimator_params(RegressorStateClassic const & state, bool verbose)
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
+}
+
+
+static
+void log_estimator_params(RegressorStateClassic const & state, bool verbose)
+{
+    log_regressor_params(state.m_params, verbose);
+}
+
+
+static
+void log_estimator_params(RegressorStateBitwise const & state, bool verbose)
+{
+    log_regressor_params(state.m_params, verbose);
 }
 
 
@@ -81,15 +105,46 @@ std::string normalize_counting_type(
 }
 
 
-int number_of_estimator_clauses(ClassifierStateClassic const & est)
+
+static
+int number_of_classifier_clauses(params_t const & params)
 {
-    return Params::number_of_classifier_clauses(est.m_params);
+    return Params::number_of_classifier_clauses(params);
 }
 
 
+static
+int number_of_estimator_clauses(ClassifierStateClassic const & est)
+{
+    return number_of_classifier_clauses(est.m_params);
+}
+
+
+static
+int number_of_estimator_clauses(ClassifierStateBitwise const & est)
+{
+    return number_of_classifier_clauses(est.m_params);
+}
+
+
+static
+int number_of_regressor_clauses(params_t const & params)
+{
+    return Params::number_of_regressor_clauses(params);
+}
+
+
+static
 int number_of_estimator_clauses(RegressorStateClassic const & est)
 {
-    return Params::number_of_regressor_clauses(est.m_params);
+    return number_of_regressor_clauses(est.m_params);
+}
+
+
+static
+int number_of_estimator_clauses(RegressorStateBitwise const & est)
+{
+    return number_of_regressor_clauses(est.m_params);
 }
 
 
@@ -125,6 +180,8 @@ void initialize_state(EstimatorStateType & state)
 // explicit template instantiations
 template void initialize_state<ClassifierStateClassic>(ClassifierStateClassic & state);
 template void initialize_state<RegressorStateClassic>(RegressorStateClassic & state);
+template void initialize_state<ClassifierStateBitwise>(ClassifierStateBitwise & state);
+template void initialize_state<RegressorStateBitwise>(RegressorStateBitwise & state);
 
 template<typename EstimatorStateType>
 void reset_state_cache(EstimatorStateType & state)
@@ -135,6 +192,8 @@ void reset_state_cache(EstimatorStateType & state)
 // explicit template instantiations
 template void reset_state_cache<ClassifierStateClassic>(ClassifierStateClassic & state);
 template void reset_state_cache<RegressorStateClassic>(RegressorStateClassic & state);
+template void reset_state_cache<ClassifierStateBitwise>(ClassifierStateBitwise & state);
+template void reset_state_cache<RegressorStateBitwise>(RegressorStateBitwise & state);
 
 
 } // namespace Tsetlino

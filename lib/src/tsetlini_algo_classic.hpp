@@ -180,58 +180,27 @@ void calculate_clause_output_for_predict_T(
 }
 
 
-template<typename state_type>
+template<unsigned int BATCH_SZ>
 inline
-void calculate_clause_output_for_predict(
+void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     int const number_of_clauses,
-    numeric_matrix<state_type> const & ta_state,
-    int const n_jobs,
-    int const TILE_SZ)
+    TAState::value_type const & ta_state,
+    int const n_jobs)
 {
-    switch (TILE_SZ)
-    {
-        case 128:
-            calculate_clause_output_for_predict_T<128>(
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            calculate_clause_output_for_predict_T<BATCH_SZ>(
                 X,
                 clause_output,
                 number_of_clauses,
-                ta_state,
+                ta_state_values,
                 n_jobs
             );
-            break;
-        case 64:
-            calculate_clause_output_for_predict_T<64>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-        case 32:
-            calculate_clause_output_for_predict_T<32>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-        default:
-//            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
-//                       << clause_output_tile_size << ", fallback to 16.\n";
-        case 16:
-            calculate_clause_output_for_predict_T<16>(
-                X,
-                clause_output,
-                number_of_clauses,
-                ta_state,
-                n_jobs
-            );
-            break;
-    }
+        },
+        ta_state);
 }
 
 
@@ -306,6 +275,32 @@ void calculate_clause_output_T(
             clause_output[oidx] = !toggle_output;
         }
     }
+}
+
+
+template<unsigned int BATCH_SZ>
+inline
+void calculate_clause_output_T(
+    aligned_vector_char const & X,
+    aligned_vector_char & clause_output,
+    int const output_begin_ix,
+    int const output_end_ix,
+    TAState::value_type const & ta_state,
+    int const n_jobs)
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            calculate_clause_output_T<BATCH_SZ>(
+                X,
+                clause_output,
+                output_begin_ix,
+                output_end_ix,
+                ta_state_values,
+                n_jobs
+            );
+        },
+        ta_state);
 }
 
 
@@ -499,6 +494,43 @@ void train_classifier_automata(
 }
 
 
+inline
+void train_classifier_automata(
+    TAState::value_type & ta_state,
+    int const input_begin_ix,
+    int const input_end_ix,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_states,
+    float const S_inv,
+    aligned_vector_char const & X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng,
+    EstimatorStateCacheBase::frand_cache_type & fcache
+    )
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            train_classifier_automata(
+                ta_state_values,
+                input_begin_ix,
+                input_end_ix,
+                feedback_to_clauses,
+                clause_output,
+                number_of_states,
+                S_inv,
+                X,
+                boost_true_positive_feedback,
+                frng,
+                fcache
+            );
+        },
+        ta_state
+    );
+}
+
+
 template<typename TFRNG>
 inline
 void calculate_classifier_feedback_to_clauses(
@@ -616,9 +648,13 @@ void train_regressor_automata(
                 fcache.refill(frng);
 
                 if (boost_true_positive_feedback)
+                {
                     fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
                 else
+                {
                     fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
             }
         }
         else if (response_error > 0)
@@ -629,6 +665,45 @@ void train_regressor_automata(
             }
         }
     }
+}
+
+
+inline
+void train_regressor_automata(
+    TAState::value_type & ta_state,
+    int const input_begin_ix,
+    int const input_end_ix,
+    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
+    char const * __restrict clause_output,
+    int const number_of_states,
+    float const S_inv,
+    int const response_error,
+    aligned_vector_char const & X,
+    bool const boost_true_positive_feedback,
+    FRNG & frng,
+    EstimatorStateCacheBase::frand_cache_type & fcache
+    )
+{
+    std::visit(
+        [&](auto & ta_state_values)
+        {
+            train_regressor_automata(
+                ta_state_values,
+                input_begin_ix,
+                input_end_ix,
+                feedback_to_clauses,
+                clause_output,
+                number_of_states,
+                S_inv,
+                response_error,
+                X,
+                boost_true_positive_feedback,
+                frng,
+                fcache
+            );
+        },
+        ta_state
+    );
 }
 
 
