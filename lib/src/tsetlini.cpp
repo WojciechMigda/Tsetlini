@@ -415,13 +415,6 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
 }
 
 
-Either<status_message_t, label_type>
-predict_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
-{
-    return predict_classifier_impl(state, sample);
-}
-
-
 Either<status_message_t, response_type>
 predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sample)
 {
@@ -446,9 +439,6 @@ predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sa
 
     return Either<status_message_t, label_type>::rightOf(rv);
 }
-
-
-} // anonymous
 
 
 template<typename ClassifierStateType, typename SampleType>
@@ -505,14 +495,6 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
 }
 
 
-
-Either<status_message_t, label_vector_type>
-predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
-{
-    return predict_classifier_impl(state, X);
-}
-
-
 template<typename ClassifierStateType, typename SampleType>
 Either<status_message_t, aligned_vector_int>
 predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const & sample)
@@ -551,13 +533,6 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
         threshold);
 
     return Either<status_message_t, aligned_vector_int>::rightOf(state.cache.label_sum);
-}
-
-
-Either<status_message_t, aligned_vector_int>
-predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
-{
-    return predict_classifier_raw_impl(state, sample);
 }
 
 
@@ -607,13 +582,6 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
     }
 
     return Either<status_message_t, std::vector<aligned_vector_int>>::rightOf(rv);
-}
-
-
-Either<status_message_t, std::vector<aligned_vector_int>>
-predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
-{
-    return predict_classifier_raw_impl(state, X);
 }
 
 
@@ -739,98 +707,6 @@ fit_classifier_impl_T(
 }
 
 
-status_message_t
-partial_fit_impl(
-    ClassifierStateClassic & state,
-    std::vector<aligned_vector_char> const & X,
-    label_vector_type const & y,
-    int max_number_of_labels,
-    unsigned int epochs)
-{
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    if (is_fitted(state.ta_state))
-    {
-        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
-    }
-    else
-    {
-        return fit_impl(state, X, y, max_number_of_labels, epochs);
-    }
-}
-
-
-ClassifierClassic::ClassifierClassic(params_t const & params) :
-    m_state(params)
-{
-}
-
-
-ClassifierClassic::ClassifierClassic(params_t && params) :
-    m_state(params)
-{
-}
-
-
-ClassifierClassic::ClassifierClassic(ClassifierStateClassic const & state) :
-    m_state(state)
-{
-}
-
-
-Either<status_message_t, label_type>
-ClassifierClassic::predict(aligned_vector_char const & sample) const
-{
-    return predict_impl(m_state, sample);
-}
-
-
-Either<status_message_t, label_vector_type>
-ClassifierClassic::predict(std::vector<aligned_vector_char> const & X) const
-{
-    return predict_impl(m_state, X);
-}
-
-
-Either<status_message_t, aligned_vector_int>
-ClassifierClassic::predict_raw(aligned_vector_char const & sample) const
-{
-    return predict_classifier_raw_impl(m_state, sample);
-}
-
-
-Either<status_message_t, std::vector<aligned_vector_int>>
-ClassifierClassic::predict_raw(std::vector<aligned_vector_char> const & X) const
-{
-    return predict_raw_impl(m_state, X);
-}
-
-
-Either<status_message_t, real_type>
-ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
-{
-    return evaluate_impl(m_state, X, y);
-}
-
-
-status_message_t
-ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
-{
-    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
-}
-
-
-status_message_t
-ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
-{
-    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
-}
-
-
 template<typename ClassifierStateType, typename SampleType>
 status_message_t
 fit_classifier_impl(
@@ -847,82 +723,6 @@ fit_classifier_impl(
     }
 
     return fit_classifier_impl_T(state, X, y, max_number_of_labels, epochs);
-}
-
-
-status_message_t
-fit_impl(
-    ClassifierStateClassic & state,
-    std::vector<aligned_vector_char> const & X,
-    label_vector_type const & y,
-    int max_number_of_labels,
-    unsigned int epochs)
-{
-    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
-}
-
-
-params_t ClassifierClassic::read_params() const
-{
-    return m_state.m_params;
-}
-
-
-ClassifierStateClassic ClassifierClassic::read_state() const
-{
-    return m_state;
-}
-
-
-Either<status_message_t, ClassifierClassic>
-make_classifier_classic(std::string const & json_params)
-{
-    auto rv =
-        make_classifier_params_from_json(json_params)
-        .rightMap([](params_t && params){ return ClassifierClassic(params); })
-        ;
-
-    return rv;
-}
-
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-RegressorClassic::RegressorClassic(params_t const & params) :
-    m_state(params)
-{
-}
-
-
-RegressorClassic::RegressorClassic(params_t && params) :
-    m_state(params)
-{
-}
-
-
-RegressorClassic::RegressorClassic(RegressorStateClassic const & state) :
-    m_state(state)
-{
-}
-
-
-Either<status_message_t, RegressorClassic>
-make_regressor_classic(std::string const & json_params)
-{
-    auto rv =
-        make_regressor_params_from_json(json_params)
-        .rightMap([](params_t && params){ return RegressorClassic(params); })
-        ;
-
-    return rv;
-}
-
-
-status_message_t
-RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
-{
-    return fit_impl(m_state, X, y, epochs);
 }
 
 
@@ -1061,30 +861,6 @@ fit_online_impl(
 }
 
 
-status_message_t
-partial_fit_impl(
-    RegressorStateClassic & state,
-    std::vector<aligned_vector_char> const & X,
-    response_vector_type const & y,
-    unsigned int epochs)
-{
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    if (is_fitted(state.ta_state))
-    {
-        return fit_online_impl(state, X, y, epochs);
-    }
-    else
-    {
-        return fit_impl(state, X, y, epochs);
-    }
-}
-
-
 template<typename RowType>
 status_message_t
 fit_impl_T(
@@ -1108,6 +884,232 @@ fit_impl_T(
     initialize_state(state);
 
     return fit_online_impl(state, X, y, epochs);
+}
+
+
+} // anonymous
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+Either<status_message_t, label_vector_type>
+predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+{
+    return predict_classifier_impl(state, X);
+}
+
+
+Either<status_message_t, aligned_vector_int>
+predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
+{
+    return predict_classifier_raw_impl(state, sample);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+{
+    return predict_classifier_raw_impl(state, X);
+}
+
+
+status_message_t
+partial_fit_impl(
+    ClassifierStateClassic & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (is_fitted(state.ta_state))
+    {
+        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, max_number_of_labels, epochs);
+    }
+}
+
+
+ClassifierClassic::ClassifierClassic(params_t const & params) :
+    m_state(params)
+{
+}
+
+
+ClassifierClassic::ClassifierClassic(params_t && params) :
+    m_state(params)
+{
+}
+
+
+ClassifierClassic::ClassifierClassic(ClassifierStateClassic const & state) :
+    m_state(state)
+{
+}
+
+
+Either<status_message_t, label_type>
+predict_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
+{
+    return predict_classifier_impl(state, sample);
+}
+
+
+Either<status_message_t, label_type>
+ClassifierClassic::predict(aligned_vector_char const & sample) const
+{
+    return predict_impl(m_state, sample);
+}
+
+
+Either<status_message_t, label_vector_type>
+ClassifierClassic::predict(std::vector<aligned_vector_char> const & X) const
+{
+    return predict_impl(m_state, X);
+}
+
+
+Either<status_message_t, aligned_vector_int>
+ClassifierClassic::predict_raw(aligned_vector_char const & sample) const
+{
+    return predict_classifier_raw_impl(m_state, sample);
+}
+
+
+Either<status_message_t, std::vector<aligned_vector_int>>
+ClassifierClassic::predict_raw(std::vector<aligned_vector_char> const & X) const
+{
+    return predict_raw_impl(m_state, X);
+}
+
+
+Either<status_message_t, real_type>
+ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
+{
+    return evaluate_impl(m_state, X, y);
+}
+
+
+status_message_t
+ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+{
+    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
+}
+
+
+status_message_t
+ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+{
+    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
+}
+
+
+status_message_t
+fit_impl(
+    ClassifierStateClassic & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
+}
+
+
+params_t ClassifierClassic::read_params() const
+{
+    return m_state.m_params;
+}
+
+
+ClassifierStateClassic ClassifierClassic::read_state() const
+{
+    return m_state;
+}
+
+
+Either<status_message_t, ClassifierClassic>
+make_classifier_classic(std::string const & json_params)
+{
+    auto rv =
+        make_classifier_params_from_json(json_params)
+        .rightMap([](params_t && params){ return ClassifierClassic(params); })
+        ;
+
+    return rv;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+RegressorClassic::RegressorClassic(params_t const & params) :
+    m_state(params)
+{
+}
+
+
+RegressorClassic::RegressorClassic(params_t && params) :
+    m_state(params)
+{
+}
+
+
+RegressorClassic::RegressorClassic(RegressorStateClassic const & state) :
+    m_state(state)
+{
+}
+
+
+Either<status_message_t, RegressorClassic>
+make_regressor_classic(std::string const & json_params)
+{
+    auto rv =
+        make_regressor_params_from_json(json_params)
+        .rightMap([](params_t && params){ return RegressorClassic(params); })
+        ;
+
+    return rv;
+}
+
+
+status_message_t
+RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
+{
+    return fit_impl(m_state, X, y, epochs);
+}
+
+
+status_message_t
+partial_fit_impl(
+    RegressorStateClassic & state,
+    std::vector<aligned_vector_char> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (is_fitted(state.ta_state))
+    {
+        return fit_online_impl(state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, epochs);
+    }
 }
 
 
