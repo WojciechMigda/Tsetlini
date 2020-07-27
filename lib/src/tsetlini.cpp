@@ -908,14 +908,14 @@ partial_fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     if (is_fitted(state.ta_state))
     {
+        if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
@@ -1082,14 +1082,14 @@ partial_fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     if (is_fitted(state.ta_state))
     {
+        if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
@@ -1232,14 +1232,14 @@ partial_fit_impl(
     int max_number_of_labels,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     if (is_fitted(state.ta_state))
     {
+        if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
@@ -1340,14 +1340,14 @@ partial_fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     if (is_fitted(state.ta_state))
     {
+        if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
