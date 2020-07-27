@@ -1322,12 +1322,6 @@ fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     return fit_regressor_impl(state, X, y, epochs);
 }
 
@@ -1336,6 +1330,37 @@ status_message_t
 RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
     return fit_impl(m_state, X, y, epochs);
+}
+
+
+status_message_t
+partial_fit_impl(
+    RegressorStateBitwise & state,
+    std::vector<bit_vector_uint64> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (is_fitted(state.ta_state))
+    {
+        return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
+    }
+    else
+    {
+        return fit_impl(state, X, y, epochs);
+    }
+}
+
+
+status_message_t
+RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
+{
+    return partial_fit_impl(m_state, X, y, epochs);
 }
 
 
