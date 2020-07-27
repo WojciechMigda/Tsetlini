@@ -1314,4 +1314,15 @@ ClassifierBitwise::predict_raw(std::vector<bit_vector_uint64> const & X) const
 }
 
 
+////////////////////////////////////////////////////////////////////////////////
+
+
+status_message_t
+RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
+{
+    //return fit_impl(m_state, X, y, epochs);
+    return {StatusCode::S_OK, ""};
+}
+
+
 } // namespace Tsetlini
