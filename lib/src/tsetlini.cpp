@@ -1328,8 +1328,7 @@ fit_impl(
         return sm;
     }
 
-//    return fit_impl_T(state, X, y, epochs);
-    return {StatusCode::S_OK, ""};
+    return fit_regressor_impl(state, X, y, epochs);
 }
 
 

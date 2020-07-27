@@ -648,9 +648,13 @@ void train_regressor_automata(
                 fcache.refill(frng);
 
                 if (boost_true_positive_feedback)
+                {
                     fcache.m_pos = block2<true>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
                 else
+                {
                     fcache.m_pos = block2<false>(number_of_features, number_of_states, S_inv, ta_state_pos_j, ta_state_neg_j, X.data(), fcache_, fcache.m_pos);
+                }
             }
         }
         else if (response_error > 0)
