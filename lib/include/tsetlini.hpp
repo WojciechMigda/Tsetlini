@@ -195,7 +195,7 @@ struct RegressorBitwise
 {
     /*
      * TODO
-     * X is a vector of vectors of chars, each vector can hold either 0 or 1,
+     * X is a bit vector composed of 64-bit unsigned integers,
      * y is a vector of integers. Values of y must fall within [0, T] range.
      *   It is a responsibility of the user to normalize y. It is not mandatory
      *   that y spans entire [0, T] range, as that may vary while training

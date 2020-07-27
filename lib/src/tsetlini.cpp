@@ -1,6 +1,7 @@
 #define LOG_MODULE "tsetlini"
 #include "logger.hpp"
 
+#include "estimator_state_cache.hpp"
 #include "tsetlini_private.hpp"
 #include "tsetlini_algo_classic.hpp"
 #include "tsetlini_algo_common.hpp"
@@ -228,7 +229,7 @@ void classifier_update_impl(
 
     FRNG & fgen,
     TAStateValueType & ta_state,
-    ClassifierStateClassic::cache_type::value_type & cache,
+    ClassifierStateCache::value_type & cache,
 
     int clause_output_tile_size
     )
@@ -726,9 +727,9 @@ fit_classifier_impl(
 }
 
 
-template<typename state_type, typename row_type>
+template<typename SampleType, typename TAStateValueType>
 void regressor_update_impl(
-    row_type const & X,
+    SampleType const & X,
     response_type const target_response,
 
     int const threshold,
@@ -739,8 +740,8 @@ void regressor_update_impl(
     int const n_jobs,
 
     FRNG & fgen,
-    numeric_matrix<state_type> & ta_state,
-    RegressorStateClassic::cache_type::value_type & cache,
+    TAStateValueType & ta_state,
+    RegressorStateCache::value_type & cache,
 
     int clause_output_tile_size
     )
@@ -783,12 +784,12 @@ void regressor_update_impl(
 }
 
 
-template<typename state_type, typename row_type>
+template<typename RegressorStateType, typename TAStateValueType, typename SampleType>
 status_message_t
-fit_online_impl(
-    RegressorStateClassic & state,
-    numeric_matrix<state_type> & ta_state,
-    std::vector<row_type> const & X,
+fit_regressor_online_impl(
+    RegressorStateType & state,
+    TAStateValueType & ta_state,
+    std::vector<SampleType> const & X,
     response_vector_type const & y,
     unsigned int epochs)
 {
@@ -846,26 +847,11 @@ fit_online_impl(
 }
 
 
-template<typename RowType>
+template<typename RegressorStateType, typename SampleType>
 status_message_t
-fit_online_impl(
-    RegressorStateClassic & state,
-    std::vector<RowType> const & X,
-    response_vector_type const & y,
-    unsigned int epochs)
-{
-    return std::visit([&](auto & ta_state)
-        {
-            return fit_online_impl(state, ta_state, X, y, epochs);
-        }, state.ta_state);
-}
-
-
-template<typename RowType>
-status_message_t
-fit_impl_T(
-    RegressorStateClassic & state,
-    std::vector<RowType> const & X,
+fit_regressor_impl_T(
+    RegressorStateType & state,
+    std::vector<SampleType> const & X,
     response_vector_type const & y,
     unsigned int epochs)
 {
@@ -883,7 +869,7 @@ fit_impl_T(
 
     initialize_state(state);
 
-    return fit_online_impl(state, X, y, epochs);
+    return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
 }
 
 
@@ -1104,12 +1090,30 @@ partial_fit_impl(
 
     if (is_fitted(state.ta_state))
     {
-        return fit_online_impl(state, X, y, epochs);
+        return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
     {
         return fit_impl(state, X, y, epochs);
     }
+}
+
+
+template<typename RegressorStateType, typename SampleType>
+status_message_t
+fit_regressor_impl(
+    RegressorStateType & state,
+    std::vector<SampleType> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    return fit_regressor_impl_T(state, X, y, epochs);
 }
 
 
@@ -1120,13 +1124,7 @@ fit_impl(
     response_vector_type const & y,
     unsigned int epochs)
 {
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    return fit_impl_T(state, X, y, epochs);
+    return fit_regressor_impl(state, X, y, epochs);
 }
 
 
@@ -1318,10 +1316,27 @@ ClassifierBitwise::predict_raw(std::vector<bit_vector_uint64> const & X) const
 
 
 status_message_t
+fit_impl(
+    RegressorStateBitwise & state,
+    std::vector<bit_vector_uint64> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+//    return fit_impl_T(state, X, y, epochs);
+    return {StatusCode::S_OK, ""};
+}
+
+
+status_message_t
 RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    //return fit_impl(m_state, X, y, epochs);
-    return {StatusCode::S_OK, ""};
+    return fit_impl(m_state, X, y, epochs);
 }
 
 
