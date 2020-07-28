@@ -153,9 +153,9 @@ struct ClassifierBitwise
     partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
         int max_number_of_labels, unsigned int epochs = 100);
 
-    [[nodiscard]]
-    Either<status_message_t, real_type>
-    evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const;
+//    [[nodiscard]]
+//    Either<status_message_t, real_type>
+//    evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const;
 
     [[nodiscard]]
     Either<status_message_t, label_type>
@@ -177,7 +177,7 @@ struct ClassifierBitwise
     params_t read_params() const;
     ClassifierStateBitwise read_state() const;
 
-    ClassifierBitwise(ClassifierBitwise const & state);
+    ClassifierBitwise(ClassifierStateBitwise const & state);
 
 friend Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params);
 
@@ -188,6 +188,10 @@ private:
     ClassifierBitwise(params_t const & params);
     ClassifierBitwise(params_t && params);
 };
+
+
+Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params = "{}");
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -228,7 +232,7 @@ struct RegressorBitwise
     params_t read_params() const;
     RegressorStateBitwise read_state() const;
 
-    RegressorBitwise(RegressorBitwise const & state);
+    RegressorBitwise(RegressorStateBitwise const & state);
 
 friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::string const & json_params);
 
