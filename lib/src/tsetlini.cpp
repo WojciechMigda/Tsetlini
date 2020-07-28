@@ -1330,6 +1330,48 @@ ClassifierBitwise::predict_raw(std::vector<bit_vector_uint64> const & X) const
 }
 
 
+params_t ClassifierBitwise::read_params() const
+{
+    return m_state.m_params;
+}
+
+
+ClassifierStateBitwise ClassifierBitwise::read_state() const
+{
+    return m_state;
+}
+
+
+ClassifierBitwise::ClassifierBitwise(ClassifierStateBitwise const & state) :
+    m_state(state)
+{
+}
+
+
+Either<status_message_t, ClassifierBitwise>
+make_classifier_bitwise(std::string const & json_params)
+{
+    auto rv =
+        make_classifier_params_from_json(json_params)
+        .rightMap([](params_t && params){ return ClassifierBitwise(params); })
+        ;
+
+    return rv;
+}
+
+
+ClassifierBitwise::ClassifierBitwise(params_t const & params) :
+    m_state(params)
+{
+}
+
+
+ClassifierBitwise::ClassifierBitwise(params_t && params) :
+    m_state(params)
+{
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1407,6 +1449,48 @@ Either<status_message_t, response_vector_type>
 RegressorBitwise::predict(std::vector<bit_vector_uint64> const & X) const
 {
     return predict_impl(m_state, X);
+}
+
+
+params_t RegressorBitwise::read_params() const
+{
+    return m_state.m_params;
+}
+
+
+RegressorStateBitwise RegressorBitwise::read_state() const
+{
+    return m_state;
+}
+
+
+RegressorBitwise::RegressorBitwise(RegressorStateBitwise const & state) :
+    m_state(state)
+{
+}
+
+
+Either<status_message_t, RegressorBitwise>
+make_regressor_bitwise(std::string const & json_params)
+{
+    auto rv =
+        make_regressor_params_from_json(json_params)
+        .rightMap([](params_t && params){ return RegressorBitwise(params); })
+        ;
+
+    return rv;
+}
+
+
+RegressorBitwise::RegressorBitwise(params_t const & params) :
+    m_state(params)
+{
+}
+
+
+RegressorBitwise::RegressorBitwise(params_t && params) :
+    m_state(params)
+{
 }
 
 
