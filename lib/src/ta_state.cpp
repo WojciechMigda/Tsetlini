@@ -68,6 +68,7 @@ TAStateWithSignum::initialize(
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
+    state.signum = bit_matrix_uint64(number_of_clauses, number_of_features);
 
     auto & signum = state.signum;
 
@@ -84,11 +85,11 @@ TAStateWithSignum::initialize(
 
                 if (row_data[cit] >= 0)
                 {
-                    row_signum.set(rit);
+                    row_signum.set(cit);
                 }
                 else
                 {
-                    row_signum.clear(rit);
+                    row_signum.clear(cit);
                 }
             }
         }
