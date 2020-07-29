@@ -13,11 +13,12 @@
 namespace Tsetlini
 {
 
-template<int alignment=32, typename real_type=float>
+template<int alignment=alignment, typename ValueType=float>
 struct frand_cache
 {
-    template<typename TFRNG>
-    explicit frand_cache(TFRNG & frng, int sz, seed_type seed) :
+    using value_type = ValueType;
+
+    explicit frand_cache(int sz, seed_type seed) :
         m_pos(sz),
         m_fcache(sz)
     {
@@ -29,11 +30,11 @@ struct frand_cache
     {
     }
 
-    template<typename TFRNG>
+    template<typename TPRNG>
     inline
-    void refill(TFRNG & frng)
+    void refill(TPRNG & frng)
     {
-        real_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
+        value_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
 
         for (auto it = 0u; it < std::min<unsigned int>(m_pos, m_fcache.size()); ++it)
         {
@@ -43,20 +44,20 @@ struct frand_cache
     }
 
     inline
-    real_type next()
+    value_type next()
     {
-        real_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
+        value_type * fcache_p = assume_aligned<alignment>(m_fcache.data());
         return fcache_p[m_pos++];
     }
 
     inline
-    real_type operator()()
+    value_type operator()()
     {
         return next();
     }
 
     unsigned int m_pos;
-    aligned_vector_float m_fcache;
+    aligned_vector<value_type> m_fcache;
 };
 
 

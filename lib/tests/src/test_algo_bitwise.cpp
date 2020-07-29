@@ -313,7 +313,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
          */
         Tsetlini::real_type const S_inv = irng.next(0, 1);
 
-        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache_classic(fgen, 2 * number_of_features, 0);
+        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache_classic(2 * number_of_features, 0);
         Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache = fcache_classic;
 
         Tsetlini::train_classifier_automata(
