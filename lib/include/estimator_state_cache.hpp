@@ -29,9 +29,7 @@ struct is_estimator_state_cache<T, std::void_t<
         decltype(T::are_equal(std::declval<typename T::value_type const &>(), std::declval<typename T::value_type const &>())),
         decltype(T::reset(
             std::declval<typename T::value_type &>(),
-            std::declval<params_t const &>(),
-            std::declval<FRNG &>(),
-            std::declval<IRNG const &>()))
+            std::declval<params_t const &>()))
     >>
     : std::true_type
 {
@@ -40,7 +38,7 @@ struct is_estimator_state_cache<T, std::void_t<
 
 struct EstimatorStateCacheBase
 {
-    using frand_cache_type = frand_cache<alignment>;
+    using frand_cache_type = frand_cache<alignment, FRNG::result_type>;
 };
 
 
@@ -56,7 +54,7 @@ struct ClassifierStateCache : public EstimatorStateCacheBase
     };
 
     static bool are_equal(value_type const & lhs, value_type const & rhs);
-    static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
+    static void reset(value_type & cache, params_t const & params);
 };
 
 
@@ -71,7 +69,7 @@ struct RegressorStateCache : public EstimatorStateCacheBase
     };
 
     static bool are_equal(value_type const & lhs, value_type const & rhs);
-    static void reset(value_type & cache, params_t const & params, FRNG & fgen, IRNG const & igen);
+    static void reset(value_type & cache, params_t const & params);
 };
 
 

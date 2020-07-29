@@ -173,7 +173,7 @@ void initialize_state(EstimatorStateType & state)
     ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, state.igen);
 
     using cache_type = typename EstimatorStateType::cache_type;
-    cache_type::reset(state.cache, params, state.fgen, state.igen);
+    cache_type::reset(state.cache, params);
 }
 
 
@@ -186,7 +186,7 @@ template void initialize_state<RegressorStateBitwise>(RegressorStateBitwise & st
 template<typename EstimatorStateType>
 void reset_state_cache(EstimatorStateType & state)
 {
-    EstimatorStateType::cache_type::reset(state.cache, state.m_params, state.fgen, state.igen);
+    EstimatorStateType::cache_type::reset(state.cache, state.m_params);
 }
 
 // explicit template instantiations

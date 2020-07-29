@@ -10,9 +10,7 @@ namespace Tsetlini
 
 void ClassifierStateCache::reset(
     ClassifierStateCache::value_type & cache,
-    params_t const & params,
-    FRNG & fgen,
-    IRNG const & igen)
+    params_t const & params)
 {
     cache.clause_output.clear();
     cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
@@ -22,7 +20,7 @@ void ClassifierStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
     // initialize frand cache
-    cache.fcache = ClassifierStateCache::frand_cache_type(2 * Params::number_of_features(params), igen.peek());
+    cache.fcache = ClassifierStateCache::frand_cache_type(2 * Params::number_of_features(params));
 }
 
 
@@ -37,9 +35,7 @@ bool ClassifierStateCache::are_equal(value_type const & lhs, value_type const & 
 
 void RegressorStateCache::reset(
     RegressorStateCache::value_type & cache,
-    params_t const & params,
-    FRNG & fgen,
-    IRNG const & igen)
+    params_t const & params)
 {
     cache.clause_output.clear();
     cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
@@ -47,7 +43,7 @@ void RegressorStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
     // initialize frand cache
-    cache.fcache = RegressorStateCache::frand_cache_type(2 * Params::number_of_features(params), igen.peek());
+    cache.fcache = RegressorStateCache::frand_cache_type(2 * Params::number_of_features(params));
 }
 
 
