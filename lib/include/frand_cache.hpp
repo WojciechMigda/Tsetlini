@@ -18,7 +18,7 @@ struct frand_cache
 {
     using value_type = ValueType;
 
-    explicit frand_cache(int sz, seed_type seed) :
+    explicit frand_cache(int sz) :
         m_pos(sz),
         m_fcache(sz)
     {
