@@ -182,8 +182,8 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
-    FRNG    frng(4567);
-    FRNG    frng_CAIR(4567);
+    IRNG    prng(4567);
+    FRNG    prng_CAIR(4567);
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -224,17 +224,19 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
         /*
          * Setting S_inv to either 0.0 or 1.0 removes stochasticity from testing
          */
-        Tsetlini::real_type const S_inv = irng.next(0, 1);
+        char const ct_val = irng.next(0, 1);
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(number_of_features, 3 * number_of_features);
+        std::fill(ct.m_cache.begin(), ct.m_cache.end(), ct_val);
 
-        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache(2 * number_of_features);
+        Tsetlini::real_type const S_inv = ct_val;
 
         CAIR::train_classifier_automata(
             ta_state_CAIR, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, frng_CAIR);
+            number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, prng_CAIR);
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, S_inv, X, boost_true_positive_feedback, frng, fcache);
+            number_of_states, X, boost_true_positive_feedback, prng, ct);
 
         EXPECT_TRUE(ta_state == ta_state_CAIR);
     }
