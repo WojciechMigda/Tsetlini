@@ -269,8 +269,8 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 {
     IRNG    irng(1234);
     FRNG    fgen(4567);
-    FRNG    frng(4567);
-    FRNG    frng_classic(4567);
+    IRNG    prng(4567);
+    IRNG    prng_classic(4567);
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -311,14 +311,15 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
         /*
          * Setting S_inv to either 0.0 or 1.0 removes stochasticity from testing
          */
-        Tsetlini::real_type const S_inv = irng.next(0, 1);
+        char const ct_val = irng.next(0, 1);
 
-        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache_classic(2 * number_of_features);
-        Tsetlini::EstimatorStateCacheBase::frand_cache_type fcache = fcache_classic;
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(number_of_features, 3 * number_of_features);
+        std::fill(ct.m_cache.begin(), ct.m_cache.end(), ct_val);
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct_classic = ct;
 
         Tsetlini::train_classifier_automata(
             ta_state_classic, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, S_inv, X, boost_true_positive_feedback, frng_classic, fcache_classic);
+            number_of_states, X, boost_true_positive_feedback, prng_classic, ct_classic);
 
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
@@ -333,7 +334,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, S_inv, bitwise_X, boost_true_positive_feedback, frng, fcache);
+            number_of_states, bitwise_X, boost_true_positive_feedback, prng, ct);
 
         // retrieve TA State values from ta_state variant for verifiation
         ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);

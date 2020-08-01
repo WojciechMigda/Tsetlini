@@ -217,27 +217,28 @@ void calculate_clause_output_for_predict_T(
 
 // Feedback Type I, negative
 template<typename state_type, typename bit_block_type>
-int block1(
+void block1(
     int const number_of_features,
     int const number_of_states,
-    float const S_inv,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
-    float const * __restrict fcache,
-    int fcache_pos
+    char const * __restrict ct_pos,
+    char const * __restrict ct_neg
 )
 {
-    fcache = assume_aligned<alignment>(fcache);
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
+
+    ct_pos = assume_aligned<alignment>(ct_pos);
+    ct_neg = assume_aligned<alignment>(ct_neg);
 
     // TODO: check vectorization
     for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
         {
-            auto cond = fcache[fcache_pos++] <= S_inv;
+            auto cond = ct_pos[fidx];
 
             if (ta_state_pos_j[fidx] == 0 and cond)
             {
@@ -248,7 +249,7 @@ int block1(
         }
 
         {
-            auto cond = fcache[fcache_pos++] <= S_inv;
+            auto cond = ct_neg[fidx];
 
             if (ta_state_neg_j[fidx] == 0 and cond)
             {
@@ -258,42 +259,41 @@ int block1(
             ta_state_neg_j[fidx] = cond ? (ta_state_neg_j[fidx] > -number_of_states ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx]) : ta_state_neg_j[fidx];
         }
     }
-
-    return fcache_pos;
 }
 
 
 // Feedback Type I, positive
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
-int block2(
+void block2(
     int const number_of_states,
-    float const S_inv,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
     bit_vector<bit_block_type> const & X,
-    float const * __restrict fcache,
-    int fcache_pos
+    char const * __restrict ct_pos,
+    char const * __restrict ct_neg
 )
 {
-    constexpr float ONE = 1.0f;
-
     int const number_of_features = X.size();
 
-    fcache = assume_aligned<alignment>(fcache);
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
-//    X = assume_aligned(X);
+
+    ct_pos = assume_aligned<alignment>(ct_pos);
+    ct_neg = assume_aligned<alignment>(ct_neg);
 
     for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
-        auto cond1 = boost_true_positive_feedback == true or (fcache[fcache_pos++] <= (ONE - S_inv));
-        auto cond2 = fcache[fcache_pos++] <= S_inv;
+        auto cond1_pos = boost_true_positive_feedback == true or not ct_pos[fidx];
+        auto cond2_pos = ct_pos[fidx];
+
+        auto cond1_neg = boost_true_positive_feedback == true or not ct_neg[fidx];
+        auto cond2_neg = ct_neg[fidx];
 
         if (X[fidx] != 0)
         {
-            if (cond1)
+            if (cond1_pos)
             {
                 if (ta_state_pos_j[fidx] < number_of_states - 1)
                 {
@@ -306,7 +306,7 @@ int block2(
                 }
 
             }
-            if (cond2)
+            if (cond2_neg)
             {
                 if (ta_state_neg_j[fidx] == 0)
                 {
@@ -321,7 +321,7 @@ int block2(
         }
         else // if (X[k] == 0)
         {
-            if (cond1)
+            if (cond1_neg)
             {
                 if (ta_state_neg_j[fidx] < number_of_states - 1)
                 {
@@ -334,7 +334,7 @@ int block2(
                 }
             }
 
-            if (cond2)
+            if (cond2_pos)
             {
                 if (ta_state_pos_j[fidx] == 0)
                 {
@@ -348,8 +348,6 @@ int block2(
             }
         }
     }
-
-    return fcache_pos;
 }
 
 
@@ -413,14 +411,12 @@ void train_classifier_automata_T(
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
-    float const S_inv,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    FRNG & frng,
-    EstimatorStateCacheBase::frand_cache_type & fcache
+    IRNG & prng,
+    EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
     int const number_of_features = X.size();
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
@@ -432,36 +428,32 @@ void train_classifier_automata_T(
         {
             if (clause_output[iidx] == 0)
             {
-                fcache.refill(frng);
-
-                fcache.m_pos = block1<state_type, bit_block_type>(number_of_features, number_of_states, S_inv,
+                block1<state_type, bit_block_type>(number_of_features, number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    fcache_, fcache.m_pos);
+                    ct.tosses(prng), ct.tosses(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
-                fcache.refill(frng);
-
                 if (boost_true_positive_feedback)
                 {
-                    fcache.m_pos = block2<true>(number_of_states, S_inv,
+                    block2<true>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, fcache_, fcache.m_pos);
+                        X, ct.tosses(prng), ct.tosses(prng));
                 }
                 else
                 {
-                    fcache.m_pos = block2<false>(number_of_states, S_inv,
+                    block2<false>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, fcache_, fcache.m_pos);
+                        X, ct.tosses(prng), ct.tosses(prng));
                 }
             }
         }
@@ -489,11 +481,10 @@ void train_classifier_automata(
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
-    float const S_inv,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    FRNG & frng,
-    EstimatorStateCacheBase::frand_cache_type & fcache
+    IRNG & prng,
+    EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     auto & ta_state_variant = ta_state.matrix;
@@ -510,11 +501,10 @@ void train_classifier_automata(
                 feedback_to_clauses,
                 clause_output,
                 number_of_states,
-                S_inv,
                 X,
                 boost_true_positive_feedback,
-                frng,
-                fcache
+                prng,
+                ct
             );
         },
         ta_state_variant);
@@ -530,16 +520,14 @@ void train_regressor_automata(
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
-    float const S_inv,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    FRNG & frng,
-    EstimatorStateCacheBase::frand_cache_type & fcache
+    IRNG & prng,
+    EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
-    float const * fcache_ = assume_aligned<alignment>(fcache.m_fcache.data());
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
@@ -555,36 +543,32 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                fcache.refill(frng);
-
-                fcache.m_pos = block1<state_type, bit_block_type>(number_of_features, number_of_states, S_inv,
+                block1<state_type, bit_block_type>(number_of_features, number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    fcache_, fcache.m_pos);
+                    ct.tosses(prng), ct.tosses(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
-                fcache.refill(frng);
-
                 if (boost_true_positive_feedback)
                 {
-                    fcache.m_pos = block2<true>(number_of_states, S_inv,
+                    block2<true>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, fcache_, fcache.m_pos);
+                        X, ct.tosses(prng), ct.tosses(prng));
                 }
                 else
                 {
-                    fcache.m_pos = block2<false>(number_of_states, S_inv,
+                    block2<false>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, fcache_, fcache.m_pos);
+                        X, ct.tosses(prng), ct.tosses(prng));
                 }
             }
         }
@@ -612,12 +596,11 @@ void train_regressor_automata(
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
-    float const S_inv,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    FRNG & frng,
-    EstimatorStateCacheBase::frand_cache_type & fcache
+    IRNG & prng,
+    EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     auto & ta_state_variant = ta_state.matrix;
@@ -634,12 +617,11 @@ void train_regressor_automata(
                 feedback_to_clauses,
                 clause_output,
                 number_of_states,
-                S_inv,
                 response_error,
                 X,
                 boost_true_positive_feedback,
-                frng,
-                fcache
+                prng,
+                ct
             );
         },
         ta_state_variant

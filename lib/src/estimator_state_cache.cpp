@@ -1,3 +1,4 @@
+#include "coin_tosser.hpp"
 #include "estimator_state_cache.hpp"
 #include "tsetlini_params.hpp"
 #include "params_companion.hpp"
@@ -19,8 +20,15 @@ void ClassifierStateCache::reset(
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
-    // initialize frand cache
-    cache.fcache = ClassifierStateCache::frand_cache_type(2 * Params::number_of_features(params));
+    /*
+     * While a factor of 3 is arbitrary and seems to work, for smaller sample
+     * sizes (size <= alignment)
+     * one could improve it by using 3 * min(alignment, number_of_features))
+     * instead, so that CoinTosser will have a chance to return aligned pointer
+     * to a position different than just the start.
+     */
+    cache.ct = CoinTosser(Params::number_of_features(params),
+        3 * Params::number_of_features(params));
 }
 
 
@@ -42,8 +50,8 @@ void RegressorStateCache::reset(
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
-    // initialize frand cache
-    cache.fcache = RegressorStateCache::frand_cache_type(2 * Params::number_of_features(params));
+    cache.ct = CoinTosser(Params::number_of_features(params),
+        3 * Params::number_of_features(params));
 }
 
 

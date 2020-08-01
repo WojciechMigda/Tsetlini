@@ -227,6 +227,7 @@ void classifier_update_impl(
     int const boost_true_positive_feedback,
     int const n_jobs,
 
+    IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
     ClassifierStateCache::value_type & cache,
@@ -288,8 +289,6 @@ void classifier_update_impl(
         threshold,
         fgen);
 
-    const auto S_inv = ONE / s;
-
     {
         auto const [input_ix_begin, input_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
 
@@ -300,11 +299,10 @@ void classifier_update_impl(
             cache.feedback_to_clauses.data(),
             cache.clause_output.data(),
             number_of_states,
-            S_inv,
             X,
             boost_true_positive_feedback,
-            fgen,
-            cache.fcache
+            igen,
+            cache.ct
         );
     }
 
@@ -318,11 +316,10 @@ void classifier_update_impl(
             cache.feedback_to_clauses.data(),
             cache.clause_output.data(),
             number_of_states,
-            S_inv,
             X,
             boost_true_positive_feedback,
-            fgen,
-            cache.fcache
+            igen,
+            cache.ct
         );
     }
 }
@@ -646,6 +643,8 @@ fit_classifier_online_impl(
         std::iota(ix.begin(), ix.end(), 0);
         std::shuffle(ix.begin(), ix.end(), state.igen);
 
+        state.cache.ct.populate(s, state.igen);
+
         for (auto i = 0u; i < number_of_examples; ++i)
         {
             classifier_update_impl(
@@ -661,6 +660,7 @@ fit_classifier_online_impl(
                 boost_true_positive_feedback,
                 n_jobs,
 
+                state.igen,
                 state.fgen,
                 ta_state,
                 state.cache,
@@ -740,6 +740,7 @@ void regressor_update_impl(
     int const boost_true_positive_feedback,
     int const n_jobs,
 
+    IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
     RegressorStateCache::value_type & cache,
@@ -766,8 +767,6 @@ void regressor_update_impl(
         threshold,
         fgen);
 
-    const auto S_inv = ONE / s;
-
     train_regressor_automata(
         ta_state,
         0,
@@ -775,12 +774,11 @@ void regressor_update_impl(
         cache.feedback_to_clauses.data(),
         cache.clause_output.data(),
         number_of_states,
-        S_inv,
         response_error,
         X,
         boost_true_positive_feedback,
-        fgen,
-        cache.fcache
+        igen,
+        cache.ct
     );
 }
 
@@ -822,6 +820,8 @@ fit_regressor_online_impl(
         std::iota(ix.begin(), ix.end(), 0);
         std::shuffle(ix.begin(), ix.end(), state.igen);
 
+        state.cache.ct.populate(s, state.igen);
+
         for (auto i = 0u; i < number_of_examples; ++i)
         {
             regressor_update_impl(
@@ -835,6 +835,7 @@ fit_regressor_online_impl(
                 boost_true_positive_feedback,
                 n_jobs,
 
+                state.igen,
                 state.fgen,
                 ta_state,
                 state.cache,
