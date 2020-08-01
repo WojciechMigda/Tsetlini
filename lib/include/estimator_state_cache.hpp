@@ -5,7 +5,7 @@
 
 #include "tsetlini_types.hpp"
 #include "tsetlini_params.hpp"
-#include "frand_cache.hpp"
+#include "coin_tosser.hpp"
 #include "mt.hpp"
 
 #include <type_traits>
@@ -38,7 +38,7 @@ struct is_estimator_state_cache<T, std::void_t<
 
 struct EstimatorStateCacheBase
 {
-    using frand_cache_type = frand_cache<alignment, FRNG::result_type>;
+    using coin_tosser_type = CoinTosser;
 };
 
 
@@ -50,7 +50,7 @@ struct ClassifierStateCache : public EstimatorStateCacheBase
         aligned_vector_char clause_output; // shape=(number of clauses)
         aligned_vector_int label_sum; // shape=(number of labels)
 
-        frand_cache_type fcache;
+        coin_tosser_type ct;
     };
 
     static bool are_equal(value_type const & lhs, value_type const & rhs);
@@ -65,7 +65,7 @@ struct RegressorStateCache : public EstimatorStateCacheBase
         feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
         aligned_vector_char clause_output; // shape=(number of clauses)
 
-        frand_cache_type fcache;
+        coin_tosser_type ct;
     };
 
     static bool are_equal(value_type const & lhs, value_type const & rhs);

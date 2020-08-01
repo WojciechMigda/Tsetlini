@@ -18,6 +18,9 @@ struct CoinTosser
     unsigned int m_base_size;
     aligned_vector_char m_cache;
 
+    inline
+    CoinTosser();
+    inline
     CoinTosser(unsigned int base_size, unsigned int extra_size);
 
     template<typename PRNG>
@@ -30,6 +33,11 @@ struct CoinTosser
     void mutate(PRNG & prng);
 };
 
+CoinTosser::CoinTosser()
+    : m_base_size(0)
+{
+
+}
 
 CoinTosser::CoinTosser(unsigned int base_size, unsigned int extra_size)
     : m_base_size(base_size)
