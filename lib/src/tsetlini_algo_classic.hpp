@@ -94,7 +94,9 @@ void sum_up_all_label_votes(
     }
 }
 
-
+/*
+ * https://godbolt.org/z/bxh1rY
+ */
 template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_for_predict_T(
@@ -203,7 +205,9 @@ void calculate_clause_output_for_predict_T(
         ta_state);
 }
 
-
+/*
+ * https://godbolt.org/z/5xhafK
+ */
 template<unsigned int BATCH_SZ, typename state_type>
 inline
 void calculate_clause_output_T(
@@ -304,7 +308,11 @@ void calculate_clause_output_T(
 }
 
 
-// Feedback Type I, negative
+/*
+ * Feedback Type I, negative
+ *
+ * https://godbolt.org/z/GdjvPG
+ */
 template<typename state_type>
 void block1(
     int const number_of_features,
@@ -323,22 +331,27 @@ void block1(
 
     for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
+        // This is nicely vectorized by gcc
         {
             auto cond = ct_pos[fidx];
 
-            ta_state_pos_j[fidx] = cond ? (ta_state_pos_j[fidx] > -number_of_states ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx]) : ta_state_pos_j[fidx];
+            ta_state_pos_j[fidx] = UNLIKELY(cond) ? (ta_state_pos_j[fidx] > -number_of_states ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx]) : ta_state_pos_j[fidx];
         }
 
         {
             auto cond = ct_neg[fidx];
 
-            ta_state_neg_j[fidx] = cond ? (ta_state_neg_j[fidx] > -number_of_states ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx]) : ta_state_neg_j[fidx];
+            ta_state_neg_j[fidx] = UNLIKELY(cond) ? (ta_state_neg_j[fidx] > -number_of_states ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx]) : ta_state_neg_j[fidx];
         }
     }
 }
 
 
-// Feedback Type I, positive
+/*
+ * Feedback Type I, positive
+ *
+ * https://godbolt.org/z/97r1h7
+ */
 template<bool boost_true_positive_feedback, typename state_type>
 void block2(
     int const number_of_features,
@@ -366,16 +379,61 @@ void block2(
         auto cond1_neg = boost_true_positive_feedback == true or not ct_neg[fidx];
         auto cond2_neg = ct_neg[fidx];
 
+#if 0
+        auto cond = X[fidx];
+        ta_state_pos_j[fidx] = cond
+            ? (cond1_pos
+                ? (ta_state_pos_j[fidx] < number_of_states - 1
+                    ? ta_state_pos_j[fidx] + 1
+                    : ta_state_pos_j[fidx])
+                : ta_state_pos_j[fidx])
+            : (cond2_pos
+                ? (ta_state_pos_j[fidx] > -number_of_states
+                    ? ta_state_pos_j[fidx] - 1
+                    : ta_state_pos_j[fidx])
+                : ta_state_pos_j[fidx])
+            ;
+
+        ta_state_neg_j[fidx] = cond
+            ? (cond2_neg
+                ? (ta_state_neg_j[fidx] > -number_of_states
+                    ? ta_state_neg_j[fidx] - 1
+                    : ta_state_neg_j[fidx])
+                : ta_state_neg_j[fidx])
+            : (cond1_neg ?
+                (ta_state_neg_j[fidx] < number_of_states - 1
+                    ? ta_state_neg_j[fidx] + 1
+                    : ta_state_neg_j[fidx])
+                : ta_state_neg_j[fidx])
+            ;
+#endif
+
+        // This is nicely vectorized by gcc
+        auto Xcond_1 = X[fidx];
+        auto Xcond_0 = !X[fidx];
+
+        auto cond_pos_inc = ta_state_pos_j[fidx] < number_of_states - 1;
+        auto cond_pos_dec = ta_state_pos_j[fidx] > -number_of_states;
+
+        auto cond_neg_inc = ta_state_neg_j[fidx] < number_of_states - 1;
+        auto cond_neg_dec = ta_state_neg_j[fidx] > -number_of_states;
+
+        ta_state_pos_j[fidx] = Xcond_1 & cond1_pos & cond_pos_inc ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = Xcond_1 & cond2_neg & cond_neg_dec ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx];
+        ta_state_pos_j[fidx] = Xcond_0 & cond2_pos & cond_pos_dec ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = Xcond_0 & cond1_neg & cond_neg_inc ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
+
+#if 0
         if (X[fidx] != 0)
         {
-            if (cond1_pos)
+            if (LIKELY(cond1_pos))
             {
                 if (ta_state_pos_j[fidx] < number_of_states - 1)
                 {
                     ta_state_pos_j[fidx]++;
                 }
             }
-            if (cond2_neg)
+            if (UNLIKELY(cond2_neg))
             {
                 if (ta_state_neg_j[fidx] > -number_of_states)
                 {
@@ -385,7 +443,7 @@ void block2(
         }
         else // if (X[k] == 0)
         {
-            if (cond1_neg)
+            if (LIKELY(cond1_neg))
             {
                 if (ta_state_neg_j[fidx] < number_of_states - 1)
                 {
@@ -393,7 +451,7 @@ void block2(
                 }
             }
 
-            if (cond2_pos)
+            if (UNLIKELY(cond2_pos))
             {
                 if (ta_state_pos_j[fidx] > -number_of_states)
                 {
@@ -401,11 +459,16 @@ void block2(
                 }
             }
         }
+#endif
     }
 }
 
 
-// Feedback Type II
+/*
+ * Feedback Type II
+ *
+ * https://godbolt.org/z/WTa4vK
+ */
 template<typename state_type>
 void block3(
     int const number_of_features,
@@ -418,6 +481,21 @@ void block3(
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
     X = assume_aligned<alignment>(X);
 
+    // this is nicely vectorized by gcc
+    for (int fidx = 0; fidx < number_of_features; ++fidx)
+    {
+        //auto X_cond_0 = !X[fidx]; // gcc 7.5 vectorizes with this construct,
+                                    // newer gcc needs construct below
+        auto X_cond_0 = X[fidx] ^ 1;
+        auto X_cond_1 = X[fidx];
+        auto X_pos_inc = ta_state_pos_j[fidx] < 0;
+        auto X_neg_inc = ta_state_neg_j[fidx] < 0;
+
+        ta_state_pos_j[fidx] = X_cond_0 & X_pos_inc ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = X_cond_1 & X_neg_inc ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
+    }
+
+#if 0
     for (int fidx = 0; fidx < number_of_features; ++fidx)
     {
         if (X[fidx] == 0)
@@ -437,6 +515,7 @@ void block3(
             }
         }
     }
+#endif
 }
 
 
