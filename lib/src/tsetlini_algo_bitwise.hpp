@@ -44,6 +44,9 @@ signum_from_ta_state(numeric_matrix<state_type> const & ta_state, bit_matrix<sig
 }
 
 
+/*
+ * https://godbolt.org/z/WEhrnc
+ */
 template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
 void calculate_clause_output_T(
@@ -125,6 +128,9 @@ void calculate_clause_output_T(
 }
 
 
+/*
+ * https://godbolt.org/z/1bKs9b
+ */
 template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
 void calculate_clause_output_for_predict_T(
