@@ -76,11 +76,11 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
 {
     IRNG irng(2345);
     int const NJOBS = 1;
-    int const TILE_SZ = 16;
+    int const TILE_SZ = 8;
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
-        int const number_of_features = irng.next(15, 500);
+        int const number_of_features = irng.next(15, 1280);
         int const number_of_clauses = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
@@ -200,11 +200,11 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_w
 {
     IRNG irng(2345);
     int const NJOBS = 1;
-    int const TILE_SZ = 16;
+    int const TILE_SZ = 8;
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
-        int const number_of_features = irng.next(2, 256);
+        int const number_of_features = irng.next(15, 1280);
         int const number_of_clauses = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
