@@ -53,14 +53,22 @@ struct basic_bit_vector
         return (m_bit_length + block_bits - 1) / block_bits;
     }
 
+    inline
     block_type set_mask(size_type pos) const
     {
         return (block_type)1 << (pos % block_bits);
     }
 
+    inline
     block_type clear_mask(size_type pos) const
     {
         return ~set_mask(pos);
+    }
+
+    inline
+    block_type xor_mask(size_type pos, bool val) const
+    {
+        return (block_type)val << (pos % block_bits);
     }
 
     inline
@@ -83,9 +91,38 @@ struct basic_bit_vector
     }
 
 
+    inline
+    void assign(size_type pos, bool val)
+    {
+        if (val)
+        {
+            set(pos);
+        }
+        else
+        {
+            clear(pos);
+        }
+    }
+
+
+    inline
+    void XOR(size_type pos, bool val)
+    {
+        m_vector[pos / block_bits] ^= xor_mask(pos, val);
+    }
+
+
+    inline
     block_type const * data() const
     {
         return m_vector.data();
+    }
+
+
+    inline
+    size_type tail_bits() const
+    {
+        return m_bit_length % block_bits;
     }
 
     size_type m_bit_length;
