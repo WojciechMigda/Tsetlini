@@ -98,6 +98,12 @@ struct basic_bit_matrix
             return test(pos);
         }
 
+        inline
+        block_type * data()
+        {
+            return m_p;
+        }
+
         uint m_nbits;
         block_type * m_p;
     };

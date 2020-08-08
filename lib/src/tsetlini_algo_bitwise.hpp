@@ -441,7 +441,7 @@ void block1(
     ct_pos_p = assume_aligned<alignment>(ct_pos_p);
     ct_neg_p = assume_aligned<alignment>(ct_neg_p);
 
-    auto process_block = [&](auto fidx, auto block_bits)
+    auto process_block = [&](auto fidx, auto this_block_bits)
     {
         bit_block_type pos_dec = ct_pos_p[fidx];
         bit_block_type neg_dec = ct_neg_p[fidx];
@@ -449,7 +449,7 @@ void block1(
         bit_block_type pos_signum_flip = 0;
         bit_block_type neg_signum_flip = 0;
 
-        for (auto bix = 0u; bix < block_bits; ++bix)
+        for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
             auto pos_dec_bit = pos_dec & (ta_state_pos_j[fidx * block_bits + bix] > -number_of_states);
             auto neg_dec_bit = neg_dec & (ta_state_neg_j[fidx * block_bits + bix] > -number_of_states);
@@ -602,7 +602,7 @@ void block2(
     ct_pos_p = assume_aligned<alignment>(ct_pos_p);
     ct_neg_p = assume_aligned<alignment>(ct_neg_p);
 
-    auto process_block = [&](auto fidx, auto block_bits)
+    auto process_block = [&](auto fidx, auto this_block_bits)
     {
         bit_block_type X_0 = ~X_p[fidx];
         bit_block_type X_1 = X_p[fidx];
@@ -615,7 +615,7 @@ void block2(
         bit_block_type pos_signum_flip = 0;
         bit_block_type neg_signum_flip = 0;
 
-        for (auto bix = 0u; bix < block_bits; ++bix)
+        for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
             auto pos_inc_bit = pos_inc & (ta_state_pos_j[fidx * block_bits + bix] < number_of_states - 1);
             auto pos_dec_bit = pos_dec & (ta_state_pos_j[fidx * block_bits + bix] > -number_of_states);
@@ -661,7 +661,7 @@ void block2(
 
 // Feedback Type II
 template<typename state_type, typename bit_block_type>
-void block3(
+void block3_(
     int const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -714,7 +714,7 @@ void block3(
  */
 template<typename state_type, typename bit_block_type>
 inline
-void block3_(
+void block3(
     int const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -724,7 +724,7 @@ void block3_(
 )
 {
     auto constexpr block_bits = bit_vector<bit_block_type>::block_bits;
-    int const full_feature_blocks = X.content_blocks() - (X.tail_bits() != 0);
+    unsigned int const full_feature_blocks = X.content_blocks() - (X.tail_bits() != 0);
 
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
@@ -733,7 +733,7 @@ void block3_(
     bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
     bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
 
-    auto process_block = [&](auto fidx, auto block_bits)
+    auto process_block = [&](auto fidx, auto this_block_bits)
     {
         bit_block_type X_0 = ~X_p[fidx];
         bit_block_type X_1 = X_p[fidx];
@@ -746,7 +746,7 @@ void block3_(
         bit_block_type pos_signum_flip = 0;
         bit_block_type neg_signum_flip = 0;
 
-        for (auto bix = 0u; bix < block_bits; ++bix)
+        for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
             auto pos_inc_bit = pos_inc & 1;
             auto neg_inc_bit = neg_inc & 1;
