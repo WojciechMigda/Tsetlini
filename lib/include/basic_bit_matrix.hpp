@@ -43,38 +43,56 @@ struct basic_bit_matrix
         {
         }
 
+        inline
+        size_type content_blocks() const
+        {
+            return (m_nbits + block_bits - 1) / block_bits;
+        }
 
+        inline
+        size_type tail_bits() const
+        {
+            return m_nbits % block_bits;
+        }
+
+        inline
         void set(size_type pos)
         {
             m_p[pos / block_bits] |= set_mask(pos);
         }
 
+        inline
         void clear(size_type pos)
         {
             m_p[pos / block_bits] &= clear_mask(pos);
         }
 
+        inline
         void flip(size_type pos)
         {
             m_p[pos / block_bits] ^= set_mask(pos);
         }
 
+        inline
         uint test(size_type pos) const
         {
             return !!(m_p[pos / block_bits] & set_mask(pos));
         }
 
 
+        inline
         block_type set_mask(size_type pos) const
         {
             return (block_type)1 << (pos % block_bits);
         }
 
+        inline
         block_type clear_mask(size_type pos) const
         {
             return ~set_mask(pos);
         }
 
+        inline
         uint operator[](size_type pos) const
         {
             return test(pos);
