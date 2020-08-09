@@ -112,7 +112,7 @@ struct CoinTosserBitwise
     void populate(real_type const s, PRNG & prng);
 
     template<typename PRNG>
-    char const * tosses(PRNG & prng);
+    bit_vector_uint64::block_type const * tosses(PRNG & prng);
 
     template<typename PRNG>
     void mutate(PRNG & prng);
@@ -189,7 +189,7 @@ unsigned int CoinTosserBitwise::ceil2(unsigned int const v, unsigned int const A
 
 
 template<typename PRNG>
-char const * CoinTosserBitwise::tosses(PRNG & prng)
+bit_vector_uint64::block_type const * CoinTosserBitwise::tosses(PRNG & prng)
 {
     auto const nblx = m_cache.content_blocks();
     auto const nblx_base = m_base_size / block_bits;
