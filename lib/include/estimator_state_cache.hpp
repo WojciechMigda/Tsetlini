@@ -73,6 +73,43 @@ struct RegressorStateCache : public EstimatorStateCacheBase
 };
 
 
+struct EstimatorStateBitwiseCacheBase
+{
+    using coin_tosser_type = CoinTosserBitwise;
+};
+
+
+struct ClassifierStateBitwiseCache : public EstimatorStateBitwiseCacheBase
+{
+    struct value_type
+    {
+        feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
+        aligned_vector_char clause_output; // shape=(number of clauses)
+        aligned_vector_int label_sum; // shape=(number of labels)
+
+        coin_tosser_type ct;
+    };
+
+    static bool are_equal(value_type const & lhs, value_type const & rhs);
+    static void reset(value_type & cache, params_t const & params);
+};
+
+
+struct RegressorStateBitwiseCache : public EstimatorStateBitwiseCacheBase
+{
+    struct value_type
+    {
+        feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
+        aligned_vector_char clause_output; // shape=(number of clauses)
+
+        coin_tosser_type ct;
+    };
+
+    static bool are_equal(value_type const & lhs, value_type const & rhs);
+    static void reset(value_type & cache, params_t const & params);
+};
+
+
 }  // namespace Tsetlini
 
 
