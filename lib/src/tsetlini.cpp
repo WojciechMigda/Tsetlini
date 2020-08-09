@@ -213,7 +213,7 @@ status_message_t check_for_predict(
 }
 
 
-template<typename SampleType, typename TAStateValueType>
+template<typename SampleType, typename TAStateValueType, typename TAStateCacheValueType>
 void classifier_update_impl(
     SampleType const & X,
     label_type const target_label,
@@ -230,7 +230,7 @@ void classifier_update_impl(
     IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
-    ClassifierStateCache::value_type & cache,
+    TAStateCacheValueType & cache,
 
     int clause_output_tile_size
     )
@@ -729,7 +729,7 @@ fit_classifier_impl(
 }
 
 
-template<typename SampleType, typename TAStateValueType>
+template<typename SampleType, typename TAStateValueType, typename TAStateCacheValueType>
 void regressor_update_impl(
     SampleType const & X,
     response_type const target_response,
@@ -744,7 +744,7 @@ void regressor_update_impl(
     IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
-    RegressorStateCache::value_type & cache,
+    TAStateCacheValueType & cache,
 
     int clause_output_tile_size
     )

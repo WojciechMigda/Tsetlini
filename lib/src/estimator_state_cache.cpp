@@ -88,7 +88,9 @@ void ClassifierStateBitwiseCache::reset(
      * to a position different than just the start.
      */
     cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+        //3 * 8 *
+        3 * 7 *
+        Params::number_of_features(params));
 }
 
 
@@ -114,7 +116,9 @@ void RegressorStateBitwiseCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
     cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+        //3 * 8 *
+        3 * 7 *
+        Params::number_of_features(params));
 }
 
 

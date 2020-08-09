@@ -430,7 +430,7 @@ void block1(
 {
     using bit_view_type = typename std::decay<decltype(ta_state_pos_signum_j)>::type;
     auto constexpr block_bits = bit_view_type::block_bits;
-    int const full_feature_blocks = ta_state_pos_signum_j.content_blocks() - (ta_state_pos_signum_j.tail_bits() != 0);
+    unsigned int const full_feature_blocks = ta_state_pos_signum_j.content_blocks() - (ta_state_pos_signum_j.tail_bits() != 0);
 
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
@@ -438,8 +438,8 @@ void block1(
     bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
     bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
 
-    ct_pos_p = assume_aligned<alignment>(ct_pos_p);
-    ct_neg_p = assume_aligned<alignment>(ct_neg_p);
+//    ct_pos_p = assume_aligned<alignment>(ct_pos_p);
+//    ct_neg_p = assume_aligned<alignment>(ct_neg_p);
 
     auto process_block = [&](auto fidx, auto this_block_bits)
     {
@@ -589,7 +589,7 @@ void block2(
 )
 {
     auto constexpr block_bits = bit_vector<bit_block_type>::block_bits;
-    int const full_feature_blocks = X.content_blocks() - (X.tail_bits() != 0);
+    unsigned int const full_feature_blocks = X.content_blocks() - (X.tail_bits() != 0);
 
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
 
@@ -599,8 +599,8 @@ void block2(
     bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
     bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
 
-    ct_pos_p = assume_aligned<alignment>(ct_pos_p);
-    ct_neg_p = assume_aligned<alignment>(ct_neg_p);
+//    ct_pos_p = assume_aligned<alignment>(ct_pos_p);
+//    ct_neg_p = assume_aligned<alignment>(ct_neg_p);
 
     auto process_block = [&](auto fidx, auto this_block_bits)
     {
@@ -790,7 +790,7 @@ void train_classifier_automata_T(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    EstimatorStateCacheBase::coin_tosser_type & ct
+    EstimatorStateBitwiseCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
@@ -860,7 +860,7 @@ void train_classifier_automata(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    EstimatorStateCacheBase::coin_tosser_type & ct
+    EstimatorStateBitwiseCacheBase::coin_tosser_type & ct
     )
 {
     auto & ta_state_variant = ta_state.matrix;
@@ -900,7 +900,7 @@ void train_regressor_automata(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    EstimatorStateCacheBase::coin_tosser_type & ct
+    EstimatorStateBitwiseCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
@@ -976,7 +976,7 @@ void train_regressor_automata(
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    EstimatorStateCacheBase::coin_tosser_type & ct
+    EstimatorStateBitwiseCacheBase::coin_tosser_type & ct
     )
 {
     auto & ta_state_variant = ta_state.matrix;

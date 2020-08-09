@@ -12,6 +12,8 @@ struct TAState;
 struct TAStateWithSignum;
 struct ClassifierStateCache;
 struct RegressorStateCache;
+struct ClassifierStateBitwiseCache;
+struct RegressorStateBitwiseCache;
 
 template<typename TAStateType, typename EstimatorStateCacheType>
 struct EstimatorState;
@@ -19,8 +21,8 @@ struct EstimatorState;
 using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
 
-using ClassifierStateBitwise = EstimatorState<TAStateWithSignum, ClassifierStateCache>;
-using RegressorStateBitwise = EstimatorState<TAStateWithSignum, RegressorStateCache>;
+using ClassifierStateBitwise = EstimatorState<TAStateWithSignum, ClassifierStateBitwiseCache>;
+using RegressorStateBitwise = EstimatorState<TAStateWithSignum, RegressorStateBitwiseCache>;
 
 
 }  // namespace Tsetlini
