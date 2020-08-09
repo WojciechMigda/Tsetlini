@@ -710,7 +710,7 @@ void block3_(
 
 
 /*
- * https://godbolt.org/z/6K4zfr
+ * https://godbolt.org/z/hxWT7x
  */
 template<typename state_type, typename bit_block_type>
 inline

@@ -35,6 +35,12 @@ struct basic_bit_vector
         m_bit_length = std::min(m_bit_length, m_vector.size() * block_bits);
     }
 
+    basic_bit_vector(size_type bitlen) :
+        m_bit_length(bitlen),
+        m_vector((m_bit_length + block_bits - 1) / block_bits)
+    {
+    }
+
     inline
     size_type size() const
     {
@@ -90,6 +96,11 @@ struct basic_bit_vector
         m_vector[pos / block_bits] &= clear_mask(pos);
     }
 
+    inline
+    void flip(size_type pos)
+    {
+        m_vector[pos / block_bits] ^= set_mask(pos);
+    }
 
     inline
     void assign(size_type pos, bool val)
