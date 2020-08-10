@@ -117,6 +117,7 @@ void calculate_clause_output_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
@@ -200,6 +201,7 @@ void calculate_clause_output_for_predict_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -290,6 +292,7 @@ void calculate_clause_output_for_predict_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -365,8 +368,13 @@ void calculate_clause_output_for_predict_T(
 }
 
 
-// Feedback Type I, negative
+/*
+ * Feedback Type I, negative
+ *
+ * https://godbolt.org/z/WK9bGc
+ */
 template<typename state_type, typename bit_block_type>
+inline
 void block1(
     int const number_of_features,
     int const number_of_states,
@@ -390,23 +398,39 @@ void block1(
         {
             auto cond = ct_pos[fidx];
 
-            if (ta_state_pos_j[fidx] == 0 and cond)
+            if (UNLIKELY(cond))
             {
-                ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
-            }
+                auto const ta_state = ta_state_pos_j[fidx];
 
-            ta_state_pos_j[fidx] = cond ? (ta_state_pos_j[fidx] > -number_of_states ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx]) : ta_state_pos_j[fidx];
+                if (ta_state == 0)
+                {
+                    ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                }
+
+                if (ta_state > -number_of_states)
+                {
+                    --ta_state_pos_j[fidx];
+                }
+            }
         }
 
         {
             auto cond = ct_neg[fidx];
 
-            if (ta_state_neg_j[fidx] == 0 and cond)
+            if (UNLIKELY(cond))
             {
-                ta_state_neg_signum_j.flip(fidx); // flip negative clause bit in signum matrix
-            }
+                auto const ta_state = ta_state_neg_j[fidx];
 
-            ta_state_neg_j[fidx] = cond ? (ta_state_neg_j[fidx] > -number_of_states ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx]) : ta_state_neg_j[fidx];
+                if (ta_state == 0)
+                {
+                    ta_state_neg_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                }
+
+                if (ta_state > -number_of_states)
+                {
+                    --ta_state_neg_j[fidx];
+                }
+            }
         }
     }
 }
@@ -485,6 +509,7 @@ void block1(
 
 // Feedback Type I, positive
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
+inline
 void block2(
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
@@ -661,6 +686,7 @@ void block2(
 
 // Feedback Type II
 template<typename state_type, typename bit_block_type>
+inline
 void block3_(
     int const number_of_features,
     state_type * __restrict ta_state_pos_j,

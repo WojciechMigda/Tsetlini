@@ -111,6 +111,7 @@ void calculate_clause_output_for_predict_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -223,6 +224,7 @@ void calculate_clause_output_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
