@@ -28,6 +28,12 @@ struct basic_bit_vector
     static_assert(is_power_of_two(alignment), "Alignment must be a power of 2");
 
 
+    basic_bit_vector()
+        : m_bit_length(0)
+        , m_vector()
+    {
+    }
+
     basic_bit_vector(size_type bitlen, aligned_vector && v) :
         m_bit_length(bitlen),
         m_vector(std::move(v))
@@ -35,11 +41,12 @@ struct basic_bit_vector
         m_bit_length = std::min(m_bit_length, m_vector.size() * block_bits);
     }
 
-    basic_bit_vector(size_type bitlen) :
+    explicit basic_bit_vector(size_type bitlen) :
         m_bit_length(bitlen),
         m_vector((m_bit_length + block_bits - 1) / block_bits)
     {
     }
+
 
     inline
     size_type size() const

@@ -1,6 +1,7 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
+#include "basic_bit_vector_companion.hpp"
 
 #include <vector>
 #include <string>
@@ -17,6 +18,7 @@
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
 using label_vector_type = Tsetlini::label_vector_type;
+using bit_vector_uint64 = Tsetlini::bit_vector_uint64;
 
 std::vector<std::string>
 read_file(std::string const & fname)
@@ -59,6 +61,19 @@ std::vector<aligned_vector_char> read_data_as_vec(std::string const & fname, int
 
     return rv;
 }
+
+
+auto to_bitvector = [](std::vector<aligned_vector_char> const & X)
+{
+    std::vector<Tsetlini::bit_vector_uint64> rv;
+    rv.reserve(X.size());
+
+    std::transform(X.cbegin(), X.cend(), std::back_inserter(rv),
+        [](auto const & sample){ return basic_bit_vectors::from_range<std::uint64_t>(sample.cbegin(), sample.cend()); }
+    );
+
+    return rv;
+};
 
 
 struct Scaler
@@ -139,18 +154,18 @@ int main()
 {
     auto constexpr NCOLS = 80;
 
-    auto const df_X = read_data_as_vec("CaliforniaHousingData_X.txt", NCOLS);
-    auto const df_y = [&df_X]()
+    auto const df_X_int = read_data_as_vec("CaliforniaHousingData_X.txt", NCOLS);
+    auto const df_y = [&df_X_int]()
         {
             auto const lines = read_file("CaliforniaHousingData_Y.txt");
-            std::vector<float> rv(df_X.size());
+            std::vector<float> rv(df_X_int.size());
 
             std::transform(lines.cbegin(), lines.cend(), rv.begin(), [](std::string const & ll){ return std::stof(ll); });
 
             return rv;
         }();
 
-    if (df_X.size() == 0)
+    if (df_X_int.size() == 0)
     {
         std::cout << R"(
 Could not read from file CaliforniaHousingData_X.txt. It either does not exist
@@ -169,6 +184,8 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         return 1;
     }
 
+    auto const df_X = to_bitvector(df_X_int);
+
     assert(df_X.front().size() == NCOLS);
     assert(df_X.size() == df_y.size());
 
@@ -182,10 +199,10 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     std::mt19937 gen(seed);
 
     std::size_t const PIVOT = df_X.size() * 0.8;
-    std::vector<aligned_vector_char> train_X(PIVOT);
+    std::vector<bit_vector_uint64> train_X(PIVOT);
     std::vector<float> train_y(PIVOT);
     std::vector<int> train_yi;
-    std::vector<aligned_vector_char> test_X(df_X.size() - PIVOT);
+    std::vector<bit_vector_uint64> test_X(df_X.size() - PIVOT);
     std::vector<float> test_y(df_y.size() - PIVOT);
     std::vector<int> test_yi;
 
@@ -226,7 +243,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         train_yi = scaler.transform(train_y);
         test_yi = scaler.transform(test_y);
 
-        auto reg = Tsetlini::make_regressor_classic(R"({
+        auto reg = Tsetlini::make_regressor_bitwise(R"({
             "threshold": 500,
             "s": 2.75,
             "number_of_regressor_clauses": 2000,
@@ -234,7 +251,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
             "boost_true_positive_feedback": 1,
             "random_state": 1,
             "n_jobs": 2,
-            "clause_output_tile_size": 64,
+            "clause_output_tile_size": 16,
             "verbose": false
         })").leftMap(error_printer)
             .rightMap([&](auto && reg)

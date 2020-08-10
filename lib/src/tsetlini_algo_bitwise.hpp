@@ -36,6 +36,7 @@ void calculate_clause_output_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
