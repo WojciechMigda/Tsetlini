@@ -153,9 +153,9 @@ struct ClassifierBitwise
     partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
         int max_number_of_labels, unsigned int epochs = 100);
 
-//    [[nodiscard]]
-//    Either<status_message_t, real_type>
-//    evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const;
+    [[nodiscard]]
+    Either<status_message_t, real_type>
+    evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const;
 
     [[nodiscard]]
     Either<status_message_t, label_type>

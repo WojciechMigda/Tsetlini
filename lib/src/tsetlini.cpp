@@ -325,10 +325,11 @@ void classifier_update_impl(
 }
 
 
+template<typename ClassifierStateType, typename SampleType>
 Either<status_message_t, real_type>
-evaluate_impl(
-    ClassifierStateClassic const & state,
-    std::vector<aligned_vector_char> const & X,
+evaluate_classifier_impl(
+    ClassifierStateType const & state,
+    std::vector<SampleType> const & X,
     label_vector_type const & y)
 {
     // let it crash - no state validation for now
@@ -1043,6 +1044,16 @@ ClassifierClassic::predict_raw(std::vector<aligned_vector_char> const & X) const
 
 
 Either<status_message_t, real_type>
+evaluate_impl(
+    ClassifierStateClassic const & state,
+    std::vector<aligned_vector_char> const & X,
+    label_vector_type const & y)
+{
+    return evaluate_classifier_impl(state, X, y);
+}
+
+
+Either<status_message_t, real_type>
 ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
 {
     return evaluate_impl(m_state, X, y);
@@ -1370,6 +1381,23 @@ ClassifierBitwise::ClassifierBitwise(params_t const & params) :
 ClassifierBitwise::ClassifierBitwise(params_t && params) :
     m_state(params)
 {
+}
+
+
+Either<status_message_t, real_type>
+evaluate_impl(
+    ClassifierStateBitwise const & state,
+    std::vector<bit_vector_uint64> const & X,
+    label_vector_type const & y)
+{
+    return evaluate_classifier_impl(state, X, y);
+}
+
+
+Either<status_message_t, real_type>
+ClassifierBitwise::evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const
+{
+    return evaluate_impl(m_state, X, y);
 }
 
 
