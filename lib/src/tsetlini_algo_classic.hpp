@@ -7,6 +7,12 @@
 #include "estimator_state_cache.hpp"
 #include "tsetlini_types.hpp"
 
+
+#ifndef TSETLINI_USE_OMP
+#define TSETLINI_USE_OMP 1
+#endif
+
+
 namespace Tsetlini
 {
 
@@ -111,7 +117,9 @@ void calculate_clause_output_for_predict_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -137,7 +145,9 @@ void calculate_clause_output_for_predict_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             char toggle_output = 0;
@@ -224,7 +234,9 @@ void calculate_clause_output_T(
 
     if (number_of_features < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
@@ -245,7 +257,9 @@ void calculate_clause_output_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             char toggle_output = 0;
