@@ -6,3 +6,6 @@ To build tsetlin library, examples and tests, do following:
 - `make -j`
 
 This will create examples in `examples/` directory, tests in `tests/` directory, and static and shared libraries in `lib/` directory.
+
+To compile with disabled OMP threading run:
+- `cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-Wall -Werror -march=native -DTSETLINI_USE_OMP=0" ..`
