@@ -9,6 +9,12 @@
 #include "basic_bit_vector.hpp"
 #include "assume_aligned.hpp"
 
+
+#ifndef TSETLINI_USE_OMP
+#define TSETLINI_USE_OMP 1
+#endif
+
+
 namespace Tsetlini
 {
 
@@ -36,7 +42,9 @@ void calculate_clause_output_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
@@ -59,7 +67,9 @@ void calculate_clause_output_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bit_block_type toggle_output = 0;
@@ -118,7 +128,9 @@ void calculate_clause_output_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bool output = true;
@@ -141,7 +153,9 @@ void calculate_clause_output_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
             bit_block_type toggle_output = 0;
@@ -202,7 +216,9 @@ void calculate_clause_output_for_predict_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -230,7 +246,9 @@ void calculate_clause_output_for_predict_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bit_block_type toggle_output = 0;
@@ -293,7 +311,9 @@ void calculate_clause_output_for_predict_T(
 
     if (feature_blocks < (int)BATCH_SZ)
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bool output = true;
@@ -321,7 +341,9 @@ void calculate_clause_output_for_predict_T(
     }
     else
     {
+#if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
             bit_block_type toggle_output = 0;
