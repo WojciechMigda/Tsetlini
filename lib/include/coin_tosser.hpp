@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_INCLUDE_NEITHER_COIN_TOSSER_HPP_
-#define LIB_INCLUDE_NEITHER_COIN_TOSSER_HPP_
+#ifndef LIB_INCLUDE_COIN_TOSSER_HPP_
+#define LIB_INCLUDE_COIN_TOSSER_HPP_
 
 #include "tsetlini_types.hpp"
 
@@ -205,4 +205,4 @@ bit_vector_uint64::block_type const * CoinTosserBitwise::tosses(PRNG & prng)
 }  // namespace Tsetlini
 
 
-#endif /* LIB_INCLUDE_NEITHER_COIN_TOSSER_HPP_ */
+#endif /* LIB_INCLUDE_COIN_TOSSER_HPP_ */
