@@ -340,8 +340,8 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
          */
         char const ct_val = irng.next(0, 1);
 
-        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(number_of_features, 3 * number_of_features);
-        std::fill(ct.m_cache.begin(), ct.m_cache.end(), ct_val);
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(1., number_of_features);
+        ct.fill(ct_val);
         Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct_classic = ct;
 
         Tsetlini::train_classifier_automata(

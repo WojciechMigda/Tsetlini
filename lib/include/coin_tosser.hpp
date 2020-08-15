@@ -29,6 +29,7 @@ struct CoinTosser
     template<typename PRNG>
     char const * tosses(PRNG & prng);
 
+private:
     template<typename PRNG>
     void mutate(PRNG & prng);
 };
@@ -114,6 +115,7 @@ struct CoinTosserBitwise
     template<typename PRNG>
     bit_vector_uint64::block_type const * tosses(PRNG & prng);
 
+private:
     template<typename PRNG>
     void mutate(PRNG & prng);
 

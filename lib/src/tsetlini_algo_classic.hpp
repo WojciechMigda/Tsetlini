@@ -560,17 +560,17 @@ void train_classifier_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                block1(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, ct.tosses(prng), ct.tosses(prng));
+                block1(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, ct.tosses1(prng), ct.tosses2(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
                 if (boost_true_positive_feedback)
                 {
-                    block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses(prng), ct.tosses(prng));
+                    block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
                 {
-                    block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses(prng), ct.tosses(prng));
+                    block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
             }
         }
@@ -726,17 +726,17 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                block1(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, ct.tosses(prng), ct.tosses(prng));
+                block1(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, ct.tosses1(prng), ct.tosses2(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
                 if (boost_true_positive_feedback)
                 {
-                    block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses(prng), ct.tosses(prng));
+                    block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
                 {
-                    block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses(prng), ct.tosses(prng));
+                    block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
             }
         }
