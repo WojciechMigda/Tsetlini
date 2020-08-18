@@ -225,10 +225,9 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
          * Setting S_inv to either 0.0 or 1.0 removes stochasticity from testing
          */
         char const ct_val = irng.next(0, 1);
-        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(number_of_features, 3 * number_of_features);
-        std::fill(ct.m_cache.begin(), ct.m_cache.end(), ct_val);
-
         Tsetlini::real_type const S_inv = ct_val;
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(S_inv, number_of_features);
+
 
         CAIR::train_classifier_automata(
             ta_state_CAIR, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),

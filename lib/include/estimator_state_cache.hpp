@@ -6,6 +6,7 @@
 #include "tsetlini_types.hpp"
 #include "tsetlini_params.hpp"
 #include "coin_tosser.hpp"
+#include "coin_tosser_exact.hpp"
 #include "mt.hpp"
 
 #include <type_traits>
@@ -38,7 +39,7 @@ struct is_estimator_state_cache<T, std::void_t<
 
 struct EstimatorStateCacheBase
 {
-    using coin_tosser_type = CoinTosser;
+    using coin_tosser_type = CoinTosserExact;
 };
 
 

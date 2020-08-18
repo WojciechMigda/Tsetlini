@@ -858,7 +858,7 @@ void train_classifier_automata_T(
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    ct.tosses(prng), ct.tosses(prng));
+                    ct.tosses1(prng), ct.tosses2(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
@@ -869,7 +869,7 @@ void train_classifier_automata_T(
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, ct.tosses(prng), ct.tosses(prng));
+                        X, ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
                 {
@@ -878,7 +878,7 @@ void train_classifier_automata_T(
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, ct.tosses(prng), ct.tosses(prng));
+                        X, ct.tosses1(prng), ct.tosses2(prng));
                 }
             }
         }
@@ -973,7 +973,7 @@ void train_regressor_automata(
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    ct.tosses(prng), ct.tosses(prng));
+                    ct.tosses1(prng), ct.tosses2(prng));
             }
             else // if (clause_output[iidx] == 1)
             {
@@ -984,7 +984,7 @@ void train_regressor_automata(
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, ct.tosses(prng), ct.tosses(prng));
+                        X, ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
                 {
@@ -993,7 +993,7 @@ void train_regressor_automata(
                         ta_state_neg_j,
                         ta_state_signum.row(2 * iidx + 0),
                         ta_state_signum.row(2 * iidx + 1),
-                        X, ct.tosses(prng), ct.tosses(prng));
+                        X, ct.tosses1(prng), ct.tosses2(prng));
                 }
             }
         }
