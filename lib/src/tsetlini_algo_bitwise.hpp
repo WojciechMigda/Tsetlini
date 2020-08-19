@@ -459,6 +459,54 @@ void block1(
 }
 
 
+template<typename state_type, typename bit_block_type>
+inline
+void block1_sparse(
+    int const number_of_features,
+    int const number_of_sparse_features,
+    int const number_of_states,
+    state_type * __restrict ta_state_pos_j,
+    state_type * __restrict ta_state_neg_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    auto & prng
+)
+{
+    for (int sfidx = 0; sfidx < number_of_sparse_features; ++sfidx)
+    {
+        {
+            auto const fidx = prng() % number_of_features;
+            auto const ta_state = ta_state_pos_j[fidx];
+
+            if (ta_state == 0)
+            {
+                ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+            }
+
+            if (ta_state > -number_of_states)
+            {
+                --ta_state_pos_j[fidx];
+            }
+        }
+
+        {
+            auto const fidx = prng() % number_of_features;
+            auto const ta_state = ta_state_neg_j[fidx];
+
+            if (ta_state == 0)
+            {
+                ta_state_neg_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+            }
+
+            if (ta_state > -number_of_states)
+            {
+                --ta_state_neg_j[fidx];
+            }
+        }
+    }
+}
+
+
 /*
  * https://godbolt.org/z/v8nrf1
  */
@@ -853,12 +901,13 @@ void train_classifier_automata_T(
         {
             if (clause_output[iidx] == 0)
             {
-                block1<state_type, bit_block_type>(number_of_features, number_of_states,
+                block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    ct.tosses1(prng), ct.tosses2(prng));
+                    prng);
+
             }
             else // if (clause_output[iidx] == 1)
             {
@@ -968,12 +1017,12 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                block1<state_type, bit_block_type>(number_of_features, number_of_states,
+                block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
-                    ct.tosses1(prng), ct.tosses2(prng));
+                    prng);
             }
             else // if (clause_output[iidx] == 1)
             {
