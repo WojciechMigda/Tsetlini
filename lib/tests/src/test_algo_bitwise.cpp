@@ -340,7 +340,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
          */
         char const ct_val = irng.next(0, 1);
 
-        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(1., number_of_features);
+        Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct(ct_val, number_of_features);
         ct.fill(ct_val);
         Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct_classic = ct;
 
@@ -359,9 +359,19 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
         ta_state.signum = ta_state_signum;
         ta_state.matrix = ta_state_values;
 
+        // mock prng which returns duplicated running integers modulo number of features
+        // 0, 0, 1, 1, 2, 2, ...
+        auto iota_counter = 0u;
+        auto iota_prng = [&iota_counter, number_of_features]()
+        {
+            auto rv = iota_counter % (2 * number_of_features);
+            ++iota_counter;
+            return rv / 2;
+        };
+
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, bitwise_X, boost_true_positive_feedback, prng, ct);
+            number_of_states, bitwise_X, boost_true_positive_feedback, iota_prng, ct);
 
         // retrieve TA State values from ta_state variant for verifiation
         ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);

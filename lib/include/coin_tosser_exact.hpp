@@ -37,6 +37,9 @@ struct CoinTosserExact
     inline
     void fill(char val);
 
+    inline
+    unsigned int hits() const;
+
 private:
     template<typename PRNG>
     char const * tosses_(aligned_vector_char & cache, PRNG & prng);
@@ -83,6 +86,12 @@ void CoinTosserExact::fill(char val)
 {
     std::fill(m_cache1.begin(), m_cache1.end(), val);
     std::fill(m_cache2.begin(), m_cache2.end(), val);
+}
+
+
+unsigned int CoinTosserExact::hits() const
+{
+    return m_hits;
 }
 
 
