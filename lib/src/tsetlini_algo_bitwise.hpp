@@ -991,27 +991,27 @@ void train_regressor_automata(
     bit_matrix<bit_block_type> & ta_state_signum,
     int const input_begin_ix,
     int const input_end_ix,
-    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
+    unsigned int const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
+    int const feedback_hits = std::round((input_end_ix - input_begin_ix) *
+        static_cast<real_type>(response_error) * response_error / (threshold * threshold));
 
-    for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
+    for (int idx = 0; idx < feedback_hits; ++idx)
     {
+        // randomly pick index that corresponds to non-zero feedback
+        auto const iidx = prng() % (input_end_ix - input_begin_ix) + input_begin_ix;
+
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state_matrix.row_data(2 * iidx + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state_matrix.row_data(2 * iidx + 1));
-
-        if (feedback_to_clauses[iidx] == 0)
-        {
-            continue;
-        }
 
         if (response_error < 0)
         {
@@ -1067,13 +1067,13 @@ void train_regressor_automata(
     TAStateWithSignum::value_type & ta_state,
     int const input_begin_ix,
     int const input_end_ix,
-    feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
     IRNG & prng,
+    unsigned int const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
@@ -1088,13 +1088,13 @@ void train_regressor_automata(
                 ta_state_signum,
                 input_begin_ix,
                 input_end_ix,
-                feedback_to_clauses,
                 clause_output,
                 number_of_states,
                 response_error,
                 X,
                 boost_true_positive_feedback,
                 prng,
+                threshold,
                 ct
             );
         },

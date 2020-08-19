@@ -762,23 +762,17 @@ void regressor_update_impl(
     auto const votes = sum_up_regressor_votes(cache.clause_output, threshold);
     int const response_error = votes - target_response;
 
-    calculate_regressor_feedback_to_clauses(
-        cache.feedback_to_clauses,
-        response_error,
-        threshold,
-        fgen);
-
     train_regressor_automata(
         ta_state,
         0,
         number_of_clauses / 2,
-        cache.feedback_to_clauses.data(),
         cache.clause_output.data(),
         number_of_states,
         response_error,
         X,
         boost_true_positive_feedback,
         igen,
+        threshold,
         cache.ct
     );
 }
