@@ -459,7 +459,7 @@ void block1(
 }
 
 
-template<typename state_type, typename bit_block_type>
+template<typename state_type, typename bit_block_type, typename PRNG>
 inline
 void block1_sparse(
     int const number_of_features,
@@ -469,7 +469,7 @@ void block1_sparse(
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
-    auto & prng
+    PRNG & prng
 )
 {
     for (int sfidx = 0; sfidx < number_of_sparse_features; ++sfidx)
@@ -875,7 +875,7 @@ void block3(
 }
 
 
-template<typename state_type, typename bit_block_type>
+template<typename state_type, typename bit_block_type, typename PRNG>
 void train_classifier_automata_T(
     numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_signum,
@@ -886,7 +886,7 @@ void train_classifier_automata_T(
     int const number_of_states,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    IRNG & prng,
+    PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
@@ -947,7 +947,7 @@ void train_classifier_automata_T(
 }
 
 
-template<typename bit_block_type>
+template<typename bit_block_type, typename PRNG>
 void train_classifier_automata(
     TAStateWithSignum::value_type & ta_state,
     int const input_begin_ix,
@@ -957,7 +957,7 @@ void train_classifier_automata(
     int const number_of_states,
     bit_vector<bit_block_type> const & X,
     bool const boost_true_positive_feedback,
-    IRNG & prng,
+    PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
