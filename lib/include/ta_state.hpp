@@ -76,8 +76,19 @@ struct TAStateWithSignum : public TAStateBase
 {
     struct value_type
     {
+        using matrix_variant_type = TAStateBase::matrix_variant_type;
+
         matrix_variant_type matrix;
         bit_matrix_uint64 signum;
+        w_vector_type weights;
+
+        bool operator==(struct value_type const & other) const
+        {
+            return
+                this->matrix == other.matrix and
+                this->weights == other.weights and
+                this->signum == other.signum;
+        }
     };
 
     static void initialize(

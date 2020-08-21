@@ -129,6 +129,35 @@ static void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state
 }
 
 
+template<typename T>
+void to_json(json & j, Tsetlini::bit_matrix<T> const & p)
+{
+    json bmx;
+
+    bmx["rows"] = p.rows();
+    bmx["cols"] = p.cols();
+    bmx["data"] = p.m_v;
+
+    j = bmx;
+}
+
+
+template<typename T>
+static void from_json(json const & j, Tsetlini::bit_matrix<T> & p)
+{
+    unsigned int rows = 0;
+    j.at("rows").get_to(rows);
+
+    unsigned int cols = 0;
+    j.at("cols").get_to(cols);
+
+    p = Tsetlini::bit_matrix<T>(rows, cols);
+
+    p.m_v.clear(); // we need to clear the vector because get_to appends data
+    j.at("data").get_to(p.m_v);
+}
+
+
 namespace Tsetlini
 {
 
@@ -148,6 +177,26 @@ void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state_type::
 {
     p.matrix = j.at("matrix").get<Tsetlini::ClassifierStateClassic::ta_state_type::value_type::matrix_variant_type>();
     p.weights = j.at("weights").get<Tsetlini::w_vector_type>();
+}
+
+
+void to_json(json & j, ClassifierStateBitwise::ta_state_type::value_type const & p)
+{
+    json ta_state;
+
+    ta_state["matrix"] = p.matrix;
+    ta_state["weights"] = p.weights;
+    ta_state["signum"] = p.signum;
+
+    j = ta_state;
+}
+
+
+void from_json(json const & j, Tsetlini::ClassifierStateBitwise::ta_state_type::value_type & p)
+{
+    p.matrix = j.at("matrix").get<Tsetlini::ClassifierStateBitwise::ta_state_type::value_type::matrix_variant_type>();
+    p.weights = j.at("weights").get<Tsetlini::w_vector_type>();
+    p.signum = j.at("signum").get<Tsetlini::bit_matrix_uint64>();
 }
 
 
@@ -292,6 +341,90 @@ void from_json_string(RegressorStateClassic & state, std::string const & jss)
     state.igen = js.at("igen").get<IRNG>();
     state.fgen = js.at("fgen").get<FRNG>();
     state.ta_state = js.at("ta_state").get<Tsetlini::RegressorStateClassic::ta_state_type::value_type>();
+    state.m_params = js.at("params").get<params_t>();
+
+    // So, we need a hack, since stringified json doesn't distinguish
+    // between signed and unsigned types for integer values > 0.
+    // most of our params are signed integers, as wrapped
+    // by std::variant, except for "random_state".
+    // Json parser will report them as unsigned.
+    // Here we will re-cast those integers as signed (contrary to json
+    // enumeration).
+    for (auto & [k, v]: state.m_params)
+    {
+        if (std::holds_alternative<seed_type>(v) and k != "random_state")
+        {
+            state.m_params[k] = static_cast<int>(std::get<seed_type>(v));
+        }
+    }
+    // end-of-hack
+
+    reset_state_cache(state);
+}
+
+
+std::string to_json_string(RegressorStateBitwise const & state)
+{
+    json js;
+
+    js["ta_state"] = state.ta_state;
+    js["igen"] = state.igen;
+    js["fgen"] = state.fgen;
+    js["params"] = state.m_params;
+
+    return js.dump();
+}
+
+
+void from_json_string(ClassifierStateBitwise & state, std::string const & jss)
+{
+    auto js = json::parse(jss);
+
+    state.igen = js.at("igen").get<IRNG>();
+    state.fgen = js.at("fgen").get<FRNG>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::ClassifierStateBitwise::ta_state_type::value_type>();
+    state.m_params = js.at("params").get<params_t>();
+
+    // So, we need a hack, since stringified json doesn't distinguish
+    // between signed and unsigned types for integer values > 0.
+    // most of our params are signed integers, as wrapped
+    // by std::variant, except for "random_state".
+    // Json parser will report them as unsigned.
+    // Here we will re-cast those integers as signed (contrary to json
+    // enumeration).
+    for (auto & [k, v]: state.m_params)
+    {
+        if (std::holds_alternative<seed_type>(v) and k != "random_state")
+        {
+            state.m_params[k] = static_cast<int>(std::get<seed_type>(v));
+        }
+    }
+    // end-of-hack
+
+    reset_state_cache(state);
+}
+
+
+std::string to_json_string(ClassifierStateBitwise const & state)
+{
+    json js;
+
+    js["ta_state"] = state.ta_state;
+    js["igen"] = state.igen;
+    js["fgen"] = state.fgen;
+    js["params"] = state.m_params;
+
+    return js.dump();
+}
+
+
+void from_json_string(RegressorStateBitwise & state, std::string const & jss)
+{
+    auto js = json::parse(jss);
+
+    state.igen = js.at("igen").get<IRNG>();
+    state.fgen = js.at("fgen").get<FRNG>();
+    state.ta_state = js.at("ta_state").get<Tsetlini::RegressorStateBitwise::ta_state_type::value_type>();
     state.m_params = js.at("params").get<params_t>();
 
     // So, we need a hack, since stringified json doesn't distinguish
