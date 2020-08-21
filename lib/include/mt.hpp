@@ -187,7 +187,7 @@ struct BasePRNG
         return rand();
     }
 
-    BasePRNG const & operator=(BasePRNG const & other)
+    BasePRNG & operator=(BasePRNG const & other)
     {
         if (this != &other)
         {

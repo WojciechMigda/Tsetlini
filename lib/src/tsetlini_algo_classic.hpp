@@ -213,7 +213,7 @@ void calculate_clause_output_for_predict_T(
                 n_jobs
             );
         },
-        ta_state);
+        ta_state.matrix);
 }
 
 /*
@@ -320,7 +320,7 @@ void calculate_clause_output_T(
                 n_jobs
             );
         },
-        ta_state);
+        ta_state.matrix);
 }
 
 
@@ -615,7 +615,7 @@ void train_classifier_automata(
                 ct
             );
         },
-        ta_state
+        ta_state.matrix
     );
 }
 
@@ -783,7 +783,7 @@ void train_regressor_automata(
                 ct
             );
         },
-        ta_state
+        ta_state.matrix
     );
 }
 

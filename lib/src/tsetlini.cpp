@@ -140,7 +140,7 @@ label_vector_type unique_labels(label_vector_type const & y)
 
 bool is_fitted(TAState::value_type const & ta_state)
 {
-    return std::visit([](auto const & ta_state_values){ return ta_state_values.shape().first != 0; }, ta_state);
+    return std::visit([](auto const & ta_state_values){ return ta_state_values.shape().first != 0; }, ta_state.matrix);
 }
 
 

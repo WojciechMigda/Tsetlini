@@ -48,7 +48,18 @@ struct TAStateBase
 
 struct TAState : public TAStateBase
 {
-    using value_type = matrix_variant_type;
+    struct value_type
+    {
+        using matrix_variant_type = TAStateBase::matrix_variant_type;
+
+        matrix_variant_type matrix;
+
+        bool operator==(struct value_type const & other) const
+        {
+            return
+                this->matrix == other.matrix;
+        }
+    };
 
     static void initialize(
         value_type & state,

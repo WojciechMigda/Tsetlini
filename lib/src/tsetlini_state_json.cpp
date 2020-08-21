@@ -62,7 +62,7 @@ static void from_json(json const & j, FRNG & p)
 }
 
 
-void to_json(json & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type const & p)
+void to_json(json & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type::matrix_variant_type const & p)
 {
     json ta_state;
 
@@ -94,13 +94,13 @@ void to_json(json & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_ty
 }
 
 
-static void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type & p)
+static void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type::matrix_variant_type & p)
 {
     std::size_t width = 0u;
     j.at("width").get_to(width);
 
-    auto const nr = j["data"].size();
-    auto const nc = j["data"][0].size();
+    auto const nr = j.at("data").size();
+    auto const nc = j.at("data")[0].size();
 
     if (width == 1)
     {
@@ -127,6 +127,29 @@ static void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state
             }
         }, p);
 }
+
+
+namespace Tsetlini
+{
+
+
+void to_json(json & j, ClassifierStateClassic::ta_state_type::value_type const & p)
+{
+    json ta_state;
+
+    ta_state["matrix"] = p.matrix;
+
+    j = ta_state;
+}
+
+
+void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type & p)
+{
+    p.matrix = j.at("matrix").get<Tsetlini::ClassifierStateClassic::ta_state_type::value_type::matrix_variant_type>();
+}
+
+
+} // namespace Tsetlini
 
 
 namespace nlohmann

@@ -40,7 +40,7 @@ TAState::initialize(
     int number_of_features,
     IRNG & igen)
 {
-    state = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
+    state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
 
     auto state_gen = [&igen](auto & matrix)
     {
@@ -55,7 +55,7 @@ TAState::initialize(
         }
     };
 
-    std::visit(state_gen, state);
+    std::visit(state_gen, state.matrix);
 }
 
 
