@@ -36,6 +36,7 @@ add_executable(tsetlini-test
     src/test_numeric_matrix.cpp
 
     src/test_regressor.cpp
+    src/test_regressor_state_json.cpp
 )
 
 target_include_directories(tsetlini-test
