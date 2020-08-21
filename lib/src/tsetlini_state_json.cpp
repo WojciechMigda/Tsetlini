@@ -138,6 +138,7 @@ void to_json(json & j, ClassifierStateClassic::ta_state_type::value_type const &
     json ta_state;
 
     ta_state["matrix"] = p.matrix;
+    ta_state["weights"] = p.weights;
 
     j = ta_state;
 }
@@ -146,6 +147,7 @@ void to_json(json & j, ClassifierStateClassic::ta_state_type::value_type const &
 void from_json(json const & j, Tsetlini::ClassifierStateClassic::ta_state_type::value_type & p)
 {
     p.matrix = j.at("matrix").get<Tsetlini::ClassifierStateClassic::ta_state_type::value_type::matrix_variant_type>();
+    p.weights = j.at("weights").get<Tsetlini::w_vector_type>();
 }
 
 
