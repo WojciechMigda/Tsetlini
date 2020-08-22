@@ -1054,7 +1054,7 @@ void train_regressor_automata(
         }
         else if (response_error > 0)
         {
-            if (clause_output[iidx] == 1)
+            if (clause_output[iidx] != 0)
             {
                 block3<state_type, bit_block_type>(number_of_features,
                     ta_state_pos_j,

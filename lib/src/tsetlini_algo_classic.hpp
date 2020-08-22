@@ -764,7 +764,7 @@ void train_regressor_automata(
         }
         else if (response_error > 0)
         {
-            if (clause_output[iidx] == 1)
+            if (clause_output[iidx] != 0)
             {
                 block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
 
