@@ -989,6 +989,7 @@ template<typename state_type, typename bit_block_type>
 void train_regressor_automata(
     numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_signum,
+    w_vector_type const & weights,
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
@@ -1086,6 +1087,7 @@ void train_regressor_automata(
             train_regressor_automata(
                 ta_state_values,
                 ta_state_signum,
+                ta_state.weights,
                 input_begin_ix,
                 input_end_ix,
                 clause_output,

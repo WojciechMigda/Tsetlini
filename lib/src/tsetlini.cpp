@@ -435,7 +435,7 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
         n_jobs,
         clause_output_tile_size);
 
-    response_type rv = sum_up_regressor_votes(state.cache.clause_output, Params::threshold(state.m_params));
+    response_type rv = sum_up_regressor_votes(state.cache.clause_output, Params::threshold(state.m_params), state.ta_state.weights);
 
     return Either<status_message_t, label_type>::rightOf(rv);
 }
@@ -759,7 +759,7 @@ void regressor_update_impl(
         clause_output_tile_size
     );
 
-    auto const votes = sum_up_regressor_votes(cache.clause_output, threshold);
+    auto const votes = sum_up_regressor_votes(cache.clause_output, threshold, ta_state.weights);
     int const response_error = votes - target_response;
 
     train_regressor_automata(
@@ -921,7 +921,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
             n_jobs,
             clause_output_tile_size);
 
-        auto const votes = sum_up_regressor_votes(state.cache.clause_output, threshold);
+        auto const votes = sum_up_regressor_votes(state.cache.clause_output, threshold, state.ta_state.weights);
 
         rv[it] = votes;
     }

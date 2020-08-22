@@ -673,7 +673,8 @@ void calculate_classifier_feedback_to_clauses(
 inline
 response_type sum_up_regressor_votes(
     aligned_vector_char const & clause_output,
-    int const threshold)
+    int const threshold,
+    w_vector_type const & weights)
 {
     auto const sum = std::accumulate(clause_output.cbegin(), clause_output.cend(), 0);
 
@@ -698,6 +699,7 @@ void calculate_regressor_feedback_to_clauses(
 template<typename state_type>
 void train_regressor_automata(
     numeric_matrix<state_type> & ta_state,
+    w_vector_type const & weights,
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
@@ -771,6 +773,7 @@ void train_regressor_automata(
         {
             train_regressor_automata(
                 ta_state_values,
+                ta_state.weights,
                 input_begin_ix,
                 input_end_ix,
                 clause_output,
