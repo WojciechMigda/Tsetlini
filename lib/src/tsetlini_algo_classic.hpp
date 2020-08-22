@@ -676,7 +676,22 @@ response_type sum_up_regressor_votes(
     int const threshold,
     w_vector_type const & weights)
 {
-    auto const sum = std::accumulate(clause_output.cbegin(), clause_output.cend(), 0);
+    auto accumulate_weighted = [](auto const & clause_output, auto const & weights)
+    {
+        int acc = 0;
+
+        for (auto ix = 0u; ix < clause_output.size(); ++ix)
+        {
+            acc += clause_output[ix] * (weights[ix] + 1);
+        }
+
+        return acc;
+    };
+
+    auto const sum = weights.size() == 0 ?
+        std::accumulate(clause_output.cbegin(), clause_output.cend(), 0)
+        :
+        accumulate_weighted(clause_output, weights);
 
     return std::clamp(sum, 0, threshold);
 }
@@ -699,7 +714,7 @@ void calculate_regressor_feedback_to_clauses(
 template<typename state_type>
 void train_regressor_automata(
     numeric_matrix<state_type> & ta_state,
-    w_vector_type const & weights,
+    w_vector_type & weights,
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
@@ -740,6 +755,11 @@ void train_regressor_automata(
                 {
                     block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
+
+                if (weights.size() != 0)
+                {
+                    weights[iidx]++;
+                }
             }
         }
         else if (response_error > 0)
@@ -747,6 +767,11 @@ void train_regressor_automata(
             if (clause_output[iidx] == 1)
             {
                 block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
+
+                if (weights.size() != 0)
+                {
+                    weights[iidx] -= (weights[iidx] != 0);
+                }
             }
         }
     }
