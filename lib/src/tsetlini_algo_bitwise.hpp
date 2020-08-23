@@ -989,6 +989,7 @@ template<typename state_type, typename bit_block_type>
 void train_regressor_automata(
     numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_signum,
+    w_vector_type & weights,
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
@@ -1044,11 +1045,16 @@ void train_regressor_automata(
                         ta_state_signum.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
+
+                if (weights.size() != 0)
+                {
+                    weights[iidx]++;
+                }
             }
         }
         else if (response_error > 0)
         {
-            if (clause_output[iidx] == 1)
+            if (clause_output[iidx] != 0)
             {
                 block3<state_type, bit_block_type>(number_of_features,
                     ta_state_pos_j,
@@ -1056,6 +1062,11 @@ void train_regressor_automata(
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
                     X);
+
+                if (weights.size() != 0)
+                {
+                    weights[iidx] -= (weights[iidx] != 0);
+                }
             }
         }
     }
@@ -1086,6 +1097,7 @@ void train_regressor_automata(
             train_regressor_automata(
                 ta_state_values,
                 ta_state_signum,
+                ta_state.weights,
                 input_begin_ix,
                 input_end_ix,
                 clause_output,

@@ -78,7 +78,7 @@ EstimatorState<TAStateType, EstimatorStateCacheType>::EstimatorState(params_t co
 
 
 template<typename TAStateType, typename EstimatorStateCacheType>
-bool EstimatorState<TAStateType, EstimatorStateCacheType>::operator ==(EstimatorState const & other) const
+bool EstimatorState<TAStateType, EstimatorStateCacheType>::operator==(EstimatorState const & other) const
 {
     if (this == &other)
     {

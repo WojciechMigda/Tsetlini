@@ -34,6 +34,7 @@
 #include <cstddef>
 #include <limits>
 #include <algorithm>
+#include <cstring>
 
 
 template<typename ValueType, unsigned int Alignment, unsigned int NumberOfStreams, typename DerivedT>
@@ -92,6 +93,7 @@ struct BasePRNG
             MT[i] = (1812433253UL * (MT[i - NS] ^ (MT[i - NS] >> 30)) + i / NS);
         }
         index = 0;
+        memset(aRES, 0, sizeof (aRES));
     }
 
     void generate()
@@ -187,7 +189,7 @@ struct BasePRNG
         return rand();
     }
 
-    BasePRNG const & operator=(BasePRNG const & other)
+    BasePRNG & operator=(BasePRNG const & other)
     {
         if (this != &other)
         {

@@ -10,30 +10,30 @@ namespace
 {
 
 
-TEST(ClassifierStateClassic, can_be_serialized_and_deserialized_via_json)
+TEST(RegressorStateClassic, can_be_serialized_and_deserialized_via_json)
 {
-    Tsetlini::make_classifier_classic()
+    Tsetlini::make_regressor_classic()
         .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
-        .rightMap([](Tsetlini::ClassifierClassic && clf1)
+        .rightMap([](Tsetlini::RegressorClassic && reg1)
         {
-            Tsetlini::make_classifier_classic()
+            Tsetlini::make_regressor_classic()
                 .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
-                .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
+                .rightMap([&reg1](Tsetlini::RegressorClassic && reg2)
                 {
-                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
-                    auto s1 = clf1.read_state();
+                    auto _ = reg1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
+                    auto s1 = reg1.read_state();
 
-                    auto s2 = clf2.read_state();
+                    auto s2 = reg2.read_state();
 
                     auto const jss = to_json_string(s1);
                     from_json_string(s2, jss);
 
                     EXPECT_EQ(s1, s2);
 
-                    return clf2;
+                    return reg2;
                 });
 
-            return clf1;
+            return reg1;
         });
 }
 
@@ -51,33 +51,33 @@ auto to_bitvector = [](std::vector<Tsetlini::aligned_vector_char> const & X)
 };
 
 
-TEST(ClassifierStateBitwise, can_be_serialized_and_deserialized_via_json)
+TEST(RegressorStateBitwise, can_be_serialized_and_deserialized_via_json)
 {
-    Tsetlini::make_classifier_bitwise()
+    Tsetlini::make_regressor_bitwise()
         .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
-        .rightMap([](Tsetlini::ClassifierBitwise && clf1)
+        .rightMap([](Tsetlini::RegressorBitwise && reg1)
         {
-            Tsetlini::make_classifier_bitwise()
+            Tsetlini::make_regressor_bitwise()
                 .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
-                .rightMap([&clf1](Tsetlini::ClassifierBitwise && clf2)
+                .rightMap([&reg1](Tsetlini::RegressorBitwise && reg2)
                 {
                     std::vector<Tsetlini::aligned_vector_char> const Xi{{1, 0, 1, 0}, {1, 1, 1, 0}};
                     auto const X = to_bitvector(Xi);
 
-                    auto _ = clf1.fit(X, {0, 1}, 2);
-                    auto s1 = clf1.read_state();
+                    auto _ = reg1.fit(X, {0, 1}, 2);
+                    auto s1 = reg1.read_state();
 
-                    auto s2 = clf2.read_state();
+                    auto s2 = reg2.read_state();
 
                     auto const jss = to_json_string(s1);
                     from_json_string(s2, jss);
 
                     EXPECT_EQ(s1, s2);
 
-                    return clf2;
+                    return reg2;
                 });
 
-            return clf1;
+            return reg1;
         });
 }
 

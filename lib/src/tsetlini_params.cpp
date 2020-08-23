@@ -27,6 +27,7 @@ static const params_t default_classifier_params =
     {"number_of_states", param_value_t(100)},
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
+    {"weighted", param_value_t(false)},
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
@@ -48,6 +49,7 @@ static const params_t default_regressor_params =
     {"number_of_states", param_value_t(100)},
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
+    {"weighted", param_value_t(true)},
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
@@ -147,7 +149,9 @@ json_to_params(json const & js)
         {
             rv[key] = value.get<real_type>();
         }
-        else if (key == "verbose")
+        else if (
+            (key == "verbose") or
+            (key == "weighted"))
         {
             rv[key] = value.get<bool>();
         }

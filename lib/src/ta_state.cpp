@@ -38,9 +38,10 @@ TAState::initialize(
     std::string const & counting_type,
     int number_of_clauses,
     int number_of_features,
+    bool const weighted,
     IRNG & igen)
 {
-    state = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
+    state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
 
     auto state_gen = [&igen](auto & matrix)
     {
@@ -55,7 +56,12 @@ TAState::initialize(
         }
     };
 
-    std::visit(state_gen, state);
+    std::visit(state_gen, state.matrix);
+
+    if (weighted)
+    {
+        state.weights.resize(number_of_clauses / 2);
+    }
 }
 
 
@@ -65,6 +71,7 @@ TAStateWithSignum::initialize(
     std::string const & counting_type,
     int number_of_clauses,
     int number_of_features,
+    bool const weighted,
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
@@ -96,6 +103,11 @@ TAStateWithSignum::initialize(
     };
 
     std::visit(state_gen, state.matrix);
+
+    if (weighted)
+    {
+        state.weights.resize(number_of_clauses / 2);
+    }
 }
 
 

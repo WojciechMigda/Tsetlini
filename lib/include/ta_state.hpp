@@ -29,6 +29,7 @@ struct is_TA_state<T, std::void_t<
             std::declval<std::string const &>(),
             std::declval<int>(),
             std::declval<int>(),
+            std::declval<bool const>(),
             std::declval<IRNG &>()))
     >>
     : std::true_type
@@ -48,13 +49,27 @@ struct TAStateBase
 
 struct TAState : public TAStateBase
 {
-    using value_type = matrix_variant_type;
+    struct value_type
+    {
+        using matrix_variant_type = TAStateBase::matrix_variant_type;
+
+        matrix_variant_type matrix;
+        w_vector_type weights;
+
+        bool operator==(struct value_type const & other) const
+        {
+            return
+                this->matrix == other.matrix and
+                this->weights == other.weights;
+        }
+    };
 
     static void initialize(
         value_type & state,
         std::string const & counting_type,
         int number_of_clauses,
         int number_of_features,
+        bool const weighted,
         IRNG & igen);
 };
 
@@ -63,8 +78,19 @@ struct TAStateWithSignum : public TAStateBase
 {
     struct value_type
     {
+        using matrix_variant_type = TAStateBase::matrix_variant_type;
+
         matrix_variant_type matrix;
         bit_matrix_uint64 signum;
+        w_vector_type weights;
+
+        bool operator==(struct value_type const & other) const
+        {
+            return
+                this->matrix == other.matrix and
+                this->weights == other.weights and
+                this->signum == other.signum;
+        }
     };
 
     static void initialize(
@@ -72,6 +98,7 @@ struct TAStateWithSignum : public TAStateBase
         std::string const & counting_type,
         int number_of_clauses,
         int number_of_features,
+        bool const weighted,
         IRNG & igen);
 };
 

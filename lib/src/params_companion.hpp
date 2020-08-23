@@ -121,6 +121,13 @@ int number_of_regressor_clauses(params_t const & params)
 }
 
 
+inline
+bool weighted(params_t const & params)
+{
+    return std::get<bool>(params.at("weighted"));
+}
+
+
 } // namespace Params
 
 
