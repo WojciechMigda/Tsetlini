@@ -283,6 +283,9 @@ std::string to_json_string(ClassifierStateClassic const & state)
 {
     json js;
 
+    js["estimator"] = "classifier";
+    js["algo"] = "classic";
+
     js["ta_state"] = state.ta_state;
     js["igen"] = state.igen;
     js["fgen"] = state.fgen;
@@ -324,6 +327,9 @@ void from_json_string(ClassifierStateClassic & state, std::string const & jss)
 std::string to_json_string(RegressorStateClassic const & state)
 {
     json js;
+
+    js["estimator"] = "regressor";
+    js["algo"] = "classic";
 
     js["ta_state"] = state.ta_state;
     js["igen"] = state.igen;
@@ -367,6 +373,9 @@ std::string to_json_string(RegressorStateBitwise const & state)
 {
     json js;
 
+    js["estimator"] = "regressor";
+    js["algo"] = "bitwise";
+
     js["ta_state"] = state.ta_state;
     js["igen"] = state.igen;
     js["fgen"] = state.fgen;
@@ -408,6 +417,9 @@ void from_json_string(ClassifierStateBitwise & state, std::string const & jss)
 std::string to_json_string(ClassifierStateBitwise const & state)
 {
     json js;
+
+    js["estimator"] = "classifier";
+    js["algo"] = "bitwise";
 
     js["ta_state"] = state.ta_state;
     js["igen"] = state.igen;
