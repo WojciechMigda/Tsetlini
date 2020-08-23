@@ -202,7 +202,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         return std::chrono::duration_cast<std::chrono::milliseconds>(tp).count() / 1000.f;
     };
 
-    auto constexpr T = 500;
+    auto constexpr T = 5000;
 
     for (auto it = 0u; it < ensemble_size; ++it)
     {
@@ -227,7 +227,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         test_yi = scaler.transform(test_y);
 
         auto reg = Tsetlini::make_regressor_classic(R"({
-            "threshold": 500,
+            "threshold": )" + std::to_string(T) + R"(,
             "s": 2.75,
             "number_of_regressor_clauses": 2000,
             "number_of_states": 127,

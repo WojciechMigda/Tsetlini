@@ -27,6 +27,7 @@ void log_classifier_params(params_t const & params, bool verbose)
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
@@ -55,6 +56,7 @@ void log_regressor_params(params_t const & params, bool verbose)
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';
@@ -168,9 +170,10 @@ void initialize_state(EstimatorStateType & state)
     auto const number_of_features = Params::number_of_features(params);
     auto const counting_type =
         normalize_counting_type(Params::counting_type(params), number_of_states, verbose);
+    auto const weighted = Params::weighted(params);
 
     using ta_state_type = typename EstimatorStateType::ta_state_type;
-    ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, state.igen);
+    ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, weighted, state.igen);
 
     using cache_type = typename EstimatorStateType::cache_type;
     cache_type::reset(state.cache, params);

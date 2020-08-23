@@ -120,6 +120,14 @@ TEST(TsetlinRegressorClassic, cannot_be_created_from_json_with_bad_clause_output
 }
 
 
+TEST(TsetlinRegressorClassic, can_be_created_from_json_with_weighted_param)
+{
+    auto const rgr = Tsetlini::make_regressor_classic(R"({"weighted": false})");
+
+    EXPECT_TRUE(rgr);
+}
+
+
 ///     Fit
 
 TEST(TsetlinRegressorClassicFit, rejects_empty_X)

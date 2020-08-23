@@ -29,6 +29,7 @@ struct is_TA_state<T, std::void_t<
             std::declval<std::string const &>(),
             std::declval<int>(),
             std::declval<int>(),
+            std::declval<bool const>(),
             std::declval<IRNG &>()))
     >>
     : std::true_type
@@ -68,6 +69,7 @@ struct TAState : public TAStateBase
         std::string const & counting_type,
         int number_of_clauses,
         int number_of_features,
+        bool const weighted,
         IRNG & igen);
 };
 
@@ -96,6 +98,7 @@ struct TAStateWithSignum : public TAStateBase
         std::string const & counting_type,
         int number_of_clauses,
         int number_of_features,
+        bool const weighted,
         IRNG & igen);
 };
 
