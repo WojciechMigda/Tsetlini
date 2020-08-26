@@ -19,6 +19,8 @@ if(NOT OpenMP_FOUND)
     message(FATAL_ERROR "OpenMP for C++ is required but is missing")
 endif()
 
+################################################################################
+
 set(SOURCES
     src/estimator_state_cache.cpp
     src/ta_state.cpp
@@ -28,41 +30,56 @@ set(SOURCES
     src/tsetlini_state_json.cpp
 )
 
-add_library(tsetlini_static src/dummy.cpp)
-target_sources( tsetlini_static PRIVATE
-  ${SOURCES}
+add_library( tsetlini_ObjLib OBJECT src/dummy.cpp )
+target_sources( tsetlini_ObjLib PRIVATE ${SOURCES} )
+
+target_include_directories(tsetlini_ObjLib
+    PUBLIC
+        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-add_library(tsetlini SHARED src/dummy.cpp)
+target_compile_options( tsetlini_ObjLib PRIVATE ${OpenMP_CXX_FLAGS})
+
+target_compile_features(tsetlini_ObjLib PRIVATE cxx_rvalue_references)
+
+################################################################################
+
+add_library( tsetlini SHARED src/dummy.cpp )
 target_sources( tsetlini PRIVATE
-  ${SOURCES}
+  $<TARGET_OBJECTS:tsetlini_ObjLib>
 )
 
-target_compile_features(tsetlini_static PRIVATE cxx_rvalue_references)
-target_compile_features(tsetlini PRIVATE cxx_rvalue_references)
+target_include_directories( tsetlini
+    PUBLIC
+        $<TARGET_PROPERTY:tsetlini_ObjLib,INTERFACE_INCLUDE_DIRECTORIES> )
+target_compile_features( tsetlini
+    PUBLIC $<TARGET_PROPERTY:tsetlini_ObjLib,INTERFACE_COMPILE_FEATURES> )
 
-target_include_directories(tsetlini_static
-    PUBLIC 
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_include_directories(tsetlini
-    PUBLIC 
-        $<INSTALL_INTERFACE:include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/src
-)
-
-target_compile_options(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
-target_compile_options(tsetlini PRIVATE ${OpenMP_CXX_FLAGS})
-target_link_libraries(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
 target_link_libraries(tsetlini PRIVATE ${OpenMP_CXX_FLAGS})
 
+################################################################################
+
+add_library( tsetlini_static src/dummy.cpp )
+target_sources( tsetlini_static PRIVATE
+  $<TARGET_OBJECTS:tsetlini_ObjLib>
+)
+
+target_include_directories( tsetlini_static
+    PUBLIC
+        $<TARGET_PROPERTY:tsetlini_ObjLib,INTERFACE_INCLUDE_DIRECTORIES> )
+target_compile_features( tsetlini_static
+    PUBLIC $<TARGET_PROPERTY:tsetlini_ObjLib,INTERFACE_COMPILE_FEATURES> )
+
+target_link_libraries(tsetlini_static PRIVATE ${OpenMP_CXX_FLAGS})
+
+################################################################################
+
 add_subdirectory(examples)
+
+################################################################################
 
 enable_testing()
 add_subdirectory(tests)
@@ -74,6 +91,7 @@ target_sources( utests PRIVATE
   "utests/suite_aligned_array.cpp"
 )
 
+################################################################################
 
 # Create target 'install' for installing libraries.
 install(TARGETS tsetlini tsetlini_static DESTINATION lib)
