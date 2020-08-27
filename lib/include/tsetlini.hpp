@@ -13,6 +13,16 @@
 
 #include <vector>
 
+
+#define TSETLINI_VERSION_MAJOR 0
+#define TSETLINI_VERSION_MINOR 0
+#define TSETLINI_VERSION_PATCH 8
+// TSETLINI_VERSION : 0xMMmmPP
+#define TSETLINI_VERSION (TSETLINI_VERSION_MAJOR * 0x10000 + \
+                          TSETLINI_VERSION_MINOR *   0x100 + \
+                          TSETLINI_VERSION_PATCH *     0x1)
+
+
 namespace Tsetlini
 {
 
