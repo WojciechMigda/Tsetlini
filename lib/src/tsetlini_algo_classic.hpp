@@ -728,13 +728,18 @@ void train_regressor_automata(
     )
 {
     int const number_of_features = X.size();
-    int const feedback_hits = std::round((input_end_ix - input_begin_ix) *
-        static_cast<real_type>(response_error) * response_error / (threshold * threshold));
 
-    for (int idx = 0; idx < feedback_hits; ++idx)
-    {
+    unsigned int const N = input_end_ix - input_begin_ix;
+    real_type const P = static_cast<real_type>(response_error) * response_error / (threshold * threshold);
+    /*
+     * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
+     * else we will pick either 0 or 1 with probability proportional to P.
+     */
+    unsigned int const feedback_hits = N * P >= 0.5 ? std::round(N * P) : prng() < N * P * IRNG::max();
+
+    for (unsigned int idx = 0; idx < feedback_hits; ++idx)    {
         // randomly pick index that corresponds to non-zero feedback
-        auto const iidx = prng() % (input_end_ix - input_begin_ix) + input_begin_ix;
+        auto const iidx = prng() % N + input_begin_ix;
 
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 1));

@@ -171,14 +171,16 @@ struct BasePRNG
         return rand();
     }
 
+    static
     inline constexpr
-    value_type min() const
+    value_type min()
     {
         return std::numeric_limits<value_type>::min();
     }
 
+    static
     inline constexpr
-    value_type max() const
+    value_type max()
     {
         return std::numeric_limits<value_type>::max();
     }
