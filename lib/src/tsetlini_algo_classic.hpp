@@ -730,7 +730,7 @@ void train_regressor_automata(
     int const number_of_features = X.size();
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = static_cast<real_type>(response_error) * response_error / (threshold * threshold);
+    real_type const P = static_cast<real_type>(response_error) * response_error / (static_cast<real_type>(threshold) * threshold);
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
