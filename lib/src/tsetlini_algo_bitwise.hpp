@@ -996,6 +996,7 @@ void train_regressor_automata(
     int const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
+    int const max_weight,
     bool const boost_true_positive_feedback,
     IRNG & prng,
     unsigned int const threshold,
@@ -1054,7 +1055,8 @@ void train_regressor_automata(
 
                 if (weights.size() != 0)
                 {
-                    weights[iidx]++;
+                    // plus 1, because weights are offset by -1, haha
+                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
                 }
             }
         }
@@ -1088,6 +1090,7 @@ void train_regressor_automata(
     int const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
+    int const max_weight,
     bool const boost_true_positive_feedback,
     IRNG & prng,
     unsigned int const threshold,
@@ -1110,6 +1113,7 @@ void train_regressor_automata(
                 number_of_states,
                 response_error,
                 X,
+                max_weight,
                 boost_true_positive_feedback,
                 prng,
                 threshold,

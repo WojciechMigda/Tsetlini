@@ -137,6 +137,8 @@ private:
  * number of states - number of states [-N, +N] that a single TA can attain
  * s - specificity parameter
  * threshold - threshold for total count of votes cast by clauses
+ * weights - boolean flag whether to employ integer weighting of clauses
+ * max_weight - integer upper bound on individual clause weights, default=max(int)
  * boost_true_positive_feedback - controls learning // TODO
  * n_jobs - number of paraller threads
  * verbose - verbosity flag
@@ -261,6 +263,8 @@ private:
  * number of states - number of states [-N, +N] that a single TA can attain
  * s - specificity parameter
  * threshold - threshold for total count of votes cast by clauses
+ * weights - boolean flag whether to employ integer weighting of clauses
+ * max_weight - integer upper bound on individual clause weights, default=max(int)
  * boost_true_positive_feedback - controls learning // TODO
  * n_jobs - number of paraller threads
  * verbose - verbosity flag

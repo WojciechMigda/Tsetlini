@@ -11,6 +11,7 @@
 #include <thread>
 #include <algorithm>
 #include <random>
+#include <limits>
 
 
 using namespace neither;
@@ -50,6 +51,7 @@ static const params_t default_regressor_params =
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
     {"weighted", param_value_t(true)},
+    {"max_weight", param_value_t(std::numeric_limits<int>::max())},
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
@@ -133,7 +135,8 @@ json_to_params(json const & js)
             (key == "boost_true_positive_feedback") or
             (key == "threshold") or
             (key == "n_jobs") or
-            (key == "clause_output_tile_size")
+            (key == "clause_output_tile_size") or
+            (key == "max_weight")
             )
         {
             rv[key] = value.get<int>();
@@ -191,6 +194,7 @@ params_t normalize_random_state(params_t params)
 
     return params;
 }
+
 
 static
 Either<status_message_t, params_t>
