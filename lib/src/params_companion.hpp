@@ -128,6 +128,13 @@ bool weighted(params_t const & params)
 }
 
 
+inline
+int max_weight(params_t const & params)
+{
+    return std::get<int>(params.at("max_weight"));
+}
+
+
 } // namespace Params
 
 
