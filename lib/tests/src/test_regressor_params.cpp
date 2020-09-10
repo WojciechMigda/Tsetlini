@@ -131,6 +131,7 @@ TEST(RegressorParams, can_be_created_from_json_with_full_config)
 "threshold": 8,
 "weighted": true,
 "max_weight": 7,
+"loss_fn": "L2",
 "boost_true_positive_feedback": 1,
 "counting_type": "int32",
 "clause_output_tile_size": 32,
@@ -149,6 +150,7 @@ TEST(RegressorParams, can_be_created_from_json_with_full_config)
     EXPECT_EQ(8, std::get<int>(params.at("threshold")));
     EXPECT_EQ(true, std::get<bool>(params.at("weighted")));
     EXPECT_EQ(7, std::get<int>(params.at("max_weight")));
+    EXPECT_EQ("L2", std::get<std::string>(params.at("loss_fn")));
     EXPECT_EQ(3, std::get<int>(params.at("n_jobs")));
     EXPECT_EQ(1, std::get<int>(params.at("boost_true_positive_feedback")));
     EXPECT_EQ("int32", std::get<std::string>(params.at("counting_type")));
