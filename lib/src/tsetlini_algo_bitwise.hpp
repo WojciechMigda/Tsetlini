@@ -1013,7 +1013,11 @@ void train_regressor_automata(
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
      */
-    unsigned int const feedback_hits = N * P >= 0.5 ? std::round(N * P) : prng() < N * P * IRNG::max();
+    unsigned int const feedback_hits =
+        std::clamp<unsigned int>(
+            N * P >= 0.5 ? std::round(N * P) : prng() < N * P * IRNG::max(),
+            0, N
+        );
 
     for (unsigned int idx = 0; idx < feedback_hits; ++idx)
     {

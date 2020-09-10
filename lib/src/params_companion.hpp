@@ -142,6 +142,13 @@ std::string loss_fn_name(params_t const & params)
 }
 
 
+inline
+real_type loss_fn_C1(params_t const & params)
+{
+    return std::get<real_type>(params.at("loss_fn_C1"));
+}
+
+
 } // namespace Params
 
 

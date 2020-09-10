@@ -12,7 +12,7 @@ namespace Tsetlini
 {
 
 
-std::function<float(float)> make_loss_fn(std::string const & name)
+std::function<float(float)> make_loss_fn(std::string const & name, float const C1)
 {
     if ((name == "MAE") or
         (name == "L1"))
@@ -23,6 +23,20 @@ std::function<float(float)> make_loss_fn(std::string const & name)
         (name == "L2"))
     {
         return [](float x){ return x * x; };
+    }
+    else if (name == "berHu")
+    {
+        return [C1](float const x)
+            {
+                if (std::abs(x) <= C1)
+                {
+                    return std::abs(x);
+                }
+                else
+                {
+                    return x * x - C1 * C1 + C1;
+                }
+            };
     }
     else
     {
