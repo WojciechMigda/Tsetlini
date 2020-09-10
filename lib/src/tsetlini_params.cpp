@@ -59,6 +59,8 @@ static const params_t default_regressor_params =
     {"counting_type", param_value_t("auto"s)},
     {"clause_output_tile_size", param_value_t(16)},
 
+    {"loss_fn", param_value_t("MSE"s)},
+
     {"random_state", param_value_t(std::nullopt)},
 
     // internal
@@ -158,7 +160,9 @@ json_to_params(json const & js)
         {
             rv[key] = value.get<bool>();
         }
-        else if (key == "counting_type")
+        else if (
+            (key == "counting_type") or
+            (key == "loss_fn"))
         {
             rv[key] = value.get<std::string>();
         }
@@ -238,6 +242,27 @@ assert_clause_output_tile_size_enumeration(params_t const & params)
 }
 
 
+static
+Either<status_message_t, params_t>
+assert_loss_function(params_t const & params)
+{
+    auto value = std::get<std::string>(params.at("loss_fn"));
+
+    if (not (value == "L2"
+        or value == "MSE"
+        or value == "MAE"
+        or value == "L1"))
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'loss_fn' got value " + value + ", instead of allowed MSE, MAE, L2, or L1\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
 Either<status_message_t, params_t>
 make_classifier_params_from_json(std::string const & json_params)
 {
@@ -267,6 +292,7 @@ make_regressor_params_from_json(std::string const & json_params)
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
+        .rightFlatMap(assert_loss_function)
         .rightFlatMap(assert_clause_output_tile_size_enumeration)
         ;
 

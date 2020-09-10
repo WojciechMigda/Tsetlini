@@ -6,6 +6,7 @@
 #include "estimator_state.hpp"
 #include "estimator_state_cache.hpp"
 #include "tsetlini_types.hpp"
+#include "loss_fn.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -722,6 +723,7 @@ void train_regressor_automata(
     int const response_error,
     aligned_vector_char const & X,
     int const max_weight,
+    loss_fn_type const & loss_fn,
     bool const boost_true_positive_feedback,
     IRNG & prng,
     unsigned int const threshold,
@@ -731,7 +733,7 @@ void train_regressor_automata(
     int const number_of_features = X.size();
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = static_cast<real_type>(response_error) * response_error / (static_cast<real_type>(threshold) * threshold);
+    real_type const P = loss_fn(static_cast<real_type>(response_error) / threshold);
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
@@ -795,6 +797,7 @@ void train_regressor_automata(
     int const response_error,
     aligned_vector_char const & X,
     int const max_weight,
+    loss_fn_type const & loss_fn,
     bool const boost_true_positive_feedback,
     IRNG & prng,
     unsigned int const threshold,
@@ -814,6 +817,7 @@ void train_regressor_automata(
                 response_error,
                 X,
                 max_weight,
+                loss_fn,
                 boost_true_positive_feedback,
                 prng,
                 threshold,

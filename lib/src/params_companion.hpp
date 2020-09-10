@@ -135,6 +135,13 @@ int max_weight(params_t const & params)
 }
 
 
+inline
+std::string loss_fn_name(params_t const & params)
+{
+    return std::get<std::string>(params.at("loss_fn"));
+}
+
+
 } // namespace Params
 
 

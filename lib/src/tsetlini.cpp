@@ -15,6 +15,7 @@
 #include "estimator_state.hpp"
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_estimator_state_private.hpp"
+#include "loss_fn.hpp"
 
 #include "neither/either.hpp"
 
@@ -740,6 +741,7 @@ void regressor_update_impl(
     real_type s,
     int const boost_true_positive_feedback,
     int const max_weight,
+    loss_fn_type const & loss_fn,
     int const n_jobs,
 
     IRNG & igen,
@@ -772,6 +774,7 @@ void regressor_update_impl(
         response_error,
         X,
         max_weight,
+        loss_fn,
         boost_true_positive_feedback,
         igen,
         threshold,
@@ -800,6 +803,8 @@ fit_regressor_online_impl(
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const verbose = Params::verbose(params);
+
+    auto const loss_fn = make_loss_fn(Params::loss_fn_name(params));
 
     if (auto sm = check_response_y(y, threshold);
         sm.first != StatusCode::S_OK)
@@ -832,6 +837,7 @@ fit_regressor_online_impl(
                 s,
                 boost_true_positive_feedback,
                 max_weight,
+                loss_fn,
                 n_jobs,
 
                 state.igen,
