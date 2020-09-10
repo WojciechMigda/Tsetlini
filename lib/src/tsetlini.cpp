@@ -804,7 +804,7 @@ fit_regressor_online_impl(
     auto const n_jobs = Params::n_jobs(params);
     auto const verbose = Params::verbose(params);
 
-    auto const loss_fn = make_loss_fn(Params::loss_fn_name(params));
+    auto const loss_fn = make_loss_fn(Params::loss_fn_name(params), Params::loss_fn_C1(params));
 
     if (auto sm = check_response_y(y, threshold);
         sm.first != StatusCode::S_OK)

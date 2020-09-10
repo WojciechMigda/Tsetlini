@@ -60,6 +60,7 @@ static const params_t default_regressor_params =
     {"clause_output_tile_size", param_value_t(16)},
 
     {"loss_fn", param_value_t("MSE"s)},
+    {"loss_fn_C1", param_value_t(0.f)},
 
     {"random_state", param_value_t(std::nullopt)},
 
@@ -150,7 +151,9 @@ json_to_params(json const & js)
                 rv[key] = value.get<seed_type>();
             }
         }
-        else if (key == "s")
+        else if (
+            (key == "s") or
+            (key == "loss_fn_C1"))
         {
             rv[key] = value.get<real_type>();
         }
@@ -251,10 +254,11 @@ assert_loss_function(params_t const & params)
     if (not (value == "L2"
         or value == "MSE"
         or value == "MAE"
-        or value == "L1"))
+        or value == "L1"
+        or value == "berHu"))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'loss_fn' got value " + value + ", instead of allowed MSE, MAE, L2, or L1\n"});
+            "Param 'loss_fn' got value " + value + ", instead of allowed MSE, MAE, L2, L1, or berHu\n"});
     }
     else
     {
