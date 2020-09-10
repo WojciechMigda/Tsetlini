@@ -9,6 +9,7 @@
 #include "basic_bit_vector.hpp"
 #include "assume_aligned.hpp"
 #include "loss_fn.hpp"
+#include "box_muller_approx.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -1029,6 +1030,7 @@ void train_regressor_automata(
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
      */
+    //unsigned int const feedback_hits2 = binomial(N, P, prng);
     unsigned int const feedback_hits =
         std::clamp<unsigned int>(
             N * P >= 0.5 ? std::round(N * P) : prng() < N * P * IRNG::max(),
