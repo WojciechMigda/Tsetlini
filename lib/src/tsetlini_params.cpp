@@ -255,10 +255,11 @@ assert_loss_function(params_t const & params)
         or value == "MSE"
         or value == "MAE"
         or value == "L1"
-        or value == "berHu"))
+        or value == "berHu"
+        or value == "L1+2"))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'loss_fn' got value " + value + ", instead of allowed MSE, MAE, L2, L1, or berHu\n"});
+            "Param 'loss_fn' got value " + value + ", instead of allowed MSE, MAE, L2, L1, L1+2, or berHu\n"});
     }
     else
     {
