@@ -40,7 +40,10 @@ std::function<float(float)> make_loss_fn(std::string const & name, float const C
     }
     else if (name == "L1+2")
     {
-        return [](float x){ return 0.5 * (std::abs(x) + x * x); };
+        return [C1](float x)
+            {
+                return C1 * std::abs(x) + (1.f - C1) * x * x;
+            };
     }
     else
     {
