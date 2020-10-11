@@ -225,7 +225,7 @@ void classifier_update_impl(
     int const number_of_clauses,
     int const number_of_states,
     real_type s,
-    int const boost_true_positive_feedback,
+    bool const boost_true_positive_feedback,
     int const n_jobs,
 
     IRNG & igen,
@@ -739,7 +739,7 @@ void regressor_update_impl(
     int const number_of_clauses,
     int const number_of_states,
     real_type s,
-    int const boost_true_positive_feedback,
+    bool const boost_true_positive_feedback,
     int const max_weight,
     loss_fn_type const & loss_fn,
     int const n_jobs,
