@@ -87,7 +87,7 @@ int threshold(params_t const & params)
 
 
 inline
-int boost_true_positive_feedback(params_t const & params)
+bool boost_true_positive_feedback(params_t const & params)
 {
     return std::get<int>(params.at("boost_true_positive_feedback"));
 }
