@@ -129,9 +129,10 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 
         Tsetlini::aligned_vector_int label_sum(number_of_labels);
         Tsetlini::aligned_vector_int label_sum_CAIR(number_of_labels);
+        Tsetlini::w_vector_type weights;
 
         CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_pos_neg_clauses, threshold);
-        Tsetlini::sum_up_all_label_votes(clause_output, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
+        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
 
         EXPECT_TRUE(label_sum_CAIR == label_sum);
     }
@@ -191,6 +192,7 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
     FRNG    fgen(4567);
     IRNG    prng(4567);
     FRNG    prng_CAIR(4567);
+    int constexpr MAX_WEIGHT = 10000000;
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -220,6 +222,7 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
         ta_state_gen(ta_state);
 
         Tsetlini::numeric_matrix_int8 ta_state_CAIR = ta_state;
+        Tsetlini::w_vector_type weights;
 
         Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clauses);
         std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&irng](){ return irng.next(-1, +1); });
@@ -241,8 +244,8 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
             number_of_features, number_of_states, S_inv, X.data(), boost_true_positive_feedback, prng_CAIR);
 
         Tsetlini::train_classifier_automata(
-            ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, X, boost_true_positive_feedback, prng, ct);
+            ta_state, weights, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
+            number_of_states, X, MAX_WEIGHT, boost_true_positive_feedback, prng, ct);
 
         EXPECT_TRUE(ta_state == ta_state_CAIR);
     }

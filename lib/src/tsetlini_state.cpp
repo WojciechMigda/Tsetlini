@@ -28,6 +28,10 @@ void log_classifier_params(params_t const & params, bool verbose)
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
+    if (Params::weighted(params))
+    {
+        LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
+    }
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';

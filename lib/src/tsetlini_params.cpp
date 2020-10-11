@@ -29,6 +29,7 @@ static const params_t default_classifier_params =
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
     {"weighted", param_value_t(false)},
+    {"max_weight", param_value_t(std::numeric_limits<int>::max())},
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
     {"verbose", param_value_t(false)},
