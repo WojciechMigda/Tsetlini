@@ -267,6 +267,7 @@ void classifier_update_impl(
 
     sum_up_label_votes(
         cache.clause_output,
+        ta_state.weights,
         cache.label_sum,
         target_label,
         number_of_pos_neg_clauses_per_label,
@@ -274,6 +275,7 @@ void classifier_update_impl(
 
     sum_up_label_votes(
         cache.clause_output,
+        ta_state.weights,
         cache.label_sum,
         opposite_label,
         number_of_pos_neg_clauses_per_label,
@@ -363,6 +365,7 @@ evaluate_classifier_impl(
 
         sum_up_all_label_votes(
             state.cache.clause_output,
+            state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
             number_of_pos_neg_clauses_per_label,
@@ -405,6 +408,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
 
     sum_up_all_label_votes(
         state.cache.clause_output,
+        state.ta_state.weights,
         state.cache.label_sum,
         Params::number_of_labels(state.m_params),
         Params::number_of_pos_neg_clauses_per_label(state.m_params),
@@ -482,6 +486,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
 
         sum_up_all_label_votes(
             state.cache.clause_output,
+            state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
             number_of_pos_neg_clauses_per_label,
@@ -531,6 +536,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
 
     sum_up_all_label_votes(
         state.cache.clause_output,
+        state.ta_state.weights,
         state.cache.label_sum,
         number_of_labels,
         number_of_pos_neg_clauses_per_label,
@@ -577,6 +583,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
 
         sum_up_all_label_votes(
             state.cache.clause_output,
+            state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
             number_of_pos_neg_clauses_per_label,

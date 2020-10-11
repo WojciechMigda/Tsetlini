@@ -129,9 +129,10 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 
         Tsetlini::aligned_vector_int label_sum(number_of_labels);
         Tsetlini::aligned_vector_int label_sum_CAIR(number_of_labels);
+        Tsetlini::w_vector_type weights;
 
         CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_pos_neg_clauses, threshold);
-        Tsetlini::sum_up_all_label_votes(clause_output, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
+        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
 
         EXPECT_TRUE(label_sum_CAIR == label_sum);
     }

@@ -48,6 +48,7 @@ auto clause_range_for_label(int label, int number_of_pos_neg_clauses_per_label) 
 inline
 void sum_up_label_votes(
     aligned_vector_char const & clause_output,
+    w_vector_type const & weights,
     aligned_vector_int & label_sum,
     int target_label,
 
@@ -58,10 +59,23 @@ void sum_up_label_votes(
 
     auto const [output_begin_ix, output_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
 
-    for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
+    if (weights.size() != 0)
     {
-        auto const val = clause_output[oidx];
-        rv += oidx % 2 == 0 ? val : -val;
+        for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
+        {
+            auto const val = clause_output[oidx];
+            rv += oidx % 2 == 0
+                ? val * (weights[oidx] + 1)
+                : -val * (weights[oidx] + 1);
+        }
+    }
+    else
+    {
+        for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
+        {
+            auto const val = clause_output[oidx];
+            rv += oidx % 2 == 0 ? val : -val;
+        }
     }
 
     label_sum[target_label] = std::clamp(rv, -threshold, threshold);
@@ -89,6 +103,7 @@ void sum_up_label_votes(
 inline
 void sum_up_all_label_votes(
     aligned_vector_char const & clause_output,
+    w_vector_type const & weights,
     aligned_vector_int & label_sum,
 
     int const number_of_labels,
@@ -97,7 +112,7 @@ void sum_up_all_label_votes(
 {
     for (int target_label = 0; target_label < number_of_labels; ++target_label)
     {
-        sum_up_label_votes(clause_output, label_sum, target_label, number_of_pos_neg_clauses_per_label, threshold);
+        sum_up_label_votes(clause_output, weights, label_sum, target_label, number_of_pos_neg_clauses_per_label, threshold);
     }
 }
 
@@ -575,6 +590,12 @@ void train_classifier_automata(
                 {
                     block2<false>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
+
+                if (weights.size() != 0)
+                {
+                    // plus 1, because weights are offset by -1, haha
+                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                }
             }
         }
         else if (feedback_to_clauses[iidx] < 0)
@@ -582,6 +603,11 @@ void train_classifier_automata(
             if (clause_output[iidx] == 1)
             {
                 block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
+            }
+
+            if (weights.size() != 0)
+            {
+                weights[iidx] -= (weights[iidx] != 0);
             }
         }
     }

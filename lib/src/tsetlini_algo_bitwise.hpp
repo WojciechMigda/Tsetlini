@@ -932,6 +932,12 @@ void train_classifier_automata_T(
                         ta_state_signum.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
+
+                if (weights.size() != 0)
+                {
+                    // plus 1, because weights are offset by -1, haha
+                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                }
             }
         }
         else if (feedback_to_clauses[iidx] < 0)
@@ -944,6 +950,11 @@ void train_classifier_automata_T(
                     ta_state_signum.row(2 * iidx + 0),
                     ta_state_signum.row(2 * iidx + 1),
                     X);
+
+                if (weights.size() != 0)
+                {
+                    weights[iidx] -= (weights[iidx] != 0);
+                }
             }
         }
     }
