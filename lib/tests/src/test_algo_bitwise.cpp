@@ -298,6 +298,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
     FRNG    fgen(4567);
     IRNG    prng(4567);
     IRNG    prng_classic(4567);
+    int constexpr MAX_WEIGHT = 10000000;
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -327,6 +328,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
         ta_state_gen(ta_state_values);
 
         Tsetlini::numeric_matrix_int8 ta_state_classic = ta_state_values;
+        Tsetlini::w_vector_type weights;
 
         Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clauses);
         std::generate(feedback_to_clauses.begin(), feedback_to_clauses.end(), [&irng](){ return irng.next(-1, +1); });
@@ -345,8 +347,8 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
         Tsetlini::EstimatorStateCacheBase::coin_tosser_type ct_classic = ct;
 
         Tsetlini::train_classifier_automata(
-            ta_state_classic, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, X, boost_true_positive_feedback, prng_classic, ct_classic);
+            ta_state_classic, weights, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
+            number_of_states, X, MAX_WEIGHT, boost_true_positive_feedback, prng_classic, ct_classic);
 
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
@@ -371,7 +373,7 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, bitwise_X, boost_true_positive_feedback, iota_prng, ct);
+            number_of_states, bitwise_X, MAX_WEIGHT, boost_true_positive_feedback, iota_prng, ct);
 
         // retrieve TA State values from ta_state variant for verifiation
         ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);

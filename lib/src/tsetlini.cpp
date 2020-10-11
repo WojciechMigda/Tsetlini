@@ -226,6 +226,7 @@ void classifier_update_impl(
     int const number_of_states,
     real_type s,
     bool const boost_true_positive_feedback,
+    int const max_weight,
     int const n_jobs,
 
     IRNG & igen,
@@ -301,6 +302,7 @@ void classifier_update_impl(
             cache.clause_output.data(),
             number_of_states,
             X,
+            max_weight,
             boost_true_positive_feedback,
             igen,
             cache.ct
@@ -318,6 +320,7 @@ void classifier_update_impl(
             cache.clause_output.data(),
             number_of_states,
             X,
+            max_weight,
             boost_true_positive_feedback,
             igen,
             cache.ct
@@ -616,6 +619,7 @@ fit_classifier_online_impl(
     auto const number_of_labels = Params::number_of_labels(params);
     auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
     auto const threshold = Params::threshold(params);
+    auto const max_weight = Params::max_weight(params);
     auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
@@ -660,6 +664,7 @@ fit_classifier_online_impl(
                 number_of_states,
                 s,
                 boost_true_positive_feedback,
+                max_weight,
                 n_jobs,
 
                 state.igen,

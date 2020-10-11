@@ -880,12 +880,14 @@ template<typename state_type, typename bit_block_type, typename PRNG>
 void train_classifier_automata_T(
     numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_signum,
+    w_vector_type & weights,
     int const input_begin_ix,
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
     int const number_of_states,
     bit_vector<bit_block_type> const & X,
+    int const max_weight,
     bool const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
@@ -957,6 +959,7 @@ void train_classifier_automata(
     char const * __restrict clause_output,
     int const number_of_states,
     bit_vector<bit_block_type> const & X,
+    int const max_weight,
     bool const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
@@ -971,12 +974,14 @@ void train_classifier_automata(
             train_classifier_automata_T(
                 ta_state_matrix,
                 ta_state_signum,
+                ta_state.weights,
                 input_begin_ix,
                 input_end_ix,
                 feedback_to_clauses,
                 clause_output,
                 number_of_states,
                 X,
+                max_weight,
                 boost_true_positive_feedback,
                 prng,
                 ct
