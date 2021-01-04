@@ -65,8 +65,8 @@ void sum_up_label_votes(
         {
             auto const val = clause_output[oidx];
             rv += oidx % 2 == 0
-                ? val * (weights[oidx] + 1)
-                : -val * (weights[oidx] + 1);
+                ? val * weights[oidx]
+                : -val * weights[oidx];
         }
     }
     else
@@ -593,8 +593,7 @@ void train_classifier_automata(
 
                 if (weights.size() != 0)
                 {
-                    // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += (weights[iidx] < max_weight);
                 }
             }
         }
@@ -607,7 +606,7 @@ void train_classifier_automata(
 
             if (weights.size() != 0)
             {
-                weights[iidx] -= (weights[iidx] != 0);
+                weights[iidx] -= (weights[iidx] > 1);
             }
         }
     }
@@ -714,7 +713,7 @@ response_type sum_up_regressor_votes(
 
         for (auto ix = 0u; ix < clause_output.size(); ++ix)
         {
-            acc += clause_output[ix] * (weights[ix] + 1);
+            acc += clause_output[ix] * weights[ix];
         }
 
         return acc;
@@ -725,7 +724,7 @@ response_type sum_up_regressor_votes(
         :
         accumulate_weighted(clause_output, weights);
 
-    return std::clamp(sum, 0, threshold);
+    return std::clamp(sum, -threshold, threshold);
 }
 
 
@@ -753,6 +752,7 @@ void train_regressor_automata(
     int const number_of_states,
     int const response_error,
     aligned_vector_char const & X,
+    int const min_weight,
     int const max_weight,
     loss_fn_type const & loss_fn,
     bool const boost_true_positive_feedback,
@@ -801,8 +801,10 @@ void train_regressor_automata(
 
                 if (weights.size() != 0)
                 {
-                    // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += (weights[iidx] < max_weight);
+
+                    // extra increment to skip 0 if we increase from -1
+                    weights[iidx] += (weights[iidx] == 0) and (weights[iidx] < max_weight);
                 }
             }
         }
@@ -814,7 +816,10 @@ void train_regressor_automata(
 
                 if (weights.size() != 0)
                 {
-                    weights[iidx] -= (weights[iidx] != 0);
+                    weights[iidx] -= (weights[iidx] > min_weight);
+
+                    // extra decrement to skip 0 if we decrease from +1
+                    weights[iidx] -= (weights[iidx] == 0) and (weights[iidx] > min_weight);
                 }
             }
         }
@@ -831,6 +836,7 @@ void train_regressor_automata(
     int const number_of_states,
     int const response_error,
     aligned_vector_char const & X,
+    int const min_weight,
     int const max_weight,
     loss_fn_type const & loss_fn,
     bool const boost_true_positive_feedback,
@@ -851,6 +857,7 @@ void train_regressor_automata(
                 number_of_states,
                 response_error,
                 X,
+                min_weight,
                 max_weight,
                 loss_fn,
                 boost_true_positive_feedback,

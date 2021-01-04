@@ -63,7 +63,7 @@ using label_vector_type = std::vector<label_type>;
 using response_type = int;
 using response_vector_type = std::vector<response_type>;
 using feedback_vector_type = aligned_vector_char;
-using w_vector_type = aligned_vector_uint32;
+using w_vector_type = aligned_vector_int32;
 
 static constexpr real_type ONE = 1.;
 static constexpr real_type ZERO = 0.;

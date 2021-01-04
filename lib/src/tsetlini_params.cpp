@@ -52,6 +52,7 @@ static const params_t default_regressor_params =
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
     {"weighted", param_value_t(true)},
+    {"min_weight", param_value_t(1)},
     {"max_weight", param_value_t(std::numeric_limits<int>::max())},
     {"boost_true_positive_feedback", param_value_t(0)},
     {"n_jobs", param_value_t(-1)},
@@ -140,6 +141,7 @@ json_to_params(json const & js)
             (key == "threshold") or
             (key == "n_jobs") or
             (key == "clause_output_tile_size") or
+            (key == "min_weight") or
             (key == "max_weight")
             )
         {
