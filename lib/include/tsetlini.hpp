@@ -138,6 +138,7 @@ private:
  * s - specificity parameter
  * threshold - threshold for total count of votes cast by clauses
  * weights - boolean flag whether to employ integer weighting of clauses
+ * min_weight - integer lower bound on individual clause weights, default=1
  * max_weight - integer upper bound on individual clause weights, default=max(int)
  * boost_true_positive_feedback - controls learning // TODO
  * n_jobs - number of paraller threads
@@ -264,6 +265,7 @@ private:
  * s - specificity parameter
  * threshold - threshold for total count of votes cast by clauses
  * weights - boolean flag whether to employ integer weighting of clauses
+ * min_weight - integer lower bound on individual clause weights, default=1
  * max_weight - integer upper bound on individual clause weights, default=max(int)
  * boost_true_positive_feedback - controls learning // TODO
  * n_jobs - number of paraller threads

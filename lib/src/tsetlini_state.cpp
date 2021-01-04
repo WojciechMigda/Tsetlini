@@ -63,6 +63,7 @@ void log_regressor_params(params_t const & params, bool verbose)
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
     {
+        LOG(info) << "min_weight: " << Params::min_weight(params) << '\n';
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }
     LOG(info) << "loss_fn: " << Params::loss_fn_name(params) << '\n';

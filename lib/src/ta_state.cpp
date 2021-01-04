@@ -60,7 +60,7 @@ TAState::initialize(
 
     if (weighted)
     {
-        state.weights.resize(number_of_clauses / 2);
+        state.weights.resize(/* count */ number_of_clauses / 2, /* initial value */ 1);
     }
 }
 
@@ -106,7 +106,7 @@ TAStateWithSignum::initialize(
 
     if (weighted)
     {
-        state.weights.resize(number_of_clauses / 2);
+        state.weights.resize(/* count */ number_of_clauses / 2, /* initial value */ 1);
     }
 }
 

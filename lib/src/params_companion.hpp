@@ -129,6 +129,13 @@ bool weighted(params_t const & params)
 
 
 inline
+int min_weight(params_t const & params)
+{
+    return std::get<int>(params.at("min_weight"));
+}
+
+
+inline
 int max_weight(params_t const & params)
 {
     return std::get<int>(params.at("max_weight"));

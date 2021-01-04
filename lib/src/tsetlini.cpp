@@ -752,6 +752,7 @@ void regressor_update_impl(
     int const number_of_states,
     real_type s,
     bool const boost_true_positive_feedback,
+    int const min_weight,
     int const max_weight,
     loss_fn_type const & loss_fn,
     int const n_jobs,
@@ -785,6 +786,7 @@ void regressor_update_impl(
         number_of_states,
         response_error,
         X,
+        min_weight,
         max_weight,
         loss_fn,
         boost_true_positive_feedback,
@@ -808,6 +810,7 @@ fit_regressor_online_impl(
 
     auto const number_of_clauses = Params::number_of_regressor_clauses(params);
     auto const threshold = Params::threshold(params);
+    auto const min_weight = Params::min_weight(params);
     auto const max_weight = Params::max_weight(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
@@ -848,6 +851,7 @@ fit_regressor_online_impl(
                 number_of_states,
                 s,
                 boost_true_positive_feedback,
+                min_weight,
                 max_weight,
                 loss_fn,
                 n_jobs,
