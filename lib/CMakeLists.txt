@@ -29,6 +29,7 @@ set(SOURCES
     src/tsetlini_params.cpp
     src/tsetlini_state.cpp
     src/tsetlini_state_json.cpp
+    src/box_muller_approx.cpp
 )
 
 add_library( tsetlini_ObjLib OBJECT src/dummy.cpp )

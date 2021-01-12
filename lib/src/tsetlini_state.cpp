@@ -66,6 +66,8 @@ void log_regressor_params(params_t const & params, bool verbose)
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }
     LOG(info) << "loss_fn: " << Params::loss_fn_name(params) << '\n';
+    LOG(info) << "loss_fn(C1): " << Params::loss_fn_C1(params) << '\n';
+    LOG(info) << "box_muller: " << Params::box_muller(params) << '\n';
     LOG(info) << "counting_type: " << Params::counting_type(params) << '\n';
     LOG(info) << "n_jobs: " << Params::n_jobs(params) << '\n';
     LOG(info) << "random_state: " << Params::random_state(params) << '\n';

@@ -754,6 +754,7 @@ void regressor_update_impl(
     bool const boost_true_positive_feedback,
     int const max_weight,
     loss_fn_type const & loss_fn,
+    bool const box_muller,
     int const n_jobs,
 
     IRNG & igen,
@@ -787,6 +788,7 @@ void regressor_update_impl(
         X,
         max_weight,
         loss_fn,
+        box_muller,
         boost_true_positive_feedback,
         igen,
         threshold,
@@ -817,6 +819,7 @@ fit_regressor_online_impl(
     auto const verbose = Params::verbose(params);
 
     auto const loss_fn = make_loss_fn(Params::loss_fn_name(params), Params::loss_fn_C1(params));
+    auto const box_muller = Params::box_muller(params);
 
     if (auto sm = check_response_y(y, threshold);
         sm.first != StatusCode::S_OK)
@@ -850,6 +853,7 @@ fit_regressor_online_impl(
                 boost_true_positive_feedback,
                 max_weight,
                 loss_fn,
+                box_muller,
                 n_jobs,
 
                 state.igen,
