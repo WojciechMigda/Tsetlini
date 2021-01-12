@@ -63,6 +63,8 @@ static const params_t default_regressor_params =
     {"loss_fn", param_value_t("MSE"s)},
     {"loss_fn_C1", param_value_t(0.f)},
 
+    {"box_muller", param_value_t(false)},
+
     {"random_state", param_value_t(std::nullopt)},
 
     // internal
@@ -160,6 +162,7 @@ json_to_params(json const & js)
         }
         else if (
             (key == "verbose") or
+            (key == "box_muller") or
             (key == "weighted"))
         {
             rv[key] = value.get<bool>();

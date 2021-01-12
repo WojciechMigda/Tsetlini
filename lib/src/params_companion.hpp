@@ -129,6 +129,13 @@ bool weighted(params_t const & params)
 
 
 inline
+bool box_muller(params_t const & params)
+{
+    return std::get<bool>(params.at("box_muller"));
+}
+
+
+inline
 int max_weight(params_t const & params)
 {
     return std::get<int>(params.at("max_weight"));

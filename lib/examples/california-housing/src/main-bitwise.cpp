@@ -252,6 +252,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
             "random_state": 1,
             "n_jobs": 2,
             "clause_output_tile_size": 16,
+            "box_muller": false,
             "verbose": false
         })").leftMap(error_printer)
             .rightMap([&](auto && reg)
