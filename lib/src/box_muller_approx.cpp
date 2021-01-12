@@ -26,7 +26,8 @@ constexpr auto make_array(Function f)
 {
     return make_array_helper(f, std::make_index_sequence<N>{});
 }
-///
+/// end-of-stackoverflow
+
 
 static
 constexpr float sin_u2(std::uint8_t x)
@@ -34,6 +35,16 @@ constexpr float sin_u2(std::uint8_t x)
     return std::cos(2 * M_PI * (1u + x) / 257.f);
 }
 
+/*
+ *   [0] =  0.999701
+ *   [1] =  0.998805
+ *   ...
+ * [127] = -0.999925
+ * [128] =
+ *   ...
+ * [254] =  0.998805
+ * [255] =  0.999701
+ */
 static
 constexpr auto sin_u2_arr = make_array<256>(sin_u2);
 
@@ -45,6 +56,13 @@ constexpr float sqrt_log_u1(std::uint8_t x)
 }
 
 
+/*
+ *   [0] = 3.331389
+ *   [1] = 3.116385
+ *   ...
+ * [254] = 0.125000
+ * [255] = 0.088302
+ */
 static
 constexpr auto sqrt_log_u1_arr = make_array<256>(sqrt_log_u1);
 
@@ -53,6 +71,7 @@ template<typename PRNG>
 static float normal(float mean, float variance, PRNG & irng)
 {
     std::uint32_t const r = irng();
+
     std::uint8_t const u1 = r;
     std::uint8_t const u2 = r >> 8;
 
