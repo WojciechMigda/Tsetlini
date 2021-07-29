@@ -111,7 +111,7 @@ either is not readable or does not exist.)";
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
 
@@ -160,7 +160,7 @@ either is not readable or does not exist.)";
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             });
     }
 

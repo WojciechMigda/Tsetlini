@@ -182,7 +182,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             })
             .rightMap([&](auto && clf)
             {
@@ -198,7 +198,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             });
     }
 

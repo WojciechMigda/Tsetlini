@@ -30,7 +30,7 @@ constexpr auto make_array(Function f)
 
 
 static
-constexpr float sin_u2(std::uint8_t x)
+const float sin_u2(std::uint8_t x)
 {
     return std::cos(2 * M_PI * (1u + x) / 257.f);
 }
@@ -46,11 +46,11 @@ constexpr float sin_u2(std::uint8_t x)
  * [255] =  0.999701
  */
 static
-constexpr auto sin_u2_arr = make_array<256>(sin_u2);
+const auto sin_u2_arr = make_array<256>(sin_u2);
 
 
 static
-constexpr float sqrt_log_u1(std::uint8_t x)
+const float sqrt_log_u1(std::uint8_t x)
 {
     return std::sqrt(-2.f * std::log((1u + x) / 257.f));
 }
@@ -64,7 +64,7 @@ constexpr float sqrt_log_u1(std::uint8_t x)
  * [255] = 0.088302
  */
 static
-constexpr auto sqrt_log_u1_arr = make_array<256>(sqrt_log_u1);
+const auto sqrt_log_u1_arr = make_array<256>(sqrt_log_u1);
 
 
 template<typename PRNG>

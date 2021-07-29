@@ -134,7 +134,7 @@ TEST(TsetlinClassifierClassicFit, rejects_empty_X)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -151,7 +151,7 @@ TEST(TsetlinClassifierClassicFit, rejects_empty_y)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -168,7 +168,7 @@ TEST(TsetlinClassifierClassicFit, rejects_X_with_uneven_row_sizes)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -185,7 +185,7 @@ TEST(TsetlinClassifierClassicFit, rejects_X_with_values_not_0_1)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -202,7 +202,7 @@ TEST(TsetlinClassifierClassicFit, rejects_X_and_y_with_different_lengths)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -219,7 +219,7 @@ TEST(TsetlinClassifierClassicFit, rejects_y_with_negative_label)
             auto const rv = clf.fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -238,7 +238,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_empty_X)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -255,7 +255,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_empty_y)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -272,7 +272,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_X_with_uneven_row_sizes)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -289,7 +289,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_X_with_values_not_0_1)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -306,7 +306,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_X_and_y_with_different_lengths)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -323,7 +323,7 @@ TEST(TsetlinClassifierClassicPartialFit, rejects_y_with_negative_label)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -346,7 +346,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_empty_X)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -367,7 +367,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_empty_y)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -388,7 +388,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_with_uneven_row_sizes)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -409,7 +409,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_with_values_not_0_1)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -430,7 +430,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_X_and_y_with_different_leng
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -451,7 +451,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_y_with_negative_label)
             auto const rv = clf.partial_fit(X, y, 2);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -472,7 +472,7 @@ TEST(TsetlinClassifierClassicNextPartialFit, rejects_y_with_label_outside_range)
             auto const rv = clf.partial_fit(X, y, 4);
 
             EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, rv.first);
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -490,9 +490,9 @@ TEST(TsetlinClassifierClassicPredictMatrix, fails_without_train)
             auto const rv = clf.predict(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -513,9 +513,9 @@ TEST(TsetlinClassifierClassicPredictMatrix, fails_for_empty_X)
             auto const rv = clf.predict(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -536,9 +536,9 @@ TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_uneven_row_sizes)
             auto const rv = clf.predict(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -559,9 +559,9 @@ TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_invalid_number_of_fea
             auto const rv = clf.predict(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -582,9 +582,9 @@ TEST(TsetlinClassifierClassicPredictMatrix, rejects_X_with_values_not_0_1)
             auto const rv = clf.predict(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -602,9 +602,9 @@ TEST(TsetlinClassifierClassicPredictSample, fails_without_train)
             auto const rv = clf.predict(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -625,9 +625,9 @@ TEST(TsetlinClassifierClassicPredictSample, rejects_sample_with_invalid_number_o
             auto const rv = clf.predict(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -648,9 +648,9 @@ TEST(TsetlinClassifierClassicPredictSample, rejects_sample_with_values_not_0_1)
             auto const rv = clf.predict(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -668,9 +668,9 @@ TEST(TsetlinClassifierClassicPredictRawMatrix, fails_without_train)
             auto const rv = clf.predict_raw(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -691,9 +691,9 @@ TEST(TsetlinClassifierClassicPredictRawMatrix, fails_for_empty_X)
             auto const rv = clf.predict_raw(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -714,9 +714,9 @@ TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_uneven_row_sizes)
             auto const rv = clf.predict_raw(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -737,9 +737,9 @@ TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_invalid_number_of_
             auto const rv = clf.predict_raw(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -760,9 +760,9 @@ TEST(TsetlinClassifierClassicPredictRawMatrix, rejects_X_with_values_not_0_1)
             auto const rv = clf.predict_raw(X);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -780,9 +780,9 @@ TEST(TsetlinClassifierClassicPredictRawSample, fails_without_train)
             auto const rv = clf.predict_raw(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_NOT_FITTED_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -803,9 +803,9 @@ TEST(TsetlinClassifierClassicPredictRawSample, rejects_sample_with_invalid_numbe
             auto const rv = clf.predict_raw(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 
@@ -826,9 +826,9 @@ TEST(TsetlinClassifierClassicPredictRawSample, rejects_sample_with_values_not_0_
             auto const rv = clf.predict_raw(sample);
 
             EXPECT_FALSE(rv);
-            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return sm; });
+            rv.leftMap([](auto && sm){ EXPECT_EQ(Tsetlini::StatusCode::S_VALUE_ERROR, sm.first); return std::move(sm); });
 
-            return clf;
+            return std::move(clf);
         });
 }
 

@@ -14,6 +14,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <chrono>
+#include <functional>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -141,7 +142,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dd
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
     auto & now = std::chrono::high_resolution_clock::now;
@@ -163,7 +164,9 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dd
             "verbose": false
         })")
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierBitwise && clf)
+        .rightMap([&,
+                   train_y = std::ref(train_y),
+                   test_y = std::ref(test_y)](Tsetlini::ClassifierBitwise && clf)
         {
             std::chrono::high_resolution_clock::time_point time0{};
 
@@ -185,7 +188,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dd
                 printf("Evaluation Time: %.1f s\n\n", as_ms(now() - time0) / 2.);
             }
 
-            return clf;
+            return std::move(clf);
         });
 
     return 0;
