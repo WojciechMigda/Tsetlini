@@ -12,8 +12,11 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [ubuntu-18.04, ubuntu-20.04, macos-latest]
-        compiler: [g++-7, g++-8, g++-9, g++-10, clang++-8, clang++-10, g++]
+        compiler: [g++-7, g++-8, g++-9, g++-10, clang++-8, clang++-9, clang++-10, clang++-11, g++]
         exclude:
+          # see 'Ultimate mega master compatibility table'
+          # https://askubuntu.com/questions/466651/how-do-i-use-the-latest-gcc-on-ubuntu/1163021#1163021
+
           # Newer compilers don't run on ubuntu 18.04
           - runs-on: ubuntu-18.04
             compiler: g++
@@ -23,6 +26,8 @@ jobs:
             compiler: g++-10
           - runs-on: ubuntu-18.04
             compiler: clang++-10
+          - runs-on: ubuntu-18.04
+            compiler: clang++-11
           # Older compilers don't run on ubuntu 20.04
           - runs-on: ubuntu-20.04
             compiler: g++
@@ -54,7 +59,11 @@ jobs:
           - runs-on: macos-latest
             compiler: clang++-8
           - runs-on: macos-latest
+            compiler: clang++-9
+          - runs-on: macos-latest
             compiler: clang++-10
+          - runs-on: macos-latest
+            compiler: clang++-11
     runs-on: ${{ matrix.runs-on }}
     env:
       CXX: ${{ matrix.compiler }}
