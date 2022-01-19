@@ -1,0 +1,33 @@
+name: Tsetlini clang sanitizer
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'GH[1-9]+[0-9]*-*'
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-20.04
+    env:
+      CXX: clang++-11
+      CXX_FLAGS: -Wall -Werror -march=native -mno-avx512f -fsanitize=address -fsanitize=undefined
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install CMake
+      run: sudo apt-get install -y cmake
+    - name: Install compiler
+      run: sudo apt-get install -y ${CXX}
+    - name: Configure
+      working-directory: .build
+      run: |
+        cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
+    - name: Build
+      working-directory: .build
+      run: |
+        cmake --build .
+    - name: Test
+      working-directory: .build/lib
+      run: ctest
