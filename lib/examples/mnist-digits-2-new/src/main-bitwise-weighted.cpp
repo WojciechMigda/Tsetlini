@@ -15,6 +15,8 @@
 #include <cstdlib>
 #include <chrono>
 #include <memory>
+#include <cstring>
+#include <cstdio>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -92,9 +94,75 @@ auto to_bitvector = [](std::vector<aligned_vector_char> const & X)
 };
 
 
-int main()
+int parse_args(int argc, char* argv[], unsigned int & nepochs)
+{
+    bool show_help = false;
+    int c = 0;
+
+    while (--argc > 0 && (*++argv)[0] == '-')
+    {
+        while ((c = *++argv[0]))
+        {
+            switch (c)
+            {
+                case 'n':
+                {
+                    if (--argc > 0)
+                    {
+                        auto parsed = atoi(argv[1]);
+                        if (parsed >= 1)
+                        {
+                            nepochs = parsed;
+                        }
+                        else
+                        {
+                            fprintf(stderr, "Invalid nepochs value passed: %u\n", parsed);
+                            argc = 0;
+                        }
+
+                        argv++;
+                        *argv+= strlen(*argv) - 1;
+                    }
+                    break;
+                }
+                case 'h':
+                    show_help = true;
+                    break;
+
+                default:
+                {
+                    fprintf(stderr, "Illegal option [%c]\n", (char)c);
+                    argc = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (show_help or (argc < 0))
+    {
+        fprintf(stderr, "\n");
+        fprintf(stderr, "Usage: mnist-digits-2-new-bitwise-weighted [options]\n\n");
+        fprintf(stderr, "Options:\n");
+        fprintf(stderr, "         -n UINT   number of epochs to train, >= 1 [%u]\n", nepochs);
+        fprintf(stderr, "         -h        show help\n");
+
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+
+int main(int argc, char **argv)
 {
     auto constexpr NCOL = 28 * 28 + 1;
+    unsigned int nepochs = 60;
+
+    if (parse_args(argc, argv, nepochs) != EXIT_SUCCESS)
+    {
+        return EXIT_FAILURE;
+    }
 
     auto const train_Xy = read_data_as_vec("MNISTTraining.txt", NCOL);
     auto const test_Xy = read_data_as_vec("MNISTTest.txt", NCOL);
@@ -168,7 +236,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dd
         {
             std::chrono::high_resolution_clock::time_point time0{};
 
-            for (auto epoch = 1u; epoch <= 60; ++epoch)
+            for (auto epoch = 1u; epoch <= nepochs; ++epoch)
             {
                 std::cout << "EPOCH " << epoch << '\n';
 

@@ -34,6 +34,12 @@ jobs:
     - name: Run 'Noisy XOR' example
       working-directory: .build/lib/examples/noisy-xor
       run: |
-        curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt -o NoisyXORTrainingData.txt
-        curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt -o NoisyXORTestData.txt
+        wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
+        wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
         ./noisy-xor
+    - name: Run 'MNIST digits 2' bitwise weighted example for 1 epoch
+      working-directory: .build/lib/examples//mnist-digits-2-new
+      run: |
+        wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
+        unzip BinarizedMNISTData.zip
+        ./mnist-digits-2-new-bitwise-weighted -n 1
