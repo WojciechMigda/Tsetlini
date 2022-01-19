@@ -12,6 +12,7 @@
 #include <cassert>
 #include <iostream>
 #include <cstdlib>
+#include <memory>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -119,7 +120,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
 
@@ -135,7 +136,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
             "verbose": false
         })")
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             // Training of the Tsetlin Machine in batch mode. The Tsetlin Machine can also be trained online
             auto status = clf.fit(train_X, train_y, 2, 200);
@@ -165,8 +166,8 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
                 .rightMap([](auto label){ std::cout << "Prediction: x1 = 1, x2 = 1, ... -> y = " << label << '\n'; return label; })
                 .leftMap(error_printer);
 
-            return clf;
+            return std::move(clf);
         });
 
-    return 0;
+    return EXIT_SUCCESS;
 }

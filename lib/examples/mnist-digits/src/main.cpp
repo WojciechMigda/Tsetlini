@@ -16,6 +16,7 @@
 #include <cassert>
 #include <iostream>
 #include <cstdlib>
+#include <memory>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -111,7 +112,7 @@ either is not readable or does not exist.)";
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
 
@@ -160,11 +161,11 @@ either is not readable or does not exist.)";
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             });
     }
 
     std::cout << "Mean accuracy: " << std::accumulate(accuracies.cbegin(), accuracies.cend(), 0.) / NFOLDS << '\n';
 
-    return 0;
+    return EXIT_SUCCESS;
 }

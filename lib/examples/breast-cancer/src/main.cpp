@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <random>
 #include <cmath>
+#include <memory>
+
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
 using aligned_vector_int = Tsetlini::aligned_vector_int;
@@ -133,7 +135,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     auto error_printer = [](Tsetlini::status_message_t const & msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
 
@@ -180,7 +182,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             })
 #if 0
             .rightMap([&](auto && clf)
@@ -203,5 +205,5 @@ Please run produce_dataset.py script and move created .txt files to the folder w
             ;
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

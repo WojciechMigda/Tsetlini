@@ -3,7 +3,11 @@
 #include "tsetlini_state_json.hpp"
 #include "basic_bit_vector_companion.hpp"
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
+
+#include <memory>
+#include <algorithm>
+#include <vector>
 
 
 namespace
@@ -13,11 +17,11 @@ namespace
 TEST(RegressorStateClassic, can_be_serialized_and_deserialized_via_json)
 {
     Tsetlini::make_regressor_classic()
-        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
+        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
         .rightMap([](Tsetlini::RegressorClassic && reg1)
         {
             Tsetlini::make_regressor_classic()
-                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
+                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
                 .rightMap([&reg1](Tsetlini::RegressorClassic && reg2)
                 {
                     auto _ = reg1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
@@ -30,10 +34,10 @@ TEST(RegressorStateClassic, can_be_serialized_and_deserialized_via_json)
 
                     EXPECT_EQ(s1, s2);
 
-                    return reg2;
+                    return std::move(reg2);
                 });
 
-            return reg1;
+            return std::move(reg1);
         });
 }
 
@@ -54,11 +58,11 @@ auto to_bitvector = [](std::vector<Tsetlini::aligned_vector_char> const & X)
 TEST(RegressorStateBitwise, can_be_serialized_and_deserialized_via_json)
 {
     Tsetlini::make_regressor_bitwise()
-        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
+        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
         .rightMap([](Tsetlini::RegressorBitwise && reg1)
         {
             Tsetlini::make_regressor_bitwise()
-                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return sm; })
+                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
                 .rightMap([&reg1](Tsetlini::RegressorBitwise && reg2)
                 {
                     std::vector<Tsetlini::aligned_vector_char> const Xi{{1, 0, 1, 0}, {1, 1, 1, 0}};
@@ -74,10 +78,10 @@ TEST(RegressorStateBitwise, can_be_serialized_and_deserialized_via_json)
 
                     EXPECT_EQ(s1, s2);
 
-                    return reg2;
+                    return std::move(reg2);
                 });
 
-            return reg1;
+            return std::move(reg1);
         });
 }
 

@@ -14,6 +14,7 @@
 #include <cassert>
 #include <iostream>
 #include <cstdlib>
+#include <memory>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -116,7 +117,7 @@ Please run make_data.py to generate this file and copy it to the current working
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
     auto const params = R"({
@@ -135,7 +136,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 2;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -149,9 +150,9 @@ Please run make_data.py to generate this file and copy it to the current working
                 }
             );
 
-            return clf;
+            return std::move(clf);
         })
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
@@ -177,7 +178,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 5;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -190,14 +191,14 @@ Please run make_data.py to generate this file and copy it to the current working
                     return acc;
                 });
 
-            return clf;
+            return std::move(clf);
         });
 
     puts("===[ 49 + 1 epoch fit ]============================================");
 
     Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 49;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -211,9 +212,9 @@ Please run make_data.py to generate this file and copy it to the current working
                 }
             );
 
-            return clf;
+            return std::move(clf);
         })
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const state = clf.read_state();
             auto const j_state = Tsetlini::to_json_string(state);
@@ -239,7 +240,7 @@ Please run make_data.py to generate this file and copy it to the current working
 
     Tsetlini::make_classifier_classic(params)
         .leftMap(error_printer)
-        .rightMap([&](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 50;
             auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
@@ -252,9 +253,9 @@ Please run make_data.py to generate this file and copy it to the current working
                     return acc;
                 });
 
-            return clf;
+            return std::move(clf);
         });
 
 
-    return 0;
+    return EXIT_SUCCESS;
 }

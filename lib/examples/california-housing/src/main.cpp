@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <chrono>
+#include <memory>
 
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
@@ -193,7 +194,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     auto error_printer = [](Tsetlini::status_message_t && msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
     auto & now = std::chrono::high_resolution_clock::now;
@@ -261,10 +262,10 @@ Please run produce_dataset.py script and move created .txt files to the folder w
                         return yi_hat;
                     });
 
-                return reg;
+                return std::move(reg);
             });
 
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

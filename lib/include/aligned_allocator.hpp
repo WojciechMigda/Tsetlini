@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <stdexcept>
+#include <new>
 
 // https://gist.github.com/donny-dont/1471329/94b81e16bbcd976b8526905857621fe49b464b68
 

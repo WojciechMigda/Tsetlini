@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <random>
 #include <cmath>
+#include <memory>
+
 
 using aligned_vector_char = Tsetlini::aligned_vector_char;
 using aligned_vector_int = Tsetlini::aligned_vector_int;
@@ -135,7 +137,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
     auto error_printer = [](Tsetlini::status_message_t const & msg)
     {
         std::cout << msg.second << '\n';
-        return msg;
+        return std::move(msg);
     };
 
 
@@ -182,7 +184,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             })
             .rightMap([&](auto && clf)
             {
@@ -198,9 +200,9 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
                         return acc;
                     });
 
-                return clf;
+                return std::move(clf);
             });
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
