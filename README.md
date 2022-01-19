@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.com/WojciechMigda/Tsetlini.svg?branch=master)](https://travis-ci.com/WojciechMigda/Tsetlini)
+[![CI](https://github.com/WojciechMigda/Tsetlini/actions/workflows/ci.yml/badge.svg)](https://github.com/WojciechMigda/Tsetlini/actions/workflows/ci.yml)
