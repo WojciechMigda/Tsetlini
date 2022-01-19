@@ -775,7 +775,7 @@ void train_regressor_automata(
         ? binomial(N, P, prng)
         :
         std::clamp<unsigned int>(
-            N * P >= 0.5 ? std::round(N * P) : prng() < N * P * IRNG::max(),
+            N * P >= 0.5 ? std::round(N * P) : prng() < N * P * static_cast<double>(IRNG::max()), // 0xffff'ffff when converted to float changes to 0x1'0000'0000
             0, N
         );
 

@@ -13,7 +13,6 @@ jobs:
       matrix:
         runs-on: [ubuntu-18.04, ubuntu-20.04, macos-latest]
         compiler: [g++-7, g++-8, g++-9, g++-10, clang++-8, clang++-10, g++]
-#        compiler: [g++-7, g++-8, g++-9, g++-10, g++]
         exclude:
           # Newer compilers don't run on ubuntu 18.04
           - runs-on: ubuntu-18.04
@@ -74,8 +73,6 @@ jobs:
       run: |
         ${CXX} --version
         ${CXX} -march=native -E -v - </dev/null 2>&1 | grep cc1
-        # TODO
-        #${{ matrix.compiler }} -march=native -O3 -Q --help=target | grep march
     - name: Install OpenMP on MacOS
       if: startsWith(matrix.runs-on, 'macos')
       run: brew install libomp
