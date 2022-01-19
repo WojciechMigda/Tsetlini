@@ -7,7 +7,7 @@ on:
       - 'GH[1-9]+[0-9]*-*'
 
 jobs:
-  build:
+  build-and-run-sanitized-code:
     strategy:
       fail-fast: false
     runs-on: ubuntu-20.04
@@ -28,6 +28,12 @@ jobs:
       working-directory: .build
       run: |
         cmake --build .
-    - name: Test
+    - name: Run tests
       working-directory: .build/lib
       run: ctest
+    - name: Run 'Noisy XOR' example
+      working-directory: .build/lib/examples/noisy-xor
+      run: |
+        curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt -o NoisyXORTrainingData.txt
+        curl https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt -o NoisyXORTestData.txt
+        ./noisy-xor
