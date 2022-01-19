@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <utility>
+#include <cstdint>
 
 
 namespace box_muller
