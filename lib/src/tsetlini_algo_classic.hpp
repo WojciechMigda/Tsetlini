@@ -451,10 +451,10 @@ void block2(
         auto cond_neg_inc = ta_state_neg_j[fidx] < number_of_states - 1;
         auto cond_neg_dec = ta_state_neg_j[fidx] > -number_of_states;
 
-        ta_state_pos_j[fidx] = Xcond_1 & cond1_pos & cond_pos_inc ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
-        ta_state_neg_j[fidx] = Xcond_1 & cond2_neg & cond_neg_dec ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx];
-        ta_state_pos_j[fidx] = Xcond_0 & cond2_pos & cond_pos_dec ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx];
-        ta_state_neg_j[fidx] = Xcond_0 & cond1_neg & cond_neg_inc ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
+        ta_state_pos_j[fidx] = (Xcond_1 & cond1_pos & cond_pos_inc) ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = (Xcond_1 & cond2_neg & cond_neg_dec) ? ta_state_neg_j[fidx] - 1 : ta_state_neg_j[fidx];
+        ta_state_pos_j[fidx] = (Xcond_0 & cond2_pos & cond_pos_dec) ? ta_state_pos_j[fidx] - 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = (Xcond_0 & cond1_neg & cond_neg_inc) ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
 
 #if 0
         if (X[fidx] != 0)
@@ -524,8 +524,8 @@ void block3(
         auto X_pos_inc = ta_state_pos_j[fidx] < 0;
         auto X_neg_inc = ta_state_neg_j[fidx] < 0;
 
-        ta_state_pos_j[fidx] = X_cond_0 & X_pos_inc ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
-        ta_state_neg_j[fidx] = X_cond_1 & X_neg_inc ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
+        ta_state_pos_j[fidx] = (X_cond_0 & X_pos_inc) ? ta_state_pos_j[fidx] + 1 : ta_state_pos_j[fidx];
+        ta_state_neg_j[fidx] = (X_cond_1 & X_neg_inc) ? ta_state_neg_j[fidx] + 1 : ta_state_neg_j[fidx];
     }
 
 #if 0
