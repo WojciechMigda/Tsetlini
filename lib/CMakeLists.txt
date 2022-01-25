@@ -85,13 +85,7 @@ add_subdirectory(examples)
 
 enable_testing()
 add_subdirectory(tests)
-
-# Unit tests (future?)
-add_executable( utests "utests/dummy.cpp" )
-target_sources( utests PRIVATE
-  "utests/main.cpp"
-  "utests/suite_aligned_array.cpp"
-)
+add_subdirectory(utests)
 
 ################################################################################
 
