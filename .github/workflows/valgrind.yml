@@ -1,0 +1,49 @@
+name: Tsetlini memcheck with valgrind
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'GH[1-9]+[0-9]*-*'
+
+jobs:
+  build-code-and-run-with-valgrind:
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-20.04
+    env:
+      CXX: g++-11
+      CXX_FLAGS: -Wall -Werror -march=native -mno-avx512f -DTSETLINI_USE_OMP=0
+#      VALGRIND_FLAGS: ''
+      MEMCHECK_FLAGS: --leak-check=full
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install CMake
+      run: sudo apt-get install -y cmake
+    - name: Install valgrind
+      run: sudo apt-get install -y valgrind
+    - name: Install compiler
+      run: sudo apt-get install -y ${CXX}
+    - name: Configure
+      working-directory: .build
+      run: |
+        cmake -DCMAKE_CXX_COMPILER=${CXX} -DCMAKE_BUILD_TYPE=RelWithDebug -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DCMAKE_CXX_FLAGS="${CXX_FLAGS}" ..
+    - name: Build
+      working-directory: .build
+      run: |
+        cmake --build .
+    - name: Run 'Noisy XOR' example
+      working-directory: .build/lib/examples/noisy-xor
+      run: |
+        wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
+        wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
+        valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./noisy-xor
+    - name: Run 'MNIST digits 2' bitwise weighted example for 1 epoch
+      working-directory: .build/lib/examples//mnist-digits-2-new
+      run: |
+        wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
+        unzip BinarizedMNISTData.zip
+        echo "Truncating train and test data files to 1000 lines each."
+        sed -i '1001,$ d' MNISTTraining.txt
+        sed -i '1001,$ d' MNISTTest.txt
+        valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./mnist-digits-2-new-bitwise-weighted -n 1
