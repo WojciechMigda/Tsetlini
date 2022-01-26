@@ -8,19 +8,20 @@
 #include <string>
 #include <thread>
 #include <algorithm>
+#include <limits>
 
 
 using namespace boost::ut;
 using namespace std::string_literals;
 
 
-suite TestClassifierParams = []
+suite TestRegressorParams = []
 {
 
 
 "Can be created"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json();
+    auto const either = Tsetlini::make_regressor_params_from_json();
 
     expect(that % true == either);
 };
@@ -28,7 +29,7 @@ suite TestClassifierParams = []
 
 "Cannot be created from empty json"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("");
+    auto const either = Tsetlini::make_regressor_params_from_json("");
 
     expect(that % false == either);
 };
@@ -36,7 +37,7 @@ suite TestClassifierParams = []
 
 "Can be created from empty dict json"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("{}");
+    auto const either = Tsetlini::make_regressor_params_from_json("{}");
 
     expect(that % true == either);
 };
@@ -44,7 +45,7 @@ suite TestClassifierParams = []
 
 "Cannot be created from empty array json"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("[]");
+    auto const either = Tsetlini::make_regressor_params_from_json("[]");
 
     expect(that % false == either);
 };
@@ -52,7 +53,7 @@ suite TestClassifierParams = []
 
 "Cannot be created from malformed json"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("5\"}");
+    auto const either = Tsetlini::make_regressor_params_from_json("5\"}");
 
     expect(that % false == either);
 };
@@ -60,7 +61,7 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with one integer param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"number_of_states": 200})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"number_of_states": 200})");
 
     expect(that % true == either);
 
@@ -72,7 +73,7 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with one floating point param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"s": 3.9})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"s": 3.9})");
 
     expect(that % true == either);
 
@@ -84,7 +85,7 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with one boolean param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"verbose": true})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"verbose": true})");
 
     expect(that % true == either);
 
@@ -96,7 +97,7 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with one string param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"counting_type": "int16"})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"counting_type": "int16"})");
 
     expect(that % true == either);
 
@@ -108,7 +109,7 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with null random state param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"random_state": null})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"random_state": null})");
 
     expect(that % true == either);
 
@@ -120,7 +121,7 @@ suite TestClassifierParams = []
 
 "Cannot be created from json with unrecognized param"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"zigzag": true})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"zigzag": true})");
 
     expect(that % false == either);
 };
@@ -128,15 +129,17 @@ suite TestClassifierParams = []
 
 "Can be created from valid json with full set of params"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"(
+    auto const either = Tsetlini::make_regressor_params_from_json(R"(
 {
 "verbose": true,
-"number_of_pos_neg_clauses_per_label": 17,
+"number_of_regressor_clauses": 36,
 "number_of_states": 125,
 "s": 6.3 ,
 "threshold": 8,
 "weighted": true,
 "max_weight": 7,
+"loss_fn": "L2",
+"loss_fn_C1": 0.05,
 "boost_true_positive_feedback": 1,
 "counting_type": "int32",
 "clause_output_tile_size": 32,
@@ -150,7 +153,7 @@ suite TestClassifierParams = []
     auto params = either.right().value;
 
     expect(that % true == std::get<bool>(params.at("verbose")));
-    expect(that % 17 == std::get<int>(params.at("number_of_pos_neg_clauses_per_label")));
+    expect(that % 36 == std::get<int>(params.at("number_of_regressor_clauses")));
     expect(that % 125 == std::get<int>(params.at("number_of_states")));
     expect(that % 8 == std::get<int>(params.at("threshold")));
     expect(that % true == std::get<bool>(params.at("weighted")));
@@ -161,12 +164,14 @@ suite TestClassifierParams = []
     expect(that % 32 == std::get<int>(params.at("clause_output_tile_size")));
     expect(that % 6.3f == std::get<Tsetlini::real_type>(params.at("s")));
     expect(that % 123u == std::get<Tsetlini::seed_type>(params.at("random_state")));
+    expect(that % "L2"s == std::get<std::string>(params.at("loss_fn")));
+    expect(that % 0.05f == std::get<Tsetlini::real_type>(params.at("loss_fn_C1")));
 };
 
 
 "Unspecified max_weight is initialized with max(int)"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("{}");
+    auto const either = Tsetlini::make_regressor_params_from_json("{}");
 
     auto params = either.right().value;
 
@@ -176,7 +181,7 @@ suite TestClassifierParams = []
 
 "n_jobs param equal -1 is normalized with hardware concurrency"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json(R"({"n_jobs": -1})");
+    auto const either = Tsetlini::make_regressor_params_from_json(R"({"n_jobs": -1})");
 
     expect(that % true == either);
 
@@ -191,7 +196,7 @@ suite TestClassifierParams = []
 
 "Unspecified random_state param is initialized"_test = []
 {
-    auto const either = Tsetlini::make_classifier_params_from_json("{}");
+    auto const either = Tsetlini::make_regressor_params_from_json("{}");
 
     auto params = either.right().value;
 
