@@ -37,6 +37,9 @@ jobs:
       run: |
         wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
         wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
+        echo "Truncating train and test data files to 1000 lines each."
+        sed -i '1001,$ d' NoisyXORTrainingData.txt
+        sed -i '1001,$ d' NoisyXORTestData.txt
         valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./noisy-xor
     - name: Run 'MNIST digits 2' bitwise weighted example for 1 epoch
       working-directory: .build/lib/examples//mnist-digits-2-new
