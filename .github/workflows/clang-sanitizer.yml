@@ -42,4 +42,7 @@ jobs:
       run: |
         wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
         unzip BinarizedMNISTData.zip
+        echo "Truncating train and test data files to 1000 lines each."
+        sed -i '1001,$ d' MNISTTraining.txt
+        sed -i '1001,$ d' MNISTTest.txt
         ./mnist-digits-2-new-bitwise-weighted -n 1
