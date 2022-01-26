@@ -195,6 +195,9 @@ struct basic_bit_matrix
         return {m_nrows, m_ncols};
     }
 
+    /**
+     * Number of blocks that constitute single row, given alignment constraints.
+     */
     inline
     uint row_blocks() const
     {
