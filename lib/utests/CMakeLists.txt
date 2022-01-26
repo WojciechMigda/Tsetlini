@@ -22,5 +22,6 @@ endfunction()
 
 add_ut( EXE_NAME test_aligned_array     SOURCE "src/test_aligned_array.cpp" )
 add_ut( EXE_NAME test_bit_matrix        SOURCE "src/test_bit_matrix.cpp" )
+add_ut( EXE_NAME test_numeric_matrix    SOURCE "src/test_numeric_matrix.cpp" )
 add_ut( EXE_NAME test_classifier_params SOURCE "src/test_classifier_params.cpp" )
 add_ut( EXE_NAME test_regressor_params  SOURCE "src/test_regressor_params.cpp" )

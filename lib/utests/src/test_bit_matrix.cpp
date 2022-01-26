@@ -57,7 +57,7 @@ suite TestBitMatrix = []
 "Blocks per row is correct for BitMatrix with less columns than either alignment or block capacity"_test = []
 {
     /*
-     * 17 columns (3 bytes) is less that single 4-byte block and less than 64-byte alignment.
+     * 17 columns (3 bytes) is less than single 4-byte block and less than 64-byte alignment.
      *
      * Hence, row_blocks() equals number of blocks required implied by single alignment:
      * 32 bits * 16 == 8 bits * 64 > 17 bits
@@ -73,7 +73,7 @@ suite TestBitMatrix = []
 "Blocks per row is correct for BitMatrix with more columns than single block capacity, but less than alignment"_test = []
 {
     /*
-     * 65 columns (9 bytes) is more that single 4-byte block and less than 64-byte alignment.
+     * 65 columns (9 bytes) is more than single 4-byte block and less than 64-byte alignment.
      *
      * Hence, row_blocks() equals number of blocks required for single alignment:
      * 32 bits * 16 == 8 bits * 64 > 65 bits
@@ -105,7 +105,7 @@ suite TestBitMatrix = []
 "Blocks per row is correct for BitMatrix with more columns than single block capacity, that also exceeds alignment"_test = []
 {
     /*
-     * 65 columns (9 bytes) is more that single 4-byte block.
+     * 65 columns (9 bytes) is more than single 4-byte block.
      * Bit matrix is constructed with a 2-byte alignment, but this is less than
      * alignment of 32-bit word, hence, 4-byte alignment is assumed.
      *
@@ -123,7 +123,7 @@ suite TestBitMatrix = []
 "Blocks per row is correct for BitMatrix with more columns than either single block capacity and alignment"_test = []
 {
     /*
-     * 257 columns (33 bytes) is more that single 4-byte block and 32-byte alignment.
+     * 257 columns (33 bytes) is more than single 4-byte block and 32-byte alignment.
      *
      * Hence, row_blocks() equals number of blocks required for all columns:
      * 32 bits * 16 > 257 bits
