@@ -27,7 +27,7 @@ auto to_bitvector = [](std::vector<Tsetlini::aligned_vector_char> const & X)
 };
 
 
-suite TestBitMatrix = []
+suite TestClassifierStateJsonSerialization = []
 {
 
 
@@ -43,7 +43,7 @@ suite TestBitMatrix = []
                 .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
                 .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
                 {
-                    // initialize state by calling fit() our working classifier
+                    // initialize state by calling fit() on our working classifier
                     auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
                     // and extract the state
                     auto s1 = clf1.read_state();
@@ -81,7 +81,7 @@ suite TestBitMatrix = []
                     std::vector<Tsetlini::aligned_vector_char> const Xi{{1, 0, 1, 0}, {1, 1, 1, 0}};
                     auto const X = to_bitvector(Xi);
 
-                    // initialize state by calling fit() our working classifier
+                    // initialize state by calling fit() on our working classifier
                     auto _ = clf1.fit(X, {0, 1}, 2);
                     // and extract the state
                     auto s1 = clf1.read_state();
