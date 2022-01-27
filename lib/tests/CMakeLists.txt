@@ -30,7 +30,6 @@ add_executable(tsetlini-test
     src/test_algo_bitwise.cpp
     src/test_algo_classic.cpp
     src/test_classifier.cpp
-    src/test_classifier_state_json.cpp
 
     src/test_regressor.cpp
     src/test_regressor_state_json.cpp

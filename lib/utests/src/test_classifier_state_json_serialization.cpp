@@ -3,45 +3,17 @@
 #include "tsetlini_state_json.hpp"
 #include "basic_bit_vector_companion.hpp"
 
-#include "gtest/gtest.h"
+#include "boost/ut.hpp"
 
+#include <cstdlib>
 #include <memory>
 #include <algorithm>
 #include <vector>
 
 
-namespace
-{
+using namespace boost::ut;
 
-
-TEST(ClassifierStateClassic, can_be_serialized_and_deserialized_via_json)
-{
-    Tsetlini::make_classifier_classic()
-        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
-        .rightMap([](Tsetlini::ClassifierClassic && clf1)
-        {
-            Tsetlini::make_classifier_classic()
-                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
-                .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
-                {
-                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
-                    auto s1 = clf1.read_state();
-
-                    auto s2 = clf2.read_state();
-
-                    auto const jss = to_json_string(s1);
-                    from_json_string(s2, jss);
-
-                    EXPECT_EQ(s1, s2);
-
-                    return std::move(clf2);
-                });
-
-            return std::move(clf1);
-        });
-}
-
-
+// helper
 auto to_bitvector = [](std::vector<Tsetlini::aligned_vector_char> const & X)
 {
     std::vector<Tsetlini::bit_vector_uint64> rv;
@@ -55,12 +27,53 @@ auto to_bitvector = [](std::vector<Tsetlini::aligned_vector_char> const & X)
 };
 
 
-TEST(ClassifierStateBitwise, can_be_serialized_and_deserialized_via_json)
+suite TestBitMatrix = []
 {
+
+
+"ClassifierStateClassic can be serialized and deserialized via json"_test = []
+{
+    // create working classifier
+    Tsetlini::make_classifier_classic()
+        .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
+        .rightMap([](Tsetlini::ClassifierClassic && clf1)
+        {
+            // create another dummy classifier
+            Tsetlini::make_classifier_classic()
+                .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
+                .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
+                {
+                    // initialize state by calling fit() our working classifier
+                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
+                    // and extract the state
+                    auto s1 = clf1.read_state();
+
+                    // extract the state from the dummy one, it'll be overwritten
+                    auto s2 = clf2.read_state();
+
+                    // serialize our working state
+                    auto const jss = to_json_string(s1);
+                    // and de-serialize it onto the dummy one
+                    from_json_string(s2, jss);
+
+                    expect(that % true == (s1 == s2)) << "(De-)serialization failed";
+
+                    return std::move(clf2);
+                });
+
+            return std::move(clf1);
+        });
+};
+
+
+"ClassifierStateBitwise can be serialized and deserialized via json"_test = []
+{
+    // create working classifier
     Tsetlini::make_classifier_bitwise()
         .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
         .rightMap([](Tsetlini::ClassifierBitwise && clf1)
         {
+        // create another dummy classifier
             Tsetlini::make_classifier_bitwise()
                 .leftMap([](Tsetlini::status_message_t && sm){ throw(sm.second); return std::move(sm); })
                 .rightMap([&clf1](Tsetlini::ClassifierBitwise && clf2)
@@ -68,22 +81,34 @@ TEST(ClassifierStateBitwise, can_be_serialized_and_deserialized_via_json)
                     std::vector<Tsetlini::aligned_vector_char> const Xi{{1, 0, 1, 0}, {1, 1, 1, 0}};
                     auto const X = to_bitvector(Xi);
 
+                    // initialize state by calling fit() our working classifier
                     auto _ = clf1.fit(X, {0, 1}, 2);
+                    // and extract the state
                     auto s1 = clf1.read_state();
 
+                    // extract the state from the dummy one, it'll be overwritten
                     auto s2 = clf2.read_state();
 
+                    // serialize our working state
                     auto const jss = to_json_string(s1);
+                    // and de-serialize it onto the dummy one
                     from_json_string(s2, jss);
 
-                    EXPECT_EQ(s1, s2);
+                    expect(that % true == (s1 == s2)) << "(De-)serialization failed";
 
                     return std::move(clf2);
                 });
 
             return std::move(clf1);
         });
+};
+
+
+};
+
+int main()
+{
+    auto failed = cfg<>.run({.report_errors = true});
+
+    return failed ? EXIT_FAILURE : EXIT_SUCCESS;
 }
-
-
-} // anonymous namespace
