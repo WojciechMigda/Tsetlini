@@ -221,20 +221,108 @@ suite TestClassifierBitwise = []
 };
 
 
-//"ClassifierBitwise cannot be created from JSON with boost_true_positive_feedback set to -1"_test = []
-//{
-//    auto const clf = Tsetlini::make_classifier_bitwise(R"({"boost_true_positive_feedback": -1})");
-//
-//    expect(that % false == clf);
-//};
-//
-//
-//"ClassifierBitwise cannot be created from JSON with boost_true_positive_feedback set to 2"_test = []
-//{
-//    auto const clf = Tsetlini::make_classifier_bitwise(R"({"boost_true_positive_feedback": 2})");
-//
-//    expect(that % false == clf);
-//};
+"ClassifierBitwise cannot be created from JSON with boost_true_positive_feedback set to -1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"boost_true_positive_feedback": -1})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with boost_true_positive_feedback set to 2"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"boost_true_positive_feedback": 2})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with threshold set to 1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"threshold": 1})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with threshold set to 0"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"threshold": 0})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with threshold set to -1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"threshold": -1})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with max_weight set to 1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"max_weight": 1})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with max_weight set to 10"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"max_weight": 10})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with max_weight set to 0"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"max_weight": 0})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with max_weight set to -1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"max_weight": -1})");
+
+    expect(that % false == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with verbose set to true"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"verbose": true})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with verbose set to false"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"verbose": false})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with weighted set to true"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"weighted": true})");
+
+    expect(that % true == clf);
+};
+
+
+"ClassifierBitwise can be created from JSON with weighted set to false"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"weighted": false})");
+
+    expect(that % true == clf);
+};
 
 
 };
