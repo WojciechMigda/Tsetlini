@@ -230,6 +230,24 @@ assert_counting_type_enumeration(params_t const & params)
 
 static
 Either<status_message_t, params_t>
+assert_n_jobs(params_t const & params)
+{
+    auto value = std::get<int>(params.at("n_jobs"));
+
+    if (not ((value == -1) or (value >= 1)))
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'n_jobs' got value " + std::to_string(value) + ", instead of natural integer or -1.\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
+static
+Either<status_message_t, params_t>
 assert_clause_output_tile_size_enumeration(params_t const & params)
 {
     auto value = std::get<int>(params.at("clause_output_tile_size"));
@@ -280,6 +298,7 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_json_dictionary)
         .rightFlatMap(json_to_params)
         .rightMap([](auto p){ return merge(params_t{default_classifier_params}, p); })
+        .rightFlatMap(assert_n_jobs)
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
