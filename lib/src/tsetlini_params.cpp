@@ -248,6 +248,24 @@ assert_n_jobs(params_t const & params)
 
 static
 Either<status_message_t, params_t>
+assert_boost_true_positive_feedback(params_t const & params)
+{
+    auto value = std::get<int>(params.at("boost_true_positive_feedback"));
+
+    if ((value < 0) or (1 < value))
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'boost_true_positive_feedback' got value " + std::to_string(value) + ", instead of either 0 or 1.\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
+static
+Either<status_message_t, params_t>
 assert_number_of_states(params_t const & params)
 {
     auto value = std::get<int>(params.at("number_of_states"));
@@ -337,6 +355,7 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
         .rightFlatMap(assert_number_of_pos_neg_clauses_per_label)
+        .rightFlatMap(assert_boost_true_positive_feedback)
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
@@ -357,6 +376,7 @@ make_regressor_params_from_json(std::string const & json_params)
         .rightMap([](auto p){ return merge(params_t{default_regressor_params}, p); })
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_boost_true_positive_feedback)
         .rightMap(normalize_n_jobs)
         .rightMap(normalize_random_state)
         .rightFlatMap(assert_counting_type_enumeration)
