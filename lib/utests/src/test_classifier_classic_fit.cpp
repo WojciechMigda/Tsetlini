@@ -1,0 +1,150 @@
+#include "tsetlini.hpp"
+#include "tsetlini_types.hpp"
+
+#include "boost/ut.hpp"
+
+#include <cstdlib>
+#include <vector>
+
+
+using namespace boost::ut;
+
+
+suite TestClassifierClassicFit = []
+{
+
+
+"ClassifierClassic::fit rejects empty input X"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X;
+            Tsetlini::label_vector_type y{1, 0, 1, 0};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit rejects empty input y"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::label_vector_type y;
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit rejects input X with rows of unequal length"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit rejects input X with non-0/1 values"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit rejects input X and y with unequal dimensions"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::label_vector_type y{1, 0, 0, 1};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit rejects input y with negative label"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::label_vector_type y{1, 0, -21};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierClassic::fit accepts valid input"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
+            Tsetlini::label_vector_type y{1, 0, 2};
+
+            auto const rv = clf.fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_OK == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+};
+
+int main()
+{
+    auto failed = cfg<>.run({.report_errors = true});
+
+    return failed ? EXIT_FAILURE : EXIT_SUCCESS;
+}
