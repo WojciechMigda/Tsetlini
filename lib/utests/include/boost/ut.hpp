@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 Kris Jusiak (kris at jusiak dot net)
+// Copyright (c) 2019-2020 Kris Jusiak (kris at jusiak dot net)
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at
@@ -37,7 +37,7 @@ export import std;
 #elif not defined(__cpp_static_assert)
 #error "[Boost].UT requires support for static assert";
 #else
-#define BOOST_UT_VERSION 1'1'5
+#define BOOST_UT_VERSION 1'1'6
 
 #if defined(BOOST_UT_FORWARD)
 namespace std {
@@ -76,15 +76,22 @@ export namespace boost::ut {
 namespace boost::ut {
 #endif
 
-inline namespace v1_1_5 {
+inline namespace v1_1_6 {
 namespace utility {
 class string_view {
  public:
   constexpr string_view() = default;
   template <class TStr>
-  constexpr explicit string_view(const TStr& str)
+  constexpr /*explicit(false)*/ string_view(const TStr& str)
       : data_{str.c_str()}, size_{str.size()} {}
-  constexpr string_view(const char* data, decltype(sizeof("")) size)
+  constexpr /*explicit(false)*/ string_view(const char* const data)
+      : data_{data}, size_{[data] {
+          decltype(sizeof("")) size{};
+          for (size = {}; data[size] != '\0'; ++size)
+            ;
+          return size;
+        }()} {}
+  constexpr string_view(const char* const data, decltype(sizeof("")) size)
       : data_{data}, size_{size} {}
   template <auto N>
   constexpr string_view(const char (&data)[N]) : data_{data}, size_{N - 1} {}
@@ -203,10 +210,10 @@ namespace reflection {
 class source_location {
  public:
   [[nodiscard]] static constexpr auto current(
-#if (__GNUC__ >= 9 or __clang_major__ >= 9)
+#if ((__GNUC__ >= 9 or __clang_major__ >= 9) and not defined(__APPLE__))
       const char* file = __builtin_FILE(), int line = __builtin_LINE()
 #else
-      const char* file = {}, int line = {}
+      const char* file = "unknown", int line = {}
 #endif
           ) noexcept {
     source_location sl{};
@@ -401,7 +408,6 @@ extern auto operator<<(ostream& os, float) -> ostream&;
 extern auto operator<<(ostream& os, double) -> ostream&;
 extern auto operator<<(ostream& os, long double) -> ostream&;
 extern auto operator<<(ostream& os, char const*) -> ostream&;
-extern auto operator<<(ostream& os, const utility::string_view) -> ostream&;
 #elif defined(BOOST_UT_IMPLEMENTATION)
 struct ostream : std::ostream {
   using std::ostream::ostream;
@@ -462,10 +468,6 @@ auto operator<<(ostream& os, char const* s) -> ostream& {
   static_cast<std::ostream&>(os) << s;
   return os;
 }
-auto operator<<(ostream& os, const utility::string_view sv) -> ostream& {
-  static_cast<std::ostream&>(os) << std::string_view{sv};
-  return os;
-}
 #endif
 }  // namespace io
 
@@ -487,6 +489,10 @@ template <class T>
 
 template <class T>
 struct type_ : op {
+  template <class TOther>
+  [[nodiscard]] constexpr auto operator()(TOther) const -> const type_<TOther> {
+    return {};
+  }
   [[nodiscard]] constexpr auto operator==(type_<T>) -> bool { return true; }
   template <class TOther>
   [[nodiscard]] constexpr auto operator==(type_<TOther>) -> bool {
@@ -1392,7 +1398,7 @@ class runner {
 
   [[nodiscard]] auto run(run_cfg rc = {}) -> bool {
     run_ = true;
-    for (auto& suite : suites_) {
+    for (const auto& suite : suites_) {
       suite();
     }
     suites_.clear();
@@ -1453,8 +1459,8 @@ struct skip {};
 
 #if defined(BOOST_UT_FORWARD)
 template <class..., class TEvent>
-constexpr auto on(const TEvent& event) {
-  link::on(event);
+constexpr auto on(TEvent&& event) {
+  link::on(static_cast<TEvent&&>(event));
 }
 
 template <class..., class Test, class TArg>
@@ -1475,9 +1481,9 @@ template <class..., class TExpr>
 }
 #else
 template <class... Ts, class TEvent>
-[[nodiscard]] constexpr decltype(auto) on(const TEvent& event) {
+[[nodiscard]] constexpr decltype(auto) on(TEvent&& event) {
   return ut::cfg<typename type_traits::identity<override, Ts...>::type>.on(
-      event);
+      static_cast<TEvent&&>(event));
 }
 #endif
 
@@ -1503,7 +1509,7 @@ struct test {
                                        .location = test.location,
                                        .arg = none{},
                                        .run = test.test});
-    return test;
+    return test.test;
   }
 
   template <class Test,
@@ -1511,8 +1517,11 @@ struct test {
                 not type_traits::is_convertible_v<Test, void (*)()>> = 0>
   constexpr auto operator=(Test test) ->
       typename type_traits::identity<Test, decltype(test())>::type {
-    on<Test>(events::test<Test>{
-        .type = type, .name = name, .location = {}, .arg = {}, .run = test});
+    on<Test>(events::test<Test>{.type = type,
+                                .name = name,
+                                .location = {},
+                                .arg = {},
+                                .run = static_cast<Test&&>(test)});
     return test;
   }
 
@@ -1645,20 +1654,6 @@ class expect_ {
  private:
   bool result_{}, fatal_{};
 };
-
-template <class TExpr>
-class matcher_ : op {
- public:
-  constexpr explicit matcher_(const TExpr& expr) : expr_{expr} {}
-
-  template <class... TArgs>
-  [[nodiscard]] constexpr auto operator()(const TArgs&... args) const {
-    return expr_(args...);
-  }
-
- private:
-  TExpr expr_{};
-};
 }  // namespace detail
 
 namespace literals {
@@ -1740,7 +1735,8 @@ constexpr auto is_op_v = __is_base_of(detail::op, T);
 }  // namespace type_traits
 
 namespace operators {
-#if defined(__cpp_lib_string_view)
+#if not defined(BOOST_UT_FORWARD) and \
+    (defined(__cpp_lib_string_view) or defined(__APPLE__))
 [[nodiscard]] constexpr auto operator==(std::string_view lhs,
                                         std::string_view rhs) {
   return detail::eq_{lhs, rhs};
@@ -1831,7 +1827,7 @@ template <class T>
 template <class F, class T,
           type_traits::requires_t<type_traits::is_container_v<T>> = 0>
 [[nodiscard]] constexpr auto operator|(const F& f, const T& t) {
-  return [f, t](auto name) {
+  return [f, t](const auto name) {
     for (const auto& arg : t) {
       detail::on<F>(events::test<F, typename T::value_type>{
           .type = "test", .name = name, .location = {}, .arg = arg, .run = f});
@@ -1843,7 +1839,7 @@ template <
     class F, template <class...> class T, class... Ts,
     type_traits::requires_t<not type_traits::is_container_v<T<Ts...>>> = 0>
 [[nodiscard]] constexpr auto operator|(const F& f, const T<Ts...>& t) {
-  return [f, t](auto name) {
+  return [f, t](const auto name) {
     apply(
         [f, name](const auto&... args) {
           (detail::on<F>(events::test<F, Ts>{.type = "test",
@@ -1874,11 +1870,6 @@ template <auto Constant>
 template <bool Constant>
 #endif
 constexpr auto constant = Constant;
-
-template <class TExpr>
-[[nodiscard]] constexpr auto matcher(const TExpr& expr) {
-  return detail::matcher_<TExpr>{expr};
-}
 
 #if defined(__cpp_exceptions)
 template <class TException, class TExpr>
@@ -1937,21 +1928,21 @@ struct suite {
 
 [[maybe_unused]] inline auto log = detail::log{};
 [[maybe_unused]] inline auto that = detail::that_{};
-[[maybe_unused]] constexpr auto test = [](utility::string_view name) {
+[[maybe_unused]] constexpr auto test = [](const auto name) {
   return detail::test{"test", name};
 };
 [[maybe_unused]] constexpr auto should = test;
 [[maybe_unused]] constexpr auto skip = detail::skip{};
-[[maybe_unused]] constexpr auto given = [](utility::string_view name) {
+[[maybe_unused]] constexpr auto given = [](const auto name) {
   return detail::test{"given", name};
 };
-[[maybe_unused]] constexpr auto when = [](utility::string_view name) {
+[[maybe_unused]] constexpr auto when = [](const auto name) {
   return detail::test{"when", name};
 };
-[[maybe_unused]] constexpr auto then = [](utility::string_view name) {
+[[maybe_unused]] constexpr auto then = [](const auto name) {
   return detail::test{"then", name};
 };
-template <class T>
+template <class T = void>
 [[maybe_unused]] constexpr auto type = detail::type_<T>();
 
 template <class TLhs, class TRhs>
@@ -2007,6 +1998,6 @@ using operators::operator and;
 using operators::operator or;
 using operators::operator not;
 using operators::operator|;
-}  // namespace v1_1_5
+}  // namespace v1_1_6
 }  // namespace boost::ut
 #endif

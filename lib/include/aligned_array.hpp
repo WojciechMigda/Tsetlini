@@ -3,7 +3,6 @@
 #ifndef LIB_INCLUDE_ALIGNED_ARRAY_HPP_
 #define LIB_INCLUDE_ALIGNED_ARRAY_HPP_
 
-
 #include "assume_aligned.hpp"
 #include "is_power_of_two.hpp"
 
@@ -48,33 +47,66 @@ struct AlignedArray
         return *this;
     }
 
-    inline
     constexpr value_ptr data() noexcept
     {
         return assume_aligned<alignment>(reinterpret_cast<value_ptr>(&a[offset]));
     }
 
-    inline
     constexpr const_value_ptr data() const noexcept
     {
         return assume_aligned<alignment>(reinterpret_cast<const_value_ptr>(&a[offset]));
     }
 
-    inline
     constexpr reference operator[](size_type pos)
     {
         return data()[pos];
     }
 
-    inline
     constexpr const_reference operator[](size_type pos) const
     {
         return data()[pos];
+    }
+
+    value_ptr begin()
+    {
+        return data();
+    }
+
+    value_ptr end()
+    {
+        return data() + nelem;
+    }
+
+    const_value_ptr cbegin() const
+    {
+        return data();
+    }
+
+    const_value_ptr cend() const
+    {
+        return data() + nelem;
     }
 
 private:
     size_type offset;
     unsigned char a[Alignment - 1 + nelem * sizeof (value_type)];
 };
+
+
+template <typename Tp, std::size_t Nelem, std::size_t Alignment>
+inline
+bool operator==(AlignedArray<Tp, Nelem, Alignment> const & lhs, AlignedArray<Tp, Nelem, Alignment> const & rhs)
+{
+    return std::equal(lhs.data(), lhs.data() + Nelem, rhs.data());
+}
+
+
+template <typename Tp, std::size_t Nelem, std::size_t Alignment>
+inline
+bool operator!=(AlignedArray<Tp, Nelem, Alignment> const & lhs, AlignedArray<Tp, Nelem, Alignment> const & rhs)
+{
+    return not (lhs == rhs);
+}
+
 
 #endif /* LIB_INCLUDE_ALIGNED_ARRAY_HPP_ */
