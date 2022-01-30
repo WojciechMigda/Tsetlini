@@ -113,7 +113,7 @@ suite TestClassifierClassicFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, -21};
 
-            auto const rv = clf.fit(X, y, 2);
+            auto const rv = clf.fit(X, y, 3);
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -131,7 +131,7 @@ suite TestClassifierClassicFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 2};
 
-            auto const rv = clf.fit(X, y, 2);
+            auto const rv = clf.fit(X, y, 3);
 
             expect(that % Tsetlini::StatusCode::S_OK == rv.first);
 
