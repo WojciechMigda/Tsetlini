@@ -635,7 +635,7 @@ fit_classifier_online_impl(
     auto const n_jobs = Params::n_jobs(params);
     auto const verbose = Params::verbose(params);
 
-    if (auto sm = check_labels(labels, number_of_labels);
+    if (auto sm = check_labels(labels, number_of_labels - 1);
         sm.first != StatusCode::S_OK)
     {
         return sm;
