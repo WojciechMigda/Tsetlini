@@ -27,9 +27,11 @@ add_ut( EXE_NAME test_numeric_matrix                        SOURCE "src/test_num
 add_ut( EXE_NAME test_classifier_classic                    SOURCE "src/test_classifier_classic.cpp" )
 add_ut( EXE_NAME test_classifier_classic_fit                SOURCE "src/test_classifier_classic_fit.cpp" )
 add_ut( EXE_NAME test_classifier_classic_partial_fit        SOURCE "src/test_classifier_classic_partial_fit.cpp" )
+add_ut( EXE_NAME test_classifier_classic_predict            SOURCE "src/test_classifier_classic_predict.cpp" )
 add_ut( EXE_NAME test_classifier_bitwise                    SOURCE "src/test_classifier_bitwise.cpp" )
 add_ut( EXE_NAME test_classifier_bitwise_fit                SOURCE "src/test_classifier_bitwise_fit.cpp" )
 add_ut( EXE_NAME test_classifier_bitwise_partial_fit        SOURCE "src/test_classifier_bitwise_partial_fit.cpp" )
+add_ut( EXE_NAME test_classifier_bitwise_predict            SOURCE "src/test_classifier_bitwise_predict.cpp" )
 add_ut( EXE_NAME test_classifier_params                     SOURCE "src/test_classifier_params.cpp" )
 add_ut( EXE_NAME test_classifier_state_json_serialization   SOURCE "src/test_classifier_state_json_serialization.cpp" )
 
