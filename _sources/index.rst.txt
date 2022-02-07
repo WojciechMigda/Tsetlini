@@ -8,8 +8,9 @@ Welcome to Tsetlini's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Internals
 
+   internals/implementation
 
 
 Indices and tables
