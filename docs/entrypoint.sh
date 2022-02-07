@@ -140,6 +140,7 @@ echo "git add ."
 git add .
 echo 'git commit --allow-empty -m "From $GITHUB_REF $docs_sha8"'
 git commit --allow-empty -m "From $GITHUB_REF $docs_sha8"
+echo "GITHUB_REF_NAME: $GITHUB_REF_NAME"
 if [ "$GITHUB_REF_NAME" == "main" ]
 then
     echo "git push origin gh-pages"
