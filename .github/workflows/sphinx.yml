@@ -22,6 +22,9 @@ jobs:
     - name: Install sphinx
       run: pip3 install --user Sphinx>=2.0.0
 
+    - name: Install plantuml
+      run: sudo apt-get install -y plantuml
+
     - name: Create working directory
       run: mkdir -p "${INPUT_WORK_DIR}"
 
