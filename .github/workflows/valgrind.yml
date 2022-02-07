@@ -1,4 +1,4 @@
-name: Tsetlini memcheck with valgrind
+name: Memcheck with valgrind
 
 on:
   push:
