@@ -1,0 +1,30 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'GH[1-9]+[0-9]*-*'
+
+jobs:
+  build:
+    name: Push Sphinx Pages
+    runs-on: ubuntu-latest
+    env:
+        INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        INPUT_WORK_DIR: .build
+        INPUT_CREATE_README: true
+        INPUT_SOURCE_DIR: docs ## existing directory inside the repo
+        INPUT_INSTALL_EXTENSIONS: true
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install sphinx
+      run: pip3 install --user Sphinx>=2.0.0
+
+    - name: Create working directory
+      run: mkdir -p "${INPUT_WORK_DIR}"
+
+    - name: Build
+      run: |
+        "${INPUT_SOURCE_DIR}"/entrypoint.sh

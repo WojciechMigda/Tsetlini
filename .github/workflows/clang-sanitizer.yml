@@ -1,4 +1,4 @@
-name: Tsetlini clang sanitizer
+name: Clang sanitizer
 
 on:
   push:
