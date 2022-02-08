@@ -89,6 +89,22 @@ status_message_t check_X_y(
 }
 
 
+template<typename RowType>
+status_message_t check_X(
+    std::vector<RowType> const & X,
+    int const number_of_features)
+{
+    if (X.front().size() != static_cast<std::size_t>(number_of_features))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "X row size must match number of features previously used to train"
+            " the estimator. Got input X with row size=" + std::to_string(X.front().size())};
+    }
+
+    return {StatusCode::S_OK, ""};
+}
+
+
 status_message_t check_response_y(response_vector_type const & y, int const T)
 {
     if (not std::all_of(y.cbegin(), y.cend(), [T](auto v){ return v >= 0 and v <= T; }))
@@ -1001,6 +1017,12 @@ partial_fit_impl(
             return sm;
         }
 
+        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
@@ -1285,6 +1307,12 @@ partial_fit_impl(
     if (is_fitted(state.ta_state))
     {
         if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
+        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
             sm.first != StatusCode::S_OK)
         {
             return sm;
