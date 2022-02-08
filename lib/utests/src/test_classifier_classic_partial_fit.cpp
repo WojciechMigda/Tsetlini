@@ -216,6 +216,26 @@ suite TestClassifierClassicPartialFitOnTrained = []
 };
 
 
+"ClassifierClassic::partial_fit on trained classifier rejects input X with invalid number of features"_test = []
+{
+    Tsetlini::make_classifier_classic("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            train_classifier(clf);
+
+            std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}};
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
 "ClassifierClassic::partial_fit on trained classifier rejects input X with non-0/1 values"_test = []
 {
     Tsetlini::make_classifier_classic("{}")
