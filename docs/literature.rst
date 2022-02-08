@@ -1,8 +1,5 @@
-Literature
-==========
-
 Reference papers
-****************
+================
 
 1. Granmo, O.C., 2018. The Tsetlin Machine--A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. `arXiv preprint arXiv:1804.01508 <https://arxiv.org/abs/1804.01508>`_.
 
