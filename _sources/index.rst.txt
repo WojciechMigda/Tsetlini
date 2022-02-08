@@ -11,11 +11,11 @@ Welcome to Tsetlini's documentation!
    :caption: Internals
 
    internals/implementation
+   literature
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
