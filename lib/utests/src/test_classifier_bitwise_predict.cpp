@@ -229,10 +229,7 @@ suite TestClassifierBitwisePredictSample = []
 
             !expect(that % true == either);
 
-            either.rightMap([](auto && label){
-                expect(that % 0 <= label and label <= 2);
-                return std::move(label);
-            });
+            either.rightMap([](auto && label){ expect(that % 0 <= label and label <= 2); return std::move(label); });
 
             return std::move(clf);
         });
