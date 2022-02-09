@@ -325,6 +325,62 @@ suite TestRegressorBitwise = []
 };
 
 
+"RegressorBitwise cannot be created from JSON with specificity set to -1.0"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": -1.0})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to 0.0"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": 0.0})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to 0.999"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": 0.999})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to -inf"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": -inf})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to +inf"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": +inf})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to NaN"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": NaN})");
+
+    expect(that % false == clf);
+};
+
+
+"RegressorBitwise cannot be created from JSON with specificity set to nan"_test = []
+{
+    auto const clf = Tsetlini::make_regressor_bitwise(R"({"s": nan})");
+
+    expect(that % false == clf);
+};
+
+
 };
 
 int main()

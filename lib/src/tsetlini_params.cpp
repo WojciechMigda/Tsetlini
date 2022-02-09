@@ -284,6 +284,24 @@ assert_number_of_states(params_t const & params)
 
 static
 Either<status_message_t, params_t>
+assert_specificity(params_t const & params)
+{
+    auto value = std::get<real_type>(params.at("s"));
+
+    if (value < 1.0)
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 's' got value " + std::to_string(value) + ", instead of a value >= 1.0 .\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
+static
+Either<status_message_t, params_t>
 assert_max_weight(params_t const & params)
 {
     auto value = std::get<int>(params.at("max_weight"));
@@ -408,6 +426,7 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightMap([](auto p){ return merge(params_t{default_classifier_params}, p); })
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_specificity)
         .rightFlatMap(assert_number_of_pos_neg_clauses_per_label)
         .rightFlatMap(assert_boost_true_positive_feedback)
         .rightFlatMap(assert_threshold)
@@ -432,6 +451,7 @@ make_regressor_params_from_json(std::string const & json_params)
         .rightMap([](auto p){ return merge(params_t{default_regressor_params}, p); })
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_specificity)
         .rightFlatMap(assert_number_of_regressor_clauses)
         .rightFlatMap(assert_boost_true_positive_feedback)
         .rightFlatMap(assert_threshold)
