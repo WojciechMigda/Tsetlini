@@ -11,6 +11,11 @@ Welcome to Tsetlini's documentation!
    :caption: Internals
 
    internals/implementation
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Literature
+
    literature
 
 
