@@ -217,7 +217,7 @@ suite TestRegressorBitwisePredictSample = []
 };
 
 
-skip | "RegressorBitwise::predict accepts valid input sample"_test = []
+"RegressorBitwise::predict accepts valid input sample"_test = []
 {
     Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
@@ -231,7 +231,7 @@ skip | "RegressorBitwise::predict accepts valid input sample"_test = []
 
             !expect(that % true == either);
 
-            either.rightMap([](auto && response){ expect(that % 0 <= response and response <= 1); return std::move(response); });
+            either.rightMap([](auto && response){ expect(that % 0 <= response and response <= 15); return std::move(response); });
 
             return std::move(reg);
         });

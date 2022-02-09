@@ -95,7 +95,7 @@ jobs:
         cmake --build .
     - name: Test
       working-directory: .build/lib
-      run: ctest
+      run: ctest --output-on-failure #--rerun-failed
     - name: Install
       working-directory: .build
       run: sudo make install
