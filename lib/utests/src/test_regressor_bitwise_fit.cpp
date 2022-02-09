@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <cstdint>
 
 
 using namespace boost::ut;
@@ -138,7 +139,7 @@ suite TestRegressorBitwiseFit = []
 };
 
 
-"RegressorBitwise::fit accepts valid input y with response just below Threshold"_test = []
+"RegressorBitwise::fit accepts valid input y with response equal to Threshold"_test = []
 {
     Tsetlini::make_regressor_bitwise(R"({"threshold": 15})")
         .rightMap(

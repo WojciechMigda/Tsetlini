@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 #include <vector>
+#include <cstdint>
 
 
 using namespace boost::ut;
