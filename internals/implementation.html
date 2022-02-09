@@ -101,12 +101,13 @@ These functions are called <code class="docutils literal notranslate"><span clas
 <p>What happens underneath <code class="docutils literal notranslate"><span class="pre">partial_fit_impl</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_impl</span></code> is driven by a need to converge into single invocation of either <code class="docutils literal notranslate"><span class="pre">fit_classifier_online_impl</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_regressor_online_impl</span></code>.</p>
 <figure class="align-default" id="id1">
 <p class="plantuml">
-<img src="../_images/plantuml-05b4a7c55fb0c8a8b076677e24ffbe15f5c9d556.png" alt="hide empty description
+<img src="../_images/plantuml-1c645de7f07dabfe4c4bdb515ba326555168a304.png" alt="hide empty description
 state &quot;public interface&quot; as public_interface {
    state &quot;&lt;font:courier&gt;&lt;classifier&gt;.fit()&quot; as fit #palegreen
    state &quot;&lt;font:courier&gt;&lt;classifier&gt;.partial_fit()&quot; as partial_fit #palegreen
 }
 state &quot;&lt;font:courier&gt;fit_impl()&quot; as fit_impl #yellow
+state &quot;&lt;font:courier&gt;partial_fit_impl_with_input_check&lt;&gt;()&quot; as partial_fit_impl_with_input_check
 state &quot;&lt;font:courier&gt;fit_classifier_impl&lt;&gt;()&quot; as fit_classifier_impl
 state &quot;&lt;font:courier&gt;partial_fit_impl()&quot; as partial_fit_impl #yellow
 state &quot;&lt;font:courier&gt;fit_classifier_online_impl&lt;&gt;()&quot; as fit_classifier_online_impl
@@ -118,20 +119,20 @@ fit --&gt; fit_impl
 partial_fit --&gt; partial_fit_impl
 partial_fit_impl --&gt; is_fitted : is fitted?
 is_fitted -left-&gt; fit_impl : [no]
-is_fitted --&gt; fit_classifier_online_impl : [yes]
-note on link
+is_fitted --&gt; partial_fit_impl_with_input_check : [yes]
+partial_fit_impl_with_input_check ---&gt; fit_classifier_online_impl : [yes]
+note bottom of partial_fit_impl_with_input_check
   &quot;&quot;check_X_y&quot;&quot;
+  &quot;&quot;check_X&quot;&quot;
+  &quot;&quot;check_labels&quot;&quot;
 end note
 fit_impl --&gt; fit_classifier_impl
-fit_classifier_impl --&gt; fit_classifier_online_impl
-note on link
+fit_classifier_impl ---&gt; fit_classifier_online_impl
+note bottom of fit_classifier_impl
   &quot;&quot;check_X_y&quot;&quot;
   &quot;&quot;check_labels&quot;&quot;
 end note
-fit_classifier_online_impl --&gt; ellipsis
-note on link
-  &quot;&quot;check_labels&quot;&quot;
-end note"/>
+fit_classifier_online_impl --&gt; ellipsis"/>
 </p>
 <figcaption>
 <p><span class="caption-text">Portion of Classifier’s call trace</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
