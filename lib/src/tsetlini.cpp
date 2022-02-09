@@ -706,13 +706,19 @@ fit_classifier_online_impl(
 
 template<typename ClassifierStateType, typename SampleType>
 status_message_t
-fit_classifier_impl_T(
+fit_classifier_impl(
     ClassifierStateType & state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     auto labels = unique_labels(y);
 
     int const number_of_labels = std::max(
@@ -736,25 +742,6 @@ fit_classifier_impl_T(
     initialize_state(state);
 
     return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
-}
-
-
-template<typename ClassifierStateType, typename SampleType>
-status_message_t
-fit_classifier_impl(
-    ClassifierStateType & state,
-    std::vector<SampleType> const & X,
-    label_vector_type const & y,
-    int max_number_of_labels,
-    unsigned int epochs)
-{
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    return fit_classifier_impl_T(state, X, y, max_number_of_labels, epochs);
 }
 
 

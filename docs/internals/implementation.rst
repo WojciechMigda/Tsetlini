@@ -26,35 +26,38 @@ These functions are called ``partial_fit_impl``, and ``fit_impl``, and are overl
 What happens underneath ``partial_fit_impl``, and ``fit_impl`` is driven by a need to converge into single invocation of either ``fit_classifier_online_impl`` or ``fit_regressor_online_impl``.
 
 .. uml::
+   :caption: Portion of Classifier's call trace
 
    hide empty description
-   state "<font:courier><classifier>.fit()" as fit #palegreen
-   state "<font:courier><classifier>.partial_fit()" as partial_fit #palegreen
+   state "public interface" as public_interface {
+      state "<font:courier><classifier>.fit()" as fit #palegreen
+      state "<font:courier><classifier>.partial_fit()" as partial_fit #palegreen
+   }
    state "<font:courier>fit_impl()" as fit_impl #yellow
    state "<font:courier>fit_classifier_impl<>()" as fit_classifier_impl
-   state "<font:courier>fit_classifier_impl_T<>()" as fit_classifier_impl_T
    state "<font:courier>partial_fit_impl()" as partial_fit_impl #yellow
    state "<font:courier>fit_classifier_online_impl<>()" as fit_classifier_online_impl
+   state "..." as ellipsis #skyblue
 
    state is_fitted <<choice>>
 
    fit --> fit_impl
    partial_fit --> partial_fit_impl
    partial_fit_impl --> is_fitted : is fitted?
-   is_fitted --> fit_impl : [no]
+   is_fitted -left-> fit_impl : [no]
    is_fitted --> fit_classifier_online_impl : [yes]
    note on link
      ""check_X_y""
    end note
    fit_impl --> fit_classifier_impl
-   fit_classifier_impl --> fit_classifier_impl_T
+   fit_classifier_impl --> fit_classifier_online_impl
    note on link
      ""check_X_y""
-   end note
-   fit_classifier_impl_T --> fit_classifier_online_impl
-   /'note on link
      ""check_labels""
-   end note'/
+   end note
+   fit_classifier_online_impl --> ellipsis
+   note on link
+     ""check_labels""
+   end note
 
 
-Above figure is an example call trace for a classifier.
