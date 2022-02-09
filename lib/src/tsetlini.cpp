@@ -814,12 +814,6 @@ fit_regressor_online_impl(
     auto const loss_fn = make_loss_fn(Params::loss_fn_name(params), Params::loss_fn_C1(params));
     auto const box_muller = Params::box_muller(params);
 
-    if (auto sm = check_response_y(y, threshold);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
     auto const number_of_examples = X.size();
 
     std::vector<int> ix(number_of_examples);
@@ -865,12 +859,18 @@ fit_regressor_online_impl(
 
 template<typename RegressorStateType, typename SampleType>
 status_message_t
-fit_regressor_impl_T(
+fit_regressor_impl(
     RegressorStateType & state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
     unsigned int epochs)
 {
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
     if (auto sm = check_response_y(y, Params::threshold(state.m_params));
         sm.first != StatusCode::S_OK)
     {
@@ -886,24 +886,6 @@ fit_regressor_impl_T(
     initialize_state(state);
 
     return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
-}
-
-
-template<typename RegressorStateType, typename SampleType>
-status_message_t
-fit_regressor_impl(
-    RegressorStateType & state,
-    std::vector<SampleType> const & X,
-    response_vector_type const & y,
-    unsigned int epochs)
-{
-    if (auto sm = check_X_y(X, y);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
-
-    return fit_regressor_impl_T(state, X, y, epochs);
 }
 
 
@@ -980,7 +962,7 @@ decision_function_impl(ClassifierStateClassic const & state, std::vector<aligned
 
 template<typename ClassifierStateType, typename SampleType>
 status_message_t
-partial_fit_impl_with_input_check(
+fit_classifier_online_with_input_check(
     ClassifierStateType & state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
@@ -1022,7 +1004,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        return partial_fit_impl_with_input_check(state, X, y, max_number_of_labels, epochs);
+        return fit_classifier_online_with_input_check(state, X, y, max_number_of_labels, epochs);
     }
     else
     {
@@ -1191,6 +1173,37 @@ RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vecto
 }
 
 
+template<typename RegressorStateType, typename SampleType>
+status_message_t
+fit_regressor_online_with_input_check(
+    RegressorStateType & state,
+    std::vector<SampleType> const & X,
+    response_vector_type const & y,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (auto sm = check_X(X, Params::number_of_features(state.m_params));
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    auto const threshold = Params::threshold(state.m_params);
+    if (auto sm = check_response_y(y, threshold);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
+}
+
+
 status_message_t
 partial_fit_impl(
     RegressorStateClassic & state,
@@ -1200,19 +1213,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        if (auto sm = check_X_y(X, y);
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
+        return fit_regressor_online_with_input_check(state, X, y, epochs);
     }
     else
     {
@@ -1311,7 +1312,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        return partial_fit_impl_with_input_check(state, X, y, max_number_of_labels, epochs);
+        return fit_classifier_online_with_input_check(state, X, y, max_number_of_labels, epochs);
     }
     else
     {
@@ -1472,19 +1473,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        if (auto sm = check_X_y(X, y);
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
+        return fit_regressor_online_with_input_check(state, X, y, epochs);
     }
     else
     {
