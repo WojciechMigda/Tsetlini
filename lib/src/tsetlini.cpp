@@ -117,7 +117,7 @@ status_message_t check_response_y(response_vector_type const & y, int const T)
 }
 
 
-status_message_t check_labels(label_vector_type const & labels)
+status_message_t check_labels(std::unordered_set<label_type> const & labels)
 {
     if (*std::min_element(labels.cbegin(), labels.cend()) < 0)
     {
@@ -128,7 +128,7 @@ status_message_t check_labels(label_vector_type const & labels)
 }
 
 
-status_message_t check_labels(label_vector_type const & labels, int max_label)
+status_message_t check_labels(std::unordered_set<label_type> const & labels, int max_label)
 {
     auto [lo, hi] = std::minmax_element(labels.cbegin(), labels.cend());
 
@@ -147,11 +147,9 @@ status_message_t check_labels(label_vector_type const & labels, int max_label)
 }
 
 
-label_vector_type unique_labels(label_vector_type const & y)
+auto unique_labels(label_vector_type const & y) -> std::unordered_set<label_type>
 {
-    std::unordered_set<label_type> uniq(y.cbegin(), y.cend());
-
-    return label_vector_type(uniq.cbegin(), uniq.cend());
+    return std::unordered_set<label_type>(y.cbegin(), y.cend());
 }
 
 
@@ -635,8 +633,6 @@ fit_classifier_online_impl(
     label_vector_type const & y,
     unsigned int epochs)
 {
-    auto labels = unique_labels(y);
-
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
@@ -650,12 +646,6 @@ fit_classifier_online_impl(
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const verbose = Params::verbose(params);
-
-    if (auto sm = check_labels(labels, number_of_labels - 1);
-        sm.first != StatusCode::S_OK)
-    {
-        return sm;
-    }
 
     auto const number_of_examples = X.size();
 
@@ -719,7 +709,7 @@ fit_classifier_impl(
         return sm;
     }
 
-    auto labels = unique_labels(y);
+    auto const labels = unique_labels(y);
 
     int const number_of_labels = std::max(
         *std::max_element(labels.cbegin(), labels.cend()) + 1,
@@ -988,6 +978,40 @@ predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vecto
 }
 
 
+template<typename ClassifierStateType, typename SampleType>
+status_message_t
+partial_fit_impl_with_input_check(
+    ClassifierStateType & state,
+    std::vector<SampleType> const & X,
+    label_vector_type const & y,
+    int max_number_of_labels,
+    unsigned int epochs)
+{
+    if (auto sm = check_X_y(X, y);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    if (auto sm = check_X(X, Params::number_of_features(state.m_params));
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    auto const labels = unique_labels(y);
+    auto const number_of_labels = Params::number_of_labels(state.m_params);
+
+    if (auto sm = check_labels(labels, number_of_labels - 1);
+        sm.first != StatusCode::S_OK)
+    {
+        return sm;
+    }
+
+    return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
+}
+
+
 status_message_t
 partial_fit_impl(
     ClassifierStateClassic & state,
@@ -998,19 +1022,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        if (auto sm = check_X_y(X, y);
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
+        return partial_fit_impl_with_input_check(state, X, y, max_number_of_labels, epochs);
     }
     else
     {
@@ -1293,19 +1305,7 @@ partial_fit_impl(
 {
     if (is_fitted(state.ta_state))
     {
-        if (auto sm = check_X_y(X, y);
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
-            sm.first != StatusCode::S_OK)
-        {
-            return sm;
-        }
-
-        return fit_classifier_online_impl(state, state.ta_state, X, y, epochs);
+        return partial_fit_impl_with_input_check(state, X, y, max_number_of_labels, epochs);
     }
     else
     {

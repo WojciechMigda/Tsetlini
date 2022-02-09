@@ -34,6 +34,7 @@ What happens underneath ``partial_fit_impl``, and ``fit_impl`` is driven by a ne
       state "<font:courier><classifier>.partial_fit()" as partial_fit #palegreen
    }
    state "<font:courier>fit_impl()" as fit_impl #yellow
+   state "<font:courier>partial_fit_impl_with_input_check<>()" as partial_fit_impl_with_input_check
    state "<font:courier>fit_classifier_impl<>()" as fit_classifier_impl
    state "<font:courier>partial_fit_impl()" as partial_fit_impl #yellow
    state "<font:courier>fit_classifier_online_impl<>()" as fit_classifier_online_impl
@@ -45,19 +46,19 @@ What happens underneath ``partial_fit_impl``, and ``fit_impl`` is driven by a ne
    partial_fit --> partial_fit_impl
    partial_fit_impl --> is_fitted : is fitted?
    is_fitted -left-> fit_impl : [no]
-   is_fitted --> fit_classifier_online_impl : [yes]
-   note on link
+   is_fitted --> partial_fit_impl_with_input_check : [yes]
+   partial_fit_impl_with_input_check ---> fit_classifier_online_impl : [yes]
+   note bottom of partial_fit_impl_with_input_check
      ""check_X_y""
+     ""check_X""
+     ""check_labels""
    end note
    fit_impl --> fit_classifier_impl
-   fit_classifier_impl --> fit_classifier_online_impl
-   note on link
+   fit_classifier_impl ---> fit_classifier_online_impl
+   note bottom of fit_classifier_impl
      ""check_X_y""
      ""check_labels""
    end note
    fit_classifier_online_impl --> ellipsis
-   note on link
-     ""check_labels""
-   end note
 
 
