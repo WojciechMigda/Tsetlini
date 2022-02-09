@@ -443,7 +443,7 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
     if (auto sm = check_for_predict(state, sample);
         sm.first != StatusCode::S_OK)
     {
-        return Either<status_message_t, label_type>::leftOf(std::move(sm));
+        return Either<status_message_t, response_type>::leftOf(std::move(sm));
     }
 
     auto const n_jobs = Params::n_jobs(state.m_params);
@@ -452,14 +452,14 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        Params::number_of_classifier_clauses(state.m_params) / 2,
+        Params::number_of_regressor_clauses(state.m_params) / 2,
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
 
     response_type rv = sum_up_regressor_votes(state.cache.clause_output, Params::threshold(state.m_params), state.ta_state.weights);
 
-    return Either<status_message_t, label_type>::rightOf(rv);
+    return Either<status_message_t, response_type>::rightOf(rv);
 }
 
 
