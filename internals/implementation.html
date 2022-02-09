@@ -99,37 +99,44 @@ Doing so enables us to take advantage of hiding implementation and departing fro
 Object-oriented paradigm.
 These functions are called <code class="docutils literal notranslate"><span class="pre">partial_fit_impl</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_impl</span></code>, and are overloads for respective estimator state type.</p>
 <p>What happens underneath <code class="docutils literal notranslate"><span class="pre">partial_fit_impl</span></code>, and <code class="docutils literal notranslate"><span class="pre">fit_impl</span></code> is driven by a need to converge into single invocation of either <code class="docutils literal notranslate"><span class="pre">fit_classifier_online_impl</span></code> or <code class="docutils literal notranslate"><span class="pre">fit_regressor_online_impl</span></code>.</p>
+<figure class="align-default" id="id1">
 <p class="plantuml">
-<img src="../_images/plantuml-8b3e73261d0e9055cd2b0f9e7e8fb7f89805144c.png" alt="hide empty description
-state &quot;&lt;font:courier&gt;&lt;classifier&gt;.fit()&quot; as fit #palegreen
-state &quot;&lt;font:courier&gt;&lt;classifier&gt;.partial_fit()&quot; as partial_fit #palegreen
+<img src="../_images/plantuml-05b4a7c55fb0c8a8b076677e24ffbe15f5c9d556.png" alt="hide empty description
+state &quot;public interface&quot; as public_interface {
+   state &quot;&lt;font:courier&gt;&lt;classifier&gt;.fit()&quot; as fit #palegreen
+   state &quot;&lt;font:courier&gt;&lt;classifier&gt;.partial_fit()&quot; as partial_fit #palegreen
+}
 state &quot;&lt;font:courier&gt;fit_impl()&quot; as fit_impl #yellow
 state &quot;&lt;font:courier&gt;fit_classifier_impl&lt;&gt;()&quot; as fit_classifier_impl
-state &quot;&lt;font:courier&gt;fit_classifier_impl_T&lt;&gt;()&quot; as fit_classifier_impl_T
 state &quot;&lt;font:courier&gt;partial_fit_impl()&quot; as partial_fit_impl #yellow
 state &quot;&lt;font:courier&gt;fit_classifier_online_impl&lt;&gt;()&quot; as fit_classifier_online_impl
+state &quot;...&quot; as ellipsis #skyblue
 
 state is_fitted &lt;&lt;choice&gt;&gt;
 
 fit --&gt; fit_impl
 partial_fit --&gt; partial_fit_impl
 partial_fit_impl --&gt; is_fitted : is fitted?
-is_fitted --&gt; fit_impl : [no]
+is_fitted -left-&gt; fit_impl : [no]
 is_fitted --&gt; fit_classifier_online_impl : [yes]
 note on link
   &quot;&quot;check_X_y&quot;&quot;
 end note
 fit_impl --&gt; fit_classifier_impl
-fit_classifier_impl --&gt; fit_classifier_impl_T
+fit_classifier_impl --&gt; fit_classifier_online_impl
 note on link
   &quot;&quot;check_X_y&quot;&quot;
-end note
-fit_classifier_impl_T --&gt; fit_classifier_online_impl
-/'note on link
   &quot;&quot;check_labels&quot;&quot;
-end note'/"/>
+end note
+fit_classifier_online_impl --&gt; ellipsis
+note on link
+  &quot;&quot;check_labels&quot;&quot;
+end note"/>
 </p>
-<p>Above figure is an example call trace for a classifier.</p>
+<figcaption>
+<p><span class="caption-text">Portion of Classifier’s call trace</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
 </section>
 </section>
 </section>
