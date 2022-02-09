@@ -140,7 +140,7 @@ suite TestRegressorClassicFit = []
 };
 
 
-"RegressorClassic::fit accepts valid input y with response just below Threshold"_test = []
+"RegressorClassic::fit accepts valid input y with response equal to Threshold"_test = []
 {
     Tsetlini::make_regressor_classic(R"({"threshold": 15})")
         .rightMap(
