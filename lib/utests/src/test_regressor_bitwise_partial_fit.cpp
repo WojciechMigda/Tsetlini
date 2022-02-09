@@ -251,7 +251,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 };
 
 
-skip | "RegressorBitwise::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
+"RegressorBitwise::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
 {
     Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
