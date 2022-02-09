@@ -29,8 +29,6 @@ add_executable(tsetlini-test
     src/main.cpp
     src/test_algo_bitwise.cpp
     src/test_algo_classic.cpp
-
-    src/test_regressor.cpp
 )
 
 target_include_directories(tsetlini-test

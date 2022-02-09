@@ -33,118 +33,118 @@ std::vector<Tsetlini::bit_vector_uint64> to_bitvector(std::vector<Tsetlini::alig
 }
 
 
-void train_classifier(Tsetlini::ClassifierBitwise & clf)
+void train_regressor(Tsetlini::RegressorBitwise & reg)
 {
     std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
-    Tsetlini::label_vector_type y{1, 0, 1};
+    Tsetlini::response_vector_type y{1, 0, 1};
 
-    auto const _ = clf.partial_fit(X, y, 3);
+    auto const _ = reg.partial_fit(X, y);
 }
 
 
-suite TestClassifierBitwisePredictMatrix = []
+suite TestRegressorBitwisePredictMatrix = []
 {
 
 
-"ClassifierBitwise::predict on matrix fails without prior train"_test = []
+"RegressorBitwise::predict on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
 
-            auto const either = clf.predict(X);
+            auto const either = reg.predict(X);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_NOT_FITTED_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict rejects empty input X"_test = []
+"RegressorBitwise::predict rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             std::vector<Tsetlini::bit_vector_uint64> X;
 
-            auto const either = clf.predict(X);
+            auto const either = reg.predict(X);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict rejects input X with rows of unequal length"_test = []
+"RegressorBitwise::predict rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0}, {0, 0, 0}});
 
-            auto const either = clf.predict(X);
+            auto const either = reg.predict(X);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict rejects input X with invalid number of features"_test = []
+"RegressorBitwise::predict rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}});
 
-            auto const either = clf.predict(X);
+            auto const either = reg.predict(X);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict accepts valid input X"_test = []
+"RegressorBitwise::predict accepts valid input X"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 1}, {0, 0, 1}});
 
-            auto const either = clf.predict(X);
+            auto const either = reg.predict(X);
 
             !expect(that % true == either);
 
             either.rightMap([](auto && y){ expect(that % 3u == y.size()); return std::move(y); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
@@ -152,88 +152,88 @@ suite TestClassifierBitwisePredictMatrix = []
 };
 
 
-suite TestClassifierBitwisePredictSample = []
+suite TestRegressorBitwisePredictSample = []
 {
 
 
-"ClassifierBitwise::predict on sample fails without prior train"_test = []
+"RegressorBitwise::predict on sample fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1});
 
-            auto const either = clf.predict(sample);
+            auto const either = reg.predict(sample);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_NOT_FITTED_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict rejects empty input sample"_test = []
+"RegressorBitwise::predict rejects empty input sample"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             Tsetlini::bit_vector_uint64 sample;
 
-            auto const either = clf.predict(sample);
+            auto const either = reg.predict(sample);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict rejects input sample with invalid number of features"_test = []
+"RegressorBitwise::predict rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1, 0});
 
-            auto const either = clf.predict(sample);
+            auto const either = reg.predict(sample);
 
             !expect(that % false == either);
 
             either.leftMap([](auto && sm){ expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == sm.first); return std::move(sm); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
 
-"ClassifierBitwise::predict accepts valid input sample"_test = []
+skip | "RegressorBitwise::predict accepts valid input sample"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_regressor_bitwise("{}")
         .rightMap(
-        [](auto && clf)
+        [](auto && reg)
         {
-            train_classifier(clf);
+            train_regressor(reg);
 
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1});
 
-            auto const either = clf.predict(sample);
+            auto const either = reg.predict(sample);
 
             !expect(that % true == either);
 
-            either.rightMap([](auto && label){ expect(that % 0 <= label and label <= 2); return std::move(label); });
+            either.rightMap([](auto && response){ expect(that % 0 <= response and response <= 1); return std::move(response); });
 
-            return std::move(clf);
+            return std::move(reg);
         });
 };
 
