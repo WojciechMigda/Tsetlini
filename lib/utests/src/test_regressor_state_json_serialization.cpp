@@ -1,6 +1,7 @@
 #include "tsetlini.hpp"
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_state_json.hpp"
+#include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
 
 #include "boost/ut.hpp"

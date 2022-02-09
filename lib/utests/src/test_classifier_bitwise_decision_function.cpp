@@ -1,5 +1,6 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
 
 #include "boost/ut.hpp"
