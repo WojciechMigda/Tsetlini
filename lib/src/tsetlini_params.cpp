@@ -338,6 +338,24 @@ assert_number_of_pos_neg_clauses_per_label(params_t const & params)
 
 static
 Either<status_message_t, params_t>
+assert_number_of_regressor_clauses(params_t const & params)
+{
+    auto value = std::get<int>(params.at("number_of_regressor_clauses"));
+
+    if (value < 1)
+    {
+        return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
+            "Param 'number_of_regressor_clauses' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+    }
+    else
+    {
+        return Either<status_message_t, params_t>::rightOf(params);
+    }
+}
+
+
+static
+Either<status_message_t, params_t>
 assert_clause_output_tile_size_enumeration(params_t const & params)
 {
     auto value = std::get<int>(params.at("clause_output_tile_size"));
@@ -414,6 +432,7 @@ make_regressor_params_from_json(std::string const & json_params)
         .rightMap([](auto p){ return merge(params_t{default_regressor_params}, p); })
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_number_of_regressor_clauses)
         .rightFlatMap(assert_boost_true_positive_feedback)
         .rightFlatMap(assert_threshold)
         .rightFlatMap(assert_max_weight)
