@@ -31,7 +31,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -52,7 +52,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::aligned_vector_char> X;
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -73,7 +73,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -94,7 +94,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}};
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -115,7 +115,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 0, 2}};
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -136,7 +136,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 1}, {0, 0, 1}};
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % true == either);
 
@@ -163,7 +163,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
         {
             Tsetlini::aligned_vector_char sample{1, 0, 1};
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -184,7 +184,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
             Tsetlini::aligned_vector_char sample;
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -205,7 +205,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
             Tsetlini::aligned_vector_char sample{1, 0, 1, 0};
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -226,7 +226,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
             Tsetlini::aligned_vector_char sample{1, -1, 2};
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -247,7 +247,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
             Tsetlini::aligned_vector_char sample{1, 0, 1};
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % true == either);
 

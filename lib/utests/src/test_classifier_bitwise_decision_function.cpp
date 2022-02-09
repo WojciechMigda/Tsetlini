@@ -53,7 +53,7 @@ suite TestClassifierBitwiseDecisionFunctionMatrix = []
         {
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -74,7 +74,7 @@ suite TestClassifierBitwiseDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::bit_vector_uint64> X;
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -95,7 +95,7 @@ suite TestClassifierBitwiseDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0}, {0, 0, 0}});
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -116,7 +116,7 @@ suite TestClassifierBitwiseDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}});
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % false == either);
 
@@ -137,7 +137,7 @@ suite TestClassifierBitwiseDecisionFunctionMatrix = []
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 1}, {0, 0, 1}});
 
-            auto const either = clf.predict_raw(X);
+            auto const either = clf.decision_function(X);
 
             !expect(that % true == either);
 
@@ -164,7 +164,7 @@ suite TestClassifierBitwiseDecisionFunctionSample = []
         {
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1});
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -185,7 +185,7 @@ suite TestClassifierBitwiseDecisionFunctionSample = []
 
             Tsetlini::bit_vector_uint64 sample;
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -206,7 +206,7 @@ suite TestClassifierBitwiseDecisionFunctionSample = []
 
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1, 0});
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % false == either);
 
@@ -227,7 +227,7 @@ suite TestClassifierBitwiseDecisionFunctionSample = []
 
             Tsetlini::bit_vector_uint64 sample = to_bitvector({1, 0, 1});
 
-            auto const either = clf.predict_raw(sample);
+            auto const either = clf.decision_function(sample);
 
             !expect(that % true == either);
 

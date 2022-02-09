@@ -965,14 +965,14 @@ predict_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_ch
 
 
 Either<status_message_t, aligned_vector_int>
-predict_raw_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
+decision_function_impl(ClassifierStateClassic const & state, aligned_vector_char const & sample)
 {
     return predict_classifier_raw_impl(state, sample);
 }
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
-predict_raw_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
+decision_function_impl(ClassifierStateClassic const & state, std::vector<aligned_vector_char> const & X)
 {
     return predict_classifier_raw_impl(state, X);
 }
@@ -1071,16 +1071,16 @@ ClassifierClassic::predict(std::vector<aligned_vector_char> const & X) const
 
 
 Either<status_message_t, aligned_vector_int>
-ClassifierClassic::predict_raw(aligned_vector_char const & sample) const
+ClassifierClassic::decision_function(aligned_vector_char const & sample) const
 {
     return predict_classifier_raw_impl(m_state, sample);
 }
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
-ClassifierClassic::predict_raw(std::vector<aligned_vector_char> const & X) const
+ClassifierClassic::decision_function(std::vector<aligned_vector_char> const & X) const
 {
-    return predict_raw_impl(m_state, X);
+    return decision_function_impl(m_state, X);
 }
 
 
@@ -1350,30 +1350,30 @@ ClassifierBitwise::predict(std::vector<bit_vector_uint64> const & X) const
 
 
 Either<status_message_t, aligned_vector_int>
-predict_raw_impl(ClassifierStateBitwise const & state, bit_vector_uint64 const & sample)
+decision_function_impl(ClassifierStateBitwise const & state, bit_vector_uint64 const & sample)
 {
     return predict_classifier_raw_impl(state, sample);
 }
 
 
 Either<status_message_t, aligned_vector_int>
-ClassifierBitwise::predict_raw(bit_vector_uint64 const & sample) const
+ClassifierBitwise::decision_function(bit_vector_uint64 const & sample) const
 {
-    return predict_raw_impl(m_state, sample);
+    return decision_function_impl(m_state, sample);
 }
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
-predict_raw_impl(ClassifierStateBitwise const & state, std::vector<bit_vector_uint64> const & X)
+decision_function_impl(ClassifierStateBitwise const & state, std::vector<bit_vector_uint64> const & X)
 {
     return predict_classifier_raw_impl(state, X);
 }
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
-ClassifierBitwise::predict_raw(std::vector<bit_vector_uint64> const & X) const
+ClassifierBitwise::decision_function(std::vector<bit_vector_uint64> const & X) const
 {
-    return predict_raw_impl(m_state, X);
+    return decision_function_impl(m_state, X);
 }
 
 
