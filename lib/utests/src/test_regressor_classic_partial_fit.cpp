@@ -252,7 +252,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 };
 
 
-skip | "RegressorClassic::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
+"RegressorClassic::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
 {
     Tsetlini::make_regressor_classic("{}")
         .rightMap(

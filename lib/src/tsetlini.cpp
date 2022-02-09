@@ -1206,6 +1206,12 @@ partial_fit_impl(
             return sm;
         }
 
+        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
         return fit_regressor_online_impl(state, state.ta_state, X, y, epochs);
     }
     else
@@ -1467,6 +1473,12 @@ partial_fit_impl(
     if (is_fitted(state.ta_state))
     {
         if (auto sm = check_X_y(X, y);
+            sm.first != StatusCode::S_OK)
+        {
+            return sm;
+        }
+
+        if (auto sm = check_X(X, Params::number_of_features(state.m_params));
             sm.first != StatusCode::S_OK)
         {
             return sm;
