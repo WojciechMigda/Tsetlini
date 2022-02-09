@@ -55,11 +55,11 @@ struct ClassifierClassic
 
     [[nodiscard]]
     Either<status_message_t, aligned_vector_int>
-    predict_raw(aligned_vector_char const & sample) const;
+    decision_function(aligned_vector_char const & sample) const;
 
     [[nodiscard]]
     Either<status_message_t, std::vector<aligned_vector_int>>
-    predict_raw(std::vector<aligned_vector_char> const & X) const;
+    decision_function(std::vector<aligned_vector_char> const & X) const;
 
 
     params_t read_params() const;
@@ -179,11 +179,11 @@ struct ClassifierBitwise
 
     [[nodiscard]]
     Either<status_message_t, aligned_vector_int>
-    predict_raw(bit_vector_uint64 const & sample) const;
+    decision_function(bit_vector_uint64 const & sample) const;
 
     [[nodiscard]]
     Either<status_message_t, std::vector<aligned_vector_int>>
-    predict_raw(std::vector<bit_vector_uint64> const & X) const;
+    decision_function(std::vector<bit_vector_uint64> const & X) const;
 
 
     params_t read_params() const;
