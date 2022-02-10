@@ -27,18 +27,18 @@ jobs:
     - name: Build
       working-directory: .build
       run: |
-        cmake --build .
+        cmake --build . -- -j2
     - name: Run tests
       working-directory: .build/lib
       run: ctest
-    - name: Run 'Noisy XOR' example
+    - name: Run 'Noisy XOR' classic classifier example
       working-directory: .build/lib/examples/noisy-xor
       run: |
         wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
         wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTestData.txt
         ./noisy-xor
-    - name: Run 'MNIST digits 2' bitwise weighted example for 1 epoch
-      working-directory: .build/lib/examples//mnist-digits-2-new
+    - name: Run 'MNIST digits 2' bitwise weighted classifier example for 1 epoch
+      working-directory: .build/lib/examples/mnist-digits-2-new
       run: |
         wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
         unzip BinarizedMNISTData.zip
@@ -46,3 +46,14 @@ jobs:
         sed -i '1001,$ d' MNISTTraining.txt
         sed -i '1001,$ d' MNISTTest.txt
         ./mnist-digits-2-new-bitwise-weighted -n 1
+    - name: Run 'California housing' classic & bitwise regressor example for 1 epoch
+      working-directory: .build/lib/examples/california-housing
+      run: |
+        pip3 install --user numpy scikit-learn
+        python3 ../../../../lib/examples/california-housing/src/produce_dataset_alt.py
+        sed -i '5001,$ d' CaliforniaHousingData_X.txt
+        sed -i '5001,$ d' CaliforniaHousingData_Y.txt
+        ./california-housing-bitwise -n 1
+        sed -i '1001,$ d' CaliforniaHousingData_X.txt
+        sed -i '1001,$ d' CaliforniaHousingData_Y.txt
+        ./california-housing -n 1

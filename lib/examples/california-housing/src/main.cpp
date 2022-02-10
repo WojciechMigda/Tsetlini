@@ -136,9 +136,97 @@ auto stdev_mean(InputIt first, InputIt last)
 }
 
 
-int main()
+int parse_args(int argc, char* argv[], unsigned int & nepochs, unsigned int & ensemble_size)
+{
+    bool show_help = false;
+    int c = 0;
+
+    while (--argc > 0 && (*++argv)[0] == '-')
+    {
+        while ((c = *++argv[0]))
+        {
+            switch (c)
+            {
+                case 'n':
+                {
+                    if (--argc > 0)
+                    {
+                        auto parsed = atoi(argv[1]);
+                        if (parsed >= 1)
+                        {
+                            nepochs = parsed;
+                        }
+                        else
+                        {
+                            fprintf(stderr, "Invalid nepochs value passed: %s\n", argv[1]);
+                            argc = 0;
+                        }
+
+                        argv++;
+                        *argv+= strlen(*argv) - 1;
+                    }
+                    break;
+                }
+                case 'e':
+                {
+                    if (--argc > 0)
+                    {
+                        auto parsed = atoi(argv[1]);
+                        if (parsed >= 1)
+                        {
+                            ensemble_size = parsed;
+                        }
+                        else
+                        {
+                            fprintf(stderr, "Invalid ensemble_size value passed: %s\n", argv[1]);
+                            argc = 0;
+                        }
+
+                        argv++;
+                        *argv+= strlen(*argv) - 1;
+                    }
+                    break;
+                }
+                case 'h':
+                    show_help = true;
+                    break;
+
+                default:
+                {
+                    fprintf(stderr, "Illegal option [%c]\n", (char)c);
+                    argc = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (show_help or (argc < 0))
+    {
+        fprintf(stderr, "\n");
+        fprintf(stderr, "Usage: california-housing [options]\n\n");
+        fprintf(stderr, "Options:\n");
+        fprintf(stderr, "         -n UINT   number of epochs to train, >= 1 [%u]\n", nepochs);
+        fprintf(stderr, "         -e UINT   training ensemble size, >= 1 [%u]\n", ensemble_size);
+        fprintf(stderr, "         -h        show help\n");
+
+        return EXIT_FAILURE;
+    }
+
+    return EXIT_SUCCESS;
+}
+
+
+int main(int argc, char **argv)
 {
     auto constexpr NCOLS = 80;
+    unsigned int nepochs = 30;
+    unsigned int ensemble_size = 25;
+
+    if (parse_args(argc, argv, nepochs, ensemble_size) != EXIT_SUCCESS)
+    {
+        return EXIT_FAILURE;
+    }
 
     auto const df_X = read_data_as_vec("CaliforniaHousingData_X.txt", NCOLS);
     auto const df_y = [&df_X]()
@@ -174,7 +262,6 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     assert(df_X.size() == df_y.size());
 
 
-    constexpr auto ensemble_size = 25u;
     std::vector<Tsetlini::real_type> accuracy_test(ensemble_size);
 
     std::vector<int> ix(df_X.size());
@@ -242,7 +329,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
             {
                 auto const time0 = now();
 
-                auto status = reg.fit(train_X, train_yi, 30);
+                auto status = reg.fit(train_X, train_yi, nepochs);
 
                 auto const elapsed = as_ms(now() - time0);
 

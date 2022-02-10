@@ -31,8 +31,8 @@ jobs:
     - name: Build
       working-directory: .build
       run: |
-        cmake --build .
-    - name: Run 'Noisy XOR' example
+        cmake --build . -- -j2
+    - name: Run 'Noisy XOR' classic classifier example
       working-directory: .build/lib/examples/noisy-xor
       run: |
         wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b259d2364b4ec86d46bb6f9fd4ce787/NoisyXORTrainingData.txt
@@ -41,12 +41,23 @@ jobs:
         sed -i '1001,$ d' NoisyXORTrainingData.txt
         sed -i '1001,$ d' NoisyXORTestData.txt
         valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./noisy-xor
-    - name: Run 'MNIST digits 2' bitwise weighted example for 1 epoch
+    - name: Run 'MNIST digits 2' bitwise weighted classifier example for 1 epoch
       working-directory: .build/lib/examples//mnist-digits-2-new
       run: |
         wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/6d317dddcdb610c23deb89018d570bfc1b225657/BinarizedMNISTData.zip
         unzip BinarizedMNISTData.zip
         echo "Truncating train and test data files to 1000 lines each."
-        sed -i '1001,$ d' MNISTTraining.txt
-        sed -i '1001,$ d' MNISTTest.txt
+        sed -i '501,$ d' MNISTTraining.txt
+        sed -i '501,$ d' MNISTTest.txt
         valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./mnist-digits-2-new-bitwise-weighted -n 1
+    - name: Run 'California housing' classic & bitwise regressor example for 1 epoch
+      working-directory: .build/lib/examples/california-housing
+      run: |
+        pip3 install --user numpy scikit-learn
+        python3 ../../../../lib/examples/california-housing/src/produce_dataset_alt.py
+        sed -i '201,$ d' CaliforniaHousingData_X.txt
+        sed -i '201,$ d' CaliforniaHousingData_Y.txt
+        valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./california-housing-bitwise -n 1 -e 8
+        sed -i '41,$ d' CaliforniaHousingData_X.txt
+        sed -i '41,$ d' CaliforniaHousingData_Y.txt
+        valgrind --tool=memcheck ${MEMCHECK_FLAGS} ./california-housing -n 1 -e 8

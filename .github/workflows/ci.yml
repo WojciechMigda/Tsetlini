@@ -92,7 +92,7 @@ jobs:
     - name: Build
       working-directory: .build
       run: |
-        cmake --build .
+        cmake --build . -- -j2
     - name: Test
       working-directory: .build/lib
       run: ctest --output-on-failure #--rerun-failed
