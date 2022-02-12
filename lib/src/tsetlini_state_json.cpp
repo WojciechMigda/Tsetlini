@@ -5,7 +5,7 @@
 #include "tsetlini_estimator_state_private.hpp"
 #include "params_companion.hpp"
 
-#include "json.hpp"
+#include "json/json.hpp"
 
 #include <string>
 #include <iterator>
