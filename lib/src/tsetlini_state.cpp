@@ -7,6 +7,8 @@
 #include "tsetlini_params.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <algorithm>
 #include <iterator>
 #include <thread>
@@ -26,7 +28,7 @@ void log_classifier_params(params_t const & params, bool verbose)
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
-    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
     {
@@ -59,7 +61,7 @@ void log_regressor_params(params_t const & params, bool verbose)
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
-    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
+    LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
     {

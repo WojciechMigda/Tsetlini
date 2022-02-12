@@ -8,6 +8,9 @@
 #include "tsetlini_types.hpp"
 #include "loss_fn.hpp"
 #include "box_muller_approx.hpp"
+#include "tsetlini_strong_params.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -54,7 +57,7 @@ void sum_up_label_votes(
     int target_label,
 
     int const number_of_pos_neg_clauses_per_label,
-    int const threshold)
+    threshold_t const threshold)
 {
     int rv = 0;
 
@@ -79,7 +82,7 @@ void sum_up_label_votes(
         }
     }
 
-    label_sum[target_label] = std::clamp(rv, -threshold, threshold);
+    label_sum[target_label] = std::clamp(rv, -value_of(threshold), value_of(threshold));
 }
 
 
@@ -89,14 +92,14 @@ void sum_up_label_votes(
  *      to 2 * @c number_of_labels * @c number_of_pos_neg_clauses_per_label .
  *
  * @param label_sum
- *      Output vector of integers of @c @c number_of_labels length where
+ *      Output vector of integers of @c number_of_labels length where
  *      calculated vote scores will be placed.
  *
  * @param number_of_labels
  *      Integer count of labels the model was trained for.
  *
  * @param number_of_pos_neg_clauses_per_label
- *      Integer count of wither positive or negative clauses used for training.
+ *      Integer count of either positive or negative clauses used for training.
  *
  * @param threshold
  *      Integer threshold to count votes against.
@@ -109,7 +112,7 @@ void sum_up_all_label_votes(
 
     int const number_of_labels,
     int const number_of_pos_neg_clauses_per_label,
-    int const threshold)
+    threshold_t const threshold)
 {
     for (int target_label = 0; target_label < number_of_labels; ++target_label)
     {
@@ -662,12 +665,12 @@ void calculate_classifier_feedback_to_clauses(
     int const target_label_votes,
     int const opposite_label_votes,
     int const number_of_pos_neg_clauses_per_label,
-    int const threshold,
+    threshold_t const threshold,
     TFRNG & fgen)
 {
-    const auto THR2_inv = (ONE / (threshold * 2));
-    const auto THR_pos = THR2_inv * (threshold - target_label_votes);
-    const auto THR_neg = THR2_inv * (threshold + opposite_label_votes);
+    const auto THR2_inv = (ONE / (value_of(threshold) * 2));
+    const auto THR_pos = THR2_inv * (value_of(threshold) - target_label_votes);
+    const auto THR_neg = THR2_inv * (value_of(threshold) + opposite_label_votes);
 
     std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
 
@@ -706,7 +709,7 @@ void calculate_classifier_feedback_to_clauses(
 inline
 response_type sum_up_regressor_votes(
     aligned_vector_char const & clause_output,
-    int const threshold,
+    threshold_t const threshold,
     w_vector_type const & weights)
 {
     auto accumulate_weighted = [](auto const & clause_output, auto const & weights)
@@ -726,7 +729,7 @@ response_type sum_up_regressor_votes(
         :
         accumulate_weighted(clause_output, weights);
 
-    return std::clamp(sum, 0, threshold);
+    return std::clamp(sum, 0, value_of(threshold));
 }
 
 
@@ -759,14 +762,14 @@ void train_regressor_automata(
     bool const box_muller,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = loss_fn(static_cast<real_type>(response_error) / threshold);
+    real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
@@ -840,7 +843,7 @@ void train_regressor_automata(
     bool const box_muller,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {

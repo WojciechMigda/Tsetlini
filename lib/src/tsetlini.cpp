@@ -16,6 +16,7 @@
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 #include "loss_fn.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include "neither/either.hpp"
 
@@ -106,7 +107,7 @@ status_message_t check_X(
 }
 
 
-status_message_t check_response_y(response_vector_type const & y, int const T)
+status_message_t check_response_y(response_vector_type const & y, threshold_t const T)
 {
     if (not std::all_of(y.cbegin(), y.cend(), [T](auto v){ return v >= 0 and v <= T; }))
     {
@@ -236,7 +237,7 @@ void classifier_update_impl(
     label_type const opposite_label,
 
     int const number_of_pos_neg_clauses_per_label,
-    int const threshold,
+    threshold_t const threshold,
     int const number_of_clauses,
     int const number_of_states,
     real_type s,
@@ -741,7 +742,7 @@ void regressor_update_impl(
     SampleType const & X,
     response_type const target_response,
 
-    int const threshold,
+    threshold_t const threshold,
     int const number_of_clauses,
     int const number_of_states,
     real_type s,

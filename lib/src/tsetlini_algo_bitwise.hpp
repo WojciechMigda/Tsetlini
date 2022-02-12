@@ -10,6 +10,9 @@
 #include "assume_aligned.hpp"
 #include "loss_fn.hpp"
 #include "box_muller_approx.hpp"
+#include "tsetlini_strong_params.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -1019,14 +1022,14 @@ void train_regressor_automata(
     bool const box_muller,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
     int const number_of_features = X.size();
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = loss_fn(static_cast<real_type>(response_error) / threshold);
+    real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
@@ -1121,7 +1124,7 @@ void train_regressor_automata(
     bool const box_muller,
     bool const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {

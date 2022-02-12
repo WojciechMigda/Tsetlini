@@ -4,6 +4,7 @@
 #define LIB_SRC_PARAMS_COMPANION_HPP_
 
 #include "tsetlini_params.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <variant>
 #include <string>
@@ -80,9 +81,9 @@ real_type s(params_t const & params)
 
 
 inline
-int threshold(params_t const & params)
+threshold_t threshold(params_t const & params)
 {
-    return std::get<int>(params.at("threshold"));
+    return threshold_t{std::get<int>(params.at("threshold"))};
 }
 
 
