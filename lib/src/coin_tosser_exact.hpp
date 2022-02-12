@@ -4,6 +4,7 @@
 #define LIB_INCLUDE_COIN_TOSSER_EXACT_HPP_
 
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -26,7 +27,7 @@ struct CoinTosserExact
     CoinTosserExact(real_type s_inv, unsigned int size);
 
     template<typename PRNG>
-    void populate(real_type const s_inv, PRNG & prng);
+    void populate(specificity_t const s, PRNG & prng);
 
     template<typename PRNG>
     char const * tosses1(PRNG & prng);
@@ -63,7 +64,7 @@ CoinTosserExact::CoinTosserExact(real_type s_inv, unsigned int size)
 
 
 template<typename PRNG>
-void CoinTosserExact::populate(real_type const s, PRNG & prng)
+void CoinTosserExact::populate(specificity_t const s, PRNG & prng)
 {
 }
 

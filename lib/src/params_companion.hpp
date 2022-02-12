@@ -74,9 +74,9 @@ int number_of_features(params_t const & params)
 
 
 inline
-real_type s(params_t const & params)
+specificity_t s(params_t const & params)
 {
-    return std::get<real_type>(params.at("s"));
+    return specificity_t{std::get<real_type>(params.at("s"))};
 }
 
 

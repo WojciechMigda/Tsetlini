@@ -12,8 +12,12 @@ namespace Tsetlini
 
 
 using threshold_t = strong::type<
-    int, struct threshold_t_,
+    int, struct _threshold_tag,
     strong::ordered_with<Tsetlini::response_type>
+>;
+
+using specificity_t = strong::type<
+    Tsetlini::real_type, struct _specificity_tag
 >;
 
 

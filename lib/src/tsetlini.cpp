@@ -19,6 +19,7 @@
 #include "tsetlini_strong_params.hpp"
 
 #include "neither/either.hpp"
+#include "strong_type/strong_type.hpp"
 
 #include <utility>
 #include <algorithm>
@@ -240,7 +241,6 @@ void classifier_update_impl(
     threshold_t const threshold,
     int const number_of_clauses,
     int const number_of_states,
-    real_type s,
     bool const boost_true_positive_feedback,
     int const max_weight,
     int const n_jobs,
@@ -677,7 +677,6 @@ fit_classifier_online_impl(
                 threshold,
                 number_of_clauses,
                 number_of_states,
-                s,
                 boost_true_positive_feedback,
                 max_weight,
                 n_jobs,
@@ -745,7 +744,6 @@ void regressor_update_impl(
     threshold_t const threshold,
     int const number_of_clauses,
     int const number_of_states,
-    real_type s,
     bool const boost_true_positive_feedback,
     int const max_weight,
     loss_fn_type const & loss_fn,
@@ -838,7 +836,6 @@ fit_regressor_online_impl(
                 threshold,
                 number_of_clauses,
                 number_of_states,
-                s,
                 boost_true_positive_feedback,
                 max_weight,
                 loss_fn,

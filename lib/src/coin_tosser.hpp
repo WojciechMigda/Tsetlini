@@ -4,6 +4,7 @@
 #define LIB_INCLUDE_COIN_TOSSER_HPP_
 
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <cmath>
 #include <cstring>
@@ -24,7 +25,7 @@ struct CoinTosser
     CoinTosser(unsigned int base_size, unsigned int extra_size);
 
     template<typename PRNG>
-    void populate(real_type const s, PRNG & prng);
+    void populate(specificity_t const s, PRNG & prng);
 
     template<typename PRNG>
     char const * tosses(PRNG & prng);
@@ -49,10 +50,10 @@ CoinTosser::CoinTosser(unsigned int base_size, unsigned int extra_size)
 
 
 template<typename PRNG>
-void CoinTosser::populate(real_type const s, PRNG & prng)
+void CoinTosser::populate(specificity_t const s, PRNG & prng)
 {
     auto const vsz = m_cache.size();
-    unsigned int one_count = std::round(vsz / s);
+    unsigned int one_count = std::round(vsz / value_of(s));
 
     //memset(m_cache.data(), 0, vsz * sizeof (decltype (m_cache)::value_type));
     std::fill(m_cache.begin(), m_cache.end(), 0);
@@ -110,7 +111,7 @@ struct CoinTosserBitwise
     CoinTosserBitwise(unsigned int base_size, unsigned int extra_size);
 
     template<typename PRNG>
-    void populate(real_type const s, PRNG & prng);
+    void populate(specificity_t const s, PRNG & prng);
 
     template<typename PRNG>
     bit_vector_uint64::block_type const * tosses(PRNG & prng);
@@ -144,10 +145,10 @@ CoinTosserBitwise::CoinTosserBitwise(unsigned int base_size, unsigned int extra_
 
 
 template<typename PRNG>
-void CoinTosserBitwise::populate(real_type const s, PRNG & prng)
+void CoinTosserBitwise::populate(specificity_t const s, PRNG & prng)
 {
     auto const bit_sz = m_cache.size();
-    unsigned int ones_count = std::round(bit_sz / s);
+    unsigned int ones_count = std::round(bit_sz / value_of(s));
 
     std::fill(m_cache.m_vector.begin(), m_cache.m_vector.end(), 0);
 

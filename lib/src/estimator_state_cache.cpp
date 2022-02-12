@@ -4,6 +4,8 @@
 #include "params_companion.hpp"
 #include "mt.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 
 namespace Tsetlini
 {
@@ -21,7 +23,7 @@ void ClassifierStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
     cache.ct = CoinTosserExact(
-        1. / Params::s(params),
+        real_type{1.} / value_of(Params::s(params)),
         Params::number_of_features(params));
 }
 
@@ -48,7 +50,7 @@ void RegressorStateCache::reset(
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
     cache.ct = CoinTosserExact(
-        1. / Params::s(params),
+        real_type{1.} / value_of(Params::s(params)),
         Params::number_of_features(params));
 }
 
