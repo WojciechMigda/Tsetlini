@@ -12,6 +12,7 @@
 #include "estimator_state.hpp"
 
 #include <vector>
+#include <memory>
 
 
 #define TSETLINI_VERSION_MAJOR 0
@@ -71,7 +72,7 @@ friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::
 
 
 private:
-    ClassifierStateClassic m_state;
+    std::unique_ptr<ClassifierStateClassic> m_state_p;
 
     ClassifierClassic(params_t const & params);
     ClassifierClassic(params_t && params);
@@ -124,7 +125,7 @@ friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::st
 
 
 private:
-    RegressorStateClassic m_state;
+    std::unique_ptr<RegressorStateClassic> m_state_p;
 
     RegressorClassic(params_t const & params);
     RegressorClassic(params_t && params);
@@ -195,7 +196,7 @@ friend Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::
 
 
 private:
-    ClassifierStateBitwise m_state;
+    std::unique_ptr<ClassifierStateBitwise> m_state_p;
 
     ClassifierBitwise(params_t const & params);
     ClassifierBitwise(params_t && params);
@@ -250,7 +251,7 @@ friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::st
 
 
 private:
-    RegressorStateBitwise m_state;
+    std::unique_ptr<RegressorStateBitwise> m_state_p;
 
     RegressorBitwise(params_t const & params);
     RegressorBitwise(params_t && params);
