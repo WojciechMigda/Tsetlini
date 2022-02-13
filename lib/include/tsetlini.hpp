@@ -9,10 +9,9 @@
 #include "tsetlini_status_code.hpp"
 
 #include "tsetlini_types.hpp"
-#include "estimator_state.hpp"
+#include "estimator_state_fwd.hpp"
 
 #include <vector>
-#include <memory>
 
 
 #define TSETLINI_VERSION_MAJOR 0
@@ -64,15 +63,17 @@ struct ClassifierClassic
 
 
     params_t read_params() const;
-    ClassifierStateClassic read_state() const;
+    ClassifierStateClassicPtr clone_state() const;
+
 
     ClassifierClassic(ClassifierStateClassic const & state);
+    ClassifierClassic(ClassifierClassic &&);
 
 friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params);
 
 
 private:
-    std::unique_ptr<ClassifierStateClassic> m_state_p;
+    ClassifierStateClassicPtr m_state_p;
 
     ClassifierClassic(params_t const & params);
     ClassifierClassic(params_t && params);
@@ -117,15 +118,16 @@ struct RegressorClassic
 
 
     params_t read_params() const;
-    RegressorStateClassic read_state() const;
+    RegressorStateClassicPtr clone_state() const;
 
     RegressorClassic(RegressorStateClassic const & state);
+    RegressorClassic(RegressorClassic &&);
 
 friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
 
 
 private:
-    std::unique_ptr<RegressorStateClassic> m_state_p;
+    RegressorStateClassicPtr m_state_p;
 
     RegressorClassic(params_t const & params);
     RegressorClassic(params_t && params);
@@ -188,15 +190,16 @@ struct ClassifierBitwise
 
 
     params_t read_params() const;
-    ClassifierStateBitwise read_state() const;
+    ClassifierStateBitwisePtr clone_state() const;
 
     ClassifierBitwise(ClassifierStateBitwise const & state);
+    ClassifierBitwise(ClassifierBitwise &&);
 
 friend Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params);
 
 
 private:
-    std::unique_ptr<ClassifierStateBitwise> m_state_p;
+    ClassifierStateBitwisePtr m_state_p;
 
     ClassifierBitwise(params_t const & params);
     ClassifierBitwise(params_t && params);
@@ -243,15 +246,16 @@ struct RegressorBitwise
 
 
     params_t read_params() const;
-    RegressorStateBitwise read_state() const;
+    RegressorStateBitwisePtr clone_state() const;
 
     RegressorBitwise(RegressorStateBitwise const & state);
+    RegressorBitwise(RegressorBitwise &&);
 
 friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::string const & json_params);
 
 
 private:
-    std::unique_ptr<RegressorStateBitwise> m_state_p;
+    RegressorStateBitwisePtr m_state_p;
 
     RegressorBitwise(params_t const & params);
     RegressorBitwise(params_t && params);

@@ -65,8 +65,6 @@ struct EstimatorState
     FRNG fgen;
 
     explicit EstimatorState(params_t const & params);
-
-    bool operator==(EstimatorState const & other) const;
 };
 
 
@@ -76,25 +74,6 @@ EstimatorState<TAStateType, EstimatorStateCacheType>::EstimatorState(params_t co
 {
 }
 
-
-template<typename TAStateType, typename EstimatorStateCacheType>
-bool EstimatorState<TAStateType, EstimatorStateCacheType>::operator==(EstimatorState const & other) const
-{
-    if (this == &other)
-    {
-        return true;
-    }
-    else
-    {
-        return
-            ta_state == other.ta_state
-            and igen == other.igen
-            and fgen == other.fgen
-            and m_params == other.m_params
-            and cache_type::are_equal(cache, other.cache)
-        ;
-    }
-}
 
 using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;

@@ -26,6 +26,7 @@
 #include <string>
 #include <numeric>
 #include <cstddef>
+#include <memory>
 
 
 using namespace neither;
@@ -1014,21 +1015,33 @@ partial_fit_impl(
 
 
 ClassifierClassic::ClassifierClassic(params_t const & params) :
-    m_state_p(std::make_unique<ClassifierStateClassic>(params))
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(params),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
 
 
 ClassifierClassic::ClassifierClassic(params_t && params) :
-    m_state_p(std::make_unique<ClassifierStateClassic>(std::forward<params_t>(params)))
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(std::forward<params_t>(params)),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
 
 
 ClassifierClassic::ClassifierClassic(ClassifierStateClassic const & state) :
-    m_state_p(std::make_unique<ClassifierStateClassic>(state))
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(state),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
+
+
+ClassifierClassic::ClassifierClassic(ClassifierClassic &&) = default;
 
 
 Either<status_message_t, label_type>
@@ -1115,9 +1128,11 @@ params_t ClassifierClassic::read_params() const
 }
 
 
-ClassifierStateClassic ClassifierClassic::read_state() const
+ClassifierStateClassicPtr ClassifierClassic::clone_state() const
 {
-    return *m_state_p;
+    return ClassifierStateClassicPtr(
+        new ClassifierStateClassic(*m_state_p),
+        ClassifierStateClassicDeleter);
 }
 
 
@@ -1137,21 +1152,33 @@ make_classifier_classic(std::string const & json_params)
 
 
 RegressorClassic::RegressorClassic(params_t const & params) :
-    m_state_p(std::make_unique<RegressorStateClassic>(params))
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(params),
+        RegressorStateClassicDeleter)
+    )
 {
 }
 
 
 RegressorClassic::RegressorClassic(params_t && params) :
-    m_state_p(std::make_unique<RegressorStateClassic>(std::forward<params_t>(params)))
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(std::forward<params_t>(params)),
+        RegressorStateClassicDeleter)
+    )
 {
 }
 
 
 RegressorClassic::RegressorClassic(RegressorStateClassic const & state) :
-    m_state_p(std::make_unique<RegressorStateClassic>(state))
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(state),
+        RegressorStateClassicDeleter)
+    )
 {
 }
+
+
+RegressorClassic::RegressorClassic(RegressorClassic &&) = default;
 
 
 Either<status_message_t, RegressorClassic>
@@ -1274,9 +1301,11 @@ params_t RegressorClassic::read_params() const
 }
 
 
-RegressorStateClassic RegressorClassic::read_state() const
+RegressorStateClassicPtr RegressorClassic::clone_state() const
 {
-    return *m_state_p;
+    return RegressorStateClassicPtr(
+        new RegressorStateClassic(*m_state_p),
+        RegressorStateClassicDeleter);
 }
 
 
@@ -1390,16 +1419,24 @@ params_t ClassifierBitwise::read_params() const
 }
 
 
-ClassifierStateBitwise ClassifierBitwise::read_state() const
+ClassifierStateBitwisePtr ClassifierBitwise::clone_state() const
 {
-    return *m_state_p;
+    return ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(*m_state_p),
+        ClassifierStateBitwiseDeleter);
 }
 
 
 ClassifierBitwise::ClassifierBitwise(ClassifierStateBitwise const & state) :
-    m_state_p(std::make_unique<ClassifierStateBitwise>(state))
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(state),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
+
+
+ClassifierBitwise::ClassifierBitwise(ClassifierBitwise &&) = default;
 
 
 Either<status_message_t, ClassifierBitwise>
@@ -1415,13 +1452,19 @@ make_classifier_bitwise(std::string const & json_params)
 
 
 ClassifierBitwise::ClassifierBitwise(params_t const & params) :
-    m_state_p(std::make_unique<ClassifierStateBitwise>(params))
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(params),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
 
 
 ClassifierBitwise::ClassifierBitwise(params_t && params) :
-    m_state_p(std::make_unique<ClassifierStateBitwise>(std::forward<params_t>(params)))
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(std::forward<params_t>(params)),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
 
@@ -1523,16 +1566,24 @@ params_t RegressorBitwise::read_params() const
 }
 
 
-RegressorStateBitwise RegressorBitwise::read_state() const
+RegressorStateBitwisePtr RegressorBitwise::clone_state() const
 {
-    return *m_state_p;
+    return RegressorStateBitwisePtr(
+        new RegressorStateBitwise(*m_state_p),
+        RegressorStateBitwiseDeleter);
 }
 
 
 RegressorBitwise::RegressorBitwise(RegressorStateBitwise const & state) :
-    m_state_p(std::make_unique<RegressorStateBitwise>(state))
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(state),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
+
+
+RegressorBitwise::RegressorBitwise(RegressorBitwise &&) = default;
 
 
 Either<status_message_t, RegressorBitwise>
@@ -1548,13 +1599,19 @@ make_regressor_bitwise(std::string const & json_params)
 
 
 RegressorBitwise::RegressorBitwise(params_t const & params) :
-    m_state_p(std::make_unique<RegressorStateBitwise>(params))
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(params),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
 
 
 RegressorBitwise::RegressorBitwise(params_t && params) :
-    m_state_p(std::make_unique<RegressorStateBitwise>(std::forward<params_t>(params)))
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(std::forward<params_t>(params)),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
 

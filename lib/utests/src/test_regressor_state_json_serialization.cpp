@@ -3,6 +3,7 @@
 #include "tsetlini_state_json.hpp"
 #include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
+#include "estimator_state_fwd.hpp"
 
 #include "boost/ut.hpp"
 
@@ -48,17 +49,17 @@ suite TestRegressorStateJsonSerialization = []
                     // initialize state by calling fit() on our working regressor
                     auto _ = reg1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
                     // and extract the state
-                    auto s1 = reg1.read_state();
+                    auto s1 = reg1.clone_state();
 
                     // extract the state from the dummy one, it'll be overwritten
-                    auto s2 = reg2.read_state();
+                    auto s2 = reg2.clone_state();
 
                     // serialize our working state
-                    auto const jss = to_json_string(s1);
+                    auto const jss = to_json_string(*s1);
                     // and de-serialize it onto the dummy one
-                    from_json_string(s2, jss);
+                    from_json_string(*s2, jss);
 
-                    expect(that % true == (s1 == s2)) << "(De-)serialization failed";
+                    expect(that % true == equal(*s1, *s2)) << "(De-)serialization failed";
 
                     return std::move(reg2);
                 });
@@ -86,17 +87,17 @@ suite TestRegressorStateJsonSerialization = []
                     // initialize state by calling fit() on our working regressor
                     auto _ = reg1.fit(X, {0, 1}, 2);
                     // and extract the state
-                    auto s1 = reg1.read_state();
+                    auto s1 = reg1.clone_state();
 
                     // extract the state from the dummy one, it'll be overwritten
-                    auto s2 = reg2.read_state();
+                    auto s2 = reg2.clone_state();
 
                     // serialize our working state
-                    auto const jss = to_json_string(s1);
+                    auto const jss = to_json_string(*s1);
                     // and de-serialize it onto the dummy one
-                    from_json_string(s2, jss);
+                    from_json_string(*s2, jss);
 
-                    expect(that % true == (s1 == s2)) << "(De-)serialization failed";
+                    expect(that % true == equal(*s1, *s2)) << "(De-)serialization failed";
 
                     return std::move(reg2);
                 });
