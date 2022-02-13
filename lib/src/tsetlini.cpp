@@ -26,6 +26,7 @@
 #include <string>
 #include <numeric>
 #include <cstddef>
+#include <memory>
 
 
 using namespace neither;
@@ -1014,21 +1015,33 @@ partial_fit_impl(
 
 
 ClassifierClassic::ClassifierClassic(params_t const & params) :
-    m_state(params)
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(params),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
 
 
 ClassifierClassic::ClassifierClassic(params_t && params) :
-    m_state(params)
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(std::forward<params_t>(params)),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
 
 
 ClassifierClassic::ClassifierClassic(ClassifierStateClassic const & state) :
-    m_state(state)
+    m_state_p(ClassifierStateClassicPtr(
+        new ClassifierStateClassic(state),
+        ClassifierStateClassicDeleter)
+    )
 {
 }
+
+
+ClassifierClassic::ClassifierClassic(ClassifierClassic &&) = default;
 
 
 Either<status_message_t, label_type>
@@ -1041,28 +1054,28 @@ predict_impl(ClassifierStateClassic const & state, aligned_vector_char const & s
 Either<status_message_t, label_type>
 ClassifierClassic::predict(aligned_vector_char const & sample) const
 {
-    return predict_impl(m_state, sample);
+    return predict_impl(*m_state_p, sample);
 }
 
 
 Either<status_message_t, label_vector_type>
 ClassifierClassic::predict(std::vector<aligned_vector_char> const & X) const
 {
-    return predict_impl(m_state, X);
+    return predict_impl(*m_state_p, X);
 }
 
 
 Either<status_message_t, aligned_vector_int>
 ClassifierClassic::decision_function(aligned_vector_char const & sample) const
 {
-    return predict_classifier_raw_impl(m_state, sample);
+    return predict_classifier_raw_impl(*m_state_p, sample);
 }
 
 
 Either<status_message_t, std::vector<aligned_vector_int>>
 ClassifierClassic::decision_function(std::vector<aligned_vector_char> const & X) const
 {
-    return decision_function_impl(m_state, X);
+    return decision_function_impl(*m_state_p, X);
 }
 
 
@@ -1079,21 +1092,21 @@ evaluate_impl(
 Either<status_message_t, real_type>
 ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_vector_type const & y) const
 {
-    return evaluate_impl(m_state, X, y);
+    return evaluate_impl(*m_state_p, X, y);
 }
 
 
 status_message_t
 ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
 status_message_t
 ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1111,13 +1124,15 @@ fit_impl(
 
 params_t ClassifierClassic::read_params() const
 {
-    return m_state.m_params;
+    return m_state_p->m_params;
 }
 
 
-ClassifierStateClassic ClassifierClassic::read_state() const
+ClassifierStateClassicPtr ClassifierClassic::clone_state() const
 {
-    return m_state;
+    return ClassifierStateClassicPtr(
+        new ClassifierStateClassic(*m_state_p),
+        ClassifierStateClassicDeleter);
 }
 
 
@@ -1137,21 +1152,33 @@ make_classifier_classic(std::string const & json_params)
 
 
 RegressorClassic::RegressorClassic(params_t const & params) :
-    m_state(params)
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(params),
+        RegressorStateClassicDeleter)
+    )
 {
 }
 
 
 RegressorClassic::RegressorClassic(params_t && params) :
-    m_state(params)
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(std::forward<params_t>(params)),
+        RegressorStateClassicDeleter)
+    )
 {
 }
 
 
 RegressorClassic::RegressorClassic(RegressorStateClassic const & state) :
-    m_state(state)
+    m_state_p(RegressorStateClassicPtr(
+        new RegressorStateClassic(state),
+        RegressorStateClassicDeleter)
+    )
 {
 }
+
+
+RegressorClassic::RegressorClassic(RegressorClassic &&) = default;
 
 
 Either<status_message_t, RegressorClassic>
@@ -1169,7 +1196,7 @@ make_regressor_classic(std::string const & json_params)
 status_message_t
 RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(m_state, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1236,7 +1263,7 @@ fit_impl(
 status_message_t
 RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(m_state, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1250,7 +1277,7 @@ predict_impl(RegressorStateClassic const & state, std::vector<aligned_vector_cha
 Either<status_message_t, response_vector_type>
 RegressorClassic::predict(std::vector<aligned_vector_char> const & X) const
 {
-    return predict_impl(m_state, X);
+    return predict_impl(*m_state_p, X);
 }
 
 
@@ -1264,19 +1291,21 @@ predict_impl(RegressorStateClassic const & state, aligned_vector_char const & sa
 Either<status_message_t, response_type>
 RegressorClassic::predict(aligned_vector_char const & sample) const
 {
-    return predict_impl(m_state, sample);
+    return predict_impl(*m_state_p, sample);
 }
 
 
 params_t RegressorClassic::read_params() const
 {
-    return m_state.m_params;
+    return m_state_p->m_params;
 }
 
 
-RegressorStateClassic RegressorClassic::read_state() const
+RegressorStateClassicPtr RegressorClassic::clone_state() const
 {
-    return m_state;
+    return RegressorStateClassicPtr(
+        new RegressorStateClassic(*m_state_p),
+        RegressorStateClassicDeleter);
 }
 
 
@@ -1298,7 +1327,7 @@ fit_impl(
 status_message_t
 ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(m_state, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1324,7 +1353,7 @@ partial_fit_impl(
 status_message_t
 ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(m_state, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1338,7 +1367,7 @@ predict_impl(ClassifierStateBitwise const & state, bit_vector_uint64 const & sam
 Either<status_message_t, label_type>
 ClassifierBitwise::predict(bit_vector_uint64 const & sample) const
 {
-    return predict_impl(m_state, sample);
+    return predict_impl(*m_state_p, sample);
 }
 
 
@@ -1352,7 +1381,7 @@ predict_impl(ClassifierStateBitwise const & state, std::vector<bit_vector_uint64
 Either<status_message_t, label_vector_type>
 ClassifierBitwise::predict(std::vector<bit_vector_uint64> const & X) const
 {
-    return predict_impl(m_state, X);
+    return predict_impl(*m_state_p, X);
 }
 
 
@@ -1366,7 +1395,7 @@ decision_function_impl(ClassifierStateBitwise const & state, bit_vector_uint64 c
 Either<status_message_t, aligned_vector_int>
 ClassifierBitwise::decision_function(bit_vector_uint64 const & sample) const
 {
-    return decision_function_impl(m_state, sample);
+    return decision_function_impl(*m_state_p, sample);
 }
 
 
@@ -1380,26 +1409,34 @@ decision_function_impl(ClassifierStateBitwise const & state, std::vector<bit_vec
 Either<status_message_t, std::vector<aligned_vector_int>>
 ClassifierBitwise::decision_function(std::vector<bit_vector_uint64> const & X) const
 {
-    return decision_function_impl(m_state, X);
+    return decision_function_impl(*m_state_p, X);
 }
 
 
 params_t ClassifierBitwise::read_params() const
 {
-    return m_state.m_params;
+    return m_state_p->m_params;
 }
 
 
-ClassifierStateBitwise ClassifierBitwise::read_state() const
+ClassifierStateBitwisePtr ClassifierBitwise::clone_state() const
 {
-    return m_state;
+    return ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(*m_state_p),
+        ClassifierStateBitwiseDeleter);
 }
 
 
 ClassifierBitwise::ClassifierBitwise(ClassifierStateBitwise const & state) :
-    m_state(state)
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(state),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
+
+
+ClassifierBitwise::ClassifierBitwise(ClassifierBitwise &&) = default;
 
 
 Either<status_message_t, ClassifierBitwise>
@@ -1415,13 +1452,19 @@ make_classifier_bitwise(std::string const & json_params)
 
 
 ClassifierBitwise::ClassifierBitwise(params_t const & params) :
-    m_state(params)
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(params),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
 
 
 ClassifierBitwise::ClassifierBitwise(params_t && params) :
-    m_state(params)
+    m_state_p(ClassifierStateBitwisePtr(
+        new ClassifierStateBitwise(std::forward<params_t>(params)),
+        ClassifierStateBitwiseDeleter)
+    )
 {
 }
 
@@ -1439,7 +1482,7 @@ evaluate_impl(
 Either<status_message_t, real_type>
 ClassifierBitwise::evaluate(std::vector<bit_vector_uint64> const & X, label_vector_type const & y) const
 {
-    return evaluate_impl(m_state, X, y);
+    return evaluate_impl(*m_state_p, X, y);
 }
 
 
@@ -1460,7 +1503,7 @@ fit_impl(
 status_message_t
 RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(m_state, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1485,7 +1528,7 @@ partial_fit_impl(
 status_message_t
 RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(m_state, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1499,7 +1542,7 @@ predict_impl(RegressorStateBitwise const & state, bit_vector_uint64 const & samp
 Either<status_message_t, response_type>
 RegressorBitwise::predict(bit_vector_uint64 const & sample) const
 {
-    return predict_impl(m_state, sample);
+    return predict_impl(*m_state_p, sample);
 }
 
 
@@ -1513,26 +1556,34 @@ predict_impl(RegressorStateBitwise const & state, std::vector<bit_vector_uint64>
 Either<status_message_t, response_vector_type>
 RegressorBitwise::predict(std::vector<bit_vector_uint64> const & X) const
 {
-    return predict_impl(m_state, X);
+    return predict_impl(*m_state_p, X);
 }
 
 
 params_t RegressorBitwise::read_params() const
 {
-    return m_state.m_params;
+    return m_state_p->m_params;
 }
 
 
-RegressorStateBitwise RegressorBitwise::read_state() const
+RegressorStateBitwisePtr RegressorBitwise::clone_state() const
 {
-    return m_state;
+    return RegressorStateBitwisePtr(
+        new RegressorStateBitwise(*m_state_p),
+        RegressorStateBitwiseDeleter);
 }
 
 
 RegressorBitwise::RegressorBitwise(RegressorStateBitwise const & state) :
-    m_state(state)
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(state),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
+
+
+RegressorBitwise::RegressorBitwise(RegressorBitwise &&) = default;
 
 
 Either<status_message_t, RegressorBitwise>
@@ -1548,13 +1599,19 @@ make_regressor_bitwise(std::string const & json_params)
 
 
 RegressorBitwise::RegressorBitwise(params_t const & params) :
-    m_state(params)
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(params),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
 
 
 RegressorBitwise::RegressorBitwise(params_t && params) :
-    m_state(params)
+    m_state_p(RegressorStateBitwisePtr(
+        new RegressorStateBitwise(std::forward<params_t>(params)),
+        RegressorStateBitwiseDeleter)
+    )
 {
 }
 

@@ -22,6 +22,7 @@ endif()
 ################################################################################
 
 set(SOURCES
+    src/estimator_state.cpp
     src/estimator_state_cache.cpp
     src/loss_fn.cpp
     src/ta_state.cpp

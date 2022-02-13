@@ -154,8 +154,8 @@ Please run make_data.py to generate this file and copy it to the current working
         })
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const state = clf.read_state();
-            auto const j_state = Tsetlini::to_json_string(state);
+            auto const state = clf.clone_state();
+            auto const j_state = Tsetlini::to_json_string(*state);
             Tsetlini::ClassifierStateClassic new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 
@@ -216,8 +216,8 @@ Please run make_data.py to generate this file and copy it to the current working
         })
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const state = clf.read_state();
-            auto const j_state = Tsetlini::to_json_string(state);
+            auto const state = clf.clone_state();
+            auto const j_state = Tsetlini::to_json_string(*state);
             Tsetlini::ClassifierStateClassic new_state(clf.read_params());
             Tsetlini::from_json_string(new_state, j_state);
 

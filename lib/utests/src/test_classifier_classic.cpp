@@ -17,7 +17,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic();
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -25,7 +25,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic("");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -33,7 +33,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic("[]");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -41,7 +41,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic("{}");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -49,7 +49,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"gotcha": 564})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -57,7 +57,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int8"})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -65,7 +65,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int16"})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -73,7 +73,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "int32"})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -81,7 +81,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"counting_type": "auto"})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -89,7 +89,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 16})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -97,7 +97,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 32})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -105,7 +105,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 64})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -113,7 +113,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 128})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -121,7 +121,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"clause_output_tile_size": 24})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -129,7 +129,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"n_jobs": 2})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -137,7 +137,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"n_jobs": -1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -145,7 +145,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"n_jobs": 0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -153,7 +153,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"n_jobs": -2})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -161,7 +161,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_pos_neg_clauses_per_label": 1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -169,7 +169,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_pos_neg_clauses_per_label": 0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -177,7 +177,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_pos_neg_clauses_per_label": -1})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -185,7 +185,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_states": 1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -193,7 +193,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_states": 0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -201,7 +201,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"number_of_states": -1})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -209,7 +209,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"boost_true_positive_feedback": 1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -217,7 +217,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"boost_true_positive_feedback": 0})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -225,7 +225,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"boost_true_positive_feedback": -1})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -233,7 +233,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"boost_true_positive_feedback": 2})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -241,7 +241,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"threshold": 1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -249,7 +249,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"threshold": 0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -257,7 +257,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"threshold": -1})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -265,7 +265,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"max_weight": 1})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -273,7 +273,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"max_weight": 10})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -281,7 +281,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"max_weight": 0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -289,7 +289,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"max_weight": -1})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -297,7 +297,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"verbose": true})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -305,7 +305,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"verbose": false})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -313,7 +313,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"weighted": true})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -321,7 +321,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"weighted": false})");
 
-    expect(that % true == clf);
+    expect(that % true == !!clf);
 };
 
 
@@ -329,7 +329,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": -1.0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -337,7 +337,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": 0.0})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -345,7 +345,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": 0.999})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -353,7 +353,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": -inf})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -361,7 +361,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": +inf})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -369,7 +369,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": NaN})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
@@ -377,7 +377,7 @@ suite TestClassifierClassic = []
 {
     auto const clf = Tsetlini::make_classifier_classic(R"({"s": nan})");
 
-    expect(that % false == clf);
+    expect(that % false == !!clf);
 };
 
 
