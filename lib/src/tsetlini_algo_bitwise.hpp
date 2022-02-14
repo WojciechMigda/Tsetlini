@@ -764,7 +764,7 @@ void block2(
 template<typename state_type, typename bit_block_type>
 inline
 void block3_(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
