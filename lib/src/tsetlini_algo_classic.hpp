@@ -132,7 +132,7 @@ void calculate_clause_output_for_predict_T(
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
 
     if (number_of_features < (int)BATCH_SZ)
@@ -177,7 +177,7 @@ void calculate_clause_output_for_predict_T(
             state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
-            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            for (; kk < value_of(number_of_features) - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
@@ -195,7 +195,7 @@ void calculate_clause_output_for_predict_T(
                     break;
                 }
             }
-            for (int fidx = kk; fidx < number_of_features and toggle_output == false; ++fidx)
+            for (int fidx = kk; fidx < value_of(number_of_features) and toggle_output == false; ++fidx)
             {
                 bool const action_include = action(ta_state_pos_j[fidx]);
                 bool const action_include_negated = action(ta_state_neg_j[fidx]);
@@ -249,7 +249,7 @@ void calculate_clause_output_T(
     numeric_matrix<state_type> const & ta_state,
     int const n_jobs)
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
 
     if (number_of_features < (int)BATCH_SZ)
@@ -288,7 +288,7 @@ void calculate_clause_output_T(
             state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
-            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            for (; kk < value_of(number_of_features) - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
@@ -351,7 +351,7 @@ void calculate_clause_output_T(
  */
 template<typename state_type>
 void block1(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -390,7 +390,7 @@ void block1(
  */
 template<bool boost_true_positive_feedback, typename state_type>
 void block2(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -507,7 +507,7 @@ void block2(
  */
 template<typename state_type>
 void block3(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     char const * __restrict X
@@ -571,7 +571,7 @@ void train_classifier_automata(
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
@@ -766,7 +766,7 @@ void train_regressor_automata(
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     unsigned int const N = input_end_ix - input_begin_ix;
     real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));

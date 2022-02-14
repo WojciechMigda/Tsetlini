@@ -24,7 +24,7 @@ void ClassifierStateCache::reset(
 
     cache.ct = CoinTosserExact(
         real_type{1.} / value_of(Params::s(params)),
-        Params::number_of_features(params));
+        value_of(Params::number_of_features(params)));
 }
 
 
@@ -51,7 +51,7 @@ void RegressorStateCache::reset(
 
     cache.ct = CoinTosserExact(
         real_type{1.} / value_of(Params::s(params)),
-        Params::number_of_features(params));
+        value_of(Params::number_of_features(params)));
 }
 
 
@@ -84,8 +84,8 @@ void ClassifierStateBitwiseCache::reset(
      * instead, so that CoinTosserBitwise will have a chance to return pointer
      * to a position different than just the start.
      */
-    cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+    auto const base_size = value_of(Params::number_of_features(params));
+    cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);
 }
 
 
@@ -110,8 +110,8 @@ void RegressorStateBitwiseCache::reset(
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
 
-    cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+    auto const base_size = value_of(Params::number_of_features(params));
+    cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);
 }
 
 

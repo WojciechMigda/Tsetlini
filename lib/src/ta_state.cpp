@@ -1,5 +1,8 @@
 #include "ta_state.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "mt.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 #include <string>
 #include <variant>
@@ -15,19 +18,19 @@ std::variant<
     , numeric_matrix_int16
     , numeric_matrix_int8
 >
-make_ta_state_matrix(std::string const & counting_type, int number_of_clauses, int number_of_features)
+make_ta_state_matrix(std::string const & counting_type, int number_of_clauses, number_of_features_t number_of_features)
 {
     if (counting_type == "int8")
     {
-        return numeric_matrix_int8(number_of_clauses, number_of_features);
+        return numeric_matrix_int8(number_of_clauses, value_of(number_of_features));
     }
     else if (counting_type == "int16")
     {
-        return numeric_matrix_int16(number_of_clauses, number_of_features);
+        return numeric_matrix_int16(number_of_clauses, value_of(number_of_features));
     }
     else
     {
-        return numeric_matrix_int32(number_of_clauses, number_of_features);
+        return numeric_matrix_int32(number_of_clauses, value_of(number_of_features));
     }
 }
 
@@ -37,7 +40,7 @@ TAState::initialize(
     value_type & state,
     std::string const & counting_type,
     int number_of_clauses,
-    int number_of_features,
+    number_of_features_t number_of_features,
     bool const weighted,
     IRNG & igen)
 {
@@ -70,12 +73,12 @@ TAStateWithSignum::initialize(
     value_type & state,
     std::string const & counting_type,
     int number_of_clauses,
-    int number_of_features,
+    number_of_features_t number_of_features,
     bool const weighted,
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
-    state.signum = bit_matrix_uint64(number_of_clauses, number_of_features);
+    state.signum = bit_matrix_uint64(number_of_clauses, value_of(number_of_features));
 
     auto & signum = state.signum;
 

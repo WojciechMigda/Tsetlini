@@ -25,7 +25,7 @@ void log_classifier_params(params_t const & params, bool verbose)
 {
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
-    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
     LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
@@ -58,7 +58,7 @@ static
 void log_regressor_params(params_t const & params, bool verbose)
 {
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
-    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
     LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';

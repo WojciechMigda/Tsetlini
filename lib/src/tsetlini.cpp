@@ -95,9 +95,9 @@ status_message_t check_X_y(
 template<typename RowType>
 status_message_t check_X(
     std::vector<RowType> const & X,
-    int const number_of_features)
+    number_of_features_t const number_of_features)
 {
-    if (X.front().size() != static_cast<std::size_t>(number_of_features))
+    if ((X.front().size() - value_of(number_of_features)) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "X row size must match number of features previously used to train"
@@ -189,11 +189,11 @@ status_message_t check_for_predict(
         return {StatusCode::S_VALUE_ERROR,
             "All samples in X must have the same number of feature columns"};
     }
-    else if (X.front().size() - Params::number_of_features(state.m_params) != 0)
+    else if ((X.front().size() - value_of(Params::number_of_features(state.m_params))) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "Predict called with X, which number of features " + std::to_string(X.front().size()) +
-            " does not match that from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+            " does not match that from prior fit " + std::to_string(value_of(Params::number_of_features(state.m_params)))};
     }
     else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & sample){ return check_all_0s_or_1s(sample); }))
     {
@@ -215,11 +215,11 @@ status_message_t check_for_predict(
         return {StatusCode::S_NOT_FITTED_ERROR,
             "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
     }
-    else if (sample.size() - Params::number_of_features(state.m_params) != 0)
+    else if ((sample.size() - value_of(Params::number_of_features(state.m_params))) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "Predict called with sample, which size " + std::to_string(sample.size()) +
-            " does not match number of features from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+            " does not match number of features from prior fit " + std::to_string(value_of(Params::number_of_features(state.m_params)))};
     }
     else if (not check_all_0s_or_1s(sample))
     {

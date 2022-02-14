@@ -404,7 +404,7 @@ void calculate_clause_output_for_predict_T(
 template<typename state_type, typename bit_block_type>
 inline
 void block1(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -467,7 +467,7 @@ void block1(
 template<typename state_type, typename bit_block_type, typename PRNG>
 inline
 void block1_sparse(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_sparse_features,
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
@@ -480,7 +480,7 @@ void block1_sparse(
     for (int sfidx = 0; sfidx < number_of_sparse_features; ++sfidx)
     {
         {
-            auto const fidx = prng() % number_of_features;
+            auto const fidx = prng() % value_of(number_of_features);
             auto const ta_state = ta_state_pos_j[fidx];
 
             if (ta_state == 0)
@@ -495,7 +495,7 @@ void block1_sparse(
         }
 
         {
-            auto const fidx = prng() % number_of_features;
+            auto const fidx = prng() % value_of(number_of_features);
             auto const ta_state = ta_state_neg_j[fidx];
 
             if (ta_state == 0)
@@ -518,7 +518,7 @@ void block1_sparse(
 template<typename state_type, typename bit_block_type>
 inline
 void block1(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
@@ -597,7 +597,7 @@ void block2(
     char const * __restrict ct_neg
 )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
@@ -817,7 +817,6 @@ void block3_(
 template<typename state_type, typename bit_block_type>
 inline
 void block3(
-    int const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -897,7 +896,7 @@ void train_classifier_automata_T(
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
@@ -948,7 +947,7 @@ void train_classifier_automata_T(
         {
             if (clause_output[iidx] == 1)
             {
-                block3<state_type, bit_block_type>(number_of_features,
+                block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
@@ -1026,7 +1025,7 @@ void train_regressor_automata(
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     unsigned int const N = input_end_ix - input_begin_ix;
     real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
@@ -1093,7 +1092,7 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] != 0)
             {
-                block3<state_type, bit_block_type>(number_of_features,
+                block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),

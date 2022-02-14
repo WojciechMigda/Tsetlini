@@ -67,9 +67,9 @@ int number_of_labels(params_t const & params)
 
 
 inline
-int number_of_features(params_t const & params)
+number_of_features_t number_of_features(params_t const & params)
 {
-    return std::get<int>(params.at("number_of_features"));
+    return number_of_features_t{std::get<int>(params.at("number_of_features"))};
 }
 
 

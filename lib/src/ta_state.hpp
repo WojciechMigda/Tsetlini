@@ -4,6 +4,7 @@
 #define LIB_INCLUDE_TA_STATE_HPP_
 
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "mt.hpp"
 
 #include <variant>
@@ -28,7 +29,7 @@ struct is_TA_state<T, std::void_t<
             std::declval<typename T::value_type &>(),
             std::declval<std::string const &>(),
             std::declval<int>(),
-            std::declval<int>(),
+            std::declval<number_of_features_t>(),
             std::declval<bool const>(),
             std::declval<IRNG &>()))
     >>
@@ -68,7 +69,7 @@ struct TAState : public TAStateBase
         value_type & state,
         std::string const & counting_type,
         int number_of_clauses,
-        int number_of_features,
+        number_of_features_t number_of_features,
         bool const weighted,
         IRNG & igen);
 };
@@ -97,7 +98,7 @@ struct TAStateWithSignum : public TAStateBase
         value_type & state,
         std::string const & counting_type,
         int number_of_clauses,
-        int number_of_features,
+        number_of_features_t number_of_features,
         bool const weighted,
         IRNG & igen);
 };
