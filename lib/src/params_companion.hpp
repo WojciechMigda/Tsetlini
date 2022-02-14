@@ -46,9 +46,9 @@ seed_type random_state(params_t const & params)
 
 
 inline
-bool verbose(params_t const & params)
+verbosity_t verbose(params_t const & params)
 {
-    return std::get<bool>(params.at("verbose"));
+    return verbosity_t{std::get<bool>(params.at("verbose"))};
 }
 
 

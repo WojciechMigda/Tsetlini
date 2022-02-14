@@ -21,7 +21,7 @@ namespace Tsetlini
 
 
 static
-void log_classifier_params(params_t const & params, bool verbose)
+void log_classifier_params(params_t const & params, verbosity_t verbose)
 {
     LOG(info) << "number_of_labels: " << value_of(Params::number_of_labels(params)) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
@@ -41,21 +41,21 @@ void log_classifier_params(params_t const & params, bool verbose)
 
 
 static
-void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
+void log_estimator_params(ClassifierStateClassic const & state, verbosity_t verbose)
 {
     log_classifier_params(state.m_params, verbose);
 }
 
 
 static
-void log_estimator_params(ClassifierStateBitwise const & state, bool verbose)
+void log_estimator_params(ClassifierStateBitwise const & state, verbosity_t verbose)
 {
     log_classifier_params(state.m_params, verbose);
 }
 
 
 static
-void log_regressor_params(params_t const & params, bool verbose)
+void log_regressor_params(params_t const & params, verbosity_t verbose)
 {
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
@@ -77,14 +77,14 @@ void log_regressor_params(params_t const & params, bool verbose)
 
 
 static
-void log_estimator_params(RegressorStateClassic const & state, bool verbose)
+void log_estimator_params(RegressorStateClassic const & state, verbosity_t verbose)
 {
     log_regressor_params(state.m_params, verbose);
 }
 
 
 static
-void log_estimator_params(RegressorStateBitwise const & state, bool verbose)
+void log_estimator_params(RegressorStateBitwise const & state, verbosity_t verbose)
 {
     log_regressor_params(state.m_params, verbose);
 }
@@ -94,7 +94,7 @@ static
 std::string normalize_counting_type(
     std::string const & counting_type,
     number_of_states_t number_of_states,
-    bool verbose)
+    verbosity_t verbose)
 {
     std::string rv;
 

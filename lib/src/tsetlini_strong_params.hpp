@@ -39,6 +39,11 @@ using number_of_states_t = strong::type<
     strong::affine_point<int> // +/- int
 >;
 
+using verbosity_t = strong::type<
+    bool, struct _verbosity_tag,
+    strong::convertible_to<bool>
+>;
+
 
 }  // namespace Tsetlini
 
