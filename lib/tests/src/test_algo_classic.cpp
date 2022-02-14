@@ -247,7 +247,7 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, weights, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, X, MAX_WEIGHT, boost_true_positive_feedback, prng, ct);
+            Tsetlini::number_of_states_t{number_of_states}, X, MAX_WEIGHT, boost_true_positive_feedback, prng, ct);
 
         EXPECT_TRUE(ta_state == ta_state_CAIR);
     }

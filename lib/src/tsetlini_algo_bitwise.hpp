@@ -405,7 +405,7 @@ template<typename state_type, typename bit_block_type>
 inline
 void block1(
     number_of_features_t const number_of_features,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -469,7 +469,7 @@ inline
 void block1_sparse(
     number_of_features_t const number_of_features,
     int const number_of_sparse_features,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -519,7 +519,7 @@ template<typename state_type, typename bit_block_type>
 inline
 void block1(
     number_of_features_t const number_of_features,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -587,7 +587,7 @@ void block1(
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
 inline
 void block2(
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -679,7 +679,7 @@ void block2(
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
 inline
 void block2(
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -888,7 +888,7 @@ void train_classifier_automata_T(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
     int const max_weight,
     bool const boost_true_positive_feedback,
@@ -971,7 +971,7 @@ void train_classifier_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
     int const max_weight,
     bool const boost_true_positive_feedback,
@@ -1013,7 +1013,7 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     int const max_weight,
@@ -1115,7 +1115,7 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
     int const max_weight,

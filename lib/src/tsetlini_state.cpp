@@ -27,7 +27,7 @@ void log_classifier_params(params_t const & params, bool verbose)
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
     LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
-    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "number_of_states: " << value_of(Params::number_of_states(params)) << '\n';
     LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
@@ -60,7 +60,7 @@ void log_regressor_params(params_t const & params, bool verbose)
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
     LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
-    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "number_of_states: " << value_of(Params::number_of_states(params)) << '\n';
     LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
@@ -93,7 +93,7 @@ void log_estimator_params(RegressorStateBitwise const & state, bool verbose)
 static
 std::string normalize_counting_type(
     std::string const & counting_type,
-    int number_of_states,
+    number_of_states_t number_of_states,
     bool verbose)
 {
     std::string rv;

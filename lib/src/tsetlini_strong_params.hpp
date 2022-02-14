@@ -32,6 +32,13 @@ using number_of_labels_t = strong::type<
     strong::ordered_with<int>
 >;
 
+using number_of_states_t = strong::type<
+    int, struct _number_of_states_tag,
+    strong::ordered_with<int>, // covers comparison against int{8,16,32}
+    strong::arithmetic, // negation
+    strong::affine_point<int> // +/- int
+>;
+
 
 }  // namespace Tsetlini
 

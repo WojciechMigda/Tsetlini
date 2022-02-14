@@ -95,9 +95,9 @@ bool boost_true_positive_feedback(params_t const & params)
 
 
 inline
-int number_of_states(params_t const & params)
+number_of_states_t number_of_states(params_t const & params)
 {
-    return std::get<int>(params.at("number_of_states"));
+    return number_of_states_t{std::get<int>(params.at("number_of_states"))};
 }
 
 
