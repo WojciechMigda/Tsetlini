@@ -616,12 +616,12 @@ template<typename Gen>
 void generate_opposite_y(
     label_vector_type const & y,
     label_vector_type & opposite_y,
-    int number_of_labels,
+    number_of_labels_t number_of_labels,
     Gen & g)
 {
     for (auto it = 0u; it < y.size(); ++it)
     {
-        opposite_y[it] = (y[it] + 1 + g() % (number_of_labels - 1)) % number_of_labels;
+        opposite_y[it] = (y[it] + 1 + g() % (value_of(number_of_labels) - 1)) % value_of(number_of_labels);
     }
 }
 
@@ -983,7 +983,7 @@ fit_classifier_online_with_input_check(
     auto const labels = unique_labels(y);
     auto const number_of_labels = Params::number_of_labels(state.m_params);
 
-    if (auto sm = check_labels(labels, number_of_labels - 1);
+    if (auto sm = check_labels(labels, value_of(number_of_labels) - 1);
         sm.first != StatusCode::S_OK)
     {
         return sm;

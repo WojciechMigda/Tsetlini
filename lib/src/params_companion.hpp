@@ -60,9 +60,9 @@ int number_of_pos_neg_clauses_per_label(params_t const & params)
 
 
 inline
-int number_of_labels(params_t const & params)
+number_of_labels_t number_of_labels(params_t const & params)
 {
-    return std::get<int>(params.at("number_of_labels"));
+    return number_of_labels_t{std::get<int>(params.at("number_of_labels"))};
 }
 
 
@@ -111,7 +111,7 @@ int number_of_clauses_per_label(params_t const & params)
 inline
 int number_of_classifier_clauses(params_t const & params)
 {
-    return number_of_clauses_per_label(params) * number_of_labels(params);
+    return number_of_clauses_per_label(params) * value_of(number_of_labels(params));
 }
 
 

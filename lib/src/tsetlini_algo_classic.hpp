@@ -110,7 +110,7 @@ void sum_up_all_label_votes(
     w_vector_type const & weights,
     aligned_vector_int & label_sum,
 
-    int const number_of_labels,
+    number_of_labels_t const number_of_labels,
     int const number_of_pos_neg_clauses_per_label,
     threshold_t const threshold)
 {

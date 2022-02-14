@@ -18,7 +18,7 @@ void ClassifierStateCache::reset(
     cache.clause_output.clear();
     cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
     cache.label_sum.clear();
-    cache.label_sum.resize(Params::number_of_labels(params));
+    cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 
@@ -73,7 +73,7 @@ void ClassifierStateBitwiseCache::reset(
     cache.clause_output.clear();
     cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
     cache.label_sum.clear();
-    cache.label_sum.resize(Params::number_of_labels(params));
+    cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
     cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
 

@@ -23,7 +23,7 @@ namespace Tsetlini
 static
 void log_classifier_params(params_t const & params, bool verbose)
 {
-    LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
+    LOG(info) << "number_of_labels: " << value_of(Params::number_of_labels(params)) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
     LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
