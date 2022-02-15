@@ -80,6 +80,20 @@ using boost_tpf_t = strong::type<
     strong::ostreamable
 >;
 
+using number_of_physical_regressor_clauses_t = strong::type<
+    int, struct _number_of_physical_regressor_clauses_tag,
+    strong::ostreamable
+>;
+
+using number_of_physical_estimator_clauses_t = strong::type<
+    int, struct _number_of_physical_estimator_clauses_tag
+>;
+
+using number_of_estimator_clause_outputs_t = strong::type<
+    int, struct _number_of_estimator_clause_outputs_tag,
+    strong::ordered_with<int>
+>;
+
 
 }  // namespace Tsetlini
 

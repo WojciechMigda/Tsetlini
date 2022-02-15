@@ -44,10 +44,12 @@ void RegressorStateCache::reset(
     RegressorStateCache::value_type & cache,
     params_t const & params)
 {
+    auto const number_of_outputs = Params::number_of_regressor_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     cache.ct = CoinTosserExact(
         real_type{1.} / value_of(Params::s(params)),
@@ -105,10 +107,12 @@ void RegressorStateBitwiseCache::reset(
     RegressorStateBitwiseCache::value_type & cache,
     params_t const & params)
 {
+    auto const number_of_outputs = Params::number_of_regressor_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     auto const base_size = value_of(Params::number_of_features(params));
     cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);

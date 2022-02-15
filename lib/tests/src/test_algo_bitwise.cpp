@@ -175,13 +175,13 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
     for (auto it = 0u; it < 1000; /* nop */)
     {
         int const number_of_features = irng.next(2, 256);
-        int const number_of_clauses = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clause_outputs, number_of_features);
 
         auto ta_state_gen = [&irng](auto & ta_state)
         {
@@ -198,8 +198,9 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
 
         ta_state_gen(ta_state_values);
 
-        Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output_for_predict(X, clause_output_classic, number_of_clauses, ta_state_values, NJOBS, TILE_SZ);
+        Tsetlini::aligned_vector_char clause_output_classic(number_of_clause_outputs);
+        Tsetlini::calculate_clause_output_for_predict(X, clause_output_classic,
+            Tsetlini::number_of_estimator_clause_outputs_t{number_of_clause_outputs}, ta_state_values, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
@@ -207,16 +208,17 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
         }
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
-        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
+        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clause_outputs, number_of_features);
 
         signum_from_ta_state(ta_state_values, ta_state_signum);
 
         Tsetlini::TAStateWithSignum::value_type ta_state;
         ta_state.signum = ta_state_signum;
 
-        Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clauses);
+        Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clause_outputs);
 
-        Tsetlini::calculate_clause_output_for_predict(bitwise_X, clause_output_bitwise, number_of_clauses, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output_for_predict(bitwise_X, clause_output_bitwise,
+            Tsetlini::number_of_estimator_clause_outputs_t{number_of_clause_outputs}, ta_state, NJOBS, TILE_SZ);
 
         EXPECT_TRUE(clause_output_bitwise == clause_output_classic);
     }
@@ -232,13 +234,13 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_w
     for (auto it = 0u; it < 1000; /* nop */)
     {
         int const number_of_features = irng.next(15, 1280);
-        int const number_of_clauses = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_values(2 * number_of_clause_outputs, number_of_features);
 
         auto ta_state_gen = [&irng](auto & ta_state)
         {
@@ -267,8 +269,9 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_w
 
         ta_state_gen(ta_state_values);
 
-        Tsetlini::aligned_vector_char clause_output_classic(number_of_clauses);
-        Tsetlini::calculate_clause_output_for_predict(X, clause_output_classic, number_of_clauses, ta_state_values, NJOBS, TILE_SZ);
+        Tsetlini::aligned_vector_char clause_output_classic(number_of_clause_outputs);
+        Tsetlini::calculate_clause_output_for_predict(X, clause_output_classic,
+            Tsetlini::number_of_estimator_clause_outputs_t{number_of_clause_outputs}, ta_state_values, NJOBS, TILE_SZ);
 
         if (0 != std::accumulate(clause_output_classic.cbegin(), clause_output_classic.cend(), 0u))
         {
@@ -276,16 +279,17 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_w
         }
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
-        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
+        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clause_outputs, number_of_features);
 
         signum_from_ta_state(ta_state_values, ta_state_signum);
 
         Tsetlini::TAStateWithSignum::value_type ta_state;
         ta_state.signum = ta_state_signum;
 
-        Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clauses);
+        Tsetlini::aligned_vector_char clause_output_bitwise(number_of_clause_outputs);
 
-        Tsetlini::calculate_clause_output_for_predict(bitwise_X, clause_output_bitwise, number_of_clauses, ta_state, NJOBS, TILE_SZ);
+        Tsetlini::calculate_clause_output_for_predict(bitwise_X, clause_output_bitwise,
+            Tsetlini::number_of_estimator_clause_outputs_t{number_of_clause_outputs}, ta_state, NJOBS, TILE_SZ);
 
         EXPECT_TRUE(clause_output_bitwise == clause_output_classic);
     }

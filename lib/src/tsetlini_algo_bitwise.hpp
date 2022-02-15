@@ -211,7 +211,7 @@ inline
 void calculate_clause_output_for_predict_T(
     bit_vector<bit_block_type> const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAStateWithSignum::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
@@ -219,12 +219,17 @@ void calculate_clause_output_for_predict_T(
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
+    auto const openmp_number_of_clause_outputs = value_of(number_of_clause_outputs);
+
     if (feature_blocks < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        // NOTE: OpenMP cannot directly work with number_of_estimator_clause_outputs_t
+        // because the standard requires 'Canonical Loop Form'.
+        // Also, clang refuses use of in-place `value_of()`.
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bool output = true;
 
@@ -254,7 +259,7 @@ void calculate_clause_output_for_predict_T(
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;
@@ -306,7 +311,7 @@ inline
 void calculate_clause_output_for_predict_T(
     bit_vector<bit_block_type> const & X,
     bit_vector<bit_block_type> clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAStateWithSignum::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
@@ -319,7 +324,7 @@ void calculate_clause_output_for_predict_T(
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < value_of(number_of_clause_outputs); ++oidx)
         {
             bool output = true;
 
@@ -349,7 +354,7 @@ void calculate_clause_output_for_predict_T(
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < value_of(number_of_clause_outputs); ++oidx)
         {
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;

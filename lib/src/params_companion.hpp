@@ -116,9 +116,16 @@ int number_of_classifier_clauses(params_t const & params)
 
 
 inline
-int number_of_regressor_clauses(params_t const & params)
+number_of_physical_regressor_clauses_t number_of_physical_regressor_clauses(params_t const & params)
 {
-    return std::get<int>(params.at("number_of_regressor_clauses"));
+    return number_of_physical_regressor_clauses_t{std::get<int>(params.at("number_of_regressor_clauses"))};
+}
+
+
+inline
+number_of_estimator_clause_outputs_t number_of_regressor_clause_outputs(params_t const & params)
+{
+    return number_of_estimator_clause_outputs_t{std::get<int>(params.at("number_of_regressor_clauses")) / 2};
 }
 
 

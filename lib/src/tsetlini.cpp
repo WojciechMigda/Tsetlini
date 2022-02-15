@@ -374,7 +374,7 @@ evaluate_classifier_impl(
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -417,7 +417,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        Params::number_of_classifier_clauses(state.m_params) / 2,
+        number_of_estimator_clause_outputs_t{Params::number_of_classifier_clauses(state.m_params) / 2}, // TODO
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -454,7 +454,7 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        Params::number_of_regressor_clauses(state.m_params) / 2,
+        Params::number_of_regressor_clause_outputs(state.m_params),
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -495,7 +495,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -545,7 +545,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        number_of_clauses / 2,
+        number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -592,7 +592,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -742,7 +742,7 @@ void regressor_update_impl(
     response_type const target_response,
 
     threshold_t const threshold,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     number_of_states_t const number_of_states,
     boost_tpf_t const boost_true_positive_feedback,
     int const max_weight,
@@ -762,7 +762,7 @@ void regressor_update_impl(
         X,
         cache.clause_output,
         0,
-        number_of_clauses / 2,
+        value_of(number_of_clause_outputs),
         ta_state,
         n_jobs,
         clause_output_tile_size
@@ -774,7 +774,7 @@ void regressor_update_impl(
     train_regressor_automata(
         ta_state,
         0,
-        number_of_clauses / 2,
+        value_of(number_of_clause_outputs),
         cache.clause_output.data(),
         number_of_states,
         response_error,
@@ -801,7 +801,7 @@ fit_regressor_online_impl(
 {
     auto const & params = state.m_params;
 
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_regressor_clause_outputs(params);
     auto const threshold = Params::threshold(params);
     auto const max_weight = Params::max_weight(params);
     auto const number_of_states = Params::number_of_states(params);
@@ -834,7 +834,7 @@ fit_regressor_online_impl(
                 y[ix[i]],
 
                 threshold,
-                number_of_clauses,
+                number_of_clause_outputs,
                 number_of_states,
                 boost_true_positive_feedback,
                 max_weight,
@@ -905,7 +905,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
     auto const & params = state.m_params;
 
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_regressor_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -916,7 +916,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);

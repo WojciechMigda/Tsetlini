@@ -128,19 +128,24 @@ inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     numeric_matrix<state_type> const & ta_state,
     number_of_jobs_t const n_jobs)
 {
     auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
 
+    auto const openmp_number_of_clause_outputs = value_of(number_of_clause_outputs);
+
     if (number_of_features < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        // NOTE: OpenMP cannot directly work with number_of_estimator_clause_outputs_t
+        // because the standard requires 'Canonical Loop Form'
+        // Also, clang refuses use of in-place `value_of()`.
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bool output = true;
             bool all_exclude = true;
@@ -168,7 +173,7 @@ void calculate_clause_output_for_predict_T(
 #if TSETLINI_USE_OMP == 1
 #pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             char toggle_output = 0;
             char neg_all_exclude = 0;
@@ -218,7 +223,7 @@ inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAState::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
@@ -228,7 +233,7 @@ void calculate_clause_output_for_predict_T(
             calculate_clause_output_for_predict_T<BATCH_SZ>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state_values,
                 n_jobs
             );

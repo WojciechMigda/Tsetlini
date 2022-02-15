@@ -18,19 +18,21 @@ std::variant<
     , numeric_matrix_int16
     , numeric_matrix_int8
 >
-make_ta_state_matrix(counting_type_t const & counting_type, int number_of_clauses, number_of_features_t number_of_features)
+make_ta_state_matrix(counting_type_t const & counting_type,
+    number_of_physical_estimator_clauses_t number_of_clauses,
+    number_of_features_t number_of_features)
 {
     if (counting_type == "int8")
     {
-        return numeric_matrix_int8(number_of_clauses, value_of(number_of_features));
+        return numeric_matrix_int8(value_of(number_of_clauses), value_of(number_of_features));
     }
     else if (counting_type == "int16")
     {
-        return numeric_matrix_int16(number_of_clauses, value_of(number_of_features));
+        return numeric_matrix_int16(value_of(number_of_clauses), value_of(number_of_features));
     }
     else
     {
-        return numeric_matrix_int32(number_of_clauses, value_of(number_of_features));
+        return numeric_matrix_int32(value_of(number_of_clauses), value_of(number_of_features));
     }
 }
 
@@ -39,7 +41,8 @@ void
 TAState::initialize(
     value_type & state,
     counting_type_t const & counting_type,
-    int number_of_clauses,
+    number_of_physical_estimator_clauses_t number_of_clauses,
+    number_of_estimator_clause_outputs_t number_of_clause_outputs,
     number_of_features_t number_of_features,
     bool const weighted,
     IRNG & igen)
@@ -63,7 +66,7 @@ TAState::initialize(
 
     if (weighted)
     {
-        state.weights.resize(number_of_clauses / 2);
+        state.weights.resize(value_of(number_of_clause_outputs));
     }
 }
 
@@ -72,13 +75,14 @@ void
 TAStateWithSignum::initialize(
     value_type & state,
     counting_type_t const & counting_type,
-    int number_of_clauses,
+    number_of_physical_estimator_clauses_t number_of_clauses,
+    number_of_estimator_clause_outputs_t number_of_clause_outputs,
     number_of_features_t number_of_features,
     bool const weighted,
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
-    state.signum = bit_matrix_uint64(number_of_clauses, value_of(number_of_features));
+    state.signum = bit_matrix_uint64(value_of(number_of_clauses), value_of(number_of_features));
 
     auto & signum = state.signum;
 
@@ -109,7 +113,7 @@ TAStateWithSignum::initialize(
 
     if (weighted)
     {
-        state.weights.resize(number_of_clauses / 2);
+        state.weights.resize(value_of(number_of_clause_outputs));
     }
 }
 

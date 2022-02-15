@@ -101,7 +101,7 @@ inline
 void calculate_clause_output_for_predict(
     SampleType const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAStateType const & ta_state,
     number_of_jobs_t const n_jobs,
     clause_output_tile_size_t const TILE_SZ)
@@ -112,7 +112,7 @@ void calculate_clause_output_for_predict(
             calculate_clause_output_for_predict_T<128>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state,
                 n_jobs
             );
@@ -121,7 +121,7 @@ void calculate_clause_output_for_predict(
             calculate_clause_output_for_predict_T<64>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state,
                 n_jobs
             );
@@ -130,7 +130,7 @@ void calculate_clause_output_for_predict(
             calculate_clause_output_for_predict_T<32>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state,
                 n_jobs
             );
@@ -142,7 +142,7 @@ void calculate_clause_output_for_predict(
             calculate_clause_output_for_predict_T<16>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state,
                 n_jobs
             );
