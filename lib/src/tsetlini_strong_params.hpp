@@ -74,6 +74,12 @@ using random_seed_t = strong::type<
     strong::ostreamable
 >;
 
+using boost_tpf_t = strong::type<
+    bool, struct _boost_tpf_tag,
+    strong::equality_with<bool>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

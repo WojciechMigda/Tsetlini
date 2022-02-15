@@ -241,7 +241,7 @@ void classifier_update_impl(
     threshold_t const threshold,
     int const number_of_clauses,
     number_of_states_t const number_of_states,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     int const max_weight,
     number_of_jobs_t const n_jobs,
 
@@ -744,7 +744,7 @@ void regressor_update_impl(
     threshold_t const threshold,
     int const number_of_clauses,
     number_of_states_t const number_of_states,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     int const max_weight,
     loss_fn_type const & loss_fn,
     bool const box_muller,

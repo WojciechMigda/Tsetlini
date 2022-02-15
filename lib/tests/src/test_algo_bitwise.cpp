@@ -348,7 +348,8 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         Tsetlini::train_classifier_automata(
             ta_state_classic, weights, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            Tsetlini::number_of_states_t{number_of_states}, X, MAX_WEIGHT, boost_true_positive_feedback, prng_classic, ct_classic);
+            Tsetlini::number_of_states_t{number_of_states}, X, MAX_WEIGHT,
+            Tsetlini::boost_tpf_t{boost_true_positive_feedback}, prng_classic, ct_classic);
 
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
@@ -373,7 +374,8 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            Tsetlini::number_of_states_t{number_of_states}, bitwise_X, MAX_WEIGHT, boost_true_positive_feedback, iota_prng, ct);
+            Tsetlini::number_of_states_t{number_of_states}, bitwise_X, MAX_WEIGHT,
+            Tsetlini::boost_tpf_t{boost_true_positive_feedback}, iota_prng, ct);
 
         // retrieve TA State values from ta_state variant for verifiation
         ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);

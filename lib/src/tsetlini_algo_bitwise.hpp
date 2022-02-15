@@ -891,7 +891,7 @@ void train_classifier_automata_T(
     number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
     int const max_weight,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
@@ -917,7 +917,7 @@ void train_classifier_automata_T(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_states,
                         ta_state_pos_j,
@@ -974,7 +974,7 @@ void train_classifier_automata(
     number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
     int const max_weight,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
@@ -1019,7 +1019,7 @@ void train_regressor_automata(
     int const max_weight,
     loss_fn_type const & loss_fn,
     bool const box_muller,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
@@ -1062,7 +1062,7 @@ void train_regressor_automata(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_states,
                         ta_state_pos_j,
@@ -1121,7 +1121,7 @@ void train_regressor_automata(
     int const max_weight,
     loss_fn_type const & loss_fn,
     bool const box_muller,
-    bool const boost_true_positive_feedback,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
