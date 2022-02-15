@@ -63,6 +63,12 @@ using counting_type_t = strong::type<
     strong::ostreamable
 >;
 
+using clause_output_tile_size_t = strong::type<
+    int, struct _clause_output_tile_size_tag,
+    strong::equality_with<int>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

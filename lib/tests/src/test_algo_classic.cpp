@@ -55,7 +55,7 @@ TEST(ClassicCalculateClauseOutput, replicates_result_of_CAIR_code)
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state_matrix, false);
         Tsetlini::calculate_clause_output(X, clause_output, 0, number_of_clauses, ta_state,
-            Tsetlini::number_of_jobs_t{1}, 16);
+            Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {
@@ -105,7 +105,7 @@ TEST(ClassicCalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state_matrix, true);
         Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses,
-            ta_state, Tsetlini::number_of_jobs_t{1}, 16);
+            ta_state, Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {

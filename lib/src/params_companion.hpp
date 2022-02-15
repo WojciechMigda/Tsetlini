@@ -32,9 +32,9 @@ counting_type_t counting_type(params_t const & params)
 
 
 inline
-int clause_output_tile_size(params_t const & params)
+clause_output_tile_size_t clause_output_tile_size(params_t const & params)
 {
-    return std::get<int>(params.at("clause_output_tile_size"));
+    return clause_output_tile_size_t{std::get<int>(params.at("clause_output_tile_size"))};
 }
 
 

@@ -250,7 +250,7 @@ void classifier_update_impl(
     TAStateValueType & ta_state,
     ClassifierStateCache::value_type & cache,
 
-    int clause_output_tile_size
+    clause_output_tile_size_t const clause_output_tile_size
     )
 {
     {
@@ -755,7 +755,7 @@ void regressor_update_impl(
     TAStateValueType & ta_state,
     RegressorStateCache::value_type & cache,
 
-    int clause_output_tile_size
+    clause_output_tile_size_t clause_output_tile_size
     )
 {
     calculate_clause_output(

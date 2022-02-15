@@ -45,9 +45,9 @@ void calculate_clause_output(
     int const output_end_ix,
     TAStateType const & ta_state,
     number_of_jobs_t const n_jobs,
-    int const TILE_SZ)
+    clause_output_tile_size_t const TILE_SZ)
 {
-    switch (TILE_SZ)
+    switch (value_of(TILE_SZ))
     {
         case 128:
             calculate_clause_output_T<128>(
@@ -104,9 +104,9 @@ void calculate_clause_output_for_predict(
     int const number_of_clauses,
     TAStateType const & ta_state,
     number_of_jobs_t const n_jobs,
-    int const TILE_SZ)
+    clause_output_tile_size_t const TILE_SZ)
 {
-    switch (TILE_SZ)
+    switch (value_of(TILE_SZ))
     {
         case 128:
             calculate_clause_output_for_predict_T<128>(

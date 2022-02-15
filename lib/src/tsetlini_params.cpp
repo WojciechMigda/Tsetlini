@@ -377,7 +377,7 @@ static
 Either<status_message_t, params_t>
 assert_clause_output_tile_size_enumeration(params_t const & params)
 {
-    auto value = std::get<int>(params.at("clause_output_tile_size"));
+    auto value = Params::clause_output_tile_size(params);
 
     if (not (value == 16
         or value == 32
@@ -385,7 +385,7 @@ assert_clause_output_tile_size_enumeration(params_t const & params)
         or value == 128))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'clause_output_tile_size' got value " + std::to_string(value) + ", instead of allowed 16, 32, 64, or 128\n"});
+            "Param 'clause_output_tile_size' got value " + std::to_string(value_of(value)) + ", instead of allowed 16, 32, 64, or 128\n"});
     }
     else
     {

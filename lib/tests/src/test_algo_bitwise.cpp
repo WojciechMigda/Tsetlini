@@ -47,7 +47,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
 {
     IRNG irng(2345);
     Tsetlini::number_of_jobs_t const NJOBS{1};
-    int const TILE_SZ = 16;
+    Tsetlini::clause_output_tile_size_t const TILE_SZ{16};
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
@@ -103,7 +103,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
 {
     IRNG irng(2345);
     Tsetlini::number_of_jobs_t const NJOBS{1};
-    int const TILE_SZ = 8;
+    Tsetlini::clause_output_tile_size_t const TILE_SZ{8};
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
@@ -170,7 +170,7 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
 {
     IRNG irng(2345);
     Tsetlini::number_of_jobs_t const NJOBS{1};
-    int const TILE_SZ = 16;
+    Tsetlini::clause_output_tile_size_t const TILE_SZ{16};
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
@@ -227,7 +227,7 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_w
 {
     IRNG irng(2345);
     Tsetlini::number_of_jobs_t const NJOBS{1};
-    int const TILE_SZ = 8;
+    Tsetlini::clause_output_tile_size_t const TILE_SZ{8};
 
     for (auto it = 0u; it < 1000; /* nop */)
     {
