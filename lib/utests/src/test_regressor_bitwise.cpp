@@ -157,11 +157,19 @@ suite TestRegressorBitwise = []
 };
 
 
-"RegressorBitwise can be created from JSON with number_of_regressor_clauses set to 1"_test = []
+"RegressorBitwise can be created from JSON with number_of_regressor_clauses set to 2"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_bitwise(R"({"number_of_regressor_clauses": 2})");
+
+    expect(that % true == !!reg);
+};
+
+
+"RegressorBitwise cannot be created from JSON with number_of_regressor_clauses set to 1"_test = []
 {
     auto const reg = Tsetlini::make_regressor_bitwise(R"({"number_of_regressor_clauses": 1})");
 
-    expect(that % true == !!reg);
+    expect(that % false == !!reg);
 };
 
 
@@ -176,6 +184,22 @@ suite TestRegressorBitwise = []
 "RegressorBitwise cannot be created from JSON with number_of_regressor_clauses set to -1"_test = []
 {
     auto const reg = Tsetlini::make_regressor_bitwise(R"({"number_of_regressor_clauses": -1})");
+
+    expect(that % false == !!reg);
+};
+
+
+"RegressorBitwise cannot be created from JSON with number_of_regressor_clauses set to -2"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_bitwise(R"({"number_of_regressor_clauses": -2})");
+
+    expect(that % false == !!reg);
+};
+
+
+"RegressorBitwise cannot be created from JSON with number_of_regressor_clauses set to 11"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_bitwise(R"({"number_of_regressor_clauses": 11})");
 
     expect(that % false == !!reg);
 };
