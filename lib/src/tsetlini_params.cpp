@@ -360,10 +360,10 @@ assert_number_of_regressor_clauses(params_t const & params)
 {
     auto value = std::get<int>(params.at("number_of_regressor_clauses"));
 
-    if (value < 1)
+    if ((value < 1) or ((value %2) != 0))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'number_of_regressor_clauses' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+            "Param 'number_of_regressor_clauses' got value " + std::to_string(value) + ", instead of an even natural integer.\n"});
     }
     else
     {

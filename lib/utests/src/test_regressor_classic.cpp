@@ -157,11 +157,19 @@ suite TestRegressorClassic = []
 };
 
 
-"RegressorClassic can be created from JSON with number_of_regressor_clauses set to 1"_test = []
+"RegressorClassic can be created from JSON with number_of_regressor_clauses set to 2"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_classic(R"({"number_of_regressor_clauses": 2})");
+
+    expect(that % true == !!reg);
+};
+
+
+"RegressorClassic cannot be created from JSON with number_of_regressor_clauses set to 1"_test = []
 {
     auto const reg = Tsetlini::make_regressor_classic(R"({"number_of_regressor_clauses": 1})");
 
-    expect(that % true == !!reg);
+    expect(that % false == !!reg);
 };
 
 
@@ -176,6 +184,22 @@ suite TestRegressorClassic = []
 "RegressorClassic cannot be created from JSON with number_of_regressor_clauses set to -1"_test = []
 {
     auto const reg = Tsetlini::make_regressor_classic(R"({"number_of_regressor_clauses": -1})");
+
+    expect(that % false == !!reg);
+};
+
+
+"RegressorClassic cannot be created from JSON with number_of_regressor_clauses set to -2"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_classic(R"({"number_of_regressor_clauses": -2})");
+
+    expect(that % false == !!reg);
+};
+
+
+"RegressorClassic cannot be created from JSON with number_of_regressor_clauses set to 13"_test = []
+{
+    auto const reg = Tsetlini::make_regressor_classic(R"({"number_of_regressor_clauses": 13})");
 
     expect(that % false == !!reg);
 };
