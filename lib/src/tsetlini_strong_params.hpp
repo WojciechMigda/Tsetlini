@@ -69,6 +69,11 @@ using clause_output_tile_size_t = strong::type<
     strong::ostreamable
 >;
 
+using random_seed_t = strong::type<
+    seed_type, struct _random_device_seed_tag,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

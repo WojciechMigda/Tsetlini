@@ -7,6 +7,8 @@
 #include "tsetlini_params.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <algorithm>
 #include <iterator>
 #include <thread>
@@ -169,8 +171,8 @@ void initialize_state(EstimatorStateType & state)
     auto & params = state.m_params;
     auto const verbose = Params::verbose(params);
 
-    state.igen.init(Params::random_state(params));
-    state.fgen.init(Params::random_state(params));
+    state.igen.init(value_of(Params::random_state(params)));
+    state.fgen.init(value_of(Params::random_state(params)));
 
     log_estimator_params(state, verbose);
 

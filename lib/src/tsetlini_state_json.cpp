@@ -6,6 +6,7 @@
 #include "params_companion.hpp"
 
 #include "json/json.hpp"
+#include "strong_type/strong_type.hpp"
 
 #include <string>
 #include <iterator>

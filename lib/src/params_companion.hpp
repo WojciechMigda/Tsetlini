@@ -39,9 +39,9 @@ clause_output_tile_size_t clause_output_tile_size(params_t const & params)
 
 
 inline
-seed_type random_state(params_t const & params)
+random_seed_t random_state(params_t const & params)
 {
-    return std::get<seed_type>(params.at("random_state"));
+    return random_seed_t{std::get<seed_type>(params.at("random_state"))};
 }
 
 
