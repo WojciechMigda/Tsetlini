@@ -4,6 +4,7 @@
 
 #include "neither/either.hpp"
 #include "json/json.hpp"
+#include "strong_type/strong_type.hpp"
 
 #include <optional>
 #include <string>
@@ -232,12 +233,12 @@ static
 Either<status_message_t, params_t>
 assert_n_jobs(params_t const & params)
 {
-    auto value = std::get<int>(params.at("n_jobs"));
+    auto value = Params::n_jobs(params);
 
     if (not ((value == -1) or (value >= 1)))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'n_jobs' got value " + std::to_string(value) + ", instead of natural integer or -1.\n"});
+            "Param 'n_jobs' got value " + std::to_string(value_of(value)) + ", instead of natural integer or -1.\n"});
     }
     else
     {

@@ -130,7 +130,7 @@ void calculate_clause_output_for_predict_T(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     numeric_matrix<state_type> const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
@@ -138,7 +138,7 @@ void calculate_clause_output_for_predict_T(
     if (number_of_features < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
@@ -166,7 +166,7 @@ void calculate_clause_output_for_predict_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = 0; oidx < number_of_clauses; ++oidx)
         {
@@ -220,7 +220,7 @@ void calculate_clause_output_for_predict_T(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     TAState::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     std::visit(
         [&](auto & ta_state_values)
@@ -247,7 +247,7 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     numeric_matrix<state_type> const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
@@ -255,7 +255,7 @@ void calculate_clause_output_T(
     if (number_of_features < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -278,7 +278,7 @@ void calculate_clause_output_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -326,7 +326,7 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     TAState::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     std::visit(
         [&](auto & ta_state_values)

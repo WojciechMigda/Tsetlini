@@ -18,9 +18,9 @@ namespace Params
 
 
 inline
-int n_jobs(params_t const & params)
+number_of_jobs_t n_jobs(params_t const & params)
 {
-    return std::get<int>(params.at("n_jobs"));
+    return number_of_jobs_t{std::get<int>(params.at("n_jobs"))};
 }
 
 

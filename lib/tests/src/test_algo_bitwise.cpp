@@ -46,7 +46,7 @@ signum_from_ta_state(Tsetlini::numeric_matrix<state_type> const & ta_state, Tset
 TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
 {
     IRNG irng(2345);
-    int const NJOBS = 1;
+    Tsetlini::number_of_jobs_t const NJOBS{1};
     int const TILE_SZ = 16;
 
     for (auto it = 0u; it < 1000; /* nop */)
@@ -102,7 +102,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code)
 TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbalanced_ta_state)
 {
     IRNG irng(2345);
-    int const NJOBS = 1;
+    Tsetlini::number_of_jobs_t const NJOBS{1};
     int const TILE_SZ = 8;
 
     for (auto it = 0u; it < 1000; /* nop */)
@@ -169,7 +169,7 @@ TEST(BitwiseCalculateClauseOutput, replicates_result_of_classic_code_with_imbala
 TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
 {
     IRNG irng(2345);
-    int const NJOBS = 1;
+    Tsetlini::number_of_jobs_t const NJOBS{1};
     int const TILE_SZ = 16;
 
     for (auto it = 0u; it < 1000; /* nop */)
@@ -226,7 +226,7 @@ TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code)
 TEST(BitwiseCalculateClauseOutputForPredict, replicates_result_of_classic_code_with_imbalanced_ta_state)
 {
     IRNG irng(2345);
-    int const NJOBS = 1;
+    Tsetlini::number_of_jobs_t const NJOBS{1};
     int const TILE_SZ = 8;
 
     for (auto it = 0u; it < 1000; /* nop */)

@@ -44,7 +44,7 @@ void calculate_clause_output(
     int const output_begin_ix,
     int const output_end_ix,
     TAStateType const & ta_state,
-    int const n_jobs,
+    number_of_jobs_t const n_jobs,
     int const TILE_SZ)
 {
     switch (TILE_SZ)
@@ -103,7 +103,7 @@ void calculate_clause_output_for_predict(
     aligned_vector_char & clause_output,
     int const number_of_clauses,
     TAStateType const & ta_state,
-    int const n_jobs,
+    number_of_jobs_t const n_jobs,
     int const TILE_SZ)
 {
     switch (TILE_SZ)

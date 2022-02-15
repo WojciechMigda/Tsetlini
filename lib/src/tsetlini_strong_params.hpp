@@ -44,6 +44,13 @@ using verbosity_t = strong::type<
     strong::convertible_to<bool>
 >;
 
+using number_of_jobs_t = strong::type<
+    int, struct _number_of_jobs_tag,
+    strong::ordered_with<int>,
+    strong::equality_with<int>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 
