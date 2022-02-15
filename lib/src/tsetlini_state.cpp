@@ -89,8 +89,8 @@ void log_estimator_params(RegressorStateBitwise const & state, verbosity_t verbo
 
 
 static
-std::string normalize_counting_type(
-    std::string const & counting_type,
+counting_type_t normalize_counting_type(
+    counting_type_t const & counting_type,
     number_of_states_t number_of_states,
     verbosity_t verbose)
 {
@@ -114,7 +114,7 @@ std::string normalize_counting_type(
         rv = "int32";
     }
 
-    return rv;
+    return counting_type_t{rv};
 }
 
 

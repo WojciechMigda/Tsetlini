@@ -18,7 +18,7 @@ std::variant<
     , numeric_matrix_int16
     , numeric_matrix_int8
 >
-make_ta_state_matrix(std::string const & counting_type, int number_of_clauses, number_of_features_t number_of_features)
+make_ta_state_matrix(counting_type_t const & counting_type, int number_of_clauses, number_of_features_t number_of_features)
 {
     if (counting_type == "int8")
     {
@@ -38,7 +38,7 @@ make_ta_state_matrix(std::string const & counting_type, int number_of_clauses, n
 void
 TAState::initialize(
     value_type & state,
-    std::string const & counting_type,
+    counting_type_t const & counting_type,
     int number_of_clauses,
     number_of_features_t number_of_features,
     bool const weighted,
@@ -71,7 +71,7 @@ TAState::initialize(
 void
 TAStateWithSignum::initialize(
     value_type & state,
-    std::string const & counting_type,
+    counting_type_t const & counting_type,
     int number_of_clauses,
     number_of_features_t number_of_features,
     bool const weighted,

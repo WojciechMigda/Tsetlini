@@ -212,7 +212,7 @@ static
 Either<status_message_t, params_t>
 assert_counting_type_enumeration(params_t const & params)
 {
-    auto value = std::get<std::string>(params.at("counting_type"));
+    auto value = Params::counting_type(params);
 
     if (not (value == "auto"
         or value == "int8"
@@ -220,7 +220,7 @@ assert_counting_type_enumeration(params_t const & params)
         or value == "int32"))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'counting_type' got value " + value + ", instead of allowed int8, int16, int32, or auto\n"});
+            "Param 'counting_type' got value " + value_of(value) + ", instead of allowed int8, int16, int32, or auto\n"});
     }
     else
     {

@@ -7,6 +7,7 @@
 #include "strong_type/strong_type.hpp"
 
 #include <cstddef>
+#include <string>
 
 
 namespace Tsetlini
@@ -53,6 +54,12 @@ using number_of_jobs_t = strong::type<
     int, struct _number_of_jobs_tag,
     strong::ordered_with<int>,
     strong::equality_with<int>,
+    strong::ostreamable
+>;
+
+using counting_type_t = strong::type<
+    std::string, struct _counting_type_tag,
+    strong::equality_with<char const *>,
     strong::ostreamable
 >;
 

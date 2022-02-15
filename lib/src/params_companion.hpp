@@ -25,9 +25,9 @@ number_of_jobs_t n_jobs(params_t const & params)
 
 
 inline
-std::string counting_type(params_t const & params)
+counting_type_t counting_type(params_t const & params)
 {
-    return std::get<std::string>(params.at("counting_type"));
+    return counting_type_t{std::get<std::string>(params.at("counting_type"))};
 }
 
 

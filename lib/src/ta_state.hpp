@@ -27,7 +27,7 @@ struct is_TA_state<T, std::void_t<
         typename T::value_type,
         decltype(T::initialize(
             std::declval<typename T::value_type &>(),
-            std::declval<std::string const &>(),
+            std::declval<counting_type_t const &>(),
             std::declval<int>(),
             std::declval<number_of_features_t>(),
             std::declval<bool const>(),
@@ -67,7 +67,7 @@ struct TAState : public TAStateBase
 
     static void initialize(
         value_type & state,
-        std::string const & counting_type,
+        counting_type_t const & counting_type,
         int number_of_clauses,
         number_of_features_t number_of_features,
         bool const weighted,
@@ -96,7 +96,7 @@ struct TAStateWithSignum : public TAStateBase
 
     static void initialize(
         value_type & state,
-        std::string const & counting_type,
+        counting_type_t const & counting_type,
         int number_of_clauses,
         number_of_features_t number_of_features,
         bool const weighted,
