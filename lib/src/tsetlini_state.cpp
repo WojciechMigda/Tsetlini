@@ -7,8 +7,6 @@
 #include "tsetlini_params.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 
-#include "strong_type/strong_type.hpp"
-
 #include <algorithm>
 #include <iterator>
 #include <thread>
@@ -23,12 +21,12 @@ namespace Tsetlini
 static
 void log_classifier_params(params_t const & params, verbosity_t verbose)
 {
-    LOG(info) << "number_of_labels: " << value_of(Params::number_of_labels(params)) << '\n';
+    LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
     LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
-    LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
-    LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
-    LOG(info) << "number_of_states: " << value_of(Params::number_of_states(params)) << '\n';
-    LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
+    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "s: " << Params::s(params) << '\n';
+    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
     {
@@ -58,10 +56,10 @@ static
 void log_regressor_params(params_t const & params, verbosity_t verbose)
 {
     LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
-    LOG(info) << "number_of_features: " << value_of(Params::number_of_features(params)) << '\n';
-    LOG(info) << "s: " << value_of(Params::s(params)) << '\n';
-    LOG(info) << "number_of_states: " << value_of(Params::number_of_states(params)) << '\n';
-    LOG(info) << "threshold: " << value_of(Params::threshold(params)) << '\n';
+    LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
+    LOG(info) << "s: " << Params::s(params) << '\n';
+    LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
+    LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
     if (Params::weighted(params))
     {
