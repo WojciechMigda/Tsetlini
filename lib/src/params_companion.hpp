@@ -169,9 +169,9 @@ loss_fn_name_t loss_fn_name(params_t const & params)
 
 
 inline
-real_type loss_fn_C1(params_t const & params)
+loss_fn_C1_t loss_fn_C1(params_t const & params)
 {
-    return std::get<real_type>(params.at("loss_fn_C1"));
+    return loss_fn_C1_t{std::get<real_type>(params.at("loss_fn_C1"))};
 }
 
 

@@ -131,6 +131,13 @@ using loss_fn_name_t = strong::type<
     strong::ostreamable
 >;
 
+using loss_fn_C1_t = strong::type<
+    Tsetlini::real_type, struct _loss_fn_C1_tag,
+    strong::ordered_with<Tsetlini::real_type>,
+    strong::arithmetic,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

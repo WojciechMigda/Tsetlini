@@ -13,7 +13,7 @@ namespace Tsetlini
 
 using loss_fn_type = std::function<float(float)>;
 
-loss_fn_type make_loss_fn(loss_fn_name_t const & name, float const C1);
+loss_fn_type make_loss_fn(loss_fn_name_t const & name, loss_fn_C1_t const C1);
 
 
 }  // namespace Tsetlini
