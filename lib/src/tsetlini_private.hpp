@@ -23,7 +23,7 @@ fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs);
+    number_of_epochs_t epochs);
 
 
 [[nodiscard]]
@@ -33,7 +33,7 @@ partial_fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs);
+    number_of_epochs_t epochs);
 
 
 [[nodiscard]]
@@ -63,7 +63,7 @@ fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs);
+    number_of_epochs_t epochs);
 
 
 [[nodiscard]]
@@ -72,7 +72,7 @@ partial_fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs);
+    number_of_epochs_t epochs);
 
 
 [[nodiscard]]

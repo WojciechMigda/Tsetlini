@@ -632,7 +632,7 @@ fit_classifier_online_impl(
     TAStateValueType & ta_state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     auto const & params = state.m_params;
 
@@ -699,7 +699,7 @@ fit_classifier_impl(
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -794,7 +794,7 @@ fit_regressor_online_impl(
     TAStateValueType & ta_state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     auto const & params = state.m_params;
 
@@ -859,7 +859,7 @@ fit_regressor_impl(
     RegressorStateType & state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -963,7 +963,7 @@ fit_classifier_online_with_input_check(
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -996,7 +996,7 @@ partial_fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1094,14 +1094,14 @@ ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_ve
 status_message_t
 ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
 status_message_t
 ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1111,7 +1111,7 @@ fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
@@ -1191,7 +1191,7 @@ make_regressor_classic(std::string const & json_params)
 status_message_t
 RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1201,7 +1201,7 @@ fit_regressor_online_with_input_check(
     RegressorStateType & state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -1231,7 +1231,7 @@ partial_fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1249,7 +1249,7 @@ fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_regressor_impl(state, X, y, epochs);
 }
@@ -1258,7 +1258,7 @@ fit_impl(
 status_message_t
 RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1313,7 +1313,7 @@ fit_impl(
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
@@ -1322,7 +1322,7 @@ fit_impl(
 status_message_t
 ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1332,7 +1332,7 @@ partial_fit_impl(
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1348,7 +1348,7 @@ partial_fit_impl(
 status_message_t
 ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1489,7 +1489,7 @@ fit_impl(
     RegressorStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_regressor_impl(state, X, y, epochs);
 }
@@ -1498,7 +1498,7 @@ fit_impl(
 status_message_t
 RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1507,7 +1507,7 @@ partial_fit_impl(
     RegressorStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1523,7 +1523,7 @@ partial_fit_impl(
 status_message_t
 RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 

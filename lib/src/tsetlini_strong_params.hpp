@@ -14,6 +14,11 @@ namespace Tsetlini
 {
 
 
+using number_of_epochs_t = strong::type<
+    unsigned int, struct _number_of_epochs_tag,
+    strong::ordered_with<unsigned int>
+>;
+
 using threshold_t = strong::type<
     int, struct _threshold_tag,
     strong::ordered_with<Tsetlini::response_type>,
