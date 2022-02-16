@@ -4,6 +4,7 @@
 
 #include "neither/either.hpp"
 #include "json/json.hpp"
+#include "strong_type/strong_type.hpp"
 
 #include <optional>
 #include <string>
@@ -24,7 +25,7 @@ namespace Tsetlini
 
 static const params_t default_classifier_params =
 {
-    {"number_of_pos_neg_clauses_per_label", param_value_t(5)},
+    {"number_of_clauses_per_label", param_value_t(12)},
     {"number_of_states", param_value_t(100)},
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
@@ -135,7 +136,7 @@ json_to_params(json const & js)
         auto const value = kv.value();
 
         if (
-            (key == "number_of_pos_neg_clauses_per_label") or
+            (key == "number_of_clauses_per_label") or
             (key == "number_of_regressor_clauses") or
             (key == "number_of_states") or
             (key == "boost_true_positive_feedback") or
@@ -211,15 +212,15 @@ static
 Either<status_message_t, params_t>
 assert_counting_type_enumeration(params_t const & params)
 {
-    auto value = std::get<std::string>(params.at("counting_type"));
+    auto str = Params::counting_type(params);
 
-    if (not (value == "auto"
-        or value == "int8"
-        or value == "int16"
-        or value == "int32"))
+    if (not (str == "auto"
+        or str == "int8"
+        or str == "int16"
+        or str == "int32"))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'counting_type' got value " + value + ", instead of allowed int8, int16, int32, or auto\n"});
+            "Param 'counting_type' got value " + value_of(str) + ", instead of allowed int8, int16, int32, or auto\n"});
     }
     else
     {
@@ -232,12 +233,12 @@ static
 Either<status_message_t, params_t>
 assert_n_jobs(params_t const & params)
 {
-    auto value = std::get<int>(params.at("n_jobs"));
+    auto num = Params::n_jobs(params);
 
-    if (not ((value == -1) or (value >= 1)))
+    if (not ((num == -1) or (num >= 1)))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'n_jobs' got value " + std::to_string(value) + ", instead of natural integer or -1.\n"});
+            "Param 'n_jobs' got value " + std::to_string(value_of(num)) + ", instead of natural integer or -1.\n"});
     }
     else
     {
@@ -304,12 +305,12 @@ static
 Either<status_message_t, params_t>
 assert_max_weight(params_t const & params)
 {
-    auto value = std::get<int>(params.at("max_weight"));
+    auto num = Params::max_weight(params);
 
-    if (value < 1)
+    if (num < 1)
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'max_weight' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+            "Param 'max_weight' got value " + std::to_string(value_of(num)) + ", instead of a natural integer.\n"});
     }
     else
     {
@@ -338,14 +339,14 @@ assert_threshold(params_t const & params)
 
 static
 Either<status_message_t, params_t>
-assert_number_of_pos_neg_clauses_per_label(params_t const & params)
+assert_number_of_physical_clauses_per_label(params_t const & params)
 {
-    auto value = std::get<int>(params.at("number_of_pos_neg_clauses_per_label"));
+    auto num = Params::number_of_physical_classifier_clauses_per_label(params);
 
-    if (value < 1)
+    if ((value_of(num) < 1) or ((value_of(num) % 4) != 0))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'number_of_pos_neg_clauses_per_label' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+            "Param 'number_of_clauses_per_label' got value " + std::to_string(value_of(num)) + ", instead of a natural integer divisible by 4.\n"});
     }
     else
     {
@@ -358,12 +359,12 @@ static
 Either<status_message_t, params_t>
 assert_number_of_regressor_clauses(params_t const & params)
 {
-    auto value = std::get<int>(params.at("number_of_regressor_clauses"));
+    auto num = Params::number_of_physical_regressor_clauses(params);
 
-    if ((value < 1) or ((value %2) != 0))
+    if ((value_of(num) < 1) or ((value_of(num) % 2) != 0))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'number_of_regressor_clauses' got value " + std::to_string(value) + ", instead of an even natural integer.\n"});
+            "Param 'number_of_regressor_clauses' got value " + std::to_string(value_of(num)) + ", instead of an even natural integer.\n"});
     }
     else
     {
@@ -376,15 +377,15 @@ static
 Either<status_message_t, params_t>
 assert_clause_output_tile_size_enumeration(params_t const & params)
 {
-    auto value = std::get<int>(params.at("clause_output_tile_size"));
+    auto size = Params::clause_output_tile_size(params);
 
-    if (not (value == 16
-        or value == 32
-        or value == 64
-        or value == 128))
+    if (not (size == 16
+        or size == 32
+        or size == 64
+        or size == 128))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'clause_output_tile_size' got value " + std::to_string(value) + ", instead of allowed 16, 32, 64, or 128\n"});
+            "Param 'clause_output_tile_size' got value " + std::to_string(value_of(size)) + ", instead of allowed 16, 32, 64, or 128\n"});
     }
     else
     {
@@ -427,7 +428,7 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
         .rightFlatMap(assert_specificity)
-        .rightFlatMap(assert_number_of_pos_neg_clauses_per_label)
+        .rightFlatMap(assert_number_of_physical_clauses_per_label)
         .rightFlatMap(assert_boost_true_positive_feedback)
         .rightFlatMap(assert_threshold)
         .rightFlatMap(assert_max_weight)

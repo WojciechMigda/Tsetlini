@@ -4,6 +4,8 @@
 #include "params_companion.hpp"
 #include "mt.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 
 namespace Tsetlini
 {
@@ -13,16 +15,18 @@ void ClassifierStateCache::reset(
     ClassifierStateCache::value_type & cache,
     params_t const & params)
 {
+    auto number_of_outputs = Params::number_of_classifier_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.label_sum.clear();
-    cache.label_sum.resize(Params::number_of_labels(params));
+    cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     cache.ct = CoinTosserExact(
-        1. / Params::s(params),
-        Params::number_of_features(params));
+        real_type{1.} / value_of(Params::s(params)),
+        value_of(Params::number_of_features(params)));
 }
 
 
@@ -42,14 +46,16 @@ void RegressorStateCache::reset(
     RegressorStateCache::value_type & cache,
     params_t const & params)
 {
+    auto const number_of_outputs = Params::number_of_regressor_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     cache.ct = CoinTosserExact(
-        1. / Params::s(params),
-        Params::number_of_features(params));
+        real_type{1.} / value_of(Params::s(params)),
+        value_of(Params::number_of_features(params)));
 }
 
 
@@ -68,12 +74,14 @@ void ClassifierStateBitwiseCache::reset(
     ClassifierStateBitwiseCache::value_type & cache,
     params_t const & params)
 {
+    auto number_of_outputs = Params::number_of_classifier_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.label_sum.clear();
-    cache.label_sum.resize(Params::number_of_labels(params));
+    cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     /*
      * While a factor of 24 (= 3 * 8) is arbitrary and seems to work, for smaller sample
@@ -82,8 +90,8 @@ void ClassifierStateBitwiseCache::reset(
      * instead, so that CoinTosserBitwise will have a chance to return pointer
      * to a position different than just the start.
      */
-    cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+    auto const base_size = value_of(Params::number_of_features(params));
+    cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);
 }
 
 
@@ -103,13 +111,15 @@ void RegressorStateBitwiseCache::reset(
     RegressorStateBitwiseCache::value_type & cache,
     params_t const & params)
 {
-    cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_regressor_clauses(params) / 2);
-    cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_regressor_clauses(params) / 2);
+    auto const number_of_outputs = Params::number_of_regressor_clause_outputs(params);
 
-    cache.ct = CoinTosserBitwise(Params::number_of_features(params),
-        3 * 8 * Params::number_of_features(params));
+    cache.clause_output.clear();
+    cache.clause_output.resize(value_of(number_of_outputs));
+    cache.feedback_to_clauses.clear();
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
+
+    auto const base_size = value_of(Params::number_of_features(params));
+    cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);
 }
 
 

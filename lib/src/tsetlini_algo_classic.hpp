@@ -8,6 +8,9 @@
 #include "tsetlini_types.hpp"
 #include "loss_fn.hpp"
 #include "box_muller_approx.hpp"
+#include "tsetlini_strong_params.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -35,14 +38,12 @@ bool action(state_type state)
  * for use with clause output and clause feedback
  */
 inline
-auto clause_range_for_label(int label, int number_of_pos_neg_clauses_per_label) -> std::pair<int, int>
+auto clause_outputs_range_for_label(
+    int label, number_of_classifier_clause_outputs_per_label_t number_of_clause_outputs_per_label) -> std::pair<int, int>
 {
-    // in contrary to pos_clause_index we do not double, because there is no
-    // distinction into positive and negative entries for clause output
-    // and feedback
-    auto const begin = label * number_of_pos_neg_clauses_per_label;
+    auto const begin = label * value_of(number_of_clause_outputs_per_label);
 
-    return std::make_pair(begin, begin + number_of_pos_neg_clauses_per_label);
+    return std::make_pair(begin, begin + value_of(number_of_clause_outputs_per_label));
 }
 
 
@@ -53,12 +54,12 @@ void sum_up_label_votes(
     aligned_vector_int & label_sum,
     int target_label,
 
-    int const number_of_pos_neg_clauses_per_label,
-    int const threshold)
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
+    threshold_t const threshold)
 {
     int rv = 0;
 
-    auto const [output_begin_ix, output_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+    auto const [output_begin_ix, output_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
     if (weights.size() != 0)
     {
@@ -79,24 +80,24 @@ void sum_up_label_votes(
         }
     }
 
-    label_sum[target_label] = std::clamp(rv, -threshold, threshold);
+    label_sum[target_label] = std::clamp(rv, -value_of(threshold), value_of(threshold));
 }
 
 
 /**
  * @param clause_output
  *      Calculated output of clauses, vector of 0s and 1s, with size equal
- *      to 2 * @c number_of_labels * @c number_of_pos_neg_clauses_per_label .
+ *      to @c number_of_labels * @c number_of_clause_outputs_per_label .
  *
  * @param label_sum
- *      Output vector of integers of @c @c number_of_labels length where
+ *      Output vector of integers of @c number_of_labels length where
  *      calculated vote scores will be placed.
  *
  * @param number_of_labels
  *      Integer count of labels the model was trained for.
  *
- * @param number_of_pos_neg_clauses_per_label
- *      Integer count of wither positive or negative clauses used for training.
+ * @param number_of_clause_outputs_per_label
+ *      Count of clause outputs per label used for training.
  *
  * @param threshold
  *      Integer threshold to count votes against.
@@ -107,13 +108,13 @@ void sum_up_all_label_votes(
     w_vector_type const & weights,
     aligned_vector_int & label_sum,
 
-    int const number_of_labels,
-    int const number_of_pos_neg_clauses_per_label,
-    int const threshold)
+    number_of_labels_t const number_of_labels,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
+    threshold_t const threshold)
 {
     for (int target_label = 0; target_label < number_of_labels; ++target_label)
     {
-        sum_up_label_votes(clause_output, weights, label_sum, target_label, number_of_pos_neg_clauses_per_label, threshold);
+        sum_up_label_votes(clause_output, weights, label_sum, target_label, number_of_clause_outputs_per_label, threshold);
     }
 }
 
@@ -125,19 +126,24 @@ inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     numeric_matrix<state_type> const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
+
+    auto const openmp_number_of_clause_outputs = value_of(number_of_clause_outputs);
 
     if (number_of_features < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        // NOTE: OpenMP cannot directly work with number_of_estimator_clause_outputs_t
+        // because the standard requires 'Canonical Loop Form'
+        // Also, clang refuses use of in-place `value_of()`.
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bool output = true;
             bool all_exclude = true;
@@ -163,9 +169,9 @@ void calculate_clause_output_for_predict_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             char toggle_output = 0;
             char neg_all_exclude = 0;
@@ -174,7 +180,7 @@ void calculate_clause_output_for_predict_T(
             state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
-            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            for (; kk < value_of(number_of_features) - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
@@ -192,7 +198,7 @@ void calculate_clause_output_for_predict_T(
                     break;
                 }
             }
-            for (int fidx = kk; fidx < number_of_features and toggle_output == false; ++fidx)
+            for (int fidx = kk; fidx < value_of(number_of_features) and toggle_output == false; ++fidx)
             {
                 bool const action_include = action(ta_state_pos_j[fidx]);
                 bool const action_include_negated = action(ta_state_neg_j[fidx]);
@@ -215,9 +221,9 @@ inline
 void calculate_clause_output_for_predict_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAState::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     std::visit(
         [&](auto & ta_state_values)
@@ -225,7 +231,7 @@ void calculate_clause_output_for_predict_T(
             calculate_clause_output_for_predict_T<BATCH_SZ>(
                 X,
                 clause_output,
-                number_of_clauses,
+                number_of_clause_outputs,
                 ta_state_values,
                 n_jobs
             );
@@ -244,15 +250,15 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     numeric_matrix<state_type> const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
     char const * X_p = assume_aligned<alignment>(X.data());
 
     if (number_of_features < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -275,7 +281,7 @@ void calculate_clause_output_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -285,7 +291,7 @@ void calculate_clause_output_T(
             state_type const * ta_state_neg_j = assume_aligned<alignment>(ta_state.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
-            for (; kk < number_of_features - (BATCH_SZ - 1); kk += BATCH_SZ)
+            for (; kk < value_of(number_of_features) - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
@@ -323,7 +329,7 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     TAState::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     std::visit(
         [&](auto & ta_state_values)
@@ -348,8 +354,8 @@ void calculate_clause_output_T(
  */
 template<typename state_type>
 void block1(
-    int const number_of_features,
-    int const number_of_states,
+    number_of_features_t const number_of_features,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     char const * __restrict ct_pos, // __restrict does not quite hold here with CoinTosser
@@ -387,8 +393,8 @@ void block1(
  */
 template<bool boost_true_positive_feedback, typename state_type>
 void block2(
-    int const number_of_features,
-    int const number_of_states,
+    number_of_features_t const number_of_features,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     char const * __restrict X,
@@ -504,7 +510,7 @@ void block2(
  */
 template<typename state_type>
 void block3(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     char const * __restrict X
@@ -560,15 +566,15 @@ void train_classifier_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     aligned_vector_char const & X,
-    int const max_weight,
-    bool const boost_true_positive_feedback,
+    max_weight_t const max_weight,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
@@ -583,7 +589,7 @@ void train_classifier_automata(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
@@ -595,7 +601,7 @@ void train_classifier_automata(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -622,10 +628,10 @@ void train_classifier_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     aligned_vector_char const & X,
-    int const max_weight,
-    bool const boost_true_positive_feedback,
+    max_weight_t const max_weight,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
@@ -661,18 +667,18 @@ void calculate_classifier_feedback_to_clauses(
     label_type const opposite_label,
     int const target_label_votes,
     int const opposite_label_votes,
-    int const number_of_pos_neg_clauses_per_label,
-    int const threshold,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
+    threshold_t const threshold,
     TFRNG & fgen)
 {
-    const auto THR2_inv = (ONE / (threshold * 2));
-    const auto THR_pos = THR2_inv * (threshold - target_label_votes);
-    const auto THR_neg = THR2_inv * (threshold + opposite_label_votes);
+    const auto THR2_inv = (ONE / (value_of(threshold) * 2));
+    const auto THR_pos = THR2_inv * (value_of(threshold) - target_label_votes);
+    const auto THR_neg = THR2_inv * (value_of(threshold) + opposite_label_votes);
 
     std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
 
     {
-        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {
@@ -687,7 +693,7 @@ void calculate_classifier_feedback_to_clauses(
     }
 
     {
-        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {
@@ -706,7 +712,7 @@ void calculate_classifier_feedback_to_clauses(
 inline
 response_type sum_up_regressor_votes(
     aligned_vector_char const & clause_output,
-    int const threshold,
+    threshold_t const threshold,
     w_vector_type const & weights)
 {
     auto accumulate_weighted = [](auto const & clause_output, auto const & weights)
@@ -726,7 +732,7 @@ response_type sum_up_regressor_votes(
         :
         accumulate_weighted(clause_output, weights);
 
-    return std::clamp(sum, 0, threshold);
+    return std::clamp(sum, 0, value_of(threshold));
 }
 
 
@@ -751,27 +757,27 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     aligned_vector_char const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
-    bool const boost_true_positive_feedback,
+    box_muller_flag_t const box_muller,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = loss_fn(static_cast<real_type>(response_error) / threshold);
+    real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
      */
-    unsigned int const feedback_hits = box_muller
+    unsigned int const feedback_hits = box_muller == true
         ? binomial(N, P, prng)
         :
         std::clamp<unsigned int>(
@@ -794,7 +800,7 @@ void train_regressor_automata(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_features, number_of_states, ta_state_pos_j, ta_state_neg_j, X.data(), ct.tosses1(prng), ct.tosses2(prng));
                 }
@@ -806,7 +812,7 @@ void train_regressor_automata(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -832,15 +838,15 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     aligned_vector_char const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
-    bool const boost_true_positive_feedback,
+    box_muller_flag_t const box_muller,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {

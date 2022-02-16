@@ -10,6 +10,9 @@
 #include "assume_aligned.hpp"
 #include "loss_fn.hpp"
 #include "box_muller_approx.hpp"
+#include "tsetlini_strong_params.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 
 #ifndef TSETLINI_USE_OMP
@@ -36,7 +39,7 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     TAStateWithSignum::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const & ta_state_signum = ta_state.signum;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
@@ -45,7 +48,7 @@ void calculate_clause_output_T(
     if (feature_blocks < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -70,7 +73,7 @@ void calculate_clause_output_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -122,7 +125,7 @@ void calculate_clause_output_T(
     int const output_begin_ix,
     int const output_end_ix,
     TAStateWithSignum::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const & ta_state_signum = ta_state.signum;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
@@ -131,7 +134,7 @@ void calculate_clause_output_T(
     if (feature_blocks < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -156,7 +159,7 @@ void calculate_clause_output_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
         for (int oidx = output_begin_ix; oidx < output_end_ix; ++oidx)
         {
@@ -208,20 +211,25 @@ inline
 void calculate_clause_output_for_predict_T(
     bit_vector<bit_block_type> const & X,
     aligned_vector_char & clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAStateWithSignum::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const & ta_state_signum = ta_state.signum;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
+    auto const openmp_number_of_clause_outputs = value_of(number_of_clause_outputs);
+
     if (feature_blocks < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        // NOTE: OpenMP cannot directly work with number_of_estimator_clause_outputs_t
+        // because the standard requires 'Canonical Loop Form'.
+        // Also, clang refuses use of in-place `value_of()`.
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bool output = true;
 
@@ -249,9 +257,9 @@ void calculate_clause_output_for_predict_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < openmp_number_of_clause_outputs; ++oidx)
         {
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;
@@ -303,9 +311,9 @@ inline
 void calculate_clause_output_for_predict_T(
     bit_vector<bit_block_type> const & X,
     bit_vector<bit_block_type> clause_output,
-    int const number_of_clauses,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
     TAStateWithSignum::value_type const & ta_state,
-    int const n_jobs)
+    number_of_jobs_t const n_jobs)
 {
     auto const & ta_state_signum = ta_state.signum;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
@@ -314,9 +322,9 @@ void calculate_clause_output_for_predict_T(
     if (feature_blocks < (int)BATCH_SZ)
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < value_of(number_of_clause_outputs); ++oidx)
         {
             bool output = true;
 
@@ -344,9 +352,9 @@ void calculate_clause_output_for_predict_T(
     else
     {
 #if TSETLINI_USE_OMP == 1
-#pragma omp parallel for if (n_jobs > 1) num_threads(n_jobs)
+#pragma omp parallel for if (n_jobs > 1) num_threads(value_of(n_jobs))
 #endif
-        for (int oidx = 0; oidx < number_of_clauses; ++oidx)
+        for (int oidx = 0; oidx < value_of(number_of_clause_outputs); ++oidx)
         {
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;
@@ -401,8 +409,8 @@ void calculate_clause_output_for_predict_T(
 template<typename state_type, typename bit_block_type>
 inline
 void block1(
-    int const number_of_features,
-    int const number_of_states,
+    number_of_features_t const number_of_features,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -464,9 +472,9 @@ void block1(
 template<typename state_type, typename bit_block_type, typename PRNG>
 inline
 void block1_sparse(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     int const number_of_sparse_features,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -477,7 +485,7 @@ void block1_sparse(
     for (int sfidx = 0; sfidx < number_of_sparse_features; ++sfidx)
     {
         {
-            auto const fidx = prng() % number_of_features;
+            auto const fidx = prng() % value_of(number_of_features);
             auto const ta_state = ta_state_pos_j[fidx];
 
             if (ta_state == 0)
@@ -492,7 +500,7 @@ void block1_sparse(
         }
 
         {
-            auto const fidx = prng() % number_of_features;
+            auto const fidx = prng() % value_of(number_of_features);
             auto const ta_state = ta_state_neg_j[fidx];
 
             if (ta_state == 0)
@@ -515,8 +523,8 @@ void block1_sparse(
 template<typename state_type, typename bit_block_type>
 inline
 void block1(
-    int const number_of_features,
-    int const number_of_states,
+    number_of_features_t const number_of_features,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -584,7 +592,7 @@ void block1(
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
 inline
 void block2(
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -594,7 +602,7 @@ void block2(
     char const * __restrict ct_neg
 )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
@@ -676,7 +684,7 @@ void block2(
 template<bool boost_true_positive_feedback, typename state_type, typename bit_block_type>
 inline
 void block2(
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -761,7 +769,7 @@ void block2(
 template<typename state_type, typename bit_block_type>
 inline
 void block3_(
-    int const number_of_features,
+    number_of_features_t const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -814,7 +822,6 @@ void block3_(
 template<typename state_type, typename bit_block_type>
 inline
 void block3(
-    int const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
     typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
@@ -886,15 +893,15 @@ void train_classifier_automata_T(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
-    bool const boost_true_positive_feedback,
+    max_weight_t const max_weight,
+    boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     for (int iidx = input_begin_ix; iidx < input_end_ix; ++iidx)
     {
@@ -915,7 +922,7 @@ void train_classifier_automata_T(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_states,
                         ta_state_pos_j,
@@ -937,7 +944,7 @@ void train_classifier_automata_T(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -945,7 +952,7 @@ void train_classifier_automata_T(
         {
             if (clause_output[iidx] == 1)
             {
-                block3<state_type, bit_block_type>(number_of_features,
+                block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
@@ -969,10 +976,10 @@ void train_classifier_automata(
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
-    bool const boost_true_positive_feedback,
+    max_weight_t const max_weight,
+    boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
@@ -1011,27 +1018,27 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
-    bool const boost_true_positive_feedback,
+    box_muller_flag_t const box_muller,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {
-    int const number_of_features = X.size();
+    auto const number_of_features = number_of_features_t{X.size()};
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = loss_fn(static_cast<real_type>(response_error) / threshold);
+    real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
      */
-    unsigned int const feedback_hits = box_muller
+    unsigned int const feedback_hits = box_muller == true
         ? binomial(N, P, prng)
         :
         std::clamp<unsigned int>(
@@ -1060,7 +1067,7 @@ void train_regressor_automata(
             }
             else // if (clause_output[iidx] == 1)
             {
-                if (boost_true_positive_feedback)
+                if (boost_true_positive_feedback == true)
                 {
                     block2<true>(number_of_states,
                         ta_state_pos_j,
@@ -1082,7 +1089,7 @@ void train_regressor_automata(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -1090,7 +1097,7 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] != 0)
             {
-                block3<state_type, bit_block_type>(number_of_features,
+                block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_signum.row(2 * iidx + 0),
@@ -1113,15 +1120,15 @@ void train_regressor_automata(
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
-    int const number_of_states,
+    number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
-    bool const boost_true_positive_feedback,
+    box_muller_flag_t const box_muller,
+    boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
-    unsigned int const threshold,
+    threshold_t const threshold,
     EstimatorStateCacheBase::coin_tosser_type & ct
     )
 {

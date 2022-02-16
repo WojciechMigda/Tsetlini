@@ -7,6 +7,8 @@
 #include "tsetlini_params.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <algorithm>
 #include <iterator>
 #include <thread>
@@ -19,16 +21,16 @@ namespace Tsetlini
 
 
 static
-void log_classifier_params(params_t const & params, bool verbose)
+void log_classifier_params(params_t const & params, verbosity_t verbose)
 {
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
-    LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_physical_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
-    if (Params::weighted(params))
+    if (Params::weighted(params) == true)
     {
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }
@@ -39,29 +41,29 @@ void log_classifier_params(params_t const & params, bool verbose)
 
 
 static
-void log_estimator_params(ClassifierStateClassic const & state, bool verbose)
+void log_estimator_params(ClassifierStateClassic const & state, verbosity_t verbose)
 {
     log_classifier_params(state.m_params, verbose);
 }
 
 
 static
-void log_estimator_params(ClassifierStateBitwise const & state, bool verbose)
+void log_estimator_params(ClassifierStateBitwise const & state, verbosity_t verbose)
 {
     log_classifier_params(state.m_params, verbose);
 }
 
 
 static
-void log_regressor_params(params_t const & params, bool verbose)
+void log_regressor_params(params_t const & params, verbosity_t verbose)
 {
-    LOG(info) << "number_of_clauses: " << Params::number_of_regressor_clauses(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_physical_regressor_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
-    if (Params::weighted(params))
+    if (Params::weighted(params) == true)
     {
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }
@@ -75,24 +77,24 @@ void log_regressor_params(params_t const & params, bool verbose)
 
 
 static
-void log_estimator_params(RegressorStateClassic const & state, bool verbose)
+void log_estimator_params(RegressorStateClassic const & state, verbosity_t verbose)
 {
     log_regressor_params(state.m_params, verbose);
 }
 
 
 static
-void log_estimator_params(RegressorStateBitwise const & state, bool verbose)
+void log_estimator_params(RegressorStateBitwise const & state, verbosity_t verbose)
 {
     log_regressor_params(state.m_params, verbose);
 }
 
 
 static
-std::string normalize_counting_type(
-    std::string const & counting_type,
-    int number_of_states,
-    bool verbose)
+counting_type_t normalize_counting_type(
+    counting_type_t const & counting_type,
+    number_of_states_t number_of_states,
+    verbosity_t verbose)
 {
     std::string rv;
 
@@ -114,50 +116,100 @@ std::string normalize_counting_type(
         rv = "int32";
     }
 
-    return rv;
+    return counting_type_t{rv};
 }
 
 
 
 static
-int number_of_classifier_clauses(params_t const & params)
+number_of_physical_classifier_clauses_t number_of_physical_classifier_clauses(params_t const & params)
 {
-    return Params::number_of_classifier_clauses(params);
+    return Params::number_of_physical_classifier_clauses(params);
 }
 
 
 static
-int number_of_estimator_clauses(ClassifierStateClassic const & est)
+number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(ClassifierStateClassic const & est)
 {
-    return number_of_classifier_clauses(est.m_params);
+    auto const rv = number_of_physical_classifier_clauses(est.m_params);
+
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
 }
 
 
 static
-int number_of_estimator_clauses(ClassifierStateBitwise const & est)
+number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(ClassifierStateBitwise const & est)
 {
-    return number_of_classifier_clauses(est.m_params);
+    auto const rv = number_of_physical_classifier_clauses(est.m_params);
+
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
 }
 
 
 static
-int number_of_regressor_clauses(params_t const & params)
+number_of_estimator_clause_outputs_t number_of_classifier_clause_outputs(params_t const & params)
 {
-    return Params::number_of_regressor_clauses(params);
+    return Params::number_of_classifier_clause_outputs(params);
 }
 
 
 static
-int number_of_estimator_clauses(RegressorStateClassic const & est)
+number_of_estimator_clause_outputs_t number_of_estimator_clause_outputs(ClassifierStateClassic const & est)
 {
-    return number_of_regressor_clauses(est.m_params);
+    return number_of_classifier_clause_outputs(est.m_params);
 }
 
 
 static
-int number_of_estimator_clauses(RegressorStateBitwise const & est)
+number_of_estimator_clause_outputs_t number_of_estimator_clause_outputs(ClassifierStateBitwise const & est)
 {
-    return number_of_regressor_clauses(est.m_params);
+    return number_of_classifier_clause_outputs(est.m_params);
+}
+
+
+static
+number_of_physical_regressor_clauses_t number_of_physical_regressor_clauses(params_t const & params)
+{
+    return Params::number_of_physical_regressor_clauses(params);
+}
+
+
+static
+number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(RegressorStateClassic const & est)
+{
+    auto const rv = number_of_physical_regressor_clauses(est.m_params);
+
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
+}
+
+
+static
+number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(RegressorStateBitwise const & est)
+{
+    auto const rv = number_of_physical_regressor_clauses(est.m_params);
+
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
+}
+
+
+static
+number_of_estimator_clause_outputs_t number_of_regressor_clause_outputs(params_t const & params)
+{
+    return Params::number_of_regressor_clause_outputs(params);
+}
+
+
+static
+number_of_estimator_clause_outputs_t number_of_estimator_clause_outputs(RegressorStateClassic const & est)
+{
+    return number_of_regressor_clause_outputs(est.m_params);
+}
+
+
+static
+number_of_estimator_clause_outputs_t number_of_estimator_clause_outputs(RegressorStateBitwise const & est)
+{
+    return number_of_regressor_clause_outputs(est.m_params);
 }
 
 
@@ -169,22 +221,25 @@ void initialize_state(EstimatorStateType & state)
     auto & params = state.m_params;
     auto const verbose = Params::verbose(params);
 
-    state.igen.init(Params::random_state(params));
-    state.fgen.init(Params::random_state(params));
+    state.igen.init(value_of(Params::random_state(params)));
+    state.fgen.init(value_of(Params::random_state(params)));
 
     log_estimator_params(state, verbose);
 
     auto & ta_state = state.ta_state;
 
     auto const number_of_states = Params::number_of_states(params);
-    auto const number_of_clauses = number_of_estimator_clauses(state);
+    auto const number_of_physical_clauses = number_of_physical_estimator_clauses(state);
+    auto const number_of_clause_outputs = number_of_estimator_clause_outputs(state);
     auto const number_of_features = Params::number_of_features(params);
     auto const counting_type =
         normalize_counting_type(Params::counting_type(params), number_of_states, verbose);
     auto const weighted = Params::weighted(params);
 
     using ta_state_type = typename EstimatorStateType::ta_state_type;
-    ta_state_type::initialize(ta_state, counting_type, number_of_clauses, number_of_features, weighted, state.igen);
+    ta_state_type::initialize(ta_state, counting_type,
+        number_of_physical_clauses, number_of_clause_outputs,
+        number_of_features, weighted, state.igen);
 
     using cache_type = typename EstimatorStateType::cache_type;
     cache_type::reset(state.cache, params);

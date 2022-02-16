@@ -159,7 +159,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         auto clf = Tsetlini::make_classifier_classic(R"({
             "threshold": 40,
             "s": 5.0,
-            "number_of_pos_neg_clauses_per_label": 1600,
+            "number_of_clauses_per_label": 3200,
             "number_of_states": 127,
             "boost_true_positive_feedback": 1,
             "random_state": 1,

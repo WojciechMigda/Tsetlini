@@ -16,8 +16,10 @@
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_estimator_state_private.hpp"
 #include "loss_fn.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include "neither/either.hpp"
+#include "strong_type/strong_type.hpp"
 
 #include <utility>
 #include <algorithm>
@@ -93,9 +95,9 @@ status_message_t check_X_y(
 template<typename RowType>
 status_message_t check_X(
     std::vector<RowType> const & X,
-    int const number_of_features)
+    number_of_features_t const number_of_features)
 {
-    if (X.front().size() != static_cast<std::size_t>(number_of_features))
+    if ((X.front().size() - value_of(number_of_features)) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "X row size must match number of features previously used to train"
@@ -106,7 +108,7 @@ status_message_t check_X(
 }
 
 
-status_message_t check_response_y(response_vector_type const & y, int const T)
+status_message_t check_response_y(response_vector_type const & y, threshold_t const T)
 {
     if (not std::all_of(y.cbegin(), y.cend(), [T](auto v){ return v >= 0 and v <= T; }))
     {
@@ -187,11 +189,11 @@ status_message_t check_for_predict(
         return {StatusCode::S_VALUE_ERROR,
             "All samples in X must have the same number of feature columns"};
     }
-    else if (X.front().size() - Params::number_of_features(state.m_params) != 0)
+    else if ((X.front().size() - value_of(Params::number_of_features(state.m_params))) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "Predict called with X, which number of features " + std::to_string(X.front().size()) +
-            " does not match that from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+            " does not match that from prior fit " + std::to_string(value_of(Params::number_of_features(state.m_params)))};
     }
     else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & sample){ return check_all_0s_or_1s(sample); }))
     {
@@ -213,11 +215,11 @@ status_message_t check_for_predict(
         return {StatusCode::S_NOT_FITTED_ERROR,
             "This model instance is not fitted yet. Call fit or partial_fit before using this method"};
     }
-    else if (sample.size() - Params::number_of_features(state.m_params) != 0)
+    else if ((sample.size() - value_of(Params::number_of_features(state.m_params))) != 0)
     {
         return {StatusCode::S_VALUE_ERROR,
             "Predict called with sample, which size " + std::to_string(sample.size()) +
-            " does not match number of features from prior fit " + std::to_string(Params::number_of_features(state.m_params))};
+            " does not match number of features from prior fit " + std::to_string(value_of(Params::number_of_features(state.m_params)))};
     }
     else if (not check_all_0s_or_1s(sample))
     {
@@ -235,25 +237,23 @@ void classifier_update_impl(
     label_type const target_label,
     label_type const opposite_label,
 
-    int const number_of_pos_neg_clauses_per_label,
-    int const threshold,
-    int const number_of_clauses,
-    int const number_of_states,
-    real_type s,
-    bool const boost_true_positive_feedback,
-    int const max_weight,
-    int const n_jobs,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
+    threshold_t const threshold,
+    number_of_states_t const number_of_states,
+    boost_tpf_t const boost_true_positive_feedback,
+    max_weight_t const max_weight,
+    number_of_jobs_t const n_jobs,
 
     IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
     ClassifierStateCache::value_type & cache,
 
-    int clause_output_tile_size
+    clause_output_tile_size_t const clause_output_tile_size
     )
 {
     {
-        auto const [output_ix_begin, output_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [output_ix_begin, output_ix_end] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         calculate_clause_output(
             X,
@@ -267,7 +267,7 @@ void classifier_update_impl(
     }
 
     {
-        auto const [output_ix_begin, output_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [output_ix_begin, output_ix_end] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         calculate_clause_output(
             X,
@@ -285,7 +285,7 @@ void classifier_update_impl(
         ta_state.weights,
         cache.label_sum,
         target_label,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
     sum_up_label_votes(
@@ -293,7 +293,7 @@ void classifier_update_impl(
         ta_state.weights,
         cache.label_sum,
         opposite_label,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
 
@@ -304,12 +304,12 @@ void classifier_update_impl(
         opposite_label,
         cache.label_sum[target_label],
         cache.label_sum[opposite_label],
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold,
         fgen);
 
     {
-        auto const [input_ix_begin, input_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [input_ix_begin, input_ix_end] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         train_classifier_automata(
             ta_state,
@@ -327,7 +327,7 @@ void classifier_update_impl(
     }
 
     {
-        auto const [input_ix_begin, input_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [input_ix_begin, input_ix_end] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         train_classifier_automata(
             ta_state,
@@ -360,9 +360,9 @@ evaluate_classifier_impl(
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -373,7 +373,7 @@ evaluate_classifier_impl(
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -383,7 +383,7 @@ evaluate_classifier_impl(
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
 
@@ -416,7 +416,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        Params::number_of_classifier_clauses(state.m_params) / 2,
+        Params::number_of_classifier_clause_outputs(state.m_params),
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -426,7 +426,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
         state.ta_state.weights,
         state.cache.label_sum,
         Params::number_of_labels(state.m_params),
-        Params::number_of_pos_neg_clauses_per_label(state.m_params),
+        Params::number_of_classifier_clause_outputs_per_label(state.m_params),
         Params::threshold(state.m_params));
 
     label_type rv = std::distance(
@@ -453,7 +453,7 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        Params::number_of_regressor_clauses(state.m_params) / 2,
+        Params::number_of_regressor_clause_outputs(state.m_params),
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -481,9 +481,9 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -494,7 +494,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -504,7 +504,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
 
@@ -534,9 +534,9 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -544,7 +544,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        number_of_clauses / 2,
+        number_of_clause_outputs,
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -554,7 +554,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
         state.ta_state.weights,
         state.cache.label_sum,
         number_of_labels,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
     return Either<status_message_t, aligned_vector_int>::rightOf(state.cache.label_sum);
@@ -578,9 +578,9 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -591,7 +591,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -601,7 +601,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
         rv[it] = state.cache.label_sum;
@@ -615,12 +615,12 @@ template<typename Gen>
 void generate_opposite_y(
     label_vector_type const & y,
     label_vector_type & opposite_y,
-    int number_of_labels,
+    number_of_labels_t number_of_labels,
     Gen & g)
 {
     for (auto it = 0u; it < y.size(); ++it)
     {
-        opposite_y[it] = (y[it] + 1 + g() % (number_of_labels - 1)) % number_of_labels;
+        opposite_y[it] = (y[it] + 1 + g() % (value_of(number_of_labels) - 1)) % value_of(number_of_labels);
     }
 }
 
@@ -632,15 +632,14 @@ fit_classifier_online_impl(
     TAStateValueType & ta_state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const max_weight = Params::max_weight(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
@@ -672,11 +671,9 @@ fit_classifier_online_impl(
                 y[ix[i]],
                 opposite_y[ix[i]],
 
-                number_of_pos_neg_clauses_per_label,
+                number_of_clause_outputs_per_label,
                 threshold,
-                number_of_clauses,
                 number_of_states,
-                s,
                 boost_true_positive_feedback,
                 max_weight,
                 n_jobs,
@@ -702,7 +699,7 @@ fit_classifier_impl(
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -741,29 +738,28 @@ void regressor_update_impl(
     SampleType const & X,
     response_type const target_response,
 
-    int const threshold,
-    int const number_of_clauses,
-    int const number_of_states,
-    real_type s,
-    bool const boost_true_positive_feedback,
-    int const max_weight,
+    threshold_t const threshold,
+    number_of_estimator_clause_outputs_t const number_of_clause_outputs,
+    number_of_states_t const number_of_states,
+    boost_tpf_t const boost_true_positive_feedback,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
-    int const n_jobs,
+    box_muller_flag_t const box_muller,
+    number_of_jobs_t const n_jobs,
 
     IRNG & igen,
     FRNG & fgen,
     TAStateValueType & ta_state,
     RegressorStateCache::value_type & cache,
 
-    int clause_output_tile_size
+    clause_output_tile_size_t clause_output_tile_size
     )
 {
     calculate_clause_output(
         X,
         cache.clause_output,
         0,
-        number_of_clauses / 2,
+        value_of(number_of_clause_outputs),
         ta_state,
         n_jobs,
         clause_output_tile_size
@@ -775,7 +771,7 @@ void regressor_update_impl(
     train_regressor_automata(
         ta_state,
         0,
-        number_of_clauses / 2,
+        value_of(number_of_clause_outputs),
         cache.clause_output.data(),
         number_of_states,
         response_error,
@@ -798,11 +794,11 @@ fit_regressor_online_impl(
     TAStateValueType & ta_state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     auto const & params = state.m_params;
 
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_regressor_clause_outputs(params);
     auto const threshold = Params::threshold(params);
     auto const max_weight = Params::max_weight(params);
     auto const number_of_states = Params::number_of_states(params);
@@ -835,9 +831,8 @@ fit_regressor_online_impl(
                 y[ix[i]],
 
                 threshold,
-                number_of_clauses,
+                number_of_clause_outputs,
                 number_of_states,
-                s,
                 boost_true_positive_feedback,
                 max_weight,
                 loss_fn,
@@ -864,7 +859,7 @@ fit_regressor_impl(
     RegressorStateType & state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -907,7 +902,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
     auto const & params = state.m_params;
 
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_regressor_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_regressor_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -918,7 +913,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_clauses / 2,
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -968,7 +963,7 @@ fit_classifier_online_with_input_check(
     std::vector<SampleType> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -985,7 +980,7 @@ fit_classifier_online_with_input_check(
     auto const labels = unique_labels(y);
     auto const number_of_labels = Params::number_of_labels(state.m_params);
 
-    if (auto sm = check_labels(labels, number_of_labels - 1);
+    if (auto sm = check_labels(labels, value_of(number_of_labels) - 1);
         sm.first != StatusCode::S_OK)
     {
         return sm;
@@ -1001,7 +996,7 @@ partial_fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1099,14 +1094,14 @@ ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_ve
 status_message_t
 ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
 status_message_t
 ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1116,7 +1111,7 @@ fit_impl(
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
@@ -1196,7 +1191,7 @@ make_regressor_classic(std::string const & json_params)
 status_message_t
 RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1206,7 +1201,7 @@ fit_regressor_online_with_input_check(
     RegressorStateType & state,
     std::vector<SampleType> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
         sm.first != StatusCode::S_OK)
@@ -1236,7 +1231,7 @@ partial_fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1254,7 +1249,7 @@ fit_impl(
     RegressorStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_regressor_impl(state, X, y, epochs);
 }
@@ -1263,7 +1258,7 @@ fit_impl(
 status_message_t
 RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1318,7 +1313,7 @@ fit_impl(
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
 }
@@ -1327,7 +1322,7 @@ fit_impl(
 status_message_t
 ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1337,7 +1332,7 @@ partial_fit_impl(
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
     int max_number_of_labels,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1353,7 +1348,7 @@ partial_fit_impl(
 status_message_t
 ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
@@ -1494,7 +1489,7 @@ fit_impl(
     RegressorStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     return fit_regressor_impl(state, X, y, epochs);
 }
@@ -1503,7 +1498,7 @@ fit_impl(
 status_message_t
 RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return fit_impl(*m_state_p, X, y, epochs);
+    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 
@@ -1512,7 +1507,7 @@ partial_fit_impl(
     RegressorStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     response_vector_type const & y,
-    unsigned int epochs)
+    number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
     {
@@ -1528,7 +1523,7 @@ partial_fit_impl(
 status_message_t
 RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, epochs);
+    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
 }
 
 

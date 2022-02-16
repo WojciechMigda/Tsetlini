@@ -152,7 +152,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
     Tsetlini::make_classifier_classic(R"({
             "threshold": 25,
             "s": 10.0,
-            "number_of_pos_neg_clauses_per_label": 500,
+            "number_of_clauses_per_label": 1000,
             "number_of_states": 127,
             "boost_true_positive_feedback": 1,
             "random_state": 1,

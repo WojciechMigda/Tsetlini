@@ -4,8 +4,12 @@
 #include "tsetlini_types.hpp"
 #include "tsetlini_algo_classic.hpp"
 #include "tsetlini_algo_common.hpp"
+#include "tsetlini_strong_params.hpp"
+
 #include "mt.hpp"
 #include "assume_aligned.hpp"
+
+#include "strong_type/strong_type.hpp"
 
 #include <gtest/gtest.h>
 
@@ -52,7 +56,8 @@ TEST(ClassicCalculateClauseOutput, replicates_result_of_CAIR_code)
         Tsetlini::aligned_vector_char clause_output(number_of_clauses);
 
         CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state_matrix, false);
-        Tsetlini::calculate_clause_output(X, clause_output, 0, number_of_clauses, ta_state, 1, 16);
+        Tsetlini::calculate_clause_output(X, clause_output, 0, number_of_clauses, ta_state,
+            Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {
@@ -71,13 +76,13 @@ TEST(ClassicCalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
     for (auto it = 0u; it < 1000; /* nop */)
     {
         int const number_of_features = irng.next(1, 200);
-        int const number_of_clauses = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs = irng.next(1, 10) * 2; // must be even
 
         Tsetlini::aligned_vector_char X(number_of_features);
 
         std::generate(X.begin(), X.end(), [&irng](){ return irng.next(0, 1); });
 
-        Tsetlini::numeric_matrix_int8 ta_state_matrix(2 * number_of_clauses, number_of_features);
+        Tsetlini::numeric_matrix_int8 ta_state_matrix(2 * number_of_clause_outputs, number_of_features);
 
         auto ta_state_gen = [&irng](auto & ta_state)
         {
@@ -97,12 +102,13 @@ TEST(ClassicCalculateClauseOutputForPredict, replicates_result_of_CAIR_code)
         Tsetlini::TAState::value_type ta_state;
         ta_state.matrix = ta_state_matrix;
 
-        Tsetlini::aligned_vector_char clause_output_CAIR(number_of_clauses);
-        Tsetlini::aligned_vector_char clause_output(number_of_clauses);
+        Tsetlini::aligned_vector_char clause_output_CAIR(number_of_clause_outputs);
+        Tsetlini::aligned_vector_char clause_output(number_of_clause_outputs);
 
-        CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clauses, number_of_features, ta_state_matrix, true);
-        Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clauses,
-            ta_state, 1, 16);
+        CAIR::calculate_clause_output(X, clause_output_CAIR, number_of_clause_outputs, number_of_features, ta_state_matrix, true);
+        Tsetlini::calculate_clause_output_for_predict(X, clause_output,
+            Tsetlini::number_of_estimator_clause_outputs_t{number_of_clause_outputs},
+            ta_state, Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
         if (0 != std::accumulate(clause_output_CAIR.cbegin(), clause_output_CAIR.cend(), 0u))
         {
@@ -120,19 +126,22 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 
     for (auto it = 0u; it < 1000; ++it)
     {
-        int const number_of_pos_neg_clauses = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs_per_label = irng.next(1, 10) * 2; // must be even
         int const number_of_labels = irng.next(2, 12);
-        int const threshold = irng.next(1, 127);
+        Tsetlini::threshold_t const threshold{irng.next(1, 127)};
 
-        Tsetlini::aligned_vector_char clause_output(number_of_pos_neg_clauses * number_of_labels);
+        Tsetlini::aligned_vector_char clause_output(number_of_clause_outputs_per_label * number_of_labels);
         std::generate(clause_output.begin(), clause_output.end(), [&irng](){ return irng.next(0, 1); });
 
         Tsetlini::aligned_vector_int label_sum(number_of_labels);
         Tsetlini::aligned_vector_int label_sum_CAIR(number_of_labels);
         Tsetlini::w_vector_type weights;
 
-        CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_pos_neg_clauses, threshold);
-        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum, number_of_labels, number_of_pos_neg_clauses, threshold);
+        CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_clause_outputs_per_label, value_of(threshold));
+        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum,
+            Tsetlini::number_of_labels_t{number_of_labels},
+            Tsetlini::number_of_classifier_clause_outputs_per_label_t{number_of_clause_outputs_per_label},
+            threshold);
 
         EXPECT_TRUE(label_sum_CAIR == label_sum);
     }
@@ -151,14 +160,14 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
         Tsetlini::label_type const target_label = irng.next(0, number_of_labels - 1);
         Tsetlini::label_type const opposite_label = (target_label + 1 + irng() % (number_of_labels - 1)) % number_of_labels;
 
-        int const threshold = irng.next(1, 127);
-        int const target_label_votes = irng.next(-threshold, threshold);
-        int const opposite_label_votes = irng.next(-threshold, threshold);
+        Tsetlini::threshold_t const threshold{irng.next(1, 127)};
+        int const target_label_votes = irng.next(-value_of(threshold), value_of(threshold));
+        int const opposite_label_votes = irng.next(-value_of(threshold), value_of(threshold));
 
-        int const number_of_pos_neg_clauses_per_label = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs_per_label = irng.next(1, 10) * 2; // must be even
 
-        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_pos_neg_clauses_per_label * number_of_labels);
-        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_pos_neg_clauses_per_label * number_of_labels);
+        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clause_outputs_per_label * number_of_labels);
+        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_clause_outputs_per_label * number_of_labels);
 
         CAIR::calculate_feedback_to_clauses(
             feedback_to_clauses_CAIR,
@@ -166,9 +175,9 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
             opposite_label,
             target_label_votes,
             opposite_label_votes,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             number_of_labels,
-            threshold,
+            value_of(threshold),
             fgen_CAIR);
 
         Tsetlini::calculate_classifier_feedback_to_clauses(
@@ -177,7 +186,7 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
             opposite_label,
             target_label_votes,
             opposite_label_votes,
-            number_of_pos_neg_clauses_per_label,
+            Tsetlini::number_of_classifier_clause_outputs_per_label_t{number_of_clause_outputs_per_label},
             threshold,
             fgen);
 
@@ -192,7 +201,7 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
     FRNG    fgen(4567);
     IRNG    prng(4567);
     FRNG    prng_CAIR(4567);
-    int constexpr MAX_WEIGHT = 10000000;
+    Tsetlini::max_weight_t constexpr MAX_WEIGHT{10000000};
 
     for (auto it = 0u; it < 1000; ++it)
     {
@@ -245,7 +254,8 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
 
         Tsetlini::train_classifier_automata(
             ta_state, weights, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),
-            number_of_states, X, MAX_WEIGHT, boost_true_positive_feedback, prng, ct);
+            Tsetlini::number_of_states_t{number_of_states}, X, MAX_WEIGHT,
+            Tsetlini::boost_tpf_t{boost_true_positive_feedback}, prng, ct);
 
         EXPECT_TRUE(ta_state == ta_state_CAIR);
     }

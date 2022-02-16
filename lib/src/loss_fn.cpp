@@ -1,8 +1,9 @@
 #include "loss_fn.hpp"
+#include "tsetlini_strong_params.hpp"
 
+#include "strong_type/strong_type.hpp"
 
 #include <functional>
-#include <string>
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
@@ -12,7 +13,7 @@ namespace Tsetlini
 {
 
 
-std::function<float(float)> make_loss_fn(std::string const & name, float const C1)
+std::function<float(float)> make_loss_fn(loss_fn_name_t const & name, loss_fn_C1_t const C1)
 {
     if ((name == "MAE") or
         (name == "L1"))
@@ -34,7 +35,7 @@ std::function<float(float)> make_loss_fn(std::string const & name, float const C
                 }
                 else
                 {
-                    return x * x - C1 * C1 + C1;
+                    return x * x - value_of(C1 * C1 + C1);
                 }
             };
     }
@@ -42,7 +43,7 @@ std::function<float(float)> make_loss_fn(std::string const & name, float const C
     {
         return [C1](float x)
             {
-                return C1 * std::abs(x) + (1.f - C1) * x * x;
+                return value_of(C1) * std::abs(x) + (1.f - value_of(C1)) * x * x;
             };
     }
     else

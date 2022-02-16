@@ -4,6 +4,7 @@
 #define LIB_INCLUDE_TA_STATE_HPP_
 
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "mt.hpp"
 
 #include <variant>
@@ -26,10 +27,11 @@ struct is_TA_state<T, std::void_t<
         typename T::value_type,
         decltype(T::initialize(
             std::declval<typename T::value_type &>(),
-            std::declval<std::string const &>(),
-            std::declval<int>(),
-            std::declval<int>(),
-            std::declval<bool const>(),
+            std::declval<counting_type_t const &>(),
+            std::declval<number_of_physical_estimator_clauses_t>(),
+            std::declval<number_of_estimator_clause_outputs_t>(),
+            std::declval<number_of_features_t>(),
+            std::declval<weighted_flag_t const>(),
             std::declval<IRNG &>()))
     >>
     : std::true_type
@@ -66,10 +68,11 @@ struct TAState : public TAStateBase
 
     static void initialize(
         value_type & state,
-        std::string const & counting_type,
-        int number_of_clauses,
-        int number_of_features,
-        bool const weighted,
+        counting_type_t const & counting_type,
+        number_of_physical_estimator_clauses_t number_of_clauses,
+        number_of_estimator_clause_outputs_t number_of_clause_outputs,
+        number_of_features_t number_of_features,
+        weighted_flag_t const weighted,
         IRNG & igen);
 };
 
@@ -95,10 +98,11 @@ struct TAStateWithSignum : public TAStateBase
 
     static void initialize(
         value_type & state,
-        std::string const & counting_type,
-        int number_of_clauses,
-        int number_of_features,
-        bool const weighted,
+        counting_type_t const & counting_type,
+        number_of_physical_estimator_clauses_t number_of_clauses,
+        number_of_estimator_clause_outputs_t number_of_clause_outputs,
+        number_of_features_t number_of_features,
+        weighted_flag_t const weighted,
         IRNG & igen);
 };
 
