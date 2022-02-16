@@ -119,6 +119,12 @@ using box_muller_flag_t = strong::type<
     strong::ostreamable
 >;
 
+using max_weight_t = strong::type<
+    int, struct _max_weight_tag,
+    strong::ordered_with<int>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

@@ -155,9 +155,9 @@ box_muller_flag_t box_muller(params_t const & params)
 
 
 inline
-int max_weight(params_t const & params)
+max_weight_t max_weight(params_t const & params)
 {
-    return std::get<int>(params.at("max_weight"));
+    return max_weight_t{std::get<int>(params.at("max_weight"))};
 }
 
 

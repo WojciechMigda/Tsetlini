@@ -199,7 +199,7 @@ TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
     FRNG    fgen(4567);
     IRNG    prng(4567);
     FRNG    prng_CAIR(4567);
-    int constexpr MAX_WEIGHT = 10000000;
+    Tsetlini::max_weight_t constexpr MAX_WEIGHT{10000000};
 
     for (auto it = 0u; it < 1000; ++it)
     {

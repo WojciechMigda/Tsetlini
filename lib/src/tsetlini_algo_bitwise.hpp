@@ -895,7 +895,7 @@ void train_classifier_automata_T(
     char const * __restrict clause_output,
     number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
@@ -944,7 +944,7 @@ void train_classifier_automata_T(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -978,7 +978,7 @@ void train_classifier_automata(
     char const * __restrict clause_output,
     number_of_states_t const number_of_states,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     boost_tpf_t const boost_true_positive_feedback,
     PRNG & prng,
     EstimatorStateCacheBase::coin_tosser_type & ct
@@ -1021,7 +1021,7 @@ void train_regressor_automata(
     number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
     box_muller_flag_t const box_muller,
     boost_tpf_t const boost_true_positive_feedback,
@@ -1089,7 +1089,7 @@ void train_regressor_automata(
                 if (weights.size() != 0)
                 {
                     // plus 1, because weights are offset by -1, haha
-                    weights[iidx] += ((weights[iidx] + 1) < (w_vector_type::value_type)max_weight);
+                    weights[iidx] += ((weights[iidx] + 1) < max_weight);
                 }
             }
         }
@@ -1123,7 +1123,7 @@ void train_regressor_automata(
     number_of_states_t const number_of_states,
     int const response_error,
     bit_vector<bit_block_type> const & X,
-    int const max_weight,
+    max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
     box_muller_flag_t const box_muller,
     boost_tpf_t const boost_true_positive_feedback,

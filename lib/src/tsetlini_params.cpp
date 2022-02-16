@@ -305,12 +305,12 @@ static
 Either<status_message_t, params_t>
 assert_max_weight(params_t const & params)
 {
-    auto value = std::get<int>(params.at("max_weight"));
+    auto num = Params::max_weight(params);
 
-    if (value < 1)
+    if (num < 1)
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'max_weight' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+            "Param 'max_weight' got value " + std::to_string(value_of(num)) + ", instead of a natural integer.\n"});
     }
     else
     {
