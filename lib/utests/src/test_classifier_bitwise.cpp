@@ -157,25 +157,57 @@ suite TestClassifierBitwise = []
 };
 
 
-"ClassifierBitwise can be created from JSON with number_of_pos_neg_clauses_per_label set to 1"_test = []
+"ClassifierBitwise can be created from JSON with number_of_clauses_per_label set to 4"_test = []
 {
-    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_pos_neg_clauses_per_label": 1})");
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": 4})");
 
     expect(that % true == !!clf);
 };
 
 
-"ClassifierBitwise cannot be created from JSON with number_of_pos_neg_clauses_per_label set to 0"_test = []
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to 3"_test = []
 {
-    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_pos_neg_clauses_per_label": 0})");
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": 3})");
 
     expect(that % false == !!clf);
 };
 
 
-"ClassifierBitwise cannot be created from JSON with number_of_pos_neg_clauses_per_label set to -1"_test = []
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to 2"_test = []
 {
-    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_pos_neg_clauses_per_label": -1})");
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": 2})");
+
+    expect(that % false == !!clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to 1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": 1})");
+
+    expect(that % false == !!clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to 0"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": 0})");
+
+    expect(that % false == !!clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to -1"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": -1})");
+
+    expect(that % false == !!clf);
+};
+
+
+"ClassifierBitwise cannot be created from JSON with number_of_clauses_per_label set to -4"_test = []
+{
+    auto const clf = Tsetlini::make_classifier_bitwise(R"({"number_of_clauses_per_label": -4})");
 
     expect(that % false == !!clf);
 };

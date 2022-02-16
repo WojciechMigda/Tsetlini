@@ -24,7 +24,7 @@ static
 void log_classifier_params(params_t const & params, verbosity_t verbose)
 {
     LOG(info) << "number_of_labels: " << Params::number_of_labels(params) << '\n';
-    LOG(info) << "number_of_clauses: " << Params::number_of_classifier_clauses(params) << '\n';
+    LOG(info) << "number_of_clauses: " << Params::number_of_physical_classifier_clauses(params) << '\n';
     LOG(info) << "number_of_features: " << Params::number_of_features(params) << '\n';
     LOG(info) << "s: " << Params::s(params) << '\n';
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
@@ -122,34 +122,34 @@ counting_type_t normalize_counting_type(
 
 
 static
-int number_of_classifier_clauses(params_t const & params)
+number_of_physical_classifier_clauses_t number_of_physical_classifier_clauses(params_t const & params)
 {
-    return Params::number_of_classifier_clauses(params);
+    return Params::number_of_physical_classifier_clauses(params);
 }
 
 
 static
 number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(ClassifierStateClassic const & est)
 {
-    auto const unsafe_rv = number_of_classifier_clauses(est.m_params); // TODO
+    auto const rv = number_of_physical_classifier_clauses(est.m_params);
 
-    return number_of_physical_estimator_clauses_t{unsafe_rv};
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
 }
 
 
 static
 number_of_physical_estimator_clauses_t number_of_physical_estimator_clauses(ClassifierStateBitwise const & est)
 {
-    auto const unsafe_rv = number_of_classifier_clauses(est.m_params); // TODO
+    auto const rv = number_of_physical_classifier_clauses(est.m_params);
 
-    return number_of_physical_estimator_clauses_t{unsafe_rv};
+    return number_of_physical_estimator_clauses_t{value_of(rv)};
 }
 
 
 static
 number_of_estimator_clause_outputs_t number_of_classifier_clause_outputs(params_t const & params)
 {
-    return number_of_estimator_clause_outputs_t{Params::number_of_classifier_clauses(params) / 2}; // TODO
+    return Params::number_of_classifier_clause_outputs(params);
 }
 
 

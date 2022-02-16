@@ -128,7 +128,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
     Tsetlini::make_classifier_classic(R"({
             "threshold": 80,
             "s": 27.0,
-            "number_of_pos_neg_clauses_per_label": 20000,
+            "number_of_clauses_per_label": 40000,
             "number_of_states": 127,
             "boost_true_positive_feedback": 1,
             "random_state": 1,

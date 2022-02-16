@@ -62,7 +62,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"number_of_states": 200})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
@@ -74,7 +74,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"s": 3.9})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
@@ -86,7 +86,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"verbose": true})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
@@ -98,7 +98,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"counting_type": "int16"})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
@@ -110,7 +110,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"random_state": null})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
@@ -131,7 +131,7 @@ suite TestClassifierParams = []
     auto const either = Tsetlini::make_classifier_params_from_json(R"(
 {
 "verbose": true,
-"number_of_pos_neg_clauses_per_label": 17,
+"number_of_clauses_per_label": 20,
 "number_of_states": 125,
 "s": 6.3 ,
 "threshold": 8,
@@ -145,12 +145,12 @@ suite TestClassifierParams = []
 }
 )");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 
     expect(that % true == std::get<bool>(params.at("verbose")));
-    expect(that % 17 == std::get<int>(params.at("number_of_pos_neg_clauses_per_label")));
+    expect(that % 20 == std::get<int>(params.at("number_of_clauses_per_label")));
     expect(that % 125 == std::get<int>(params.at("number_of_states")));
     expect(that % 8 == std::get<int>(params.at("threshold")));
     expect(that % true == std::get<bool>(params.at("weighted")));
@@ -178,7 +178,7 @@ suite TestClassifierParams = []
 {
     auto const either = Tsetlini::make_classifier_params_from_json(R"({"n_jobs": -1})");
 
-    expect(that % true == either);
+    !expect(that % true == either);
 
     auto params = either.right().value;
 

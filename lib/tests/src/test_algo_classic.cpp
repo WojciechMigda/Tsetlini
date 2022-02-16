@@ -124,19 +124,22 @@ TEST(SumUpAllLabelVotes, replicates_result_of_CAIR_code)
 
     for (auto it = 0u; it < 1000; ++it)
     {
-        int const number_of_pos_neg_clauses = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs_per_label = irng.next(1, 10) * 2; // must be even
         int const number_of_labels = irng.next(2, 12);
         Tsetlini::threshold_t const threshold{irng.next(1, 127)};
 
-        Tsetlini::aligned_vector_char clause_output(number_of_pos_neg_clauses * number_of_labels);
+        Tsetlini::aligned_vector_char clause_output(number_of_clause_outputs_per_label * number_of_labels);
         std::generate(clause_output.begin(), clause_output.end(), [&irng](){ return irng.next(0, 1); });
 
         Tsetlini::aligned_vector_int label_sum(number_of_labels);
         Tsetlini::aligned_vector_int label_sum_CAIR(number_of_labels);
         Tsetlini::w_vector_type weights;
 
-        CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_pos_neg_clauses, value_of(threshold));
-        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum, Tsetlini::number_of_labels_t{number_of_labels}, number_of_pos_neg_clauses, threshold);
+        CAIR::sum_up_class_votes(clause_output, label_sum_CAIR, number_of_labels, number_of_clause_outputs_per_label, value_of(threshold));
+        Tsetlini::sum_up_all_label_votes(clause_output, weights, label_sum,
+            Tsetlini::number_of_labels_t{number_of_labels},
+            Tsetlini::number_of_classifier_clause_outputs_per_label_t{number_of_clause_outputs_per_label},
+            threshold);
 
         EXPECT_TRUE(label_sum_CAIR == label_sum);
     }
@@ -159,10 +162,10 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
         int const target_label_votes = irng.next(-value_of(threshold), value_of(threshold));
         int const opposite_label_votes = irng.next(-value_of(threshold), value_of(threshold));
 
-        int const number_of_pos_neg_clauses_per_label = irng.next(1, 10) * 2; // must be even
+        int const number_of_clause_outputs_per_label = irng.next(1, 10) * 2; // must be even
 
-        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_pos_neg_clauses_per_label * number_of_labels);
-        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_pos_neg_clauses_per_label * number_of_labels);
+        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clause_outputs_per_label * number_of_labels);
+        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_clause_outputs_per_label * number_of_labels);
 
         CAIR::calculate_feedback_to_clauses(
             feedback_to_clauses_CAIR,
@@ -170,7 +173,7 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
             opposite_label,
             target_label_votes,
             opposite_label_votes,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             number_of_labels,
             value_of(threshold),
             fgen_CAIR);
@@ -181,7 +184,7 @@ TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
             opposite_label,
             target_label_votes,
             opposite_label_votes,
-            number_of_pos_neg_clauses_per_label,
+            Tsetlini::number_of_classifier_clause_outputs_per_label_t{number_of_clause_outputs_per_label},
             threshold,
             fgen);
 

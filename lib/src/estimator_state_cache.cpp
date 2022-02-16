@@ -15,12 +15,14 @@ void ClassifierStateCache::reset(
     ClassifierStateCache::value_type & cache,
     params_t const & params)
 {
+    auto number_of_outputs = Params::number_of_classifier_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.label_sum.clear();
     cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     cache.ct = CoinTosserExact(
         real_type{1.} / value_of(Params::s(params)),
@@ -72,12 +74,14 @@ void ClassifierStateBitwiseCache::reset(
     ClassifierStateBitwiseCache::value_type & cache,
     params_t const & params)
 {
+    auto number_of_outputs = Params::number_of_classifier_clause_outputs(params);
+
     cache.clause_output.clear();
-    cache.clause_output.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.clause_output.resize(value_of(number_of_outputs));
     cache.label_sum.clear();
     cache.label_sum.resize(value_of(Params::number_of_labels(params)));
     cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(Params::number_of_classifier_clauses(params) / 2);
+    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     /*
      * While a factor of 24 (= 3 * 8) is arbitrary and seems to work, for smaller sample

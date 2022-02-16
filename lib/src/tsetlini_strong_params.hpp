@@ -85,6 +85,19 @@ using number_of_physical_regressor_clauses_t = strong::type<
     strong::ostreamable
 >;
 
+using number_of_physical_classifier_clauses_per_label_t = strong::type<
+    int, struct _number_of_physical_classifier_clauses_per_label_tag
+>;
+
+using number_of_classifier_clause_outputs_per_label_t = strong::type<
+    int, struct _number_of_classifier_clause_outputs_per_label_tag
+>;
+
+using number_of_physical_classifier_clauses_t = strong::type<
+    int, struct _number_of_physical_classifier_clauses_tag,
+    strong::ostreamable
+>;
+
 using number_of_physical_estimator_clauses_t = strong::type<
     int, struct _number_of_physical_estimator_clauses_tag
 >;

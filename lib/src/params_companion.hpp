@@ -53,13 +53,6 @@ verbosity_t verbose(params_t const & params)
 
 
 inline
-int number_of_pos_neg_clauses_per_label(params_t const & params)
-{
-    return std::get<int>(params.at("number_of_pos_neg_clauses_per_label"));
-}
-
-
-inline
 number_of_labels_t number_of_labels(params_t const & params)
 {
     return number_of_labels_t{std::get<int>(params.at("number_of_labels"))};
@@ -102,16 +95,34 @@ number_of_states_t number_of_states(params_t const & params)
 
 
 inline
-int number_of_clauses_per_label(params_t const & params)
+number_of_classifier_clause_outputs_per_label_t number_of_classifier_clause_outputs_per_label(params_t const & params)
 {
-    return 2 * number_of_pos_neg_clauses_per_label(params);
+    return number_of_classifier_clause_outputs_per_label_t{std::get<int>(params.at("number_of_clauses_per_label")) / 2};
 }
 
 
 inline
-int number_of_classifier_clauses(params_t const & params)
+number_of_estimator_clause_outputs_t number_of_classifier_clause_outputs(params_t const & params)
 {
-    return number_of_clauses_per_label(params) * value_of(number_of_labels(params));
+    return number_of_estimator_clause_outputs_t{
+        value_of(number_of_labels(params)) *
+        value_of(number_of_classifier_clause_outputs_per_label(params))};
+}
+
+
+inline
+number_of_physical_classifier_clauses_per_label_t number_of_physical_classifier_clauses_per_label(params_t const & params)
+{
+    return number_of_physical_classifier_clauses_per_label_t{std::get<int>(params.at("number_of_clauses_per_label"))};
+}
+
+
+inline
+number_of_physical_classifier_clauses_t number_of_physical_classifier_clauses(params_t const & params)
+{
+    return number_of_physical_classifier_clauses_t{
+        value_of(number_of_labels(params)) *
+        value_of(number_of_physical_classifier_clauses_per_label(params))};
 }
 
 

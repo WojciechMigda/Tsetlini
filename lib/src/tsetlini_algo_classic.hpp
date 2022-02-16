@@ -38,14 +38,12 @@ bool action(state_type state)
  * for use with clause output and clause feedback
  */
 inline
-auto clause_range_for_label(int label, int number_of_pos_neg_clauses_per_label) -> std::pair<int, int>
+auto clause_outputs_range_for_label(
+    int label, number_of_classifier_clause_outputs_per_label_t number_of_clause_outputs_per_label) -> std::pair<int, int>
 {
-    // in contrary to pos_clause_index we do not double, because there is no
-    // distinction into positive and negative entries for clause output
-    // and feedback
-    auto const begin = label * number_of_pos_neg_clauses_per_label;
+    auto const begin = label * value_of(number_of_clause_outputs_per_label);
 
-    return std::make_pair(begin, begin + number_of_pos_neg_clauses_per_label);
+    return std::make_pair(begin, begin + value_of(number_of_clause_outputs_per_label));
 }
 
 
@@ -56,12 +54,12 @@ void sum_up_label_votes(
     aligned_vector_int & label_sum,
     int target_label,
 
-    int const number_of_pos_neg_clauses_per_label,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
     threshold_t const threshold)
 {
     int rv = 0;
 
-    auto const [output_begin_ix, output_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+    auto const [output_begin_ix, output_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
     if (weights.size() != 0)
     {
@@ -89,7 +87,7 @@ void sum_up_label_votes(
 /**
  * @param clause_output
  *      Calculated output of clauses, vector of 0s and 1s, with size equal
- *      to 2 * @c number_of_labels * @c number_of_pos_neg_clauses_per_label .
+ *      to @c number_of_labels * @c number_of_clause_outputs_per_label .
  *
  * @param label_sum
  *      Output vector of integers of @c number_of_labels length where
@@ -98,8 +96,8 @@ void sum_up_label_votes(
  * @param number_of_labels
  *      Integer count of labels the model was trained for.
  *
- * @param number_of_pos_neg_clauses_per_label
- *      Integer count of either positive or negative clauses used for training.
+ * @param number_of_clause_outputs_per_label
+ *      Count of clause outputs per label used for training.
  *
  * @param threshold
  *      Integer threshold to count votes against.
@@ -111,12 +109,12 @@ void sum_up_all_label_votes(
     aligned_vector_int & label_sum,
 
     number_of_labels_t const number_of_labels,
-    int const number_of_pos_neg_clauses_per_label,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
     threshold_t const threshold)
 {
     for (int target_label = 0; target_label < number_of_labels; ++target_label)
     {
-        sum_up_label_votes(clause_output, weights, label_sum, target_label, number_of_pos_neg_clauses_per_label, threshold);
+        sum_up_label_votes(clause_output, weights, label_sum, target_label, number_of_clause_outputs_per_label, threshold);
     }
 }
 
@@ -669,7 +667,7 @@ void calculate_classifier_feedback_to_clauses(
     label_type const opposite_label,
     int const target_label_votes,
     int const opposite_label_votes,
-    int const number_of_pos_neg_clauses_per_label,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
     threshold_t const threshold,
     TFRNG & fgen)
 {
@@ -680,7 +678,7 @@ void calculate_classifier_feedback_to_clauses(
     std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
 
     {
-        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {
@@ -695,7 +693,7 @@ void calculate_classifier_feedback_to_clauses(
     }
 
     {
-        auto const [feedback_begin_ix, feedback_end_ix] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [feedback_begin_ix, feedback_end_ix] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         for (int fidx = feedback_begin_ix; fidx < feedback_end_ix; ++fidx)
         {

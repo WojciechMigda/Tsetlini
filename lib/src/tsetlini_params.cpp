@@ -25,7 +25,7 @@ namespace Tsetlini
 
 static const params_t default_classifier_params =
 {
-    {"number_of_pos_neg_clauses_per_label", param_value_t(5)},
+    {"number_of_clauses_per_label", param_value_t(12)},
     {"number_of_states", param_value_t(100)},
     {"s", param_value_t(2.0f)},
     {"threshold", param_value_t(15)},
@@ -136,7 +136,7 @@ json_to_params(json const & js)
         auto const value = kv.value();
 
         if (
-            (key == "number_of_pos_neg_clauses_per_label") or
+            (key == "number_of_clauses_per_label") or
             (key == "number_of_regressor_clauses") or
             (key == "number_of_states") or
             (key == "boost_true_positive_feedback") or
@@ -339,14 +339,14 @@ assert_threshold(params_t const & params)
 
 static
 Either<status_message_t, params_t>
-assert_number_of_pos_neg_clauses_per_label(params_t const & params)
+assert_number_of_physical_clauses_per_label(params_t const & params)
 {
-    auto value = std::get<int>(params.at("number_of_pos_neg_clauses_per_label"));
+    auto num = Params::number_of_physical_classifier_clauses_per_label(params);
 
-    if (value < 1)
+    if ((value_of(num) < 1) or ((value_of(num) % 4) != 0))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
-            "Param 'number_of_pos_neg_clauses_per_label' got value " + std::to_string(value) + ", instead of a natural integer.\n"});
+            "Param 'number_of_clauses_per_label' got value " + std::to_string(value_of(num)) + ", instead of a natural integer divisible by 4.\n"});
     }
     else
     {
@@ -428,7 +428,7 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_n_jobs)
         .rightFlatMap(assert_number_of_states)
         .rightFlatMap(assert_specificity)
-        .rightFlatMap(assert_number_of_pos_neg_clauses_per_label)
+        .rightFlatMap(assert_number_of_physical_clauses_per_label)
         .rightFlatMap(assert_boost_true_positive_feedback)
         .rightFlatMap(assert_threshold)
         .rightFlatMap(assert_max_weight)

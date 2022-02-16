@@ -123,7 +123,7 @@ Please run make_data.py to generate this file and copy it to the current working
     auto const params = R"({
         "threshold": 10,
         "s": 3.0,
-        "number_of_pos_neg_clauses_per_label": 50,
+        "number_of_clauses_per_label": 100,
         "number_of_states": 100,
         "boost_true_positive_feedback": 0,
         "random_state": 1,

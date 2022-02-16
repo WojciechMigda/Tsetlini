@@ -237,9 +237,8 @@ void classifier_update_impl(
     label_type const target_label,
     label_type const opposite_label,
 
-    int const number_of_pos_neg_clauses_per_label,
+    number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
     threshold_t const threshold,
-    int const number_of_clauses,
     number_of_states_t const number_of_states,
     boost_tpf_t const boost_true_positive_feedback,
     int const max_weight,
@@ -254,7 +253,7 @@ void classifier_update_impl(
     )
 {
     {
-        auto const [output_ix_begin, output_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [output_ix_begin, output_ix_end] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         calculate_clause_output(
             X,
@@ -268,7 +267,7 @@ void classifier_update_impl(
     }
 
     {
-        auto const [output_ix_begin, output_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [output_ix_begin, output_ix_end] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         calculate_clause_output(
             X,
@@ -286,7 +285,7 @@ void classifier_update_impl(
         ta_state.weights,
         cache.label_sum,
         target_label,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
     sum_up_label_votes(
@@ -294,7 +293,7 @@ void classifier_update_impl(
         ta_state.weights,
         cache.label_sum,
         opposite_label,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
 
@@ -305,12 +304,12 @@ void classifier_update_impl(
         opposite_label,
         cache.label_sum[target_label],
         cache.label_sum[opposite_label],
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold,
         fgen);
 
     {
-        auto const [input_ix_begin, input_ix_end] = clause_range_for_label(target_label, number_of_pos_neg_clauses_per_label);
+        auto const [input_ix_begin, input_ix_end] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
         train_classifier_automata(
             ta_state,
@@ -328,7 +327,7 @@ void classifier_update_impl(
     }
 
     {
-        auto const [input_ix_begin, input_ix_end] = clause_range_for_label(opposite_label, number_of_pos_neg_clauses_per_label);
+        auto const [input_ix_begin, input_ix_end] = clause_outputs_range_for_label(opposite_label, number_of_clause_outputs_per_label);
 
         train_classifier_automata(
             ta_state,
@@ -361,9 +360,9 @@ evaluate_classifier_impl(
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -374,7 +373,7 @@ evaluate_classifier_impl(
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -384,7 +383,7 @@ evaluate_classifier_impl(
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
 
@@ -417,7 +416,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        number_of_estimator_clause_outputs_t{Params::number_of_classifier_clauses(state.m_params) / 2}, // TODO
+        Params::number_of_classifier_clause_outputs(state.m_params),
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -427,7 +426,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
         state.ta_state.weights,
         state.cache.label_sum,
         Params::number_of_labels(state.m_params),
-        Params::number_of_pos_neg_clauses_per_label(state.m_params),
+        Params::number_of_classifier_clause_outputs_per_label(state.m_params),
         Params::threshold(state.m_params));
 
     label_type rv = std::distance(
@@ -482,9 +481,9 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -495,7 +494,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -505,7 +504,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
 
@@ -535,9 +534,9 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -545,7 +544,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     calculate_clause_output_for_predict(
         sample,
         state.cache.clause_output,
-        number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
+        number_of_clause_outputs,
         state.ta_state,
         n_jobs,
         clause_output_tile_size);
@@ -555,7 +554,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
         state.ta_state.weights,
         state.cache.label_sum,
         number_of_labels,
-        number_of_pos_neg_clauses_per_label,
+        number_of_clause_outputs_per_label,
         threshold);
 
     return Either<status_message_t, aligned_vector_int>::rightOf(state.cache.label_sum);
@@ -579,9 +578,9 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
+    auto const number_of_clause_outputs = Params::number_of_classifier_clause_outputs(params);
     auto const n_jobs = Params::n_jobs(params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
@@ -592,7 +591,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
         calculate_clause_output_for_predict(
             X[it],
             state.cache.clause_output,
-            number_of_estimator_clause_outputs_t{number_of_clauses / 2}, // TODO
+            number_of_clause_outputs,
             state.ta_state,
             n_jobs,
             clause_output_tile_size);
@@ -602,7 +601,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
             state.ta_state.weights,
             state.cache.label_sum,
             number_of_labels,
-            number_of_pos_neg_clauses_per_label,
+            number_of_clause_outputs_per_label,
             threshold);
 
         rv[it] = state.cache.label_sum;
@@ -638,10 +637,9 @@ fit_classifier_online_impl(
     auto const & params = state.m_params;
 
     auto const number_of_labels = Params::number_of_labels(params);
-    auto const number_of_pos_neg_clauses_per_label = Params::number_of_pos_neg_clauses_per_label(params);
+    auto const number_of_clause_outputs_per_label = Params::number_of_classifier_clause_outputs_per_label(params);
     auto const threshold = Params::threshold(params);
     auto const max_weight = Params::max_weight(params);
-    auto const number_of_clauses = Params::number_of_classifier_clauses(params);
     auto const number_of_states = Params::number_of_states(params);
     auto const s = Params::s(params);
     auto const boost_true_positive_feedback = Params::boost_true_positive_feedback(params);
@@ -673,9 +671,8 @@ fit_classifier_online_impl(
                 y[ix[i]],
                 opposite_y[ix[i]],
 
-                number_of_pos_neg_clauses_per_label,
+                number_of_clause_outputs_per_label,
                 threshold,
-                number_of_clauses,
                 number_of_states,
                 boost_true_positive_feedback,
                 max_weight,

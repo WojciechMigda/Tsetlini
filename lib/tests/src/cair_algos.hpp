@@ -85,21 +85,21 @@ void calculate_clause_output(
 
 struct ClauseProxy
 {
-    ClauseProxy(int const number_of_classes, int const number_of_pos_neg_clauses_per_label)
+    ClauseProxy(int const number_of_classes, int const number_of_clause_outputs_per_label)
         : number_of_classes(number_of_classes)
-        , number_of_pos_neg_clauses_per_label(number_of_pos_neg_clauses_per_label)
+        , number_of_clause_outputs_per_label(number_of_clause_outputs_per_label)
         , clause_sign_0(number_of_classes)
         , clause_sign_1(number_of_classes)
         , clause_count(number_of_classes)
     {
         for (auto i = 0u; i < clause_sign_0.size(); ++i)
         {
-            clause_sign_0[i].resize(number_of_pos_neg_clauses_per_label);
-            clause_sign_1[i].resize(number_of_pos_neg_clauses_per_label);
+            clause_sign_0[i].resize(number_of_clause_outputs_per_label);
+            clause_sign_1[i].resize(number_of_clause_outputs_per_label);
 
-            for (auto j = 0; j < number_of_pos_neg_clauses_per_label; ++j)
+            for (auto j = 0; j < number_of_clause_outputs_per_label; ++j)
             {
-                clause_sign_0[i][clause_count[i]] = i * number_of_pos_neg_clauses_per_label + j;
+                clause_sign_0[i][clause_count[i]] = i * number_of_clause_outputs_per_label + j;
 
                 if (j % 2 == 0)
                 {
@@ -116,7 +116,7 @@ struct ClauseProxy
     }
 
     int const number_of_classes;
-    int const number_of_pos_neg_clauses_per_label;
+    int const number_of_clause_outputs_per_label;
     std::vector<std::vector<int>> clause_sign_0;
     std::vector<std::vector<int>> clause_sign_1;
     std::vector<int> clause_count;
@@ -148,20 +148,20 @@ void sum_up_class_votes(
     Tsetlini::aligned_vector_int & class_sum,
 
     int const number_of_classes,
-    int const number_of_pos_neg_clauses_per_label,
+    int const number_of_clause_outputs_per_label,
     int const threshold)
 {
 
-    CAIR::ClauseProxy const proxy(number_of_classes, number_of_pos_neg_clauses_per_label);
+    CAIR::ClauseProxy const proxy(number_of_classes, number_of_clause_outputs_per_label);
 
 
     for (auto target_class = 0; target_class < number_of_classes; ++target_class)
     {
         class_sum[target_class] = 0;
 
-        auto const clause_count = number_of_pos_neg_clauses_per_label;
+        auto const clause_outputs_count = number_of_clause_outputs_per_label;
 
-        for (auto j = 0; j < clause_count; ++j)
+        for (auto j = 0; j < clause_outputs_count; ++j)
         {
             class_sum[target_class] += clause_output[proxy.clause_sign_0[target_class][j]] * proxy.clause_sign_1[target_class][j];
         }
