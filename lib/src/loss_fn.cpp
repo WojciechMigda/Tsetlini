@@ -1,6 +1,8 @@
 #include "loss_fn.hpp"
 #include "tsetlini_strong_params.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <functional>
 #include <cstdlib>
 #include <cstdio>

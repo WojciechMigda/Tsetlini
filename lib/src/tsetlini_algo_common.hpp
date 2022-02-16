@@ -7,6 +7,8 @@
 #include "tsetlini_algo_classic.hpp"
 #include "tsetlini_algo_bitwise.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 
 namespace Tsetlini
 {

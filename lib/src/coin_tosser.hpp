@@ -6,6 +6,8 @@
 #include "tsetlini_types.hpp"
 #include "tsetlini_strong_params.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <cmath>
 #include <cstring>
 

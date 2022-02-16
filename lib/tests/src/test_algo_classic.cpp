@@ -9,6 +9,8 @@
 #include "mt.hpp"
 #include "assume_aligned.hpp"
 
+#include "strong_type/strong_type.hpp"
+
 #include <gtest/gtest.h>
 
 
