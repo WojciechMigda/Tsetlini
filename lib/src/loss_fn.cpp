@@ -1,8 +1,7 @@
 #include "loss_fn.hpp"
-
+#include "tsetlini_strong_params.hpp"
 
 #include <functional>
-#include <string>
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
@@ -12,7 +11,7 @@ namespace Tsetlini
 {
 
 
-std::function<float(float)> make_loss_fn(std::string const & name, float const C1)
+std::function<float(float)> make_loss_fn(loss_fn_name_t const & name, float const C1)
 {
     if ((name == "MAE") or
         (name == "L1"))

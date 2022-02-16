@@ -125,6 +125,12 @@ using max_weight_t = strong::type<
     strong::ostreamable
 >;
 
+using loss_fn_name_t = strong::type<
+    std::string, struct _loss_fn_name_tag,
+    strong::equality_with<char const *>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

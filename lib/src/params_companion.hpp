@@ -162,9 +162,9 @@ max_weight_t max_weight(params_t const & params)
 
 
 inline
-std::string loss_fn_name(params_t const & params)
+loss_fn_name_t loss_fn_name(params_t const & params)
 {
-    return std::get<std::string>(params.at("loss_fn"));
+    return loss_fn_name_t{std::get<std::string>(params.at("loss_fn"))};
 }
 
 
