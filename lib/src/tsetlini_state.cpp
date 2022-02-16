@@ -30,7 +30,7 @@ void log_classifier_params(params_t const & params, verbosity_t verbose)
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
-    if (Params::weighted(params))
+    if (Params::weighted(params) == true)
     {
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }
@@ -63,7 +63,7 @@ void log_regressor_params(params_t const & params, verbosity_t verbose)
     LOG(info) << "number_of_states: " << Params::number_of_states(params) << '\n';
     LOG(info) << "threshold: " << Params::threshold(params) << '\n';
     LOG(info) << "weighted: " << Params::weighted(params) << '\n';
-    if (Params::weighted(params))
+    if (Params::weighted(params) == true)
     {
         LOG(info) << "max_weight: " << Params::max_weight(params) << '\n';
     }

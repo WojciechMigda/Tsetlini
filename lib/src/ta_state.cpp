@@ -44,7 +44,7 @@ TAState::initialize(
     number_of_physical_estimator_clauses_t number_of_clauses,
     number_of_estimator_clause_outputs_t number_of_clause_outputs,
     number_of_features_t number_of_features,
-    bool const weighted,
+    weighted_flag_t const weighted,
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
@@ -64,7 +64,7 @@ TAState::initialize(
 
     std::visit(state_gen, state.matrix);
 
-    if (weighted)
+    if (weighted == true)
     {
         state.weights.resize(value_of(number_of_clause_outputs));
     }
@@ -78,7 +78,7 @@ TAStateWithSignum::initialize(
     number_of_physical_estimator_clauses_t number_of_clauses,
     number_of_estimator_clause_outputs_t number_of_clause_outputs,
     number_of_features_t number_of_features,
-    bool const weighted,
+    weighted_flag_t const weighted,
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
@@ -111,7 +111,7 @@ TAStateWithSignum::initialize(
 
     std::visit(state_gen, state.matrix);
 
-    if (weighted)
+    if (weighted == true)
     {
         state.weights.resize(value_of(number_of_clause_outputs));
     }

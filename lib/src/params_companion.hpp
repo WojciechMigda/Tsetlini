@@ -141,9 +141,9 @@ number_of_estimator_clause_outputs_t number_of_regressor_clause_outputs(params_t
 
 
 inline
-bool weighted(params_t const & params)
+weighted_flag_t weighted(params_t const & params)
 {
-    return std::get<bool>(params.at("weighted"));
+    return weighted_flag_t{std::get<bool>(params.at("weighted"))};
 }
 
 

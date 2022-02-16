@@ -107,6 +107,12 @@ using number_of_estimator_clause_outputs_t = strong::type<
     strong::ordered_with<int>
 >;
 
+using weighted_flag_t = strong::type<
+    bool, struct _weighted_flag_tag,
+    strong::equality_with<bool>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

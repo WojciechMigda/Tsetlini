@@ -31,7 +31,7 @@ struct is_TA_state<T, std::void_t<
             std::declval<number_of_physical_estimator_clauses_t>(),
             std::declval<number_of_estimator_clause_outputs_t>(),
             std::declval<number_of_features_t>(),
-            std::declval<bool const>(),
+            std::declval<weighted_flag_t const>(),
             std::declval<IRNG &>()))
     >>
     : std::true_type
@@ -72,7 +72,7 @@ struct TAState : public TAStateBase
         number_of_physical_estimator_clauses_t number_of_clauses,
         number_of_estimator_clause_outputs_t number_of_clause_outputs,
         number_of_features_t number_of_features,
-        bool const weighted,
+        weighted_flag_t const weighted,
         IRNG & igen);
 };
 
@@ -102,7 +102,7 @@ struct TAStateWithSignum : public TAStateBase
         number_of_physical_estimator_clauses_t number_of_clauses,
         number_of_estimator_clause_outputs_t number_of_clause_outputs,
         number_of_features_t number_of_features,
-        bool const weighted,
+        weighted_flag_t const weighted,
         IRNG & igen);
 };
 
