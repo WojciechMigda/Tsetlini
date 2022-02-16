@@ -1023,7 +1023,7 @@ void train_regressor_automata(
     bit_vector<bit_block_type> const & X,
     int const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
+    box_muller_flag_t const box_muller,
     boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     threshold_t const threshold,
@@ -1038,7 +1038,7 @@ void train_regressor_automata(
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
      */
-    unsigned int const feedback_hits = box_muller
+    unsigned int const feedback_hits = box_muller == true
         ? binomial(N, P, prng)
         :
         std::clamp<unsigned int>(
@@ -1125,7 +1125,7 @@ void train_regressor_automata(
     bit_vector<bit_block_type> const & X,
     int const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
+    box_muller_flag_t const box_muller,
     boost_tpf_t const boost_true_positive_feedback,
     IRNG & prng,
     threshold_t const threshold,

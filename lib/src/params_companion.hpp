@@ -148,9 +148,9 @@ weighted_flag_t weighted(params_t const & params)
 
 
 inline
-bool box_muller(params_t const & params)
+box_muller_flag_t box_muller(params_t const & params)
 {
-    return std::get<bool>(params.at("box_muller"));
+    return box_muller_flag_t{std::get<bool>(params.at("box_muller"))};
 }
 
 

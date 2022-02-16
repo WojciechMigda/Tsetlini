@@ -113,6 +113,12 @@ using weighted_flag_t = strong::type<
     strong::ostreamable
 >;
 
+using box_muller_flag_t = strong::type<
+    bool, struct _box_muller_flag_tag,
+    strong::equality_with<bool>,
+    strong::ostreamable
+>;
+
 
 }  // namespace Tsetlini
 

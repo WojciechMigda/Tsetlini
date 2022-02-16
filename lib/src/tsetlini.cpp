@@ -744,7 +744,7 @@ void regressor_update_impl(
     boost_tpf_t const boost_true_positive_feedback,
     int const max_weight,
     loss_fn_type const & loss_fn,
-    bool const box_muller,
+    box_muller_flag_t const box_muller,
     number_of_jobs_t const n_jobs,
 
     IRNG & igen,
