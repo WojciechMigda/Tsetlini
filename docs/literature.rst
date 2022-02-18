@@ -11,9 +11,12 @@ Reference papers
 
 3. Abeyrathna, K.D., Granmo, O.C., Jiao, L. and Goodwin, M., 2019, September. The regression Tsetlin machine: a Tsetlin machine for continuous output problems. In EPIA Conference on Artificial Intelligence (pp. 268-280). Springer, Cham. `arXiv preprint arXiv:1905.04206 <https://arxiv.org/abs/1905.04206>`_.
 
-   Paper which introduces Tsetlin Machine Regressor.
+   Introducing Tsetlin Machine Regressor.
 
 4. Abeyrathna, K.D., Granmo, O.C. and Goodwin, M., 2020. A regression Tsetlin Machine with integer weighted clauses for compact pattern representation. `arXiv preprint arXiv:2002.01245. <https://arxiv.org/abs/2002.01245>`_
 
-   Tsetlin Machine with integer-weighted clauses.
+   Tsetlin Machine Regressor with integer-weighted clauses.
 
+5. Abeyrathna, K.D., Granmo, O.C. and Goodwin, M., 2021. Extending the tsetlin machine with integer-weighted clauses for increased interpretability. IEEE Access, 9, pp.8233-8248. `arXiv preprint arXiv:2005.05131. <https://arxiv.org/abs/2005.05131>`_
+
+   Tsetlin Machine Classifier with integer-weighted clauses.
