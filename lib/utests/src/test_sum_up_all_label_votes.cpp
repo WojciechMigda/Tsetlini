@@ -102,7 +102,7 @@ suite SumUpAllLabelVotes = []
 {
 
 
-skip | "Weighted sum_up_all_label_votes replicates paper formula"_test = []
+"Weighted sum_up_all_label_votes replicates paper formula"_test = []
 {
     auto ok = rc::check(
         []()
