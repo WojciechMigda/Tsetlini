@@ -127,7 +127,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     Tsetlini::make_classifier_classic(R"({
             "threshold": 15,
             "s": 3.9,
-            "number_of_clauses_per_label": 12,
+            "number_of_clauses_per_label": 20,
             "number_of_states": 100,
             "boost_true_positive_feedback": 0,
             "random_state": 1,

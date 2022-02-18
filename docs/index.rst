@@ -17,6 +17,7 @@ Welcome to Tsetlini's documentation!
    :caption: Literature
 
    literature
+   reference_examples
 
 
 Indices and tables
