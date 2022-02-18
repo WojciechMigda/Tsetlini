@@ -124,61 +124,6 @@ struct ClauseProxy
 
 
 /*
-
-# Sum up the votes for each class (this is the multiclass version of the Tsetlin Machine)
-cdef void sum_up_class_votes(self):
-    cdef int target_class
-    cdef int j
-
-    for target_class in xrange(self.number_of_classes):
-        self.class_sum[target_class] = 0
-
-        for j in xrange(self.clause_count[target_class]):
-            self.class_sum[target_class] += self.clause_output[self.clause_sign[target_class,j,0]]*self.clause_sign[target_class,j,1]
-
-        if self.class_sum[target_class] > self.threshold:
-            self.class_sum[target_class] = self.threshold
-        elif self.class_sum[target_class] < -self.threshold:
-            self.class_sum[target_class] = -self.threshold
-
- */
-inline
-void sum_up_class_votes(
-    Tsetlini::aligned_vector_char const & clause_output,
-    Tsetlini::aligned_vector_int & class_sum,
-
-    int const number_of_classes,
-    int const number_of_clause_outputs_per_label,
-    int const threshold)
-{
-
-    CAIR::ClauseProxy const proxy(number_of_classes, number_of_clause_outputs_per_label);
-
-
-    for (auto target_class = 0; target_class < number_of_classes; ++target_class)
-    {
-        class_sum[target_class] = 0;
-
-        auto const clause_outputs_count = number_of_clause_outputs_per_label;
-
-        for (auto j = 0; j < clause_outputs_count; ++j)
-        {
-            class_sum[target_class] += clause_output[proxy.clause_sign_0[target_class][j]] * proxy.clause_sign_1[target_class][j];
-        }
-
-        if (class_sum[target_class] > threshold)
-        {
-            class_sum[target_class] = threshold;
-        }
-        else if (class_sum[target_class] < -threshold)
-        {
-            class_sum[target_class] = -threshold;
-        }
-    }
-}
-
-
-/*
  * Calculate feedback to clauses
  *
 

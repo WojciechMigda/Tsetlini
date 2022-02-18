@@ -1,7 +1,9 @@
+add_subdirectory( rapidcheck )
+
 function(add_ut)
     set( options TEST_NAME )
     set( oneValueArgs EXE_NAME SOURCE )
-    set( multiValueArgs "" )
+    set( multiValueArgs EXT_LIBS )
     cmake_parse_arguments( parsed "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
     if( parsed_UNPARSED_ARGUMENTS )
@@ -14,11 +16,11 @@ function(add_ut)
 
     add_executable( ${parsed_EXE_NAME} "src/dummy.cpp" )
     target_sources( ${parsed_EXE_NAME} PRIVATE ${parsed_SOURCE} )
-    target_include_directories( ${parsed_EXE_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include )
-    target_link_libraries( ${parsed_EXE_NAME} tsetlini_static )
+    target_include_directories( ${parsed_EXE_NAME} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include ${CMAKE_SOURCE_DIR}/lib/src )
+    target_link_libraries( ${parsed_EXE_NAME} tsetlini_static ${OpenMP_CXX_FLAGS} ${parsed_EXT_LIBS} )
+    target_compile_options( ${parsed_EXE_NAME} PRIVATE ${OpenMP_CXX_FLAGS} )
     add_test( ${parsed_TEST_NAME} ${parsed_EXE_NAME} )
 endfunction()
-
 
 add_ut( EXE_NAME test_aligned_array                         SOURCE "src/test_aligned_array.cpp" )
 add_ut( EXE_NAME test_bit_matrix                            SOURCE "src/test_bit_matrix.cpp" )
@@ -47,3 +49,5 @@ add_ut( EXE_NAME test_regressor_bitwise_partial_fit         SOURCE "src/test_reg
 add_ut( EXE_NAME test_regressor_bitwise_predict             SOURCE "src/test_regressor_bitwise_predict.cpp" )
 add_ut( EXE_NAME test_regressor_params                      SOURCE "src/test_regressor_params.cpp" )
 add_ut( EXE_NAME test_regressor_state_json_serialization    SOURCE "src/test_regressor_state_json_serialization.cpp" )
+
+add_ut( EXE_NAME test_sum_up_all_label_votes                SOURCE "src/test_sum_up_all_label_votes.cpp" EXT_LIBS rapidcheck )
