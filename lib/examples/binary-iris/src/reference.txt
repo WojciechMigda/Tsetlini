@@ -1,0 +1,4999 @@
+ENSEMBLE 1
+
+Average accuracy on test data: 96.7 +/- 0.0
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 2
+
+Average accuracy on test data: 96.7 +/- 0.0
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 3
+
+Average accuracy on test data: 96.7 +/- 0.0
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 4
+
+Average accuracy on test data: 95.8 +/- 1.4
+Average accuracy on training data: 96.9 +/- 0.4
+
+ENSEMBLE 5
+
+Average accuracy on test data: 95.3 +/- 1.4
+Average accuracy on training data: 96.8 +/- 0.3
+
+ENSEMBLE 6
+
+Average accuracy on test data: 95.6 +/- 1.3
+Average accuracy on training data: 96.8 +/- 0.2
+
+ENSEMBLE 7
+
+Average accuracy on test data: 95.2 +/- 1.2
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 8
+
+Average accuracy on test data: 95.4 +/- 1.1
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 9
+
+Average accuracy on test data: 95.6 +/- 1.0
+Average accuracy on training data: 96.9 +/- 0.2
+
+ENSEMBLE 10
+
+Average accuracy on test data: 94.7 +/- 1.9
+Average accuracy on training data: 96.9 +/- 0.2
+
+ENSEMBLE 11
+
+Average accuracy on test data: 94.8 +/- 1.8
+Average accuracy on training data: 96.9 +/- 0.2
+
+ENSEMBLE 12
+
+Average accuracy on test data: 95.0 +/- 1.6
+Average accuracy on training data: 96.8 +/- 0.3
+
+ENSEMBLE 13
+
+Average accuracy on test data: 94.9 +/- 1.5
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 14
+
+Average accuracy on test data: 94.5 +/- 1.6
+Average accuracy on training data: 97.0 +/- 0.3
+
+ENSEMBLE 15
+
+Average accuracy on test data: 94.0 +/- 1.8
+Average accuracy on training data: 97.0 +/- 0.3
+
+ENSEMBLE 16
+
+Average accuracy on test data: 94.2 +/- 1.7
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 17
+
+Average accuracy on test data: 94.5 +/- 1.7
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 18
+
+Average accuracy on test data: 94.1 +/- 1.8
+Average accuracy on training data: 96.9 +/- 0.3
+
+ENSEMBLE 19
+
+Average accuracy on test data: 94.2 +/- 1.7
+Average accuracy on training data: 96.8 +/- 0.3
+
+ENSEMBLE 20
+
+Average accuracy on test data: 93.8 +/- 1.8
+Average accuracy on training data: 96.8 +/- 0.3
+
+ENSEMBLE 21
+
+Average accuracy on test data: 94.0 +/- 1.7
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 22
+
+Average accuracy on test data: 93.9 +/- 1.7
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 23
+
+Average accuracy on test data: 94.2 +/- 1.7
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 24
+
+Average accuracy on test data: 94.0 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 25
+
+Average accuracy on test data: 94.1 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 26
+
+Average accuracy on test data: 93.8 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 27
+
+Average accuracy on test data: 94.0 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 28
+
+Average accuracy on test data: 94.2 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 29
+
+Average accuracy on test data: 93.9 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.3
+
+ENSEMBLE 30
+
+Average accuracy on test data: 94.0 +/- 1.6
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 31
+
+Average accuracy on test data: 94.0 +/- 1.5
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 32
+
+Average accuracy on test data: 94.0 +/- 1.5
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 33
+
+Average accuracy on test data: 93.9 +/- 1.4
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 34
+
+Average accuracy on test data: 94.0 +/- 1.4
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 35
+
+Average accuracy on test data: 94.1 +/- 1.3
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 36
+
+Average accuracy on test data: 94.1 +/- 1.3
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 37
+
+Average accuracy on test data: 94.1 +/- 1.3
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 38
+
+Average accuracy on test data: 94.3 +/- 1.3
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 39
+
+Average accuracy on test data: 94.3 +/- 1.3
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 40
+
+Average accuracy on test data: 94.2 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 41
+
+Average accuracy on test data: 94.1 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 42
+
+Average accuracy on test data: 94.1 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 43
+
+Average accuracy on test data: 94.0 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 44
+
+Average accuracy on test data: 93.9 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 45
+
+Average accuracy on test data: 93.8 +/- 1.2
+Average accuracy on training data: 96.8 +/- 0.2
+
+ENSEMBLE 46
+
+Average accuracy on test data: 93.8 +/- 1.2
+Average accuracy on training data: 96.8 +/- 0.2
+
+ENSEMBLE 47
+
+Average accuracy on test data: 94.0 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 48
+
+Average accuracy on test data: 94.0 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 49
+
+Average accuracy on test data: 93.9 +/- 1.2
+Average accuracy on training data: 96.8 +/- 0.2
+
+ENSEMBLE 50
+
+Average accuracy on test data: 94.0 +/- 1.2
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 51
+
+Average accuracy on test data: 94.0 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 52
+
+Average accuracy on test data: 94.1 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 53
+
+Average accuracy on test data: 94.2 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 54
+
+Average accuracy on test data: 94.3 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 55
+
+Average accuracy on test data: 94.4 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 56
+
+Average accuracy on test data: 94.3 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 57
+
+Average accuracy on test data: 94.4 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 58
+
+Average accuracy on test data: 94.5 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 59
+
+Average accuracy on test data: 94.5 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 60
+
+Average accuracy on test data: 94.4 +/- 1.1
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 61
+
+Average accuracy on test data: 94.4 +/- 1.0
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 62
+
+Average accuracy on test data: 94.5 +/- 1.0
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 63
+
+Average accuracy on test data: 94.5 +/- 1.0
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 64
+
+Average accuracy on test data: 94.6 +/- 1.0
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 65
+
+Average accuracy on test data: 94.6 +/- 1.0
+Average accuracy on training data: 96.7 +/- 0.2
+
+ENSEMBLE 66
+
+Average accuracy on test data: 94.6 +/- 1.0
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 67
+
+Average accuracy on test data: 94.6 +/- 1.0
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 68
+
+Average accuracy on test data: 94.7 +/- 1.0
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 69
+
+Average accuracy on test data: 94.7 +/- 1.0
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 70
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.2
+
+ENSEMBLE 71
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 72
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 73
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 74
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 75
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 76
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 77
+
+Average accuracy on test data: 94.8 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 78
+
+Average accuracy on test data: 94.7 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 79
+
+Average accuracy on test data: 94.6 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 80
+
+Average accuracy on test data: 94.5 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 81
+
+Average accuracy on test data: 94.6 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 82
+
+Average accuracy on test data: 94.6 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 83
+
+Average accuracy on test data: 94.5 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 84
+
+Average accuracy on test data: 94.5 +/- 0.9
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 85
+
+Average accuracy on test data: 94.5 +/- 0.9
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 86
+
+Average accuracy on test data: 94.5 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 87
+
+Average accuracy on test data: 94.6 +/- 0.9
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 88
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 89
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 90
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 91
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 92
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 93
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 94
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 95
+
+Average accuracy on test data: 94.5 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 96
+
+Average accuracy on test data: 94.5 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 97
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 98
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 99
+
+Average accuracy on test data: 94.5 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 100
+
+Average accuracy on test data: 94.5 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 101
+
+Average accuracy on test data: 94.6 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 102
+
+Average accuracy on test data: 94.5 +/- 0.8
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 103
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 104
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 105
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 106
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 107
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 108
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 109
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 110
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 111
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 112
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 113
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 114
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 115
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 116
+
+Average accuracy on test data: 94.6 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 117
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 118
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 119
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 120
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 121
+
+Average accuracy on test data: 94.4 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 122
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 123
+
+Average accuracy on test data: 94.4 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 124
+
+Average accuracy on test data: 94.5 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 125
+
+Average accuracy on test data: 94.4 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 126
+
+Average accuracy on test data: 94.4 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 127
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 128
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 129
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 130
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 131
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 132
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 133
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 134
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 135
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 136
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 137
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 138
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 139
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 140
+
+Average accuracy on test data: 94.3 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 141
+
+Average accuracy on test data: 94.2 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 142
+
+Average accuracy on test data: 94.2 +/- 0.7
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 143
+
+Average accuracy on test data: 94.2 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 144
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 145
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 146
+
+Average accuracy on test data: 94.2 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 147
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 148
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 149
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 150
+
+Average accuracy on test data: 94.2 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 151
+
+Average accuracy on test data: 94.2 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 152
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 153
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 154
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 155
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 156
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 157
+
+Average accuracy on test data: 94.2 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 158
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 159
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 160
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 161
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 162
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 163
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 164
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 165
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 166
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 167
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 168
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 169
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 170
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 171
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 172
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 173
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 174
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 175
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 176
+
+Average accuracy on test data: 94.5 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 177
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 178
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 179
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 180
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 181
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 182
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 183
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 184
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 185
+
+Average accuracy on test data: 94.3 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 186
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 187
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 188
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 189
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 190
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 191
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 192
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 193
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 194
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 195
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 196
+
+Average accuracy on test data: 94.4 +/- 0.6
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 197
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 198
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 199
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.8 +/- 0.1
+
+ENSEMBLE 200
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 201
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 202
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 203
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 204
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 205
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 206
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 207
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 208
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 209
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 210
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 211
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 212
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 213
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.8 +/- 0.1
+
+ENSEMBLE 214
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.8 +/- 0.1
+
+ENSEMBLE 215
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.8 +/- 0.1
+
+ENSEMBLE 216
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 217
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 218
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 219
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 220
+
+Average accuracy on test data: 94.3 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 221
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 222
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 223
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 224
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 225
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 226
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 227
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 228
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 229
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 230
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 231
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 232
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 233
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 234
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 235
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 236
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 237
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 238
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 239
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 240
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 241
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 242
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 243
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 244
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 245
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 246
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 247
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 248
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 249
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 250
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 251
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 252
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 253
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 254
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 255
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 256
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 257
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 258
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 259
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 260
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 261
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 262
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 263
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 264
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 265
+
+Average accuracy on test data: 94.4 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 266
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 267
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 268
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 269
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 270
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 271
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 272
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 273
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 274
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 275
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 276
+
+Average accuracy on test data: 94.5 +/- 0.5
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 277
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 278
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 279
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 280
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 281
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 282
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 283
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 284
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 285
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 286
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 287
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 288
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 289
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 290
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 291
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 292
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 293
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 294
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 295
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 296
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 297
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 298
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 299
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 300
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 301
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 302
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 303
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 304
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 305
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 306
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 307
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 308
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 309
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 310
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 311
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 312
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 313
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 314
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 315
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 316
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 317
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 318
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 319
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 320
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 321
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 322
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 323
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 324
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 325
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 326
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 327
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 328
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 329
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 330
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 331
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 332
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 333
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 334
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 335
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 336
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 337
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 338
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 339
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 340
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 341
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 342
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 343
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 344
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 345
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 346
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 347
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 348
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 349
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 350
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 351
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 352
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 353
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 354
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 355
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 356
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 357
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 358
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 359
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 360
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 361
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 362
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 363
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 364
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 365
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 366
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 367
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 368
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 369
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 370
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 371
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 372
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 373
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 374
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 375
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 376
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 377
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 378
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 379
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 380
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 381
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 382
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 383
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 384
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 385
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 386
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 387
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 388
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 389
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 390
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 391
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 392
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 393
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 394
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 395
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 396
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 397
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 398
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 399
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 400
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 401
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 402
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 403
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 404
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 405
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 406
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 407
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 408
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 409
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 410
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 411
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 412
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 413
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 414
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 415
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 416
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 417
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 418
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 419
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 420
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 421
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 422
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 423
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 424
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 425
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 426
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 427
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 428
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 429
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 430
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 431
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 432
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 433
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 434
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 435
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 436
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 437
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 438
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 439
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 440
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 441
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 442
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 443
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 444
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 445
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 446
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 447
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 448
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 449
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 450
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 451
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 452
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 453
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 454
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 455
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 456
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 457
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 458
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 459
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 460
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 461
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 462
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 463
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 464
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 465
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 466
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 467
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 468
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 469
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 470
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 471
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 472
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 473
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 474
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 475
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 476
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 477
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 478
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 479
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 480
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 481
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 482
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 483
+
+Average accuracy on test data: 94.6 +/- 0.4
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 484
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 485
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 486
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 487
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 488
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 489
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 490
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 491
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 492
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 493
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 494
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 495
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 496
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 497
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 498
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 499
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 500
+
+Average accuracy on test data: 94.5 +/- 0.4
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 501
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 502
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 503
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 504
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 505
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 506
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 507
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 508
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 509
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 510
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 511
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 512
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 513
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 514
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 515
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 516
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 517
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 518
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 519
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 520
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 521
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 522
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 523
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 524
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 525
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 526
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 527
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 528
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 529
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 530
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 531
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 532
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 533
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 534
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 535
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 536
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 537
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 538
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 539
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 540
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 541
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 542
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 543
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 544
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 545
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 546
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 547
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 548
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 549
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 550
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 551
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 552
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 553
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 554
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 555
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 556
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 557
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 558
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 559
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 560
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 561
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 562
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 563
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 564
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 565
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 566
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 567
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 568
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 569
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 570
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 571
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 572
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 573
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 574
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 575
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 576
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 577
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 578
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 579
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 580
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 581
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 582
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 583
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 584
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 585
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 586
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 587
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 588
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 589
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 590
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 591
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 592
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 593
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 594
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 595
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 596
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 597
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 598
+
+Average accuracy on test data: 94.5 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 599
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 600
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 601
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 602
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 603
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 604
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 605
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 606
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 607
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 608
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 609
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 610
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 611
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 612
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 613
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 614
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 615
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 616
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 617
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 618
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 619
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 620
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 621
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 622
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 623
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 624
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 625
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 626
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 627
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 628
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 629
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 630
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 631
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 632
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 633
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 634
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 635
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 636
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 637
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 638
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 639
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 640
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 641
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 642
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 643
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 644
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 645
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 646
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 647
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 648
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 649
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 650
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 651
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 652
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 653
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 654
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 655
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 656
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 657
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 658
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 659
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 660
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 661
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 662
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 663
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 664
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 665
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 666
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 667
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 668
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 669
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 670
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 671
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 672
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 673
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 674
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 675
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 676
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 677
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 678
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 679
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 680
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 681
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 682
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 683
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 684
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 685
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 686
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 687
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 688
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 689
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 690
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 691
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 692
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 693
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 694
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 695
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 696
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 697
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 698
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 699
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 700
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 701
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 702
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 703
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 704
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 705
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 706
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 707
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 708
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 709
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 710
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 711
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 712
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 713
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 714
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 715
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 716
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 717
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 718
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 719
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 720
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 721
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 722
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 723
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 724
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 725
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 726
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 727
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 728
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 729
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 730
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 731
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 732
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 733
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 734
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 735
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 736
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.6 +/- 0.1
+
+ENSEMBLE 737
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 738
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 739
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 740
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 741
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 742
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 743
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 744
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 745
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 746
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 747
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 748
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 749
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 750
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 751
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 752
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 753
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 754
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 755
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 756
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 757
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 758
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 759
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 760
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 761
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 762
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 763
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 764
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 765
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 766
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 767
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 768
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 769
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 770
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 771
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 772
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 773
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 774
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 775
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 776
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 777
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 778
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 779
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 780
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 781
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 782
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 783
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 784
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 785
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 786
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 787
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 788
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 789
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 790
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 791
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 792
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 793
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 794
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 795
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 796
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 797
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 798
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 799
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 800
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 801
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 802
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 803
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 804
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 805
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 806
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 807
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 808
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 809
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 810
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 811
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 812
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 813
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 814
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 815
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 816
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 817
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 818
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 819
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 820
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 821
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 822
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 823
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 824
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 825
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 826
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 827
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 828
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 829
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 830
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 831
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 832
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 833
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 834
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 835
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 836
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 837
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 838
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 839
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 840
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 841
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 842
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 843
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 844
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 845
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 846
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 847
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 848
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 849
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 850
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 851
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 852
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 853
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 854
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 855
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 856
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 857
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 858
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 859
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 860
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 861
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 862
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 863
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 864
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 865
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 866
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 867
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 868
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 869
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 870
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 871
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 872
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 873
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 874
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 875
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 876
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 877
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.1
+
+ENSEMBLE 878
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 879
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 880
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 881
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 882
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 883
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 884
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 885
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 886
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 887
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 888
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 889
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 890
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 891
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 892
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 893
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 894
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 895
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 896
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 897
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 898
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 899
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 900
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 901
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 902
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 903
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 904
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 905
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 906
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 907
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 908
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 909
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 910
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 911
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 912
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 913
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 914
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 915
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 916
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 917
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 918
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 919
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 920
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 921
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 922
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 923
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 924
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 925
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 926
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 927
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 928
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 929
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 930
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 931
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 932
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 933
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 934
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 935
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 936
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 937
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 938
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 939
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 940
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 941
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 942
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 943
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 944
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 945
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 946
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 947
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 948
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 949
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 950
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 951
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 952
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 953
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 954
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 955
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 956
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 957
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 958
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 959
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 960
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 961
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 962
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 963
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 964
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 965
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 966
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 967
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 968
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 969
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 970
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 971
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 972
+
+Average accuracy on test data: 94.7 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 973
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 974
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 975
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 976
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 977
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 978
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 979
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 980
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 981
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 982
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 983
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 984
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 985
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 986
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 987
+
+Average accuracy on test data: 94.7 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 988
+
+Average accuracy on test data: 94.6 +/- 0.3
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 989
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 990
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 991
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 992
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 993
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 994
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 995
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 996
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 997
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 998
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 999
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
+
+ENSEMBLE 1000
+
+Average accuracy on test data: 94.6 +/- 0.2
+Average accuracy on training data: 96.7 +/- 0.0
