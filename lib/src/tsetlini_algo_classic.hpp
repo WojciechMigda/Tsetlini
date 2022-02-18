@@ -12,6 +12,8 @@
 
 #include "strong_type/strong_type.hpp"
 
+#include <cstdint>
+
 
 #ifndef TSETLINI_USE_OMP
 #define TSETLINI_USE_OMP 1
@@ -57,7 +59,10 @@ void sum_up_label_votes(
     number_of_classifier_clause_outputs_per_label_t const number_of_clause_outputs_per_label,
     threshold_t const threshold)
 {
-    int rv = 0;
+    using sum_type = std::int64_t;
+    static_assert(sizeof (sum_type) > sizeof (w_vector_type::value_type), "sum_type must be wider than weight value type");
+
+    sum_type rv = 0;
 
     auto const [output_begin_ix, output_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
 
@@ -67,8 +72,8 @@ void sum_up_label_votes(
         {
             auto const val = clause_output[oidx];
             rv += oidx % 2 == 0
-                ? val * (weights[oidx] + 1)
-                : -val * (weights[oidx] + 1);
+                ? val * (sum_type{1} + weights[oidx])
+                : -val * (sum_type{1} + weights[oidx]);
         }
     }
     else
@@ -80,7 +85,7 @@ void sum_up_label_votes(
         }
     }
 
-    label_sum[target_label] = std::clamp(rv, -value_of(threshold), value_of(threshold));
+    label_sum[target_label] = std::clamp<sum_type>(rv, -value_of(threshold), value_of(threshold));
 }
 
 
