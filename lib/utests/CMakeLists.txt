@@ -51,3 +51,4 @@ add_ut( EXE_NAME test_regressor_params                      SOURCE "src/test_reg
 add_ut( EXE_NAME test_regressor_state_json_serialization    SOURCE "src/test_regressor_state_json_serialization.cpp" )
 
 add_ut( EXE_NAME test_sum_up_all_label_votes                SOURCE "src/test_sum_up_all_label_votes.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_sum_up_regressor_votes                SOURCE "src/test_sum_up_regressor_votes.cpp" EXT_LIBS rapidcheck )
