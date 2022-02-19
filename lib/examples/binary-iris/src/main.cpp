@@ -161,7 +161,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
         auto clf = Tsetlini::make_classifier_classic(R"({
             "threshold": 10,
             "s": 3.0,
-            "number_of_clauses_per_label": 100,
+            "number_of_clauses_per_label": 200,
             "number_of_states": 100,
             "boost_true_positive_feedback": 1,
             "random_state": 1,
