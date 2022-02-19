@@ -6,7 +6,7 @@ Implementation
           When in doubt, please refer to the actual source code.
 
           If you feel something should be corrected, please
-          `raise an issue <https://github.com/WojciechMigda/Tsetlini/issues/new>`_.
+          `raise an issue <https://github.com/WojciechMigda/Tsetlini/issues/new>`__.
 
 Training code flow
 ******************
