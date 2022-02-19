@@ -67,7 +67,7 @@ suite SumUpRegressorVotes = []
 {
 
 
-skip | "Weighted sum_up_regressor_votes replicates paper formula"_test = []
+"Weighted sum_up_regressor_votes replicates paper formula"_test = []
 {
     auto ok = rc::check(
         []()
