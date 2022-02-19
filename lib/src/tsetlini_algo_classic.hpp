@@ -720,24 +720,27 @@ response_type sum_up_regressor_votes(
     threshold_t const threshold,
     w_vector_type const & weights)
 {
+    using sum_type = std::int64_t;
+    static_assert(sizeof (sum_type) > sizeof (w_vector_type::value_type), "sum_type must be wider than weight value type");
+
     auto accumulate_weighted = [](auto const & clause_output, auto const & weights)
     {
-        int acc = 0;
+        sum_type acc = 0;
 
         for (auto ix = 0u; ix < clause_output.size(); ++ix)
         {
-            acc += clause_output[ix] * (weights[ix] + 1);
+            acc += clause_output[ix] * (sum_type{1} + weights[ix]);
         }
 
         return acc;
     };
 
     auto const sum = weights.size() == 0 ?
-        std::accumulate(clause_output.cbegin(), clause_output.cend(), 0)
+        std::accumulate(clause_output.cbegin(), clause_output.cend(), sum_type{0})
         :
         accumulate_weighted(clause_output, weights);
 
-    return std::clamp(sum, 0, value_of(threshold));
+    return std::clamp<sum_type>(sum, 0, value_of(threshold));
 }
 
 
