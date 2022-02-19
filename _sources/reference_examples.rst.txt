@@ -156,16 +156,18 @@ When run it will produce output below::
    Average accuracy on test data: 95.2 +/- 0.3
    Average accuracy on train data: 96.5 +/- 0.0
 
-`Full execution log <https://github.com/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/output.txt>`_.
+`Full execution log <https://github.com/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/output.txt>`__.
 
-Run [TM2018code]_ reference example in `Colab Notebook <https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb>`_.
+Run ``Tsetlini``'s example inside `Colab Notebook <https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/The_Binary_Iris_Dataset.ipynb>`__.
+
+Run [TM2018code]_ reference example inside `Colab Notebook <https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb>`__.
 
 
-.. [TM2018] Granmo, O.C., 2018. The Tsetlin Machine--A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. `arXiv preprint arXiv:1804.01508 <https://arxiv.org/abs/1804.01508>`_.
+.. [TM2018] Granmo, O.C., 2018. The Tsetlin Machine--A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. `arXiv preprint arXiv:1804.01508 <https://arxiv.org/abs/1804.01508>`__.
 
-.. [TM2018code] `Tsetlin Machine <https://github.com/cair/TsetlinMachine>`_.
+.. [TM2018code] `Tsetlin Machine <https://github.com/cair/TsetlinMachine>`__.
 
 .. rubric:: Footnotes
 
-.. [#xor_code1] `<https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34>`_.
-.. [#xor_code2] `<https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58>`_
+.. [#xor_code1] `<https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34>`__.
+.. [#xor_code2] `<https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58>`__
