@@ -46,6 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="literature.html">Reference papers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#noisy-xor">Noisy XOR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-binary-iris-dataset">The Binary Iris Dataset</a></li>
 </ul>
 </li>
 </ul>
@@ -78,7 +79,7 @@
 <h1>Reference examples<a class="headerlink" href="#reference-examples" title="Permalink to this headline"></a></h1>
 <section id="noisy-xor">
 <h2>Noisy XOR<a class="headerlink" href="#noisy-xor" title="Permalink to this headline"></a></h2>
-<p>Appeared in the first Tsetlin Machine paper <a class="reference internal" href="#tm2018" id="id1"><span>[TM2018]</span></a>.</p>
+<p>Appeared in the first Tsetlin Machine paper <a class="reference internal" href="#tm2018" id="id1"><span>[TM2018]</span></a>, Section 5.4, pp 28.</p>
 <blockquote>
 <div><p>The dataset consists of <span class="math notranslate nohighlight">\(10~000\)</span> examples with twelve binary inputs,
 <span class="math notranslate nohighlight">\(X = [x_1, x_2, \ldots, x_{12}]\)</span>, and a binary output, <span class="math notranslate nohighlight">\(y\)</span>.
@@ -97,7 +98,7 @@ each has <span class="math notranslate nohighlight">\(100\)</span> states. The T
 in specification of the number of clauses. <code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s configuration that corresponds
 to the referenced values uses <code class="docutils literal notranslate"><span class="pre">number_of_clauses_per_label</span></code> equal <code class="docutils literal notranslate"><span class="pre">20</span></code>. In addition to that,
 <a class="reference internal" href="#tm2018" id="id2"><span>[TM2018]</span></a> does not explicitly state configuration of <code class="docutils literal notranslate"><span class="pre">boost_true_positive_feedback</span></code> parameter,
-but the source code referenced in it uses value of <code class="docutils literal notranslate"><span class="pre">0</span></code> <a class="footnote-reference brackets" href="#f1" id="id3">1</a> <a class="footnote-reference brackets" href="#f2" id="id4">2</a>.</p>
+but the source code referenced in it uses value of <code class="docutils literal notranslate"><span class="pre">0</span></code> <a class="footnote-reference brackets" href="#xor-code1" id="id3">1</a> <a class="footnote-reference brackets" href="#xor-code2" id="id4">2</a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s Noisy XOR example source code can be found in the
 <a class="reference external" href="https://github.com/WojciechMigda/Tsetlini/tree/main/lib/examples/noisy-xor">lib/examples/noisy-xor</a> folder.</p>
 <p>When run it will produce output below:</p>
@@ -111,17 +112,132 @@ Prediction: x1 = 0, x2 = 0, ... -&gt; y = 0
 Prediction: x1 = 1, x2 = 1, ... -&gt; y = 0
 </pre></div>
 </div>
+<p>Output produced by code from Granmo’s paper <a class="reference internal" href="#tm2018code" id="id5"><span>[TM2018code]</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python NoisyXORDemo.py
+Accuracy on test data (no noise): 1.0
+Accuracy on training data (40% noise): 0.603
+
+Prediction: x1 = 1, x2 = 0, ... -&gt; y =  1
+Prediction: x1 = 0, x2 = 1, ... -&gt; y =  1
+Prediction: x1 = 0, x2 = 0, ... -&gt; y =  0
+Prediction: x1 = 1, x2 = 1, ... -&gt; y =  0
+</pre></div>
+</div>
+</section>
+<section id="the-binary-iris-dataset">
+<h2>The Binary Iris Dataset<a class="headerlink" href="#the-binary-iris-dataset" title="Permalink to this headline"></a></h2>
+<p>Appeared in the first Tsetlin Machine paper <a class="reference internal" href="#tm2018" id="id6"><span>[TM2018]</span></a>, section 5.2, pp 25.</p>
+<blockquote>
+<div><p>We first evaluate the Tsetlin Machine on the classical Iris dataset.
+This dataset consists of 150 examples with four inputs (Sepal Length, Sepal Width,
+Petal Length and Petal Width), and three possible outputs (Setosa, Versicolour,
+and Virginica).</p>
+<p>We increase the challenge by transforming the four input values into one consecutive
+sequence of <span class="math notranslate nohighlight">\(16\)</span> bits, four bits per float. It is thus necessary to also learn
+how to segment the <span class="math notranslate nohighlight">\(16\)</span> bits into four partitions, and extract the numeric
+information. We refer to the new dataset as the The Binary Iris Dataset.</p>
+<p>We partition this dataset into a training set and a test set, with 80 percent
+of the data being used for training. We here randomly produce <span class="math notranslate nohighlight">\(1000\)</span>
+training and test data partitions. For each ensemble, we also randomly
+reinitialize the competing algorithms, to gain information on stability
+and robustness.</p>
+<p>(…)</p>
+<p>The Tsetlin Machine (In this experiment, we use a Multi-Class Tsetlin Machine,
+described in Section 6.1. We also apply Boosting of True Positive Feedback
+to Include Literal actions as described in Section 3.3.3.)
+used here employs <span class="math notranslate nohighlight">\(300\)</span> clauses, and uses an <span class="math notranslate nohighlight">\(s\)</span>-value
+of <span class="math notranslate nohighlight">\(3.0\)</span> and a summation target <span class="math notranslate nohighlight">\(T\)</span> of <span class="math notranslate nohighlight">\(10\)</span>. Furthermore,
+the individual Tsetlin Automata each has <span class="math notranslate nohighlight">\(100\)</span> states.
+This Tsetlin Machine is run for <span class="math notranslate nohighlight">\(500\)</span> epochs, and it is the accuracy
+after the final epoch that is reported.</p>
+</div></blockquote>
+<p>Binary Iris Dataset example reproduced here uses the same parameters.
+The only distinction is in specification of the number of clauses.
+<code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s configuration that corresponds to the referenced values uses
+<code class="docutils literal notranslate"><span class="pre">number_of_clauses_per_label</span></code> equal <code class="docutils literal notranslate"><span class="pre">200</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s Binary Iris Dataset example source code can be found in the
+<a class="reference external" href="https://github.com/WojciechMigda/Tsetlini/tree/main/lib/examples/binary-iris">lib/examples/binary-iris</a> folder.</p>
+<p>When run it will produce output below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./binary-iris
+ENSEMBLE 1
+Average accuracy on test data: 93.3 +/- 0.0
+Average accuracy on train data: 97.5 +/- 0.0
+ENSEMBLE 2
+Average accuracy on test data: 93.3 +/- 0.0
+Average accuracy on train data: 97.1 +/- 0.6
+ENSEMBLE 3
+Average accuracy on test data: 90.0 +/- 5.3
+Average accuracy on train data: 97.5 +/- 0.8
+ENSEMBLE 4
+Average accuracy on test data: 91.7 +/- 4.9
+Average accuracy on train data: 97.3 +/- 0.7
+ENSEMBLE 5
+Average accuracy on test data: 92.0 +/- 4.0
+Average accuracy on train data: 97.2 +/- 0.6
+ENSEMBLE 6
+Average accuracy on test data: 92.2 +/- 3.3
+Average accuracy on train data: 97.2 +/- 0.5
+ENSEMBLE 7
+Average accuracy on test data: 92.4 +/- 2.9
+Average accuracy on train data: 97.0 +/- 0.6
+ENSEMBLE 8
+Average accuracy on test data: 93.3 +/- 3.1
+Average accuracy on train data: 96.9 +/- 0.6
+ENSEMBLE 9
+Average accuracy on test data: 93.7 +/- 2.8
+Average accuracy on train data: 96.9 +/- 0.5
+ENSEMBLE 10
+Average accuracy on test data: 94.0 +/- 2.6
+Average accuracy on train data: 96.8 +/- 0.5
+(...)
+ENSEMBLE 991
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 992
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 993
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 994
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 995
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 996
+Average accuracy on test data: 95.1 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 997
+Average accuracy on test data: 95.2 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 998
+Average accuracy on test data: 95.2 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 999
+Average accuracy on test data: 95.2 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+ENSEMBLE 1000
+Average accuracy on test data: 95.2 +/- 0.3
+Average accuracy on train data: 96.5 +/- 0.0
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/output.txt">Full execution log</a>.</p>
+<p>Run <a class="reference internal" href="#tm2018code" id="id7"><span>[TM2018code]</span></a> reference example in <a class="reference external" href="https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb">Colab Notebook</a>.</p>
 <dl class="citation">
-<dt class="label" id="tm2018"><span class="brackets">TM2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dt class="label" id="tm2018"><span class="brackets">TM2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id6">3</a>)</span></dt>
 <dd><p>Granmo, O.C., 2018. The Tsetlin Machine–A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. <a class="reference external" href="https://arxiv.org/abs/1804.01508">arXiv preprint arXiv:1804.01508</a>.</p>
+</dd>
+<dt class="label" id="tm2018code"><span class="brackets">TM2018code</span><span class="fn-backref">(<a href="#id5">1</a>,<a href="#id7">2</a>)</span></dt>
+<dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine">Tsetlin Machine</a>.</p>
 </dd>
 </dl>
 <p class="rubric">Footnotes</p>
 <dl class="footnote brackets">
-<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
+<dt class="label" id="xor-code1"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
 <dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34">https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34</a>.</p>
 </dd>
-<dt class="label" id="f2"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
+<dt class="label" id="xor-code2"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
 <dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58">https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58</a></p>
 </dd>
 </dl>
