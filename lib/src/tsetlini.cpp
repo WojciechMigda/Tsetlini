@@ -162,7 +162,7 @@ bool is_fitted(TAState::value_type const & ta_state)
 }
 
 
-bool is_fitted(TAStateWithSignum::value_type const & ta_state)
+bool is_fitted(TAStateWithPolarity::value_type const & ta_state)
 {
     return std::visit([](auto const & ta_state_values){ return ta_state_values.shape().first != 0; }, ta_state.matrix);
 }

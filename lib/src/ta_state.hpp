@@ -77,14 +77,14 @@ struct TAState : public TAStateBase
 };
 
 
-struct TAStateWithSignum : public TAStateBase
+struct TAStateWithPolarity : public TAStateBase
 {
     struct value_type
     {
         using matrix_variant_type = TAStateBase::matrix_variant_type;
 
         matrix_variant_type matrix;
-        bit_matrix_uint64 signum;
+        bit_matrix_uint64 polarity;
         w_vector_type weights;
 
         bool operator==(struct value_type const & other) const
@@ -92,7 +92,7 @@ struct TAStateWithSignum : public TAStateBase
             return
                 this->matrix == other.matrix and
                 this->weights == other.weights and
-                this->signum == other.signum;
+                this->polarity == other.polarity;
         }
     };
 

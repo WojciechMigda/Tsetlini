@@ -191,7 +191,7 @@ auto make_ta_state_matrix = [](
 void reference(
     Tsetlini::bit_vector_uint64 const & X,
     Tsetlini::aligned_vector_char & clause_output,
-    Tsetlini::bit_matrix_uint64 const & signum
+    Tsetlini::bit_matrix_uint64 const & polarity
 )
 {
     for (auto oix = 0u; oix < clause_output.size(); ++oix)
@@ -201,21 +201,21 @@ void reference(
         for (auto fix = 0u; fix < X.size(); ++fix)
         {
             /*
-             * signum == 1 means 'include'
+             * polarity == 1 means 'include'
              *
-             * See TAStateWithSignum::initialize() :
+             * See TAStateWithPolarity::initialize() :
              *
              *  if (row_data[cit] >= 0)
              *  {
-             *      row_signum.set(cit);
+             *      row_polarity.set(cit);
              *  }
              *  else
              *  {
-             *      row_signum.clear(cit);
+             *      row_polarity.clear(cit);
              *  }
              */
-            if (((signum[{0 + 2 * oix, fix}] == 1) and (X[fix] == 0)) or
-                ((signum[{1 + 2 * oix, fix}] == 1) and (X[fix] != 0)))
+            if (((polarity[{0 + 2 * oix, fix}] == 1) and (X[fix] == 0)) or
+                ((polarity[{1 + 2 * oix, fix}] == 1) and (X[fix] != 0)))
             {
                 output = false;
                 break;
@@ -230,14 +230,14 @@ void reference(
 void reference_with_pruning(
     Tsetlini::bit_vector_uint64 const & X,
     Tsetlini::aligned_vector_char & clause_output,
-    Tsetlini::bit_matrix_uint64 const & signum
+    Tsetlini::bit_matrix_uint64 const & polarity
 )
 {
     for (auto oix = 0u; oix < clause_output.size(); ++oix)
     {
         // this will work because all padding space is zeroed.
-        if (std::all_of(signum.row_data(0 + 2 * oix), signum.row_data(0 + 2 * oix) + signum.row_blocks(), [](auto x){ return x == 0;}) and
-            std::all_of(signum.row_data(1 + 2 * oix), signum.row_data(1 + 2 * oix) + signum.row_blocks(), [](auto x){ return x == 0;})
+        if (std::all_of(polarity.row_data(0 + 2 * oix), polarity.row_data(0 + 2 * oix) + polarity.row_blocks(), [](auto x){ return x == 0;}) and
+            std::all_of(polarity.row_data(1 + 2 * oix), polarity.row_data(1 + 2 * oix) + polarity.row_blocks(), [](auto x){ return x == 0;})
         )
         {
             // pruning
@@ -249,8 +249,8 @@ void reference_with_pruning(
 
         for (auto fix = 0u; fix < X.size(); ++fix)
         {
-            if (((signum[{0 + 2 * oix, fix}] == 1) and (X[fix] == 0)) or
-                ((signum[{1 + 2 * oix, fix}] == 1) and (X[fix] != 0)))
+            if (((polarity[{0 + 2 * oix, fix}] == 1) and (X[fix] == 0)) or
+                ((polarity[{1 + 2 * oix, fix}] == 1) and (X[fix] != 0)))
             {
                 output = false;
                 break;
@@ -286,26 +286,26 @@ auto make_X = [](Tsetlini::number_of_features_t number_of_features)
 };
 
 
-auto make_signum_matrix = [](
+auto make_polarity_matrix = [](
     Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
     Tsetlini::number_of_features_t number_of_features)
 {
-    matrix_type signum(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+    matrix_type polarity(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
 
     // fill entire matrix storage space, regardless of alignment and padding
-    signum.m_v = *rc::gen::container<matrix_type::aligned_vector>(signum.m_v.size(), rc::gen::arbitrary<matrix_type::block_type>());
+    polarity.m_v = *rc::gen::container<matrix_type::aligned_vector>(polarity.m_v.size(), rc::gen::arbitrary<matrix_type::block_type>());
 
     // clear any random bits beyond valid column number range
-    auto const total_row_bits = signum.row_blocks() * signum.block_bits;
-    for (Tsetlini::size_type row = 0; row < signum.rows(); ++row)
+    auto const total_row_bits = polarity.row_blocks() * polarity.block_bits;
+    for (Tsetlini::size_type row = 0; row < polarity.rows(); ++row)
     {
         for (Tsetlini::size_type col = value_of(number_of_features); col < total_row_bits; ++col)
         {
-            signum.clear(row, col);
+            polarity.clear(row, col);
         }
     }
 
-    return signum;
+    return polarity;
 };
 
 
@@ -318,14 +318,14 @@ auto make_signum_matrix = [](
             Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
 
             auto const X = make_X(number_of_features);
-            auto const ta_state_signum = make_signum_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_polarity = make_polarity_matrix(number_of_clause_outputs, number_of_features);
 
             Tsetlini::aligned_vector_char ground_truth(value_of(number_of_clause_outputs));
-            reference(X, ground_truth, ta_state_signum);
+            reference(X, ground_truth, ta_state_polarity);
 
             Tsetlini::aligned_vector_char clause_output(value_of(number_of_clause_outputs));
-            Tsetlini::TAStateWithSignum::value_type ta_state;
-            ta_state.signum = ta_state_signum;
+            Tsetlini::TAStateWithPolarity::value_type ta_state;
+            ta_state.polarity = ta_state_polarity;
 
             Tsetlini::calculate_clause_output(X, clause_output, 0, value_of(number_of_clause_outputs), ta_state,
                 Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
@@ -347,14 +347,14 @@ auto make_signum_matrix = [](
             Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
 
             auto const X = make_X(number_of_features);
-            auto const ta_state_signum = make_signum_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_polarity = make_polarity_matrix(number_of_clause_outputs, number_of_features);
 
             Tsetlini::aligned_vector_char ground_truth(value_of(number_of_clause_outputs));
-            reference_with_pruning(X, ground_truth, ta_state_signum);
+            reference_with_pruning(X, ground_truth, ta_state_polarity);
 
             Tsetlini::aligned_vector_char clause_output(value_of(number_of_clause_outputs));
-            Tsetlini::TAStateWithSignum::value_type ta_state;
-            ta_state.signum = ta_state_signum;
+            Tsetlini::TAStateWithPolarity::value_type ta_state;
+            ta_state.polarity = ta_state_polarity;
 
             Tsetlini::calculate_clause_output_with_pruning(X, clause_output, number_of_clause_outputs, ta_state,
                 Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});

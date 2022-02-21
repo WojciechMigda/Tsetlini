@@ -38,10 +38,10 @@ void calculate_clause_output_T(
     aligned_vector_char & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
-    TAStateWithSignum::value_type const & ta_state,
+    TAStateWithPolarity::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
-    auto const & ta_state_signum = ta_state.signum;
+    auto const & ta_state_polarity = ta_state.polarity;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
@@ -54,13 +54,13 @@ void calculate_clause_output_T(
         {
             bool output = true;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             for (int fidx = 0; fidx < feature_blocks and output == true; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
 
                 bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -79,16 +79,16 @@ void calculate_clause_output_T(
         {
             bit_block_type toggle_output = 0;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < feature_blocks - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bit_block_type const action_include = ta_sign_pos_j[fidx];
-                    bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                    bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                    bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                     bit_block_type const features = X_p[fidx];
 
                     bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -102,8 +102,8 @@ void calculate_clause_output_T(
             }
             for (int fidx = kk; fidx < feature_blocks and toggle_output == 0; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
 
                 bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -124,10 +124,10 @@ void calculate_clause_output_T(
     bit_vector<bit_block_type> & clause_output,
     int const output_begin_ix,
     int const output_end_ix,
-    TAStateWithSignum::value_type const & ta_state,
+    TAStateWithPolarity::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
-    auto const & ta_state_signum = ta_state.signum;
+    auto const & ta_state_polarity = ta_state.polarity;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
@@ -140,13 +140,13 @@ void calculate_clause_output_T(
         {
             bool output = true;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             for (int fidx = 0; fidx < feature_blocks and output == true; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
 
                 bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -165,16 +165,16 @@ void calculate_clause_output_T(
         {
             bit_block_type toggle_output = 0;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < feature_blocks - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bit_block_type const action_include = ta_sign_pos_j[fidx];
-                    bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                    bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                    bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                     bit_block_type const features = X_p[fidx];
 
                     bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -188,8 +188,8 @@ void calculate_clause_output_T(
             }
             for (int fidx = kk; fidx < feature_blocks and toggle_output == 0; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
 
                 bit_block_type const eval = (action_include & ~features) | (action_include_negated & features);
@@ -212,10 +212,10 @@ void calculate_clause_output_with_pruning_T(
     bit_vector<bit_block_type> const & X,
     aligned_vector_char & clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
-    TAStateWithSignum::value_type const & ta_state,
+    TAStateWithPolarity::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
-    auto const & ta_state_signum = ta_state.signum;
+    auto const & ta_state_polarity = ta_state.polarity;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
@@ -233,15 +233,15 @@ void calculate_clause_output_with_pruning_T(
         {
             bool output = true;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             bit_block_type any_inclusions = 0;
 
             for (int fidx = 0; fidx < feature_blocks and output == true; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
                 any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -264,16 +264,16 @@ void calculate_clause_output_with_pruning_T(
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < feature_blocks - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bit_block_type const action_include = ta_sign_pos_j[fidx];
-                    bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                    bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                    bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                     bit_block_type const features = X_p[fidx];
                     any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -288,8 +288,8 @@ void calculate_clause_output_with_pruning_T(
             }
             for (int fidx = kk; fidx < feature_blocks and toggle_output == 0; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
                 any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -312,10 +312,10 @@ void calculate_clause_output_with_pruning_T(
     bit_vector<bit_block_type> const & X,
     bit_vector<bit_block_type> clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
-    TAStateWithSignum::value_type const & ta_state,
+    TAStateWithPolarity::value_type const & ta_state,
     number_of_jobs_t const n_jobs)
 {
-    auto const & ta_state_signum = ta_state.signum;
+    auto const & ta_state_polarity = ta_state.polarity;
     bit_block_type const * X_p = assume_aligned<alignment>(X.data());
     int const feature_blocks = X.content_blocks();
 
@@ -328,15 +328,15 @@ void calculate_clause_output_with_pruning_T(
         {
             bool output = true;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             bit_block_type any_inclusions = 0;
 
             for (int fidx = 0; fidx < feature_blocks and output == true; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
                 any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -359,16 +359,16 @@ void calculate_clause_output_with_pruning_T(
             bit_block_type toggle_output = 0;
             bit_block_type any_inclusions = 0;
 
-            bit_block_type const * ta_sign_pos_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 0));
-            bit_block_type const * ta_sign_neg_j = assume_aligned<alignment>(ta_state_signum.row_data(2 * oidx + 1));
+            bit_block_type const * ta_polarity_pos_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 0));
+            bit_block_type const * ta_polarity_neg_j = assume_aligned<alignment>(ta_state_polarity.row_data(2 * oidx + 1));
 
             unsigned int kk = 0;
             for (; kk < feature_blocks - (BATCH_SZ - 1); kk += BATCH_SZ)
             {
                 for (auto fidx = kk; fidx < BATCH_SZ + kk; ++fidx)
                 {
-                    bit_block_type const action_include = ta_sign_pos_j[fidx];
-                    bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                    bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                    bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                     bit_block_type const features = X_p[fidx];
                     any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -383,8 +383,8 @@ void calculate_clause_output_with_pruning_T(
             }
             for (int fidx = kk; fidx < feature_blocks and toggle_output == 0; ++fidx)
             {
-                bit_block_type const action_include = ta_sign_pos_j[fidx];
-                bit_block_type const action_include_negated = ta_sign_neg_j[fidx];
+                bit_block_type const action_include = ta_polarity_pos_j[fidx];
+                bit_block_type const action_include_negated = ta_polarity_neg_j[fidx];
                 bit_block_type const features = X_p[fidx];
                 any_inclusions = (action_include | action_include_negated) > any_inclusions ? (action_include | action_include_negated) : any_inclusions;
 
@@ -413,8 +413,8 @@ void block1(
     number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     char const * __restrict ct_pos,
     char const * __restrict ct_neg
 )
@@ -437,7 +437,7 @@ void block1(
 
                 if (ta_state == 0)
                 {
-                    ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                    ta_state_pos_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
                 }
 
                 if (ta_state > -number_of_states)
@@ -456,7 +456,7 @@ void block1(
 
                 if (ta_state == 0)
                 {
-                    ta_state_neg_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                    ta_state_neg_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
                 }
 
                 if (ta_state > -number_of_states)
@@ -477,8 +477,8 @@ void block1_sparse(
     number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     PRNG & prng
 )
 {
@@ -490,7 +490,7 @@ void block1_sparse(
 
             if (ta_state == 0)
             {
-                ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                ta_state_pos_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
             }
 
             if (ta_state > -number_of_states)
@@ -505,7 +505,7 @@ void block1_sparse(
 
             if (ta_state == 0)
             {
-                ta_state_neg_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                ta_state_neg_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
             }
 
             if (ta_state > -number_of_states)
@@ -527,21 +527,21 @@ void block1(
     number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     bit_block_type const * __restrict ct_pos_p,
     bit_block_type const * __restrict ct_neg_p
 )
 {
-    using bit_view_type = typename std::decay<decltype(ta_state_pos_signum_j)>::type;
+    using bit_view_type = typename std::decay<decltype(ta_state_pos_polarity_j)>::type;
     auto constexpr block_bits = bit_view_type::block_bits;
-    int const full_feature_blocks = ta_state_pos_signum_j.content_blocks() - (ta_state_pos_signum_j.tail_bits() != 0);
+    int const full_feature_blocks = ta_state_pos_polarity_j.content_blocks() - (ta_state_pos_polarity_j.tail_bits() != 0);
 
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 
-    bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
-    bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
+    bit_block_type * ta_state_pos_polarity_j_p = assume_aligned<alignment>(ta_state_pos_polarity_j.data());
+    bit_block_type * ta_state_neg_polarity_j_p = assume_aligned<alignment>(ta_state_neg_polarity_j.data());
 
     ct_pos_p = assume_aligned<alignment>(ct_pos_p);
     ct_neg_p = assume_aligned<alignment>(ct_neg_p);
@@ -551,8 +551,8 @@ void block1(
         bit_block_type pos_dec = ct_pos_p[fidx];
         bit_block_type neg_dec = ct_neg_p[fidx];
 
-        bit_block_type pos_signum_flip = 0;
-        bit_block_type neg_signum_flip = 0;
+        bit_block_type pos_polarity_flip = 0;
+        bit_block_type neg_polarity_flip = 0;
 
         for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
@@ -560,8 +560,8 @@ void block1(
             auto neg_dec_bit = neg_dec & (ta_state_neg_j[fidx * block_bits + bix] > -number_of_states);
 
             // set the flip bit if the state BEFORE decrementation was 0 and the decrementation will take place
-            pos_signum_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_dec_bit) << bix;
-            neg_signum_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_dec_bit) << bix;
+            pos_polarity_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_dec_bit) << bix;
+            neg_polarity_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_dec_bit) << bix;
 
             ta_state_pos_j[fidx * block_bits + bix] -= pos_dec_bit;
             ta_state_neg_j[fidx * block_bits + bix] -= neg_dec_bit;
@@ -570,8 +570,8 @@ void block1(
             neg_dec >>= 1;
         }
 
-        ta_state_pos_signum_j_p[fidx] ^= pos_signum_flip;
-        ta_state_neg_signum_j_p[fidx] ^= neg_signum_flip;
+        ta_state_pos_polarity_j_p[fidx] ^= pos_polarity_flip;
+        ta_state_neg_polarity_j_p[fidx] ^= neg_polarity_flip;
 
     };
 
@@ -580,10 +580,10 @@ void block1(
         process_block(fidx, block_bits);
     }
 
-    if (ta_state_pos_signum_j.tail_bits() != 0)
+    if (ta_state_pos_polarity_j.tail_bits() != 0)
     {
         auto last_block_idx = full_feature_blocks;
-        process_block(last_block_idx, ta_state_pos_signum_j.tail_bits());
+        process_block(last_block_idx, ta_state_pos_polarity_j.tail_bits());
     }
 }
 
@@ -595,8 +595,8 @@ void block2(
     number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     bit_vector<bit_block_type> const & X,
     char const * __restrict ct_pos,
     char const * __restrict ct_neg
@@ -629,7 +629,7 @@ void block2(
 
                 if (ta_state_pos_j[fidx] == 0)
                 {
-                    ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                    ta_state_pos_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
                 }
 
             }
@@ -637,7 +637,7 @@ void block2(
             {
                 if (ta_state_neg_j[fidx] == 0)
                 {
-                    ta_state_neg_signum_j.flip(fidx); // flip negative clause bit in signum matrix
+                    ta_state_neg_polarity_j.flip(fidx); // flip negative clause bit in polarity matrix
                 }
 
                 if (ta_state_neg_j[fidx] > -number_of_states)
@@ -656,7 +656,7 @@ void block2(
 
                     if (ta_state_neg_j[fidx] == 0)
                     {
-                        ta_state_neg_signum_j.flip(fidx); // flip negative clause bit in signum matrix
+                        ta_state_neg_polarity_j.flip(fidx); // flip negative clause bit in polarity matrix
                     }
                 }
             }
@@ -665,7 +665,7 @@ void block2(
             {
                 if (ta_state_pos_j[fidx] == 0)
                 {
-                    ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                    ta_state_pos_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
                 }
 
                 if (ta_state_pos_j[fidx] > -number_of_states)
@@ -687,8 +687,8 @@ void block2(
     number_of_states_t const number_of_states,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     bit_vector<bit_block_type> const & X,
     bit_block_type const * ct_pos_p, // TODO restrict
     bit_block_type const * ct_neg_p
@@ -702,8 +702,8 @@ void block2(
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 
-    bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
-    bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
+    bit_block_type * ta_state_pos_polarity_j_p = assume_aligned<alignment>(ta_state_pos_polarity_j.data());
+    bit_block_type * ta_state_neg_polarity_j_p = assume_aligned<alignment>(ta_state_neg_polarity_j.data());
 
     ct_pos_p = assume_aligned<alignment>(ct_pos_p);
     ct_neg_p = assume_aligned<alignment>(ct_neg_p);
@@ -718,8 +718,8 @@ void block2(
         bit_block_type neg_inc = X_0 & (boost_true_positive_feedback ? -1 : ~ct_neg_p[fidx]);;
         bit_block_type neg_dec = X_1 & ct_neg_p[fidx];
 
-        bit_block_type pos_signum_flip = 0;
-        bit_block_type neg_signum_flip = 0;
+        bit_block_type pos_polarity_flip = 0;
+        bit_block_type neg_polarity_flip = 0;
 
         for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
@@ -730,8 +730,8 @@ void block2(
             auto neg_dec_bit = neg_dec & (ta_state_neg_j[fidx * block_bits + bix] > -number_of_states);
 
             // set the flip bit if the state BEFORE decrementation was 0 and the decrementation will take place
-            pos_signum_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_dec_bit) << bix;
-            neg_signum_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_dec_bit) << bix;
+            pos_polarity_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_dec_bit) << bix;
+            neg_polarity_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_dec_bit) << bix;
 
             ta_state_pos_j[fidx * block_bits + bix] += pos_inc_bit;
             ta_state_pos_j[fidx * block_bits + bix] -= pos_dec_bit;
@@ -739,8 +739,8 @@ void block2(
             ta_state_neg_j[fidx * block_bits + bix] -= neg_dec_bit;
 
             // set the flip bit if the state AFTER incrementation was 0 and the incrementation took place
-            pos_signum_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_inc_bit) << bix;
-            neg_signum_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_inc_bit) << bix;
+            pos_polarity_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_inc_bit) << bix;
+            neg_polarity_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_inc_bit) << bix;
 
             pos_inc >>= 1;
             pos_dec >>= 1;
@@ -748,8 +748,8 @@ void block2(
             neg_dec >>= 1;
         }
 
-        ta_state_pos_signum_j_p[fidx] ^= pos_signum_flip;
-        ta_state_neg_signum_j_p[fidx] ^= neg_signum_flip;
+        ta_state_pos_polarity_j_p[fidx] ^= pos_polarity_flip;
+        ta_state_neg_polarity_j_p[fidx] ^= neg_polarity_flip;
     };
 
     for (unsigned int fidx = 0; fidx < full_feature_blocks; ++fidx)
@@ -772,8 +772,8 @@ void block3_(
     number_of_features_t const number_of_features,
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     bit_vector<bit_block_type> const & X
 )
 {
@@ -792,7 +792,7 @@ void block3_(
 
                 if (ta_state_pos_j[fidx] == 0)
                 {
-                    ta_state_pos_signum_j.flip(fidx); // flip positive clause bit in signum matrix
+                    ta_state_pos_polarity_j.flip(fidx); // flip positive clause bit in polarity matrix
                 }
 
             }
@@ -807,7 +807,7 @@ void block3_(
 
                 if (ta_state_neg_j[fidx] == 0)
                 {
-                    ta_state_neg_signum_j.flip(fidx); // flip negative clause bit in signum matrix
+                    ta_state_neg_polarity_j.flip(fidx); // flip negative clause bit in polarity matrix
                 }
 
             }
@@ -824,8 +824,8 @@ inline
 void block3(
     state_type * __restrict ta_state_pos_j,
     state_type * __restrict ta_state_neg_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_signum_j,
-    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_signum_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_pos_polarity_j,
+    typename bit_matrix<bit_block_type>::bit_view && ta_state_neg_polarity_j,
     bit_vector<bit_block_type> const & X
 )
 {
@@ -836,21 +836,21 @@ void block3(
     ta_state_pos_j = assume_aligned<alignment>(ta_state_pos_j);
     ta_state_neg_j = assume_aligned<alignment>(ta_state_neg_j);
 
-    bit_block_type * ta_state_pos_signum_j_p = assume_aligned<alignment>(ta_state_pos_signum_j.data());
-    bit_block_type * ta_state_neg_signum_j_p = assume_aligned<alignment>(ta_state_neg_signum_j.data());
+    bit_block_type * ta_state_pos_polarity_j_p = assume_aligned<alignment>(ta_state_pos_polarity_j.data());
+    bit_block_type * ta_state_neg_polarity_j_p = assume_aligned<alignment>(ta_state_neg_polarity_j.data());
 
     auto process_block = [&](auto fidx, auto this_block_bits)
     {
         bit_block_type X_0 = ~X_p[fidx];
         bit_block_type X_1 = X_p[fidx];
-        bit_block_type X_pos_inc = ~ta_state_pos_signum_j_p[fidx];
-        bit_block_type X_neg_inc = ~ta_state_neg_signum_j_p[fidx];
+        bit_block_type X_pos_inc = ~ta_state_pos_polarity_j_p[fidx];
+        bit_block_type X_neg_inc = ~ta_state_neg_polarity_j_p[fidx];
 
         bit_block_type pos_inc = X_0 & X_pos_inc;
         bit_block_type neg_inc = X_1 & X_neg_inc;
 
-        bit_block_type pos_signum_flip = 0;
-        bit_block_type neg_signum_flip = 0;
+        bit_block_type pos_polarity_flip = 0;
+        bit_block_type neg_polarity_flip = 0;
 
         for (auto bix = 0u; bix < this_block_bits; ++bix)
         {
@@ -860,15 +860,15 @@ void block3(
             ta_state_pos_j[fidx * block_bits + bix] += pos_inc_bit;
             ta_state_neg_j[fidx * block_bits + bix] += neg_inc_bit;
 
-            pos_signum_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_inc_bit) << bix;
-            neg_signum_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_inc_bit) << bix;
+            pos_polarity_flip |= ((bit_block_type)(0 == ta_state_pos_j[fidx * block_bits + bix]) & pos_inc_bit) << bix;
+            neg_polarity_flip |= ((bit_block_type)(0 == ta_state_neg_j[fidx * block_bits + bix]) & neg_inc_bit) << bix;
 
             pos_inc >>= 1;
             neg_inc >>= 1;
         }
 
-        ta_state_pos_signum_j_p[fidx] ^= pos_signum_flip;
-        ta_state_neg_signum_j_p[fidx] ^= neg_signum_flip;
+        ta_state_pos_polarity_j_p[fidx] ^= pos_polarity_flip;
+        ta_state_neg_polarity_j_p[fidx] ^= neg_polarity_flip;
     };
 
     for (unsigned int fidx = 0; fidx < full_feature_blocks; ++fidx)
@@ -887,7 +887,7 @@ void block3(
 template<typename state_type, typename bit_block_type, typename PRNG>
 void train_classifier_automata_T(
     numeric_matrix<state_type> & ta_state_matrix,
-    bit_matrix<bit_block_type> & ta_state_signum,
+    bit_matrix<bit_block_type> & ta_state_polarity,
     w_vector_type & weights,
     int const input_begin_ix,
     int const input_end_ix,
@@ -915,8 +915,8 @@ void train_classifier_automata_T(
                 block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
-                    ta_state_signum.row(2 * iidx + 0),
-                    ta_state_signum.row(2 * iidx + 1),
+                    ta_state_polarity.row(2 * iidx + 0),
+                    ta_state_polarity.row(2 * iidx + 1),
                     prng);
 
             }
@@ -927,8 +927,8 @@ void train_classifier_automata_T(
                     block2<true>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
-                        ta_state_signum.row(2 * iidx + 0),
-                        ta_state_signum.row(2 * iidx + 1),
+                        ta_state_polarity.row(2 * iidx + 0),
+                        ta_state_polarity.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
@@ -936,8 +936,8 @@ void train_classifier_automata_T(
                     block2<false>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
-                        ta_state_signum.row(2 * iidx + 0),
-                        ta_state_signum.row(2 * iidx + 1),
+                        ta_state_polarity.row(2 * iidx + 0),
+                        ta_state_polarity.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
 
@@ -955,8 +955,8 @@ void train_classifier_automata_T(
                 block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
-                    ta_state_signum.row(2 * iidx + 0),
-                    ta_state_signum.row(2 * iidx + 1),
+                    ta_state_polarity.row(2 * iidx + 0),
+                    ta_state_polarity.row(2 * iidx + 1),
                     X);
 
                 if (weights.size() != 0)
@@ -971,7 +971,7 @@ void train_classifier_automata_T(
 
 template<typename bit_block_type, typename PRNG>
 void train_classifier_automata(
-    TAStateWithSignum::value_type & ta_state,
+    TAStateWithPolarity::value_type & ta_state,
     int const input_begin_ix,
     int const input_end_ix,
     feedback_vector_type::value_type const * __restrict feedback_to_clauses,
@@ -985,14 +985,14 @@ void train_classifier_automata(
     )
 {
     auto & ta_state_variant = ta_state.matrix;
-    auto & ta_state_signum = ta_state.signum;
+    auto & ta_state_polarity = ta_state.polarity;
 
     std::visit(
         [&](auto & ta_state_matrix)
         {
             train_classifier_automata_T(
                 ta_state_matrix,
-                ta_state_signum,
+                ta_state_polarity,
                 ta_state.weights,
                 input_begin_ix,
                 input_end_ix,
@@ -1013,7 +1013,7 @@ void train_classifier_automata(
 template<typename state_type, typename bit_block_type>
 void train_regressor_automata(
     numeric_matrix<state_type> & ta_state_matrix,
-    bit_matrix<bit_block_type> & ta_state_signum,
+    bit_matrix<bit_block_type> & ta_state_polarity,
     w_vector_type & weights,
     int const input_begin_ix,
     int const input_end_ix,
@@ -1061,8 +1061,8 @@ void train_regressor_automata(
                 block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
-                    ta_state_signum.row(2 * iidx + 0),
-                    ta_state_signum.row(2 * iidx + 1),
+                    ta_state_polarity.row(2 * iidx + 0),
+                    ta_state_polarity.row(2 * iidx + 1),
                     prng);
             }
             else // if (clause_output[iidx] == 1)
@@ -1072,8 +1072,8 @@ void train_regressor_automata(
                     block2<true>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
-                        ta_state_signum.row(2 * iidx + 0),
-                        ta_state_signum.row(2 * iidx + 1),
+                        ta_state_polarity.row(2 * iidx + 0),
+                        ta_state_polarity.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
                 else
@@ -1081,8 +1081,8 @@ void train_regressor_automata(
                     block2<false>(number_of_states,
                         ta_state_pos_j,
                         ta_state_neg_j,
-                        ta_state_signum.row(2 * iidx + 0),
-                        ta_state_signum.row(2 * iidx + 1),
+                        ta_state_polarity.row(2 * iidx + 0),
+                        ta_state_polarity.row(2 * iidx + 1),
                         X, ct.tosses1(prng), ct.tosses2(prng));
                 }
 
@@ -1100,8 +1100,8 @@ void train_regressor_automata(
                 block3<state_type, bit_block_type>(
                     ta_state_pos_j,
                     ta_state_neg_j,
-                    ta_state_signum.row(2 * iidx + 0),
-                    ta_state_signum.row(2 * iidx + 1),
+                    ta_state_polarity.row(2 * iidx + 0),
+                    ta_state_polarity.row(2 * iidx + 1),
                     X);
 
                 if (weights.size() != 0)
@@ -1116,7 +1116,7 @@ void train_regressor_automata(
 
 template<typename bit_block_type>
 void train_regressor_automata(
-    TAStateWithSignum::value_type & ta_state,
+    TAStateWithPolarity::value_type & ta_state,
     int const input_begin_ix,
     int const input_end_ix,
     char const * __restrict clause_output,
@@ -1133,14 +1133,14 @@ void train_regressor_automata(
     )
 {
     auto & ta_state_variant = ta_state.matrix;
-    auto & ta_state_signum = ta_state.signum;
+    auto & ta_state_polarity = ta_state.polarity;
 
     std::visit(
         [&](auto & ta_state_values)
         {
             train_regressor_automata(
                 ta_state_values,
-                ta_state_signum,
+                ta_state_polarity,
                 ta_state.weights,
                 input_begin_ix,
                 input_end_ix,

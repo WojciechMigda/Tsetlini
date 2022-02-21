@@ -72,7 +72,7 @@ TAState::initialize(
 
 
 void
-TAStateWithSignum::initialize(
+TAStateWithPolarity::initialize(
     value_type & state,
     counting_type_t const & counting_type,
     number_of_physical_estimator_clauses_t number_of_clauses,
@@ -82,16 +82,16 @@ TAStateWithSignum::initialize(
     IRNG & igen)
 {
     state.matrix = make_ta_state_matrix(counting_type, number_of_clauses, number_of_features);
-    state.signum = bit_matrix_uint64(value_of(number_of_clauses), value_of(number_of_features));
+    state.polarity = bit_matrix_uint64(value_of(number_of_clauses), value_of(number_of_features));
 
-    auto & signum = state.signum;
+    auto & polarity = state.polarity;
 
-    auto state_gen = [&igen, &signum](auto & matrix)
+    auto state_gen = [&igen, &polarity](auto & matrix)
     {
         for (auto rit = 0u; rit < matrix.rows(); ++rit)
         {
             auto row_data = matrix.row_data(rit);
-            auto row_signum = signum.row(rit);
+            auto row_polarity = polarity.row(rit);
 
             for (auto cit = 0u; cit < matrix.cols(); ++cit)
             {
@@ -99,11 +99,11 @@ TAStateWithSignum::initialize(
 
                 if (row_data[cit] >= 0)
                 {
-                    row_signum.set(cit);
+                    row_polarity.set(cit);
                 }
                 else
                 {
-                    row_signum.clear(cit);
+                    row_polarity.clear(cit);
                 }
             }
         }
