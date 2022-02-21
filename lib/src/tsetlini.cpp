@@ -370,7 +370,7 @@ evaluate_classifier_impl(
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
+        calculate_clause_output_with_pruning(
             X[it],
             state.cache.clause_output,
             number_of_clause_outputs,
@@ -413,7 +413,7 @@ predict_classifier_impl(ClassifierStateType const & state, SampleType const & sa
     auto const n_jobs = Params::n_jobs(state.m_params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(state.m_params);
 
-    calculate_clause_output_for_predict(
+    calculate_clause_output_with_pruning(
         sample,
         state.cache.clause_output,
         Params::number_of_classifier_clause_outputs(state.m_params),
@@ -450,7 +450,7 @@ predict_regressor_impl(RegressorStateType const & state, SampleType const & samp
     auto const n_jobs = Params::n_jobs(state.m_params);
     auto const clause_output_tile_size = Params::clause_output_tile_size(state.m_params);
 
-    calculate_clause_output_for_predict(
+    calculate_clause_output_with_pruning(
         sample,
         state.cache.clause_output,
         Params::number_of_regressor_clause_outputs(state.m_params),
@@ -491,7 +491,7 @@ predict_classifier_impl(ClassifierStateType const & state, std::vector<SampleTyp
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
+        calculate_clause_output_with_pruning(
             X[it],
             state.cache.clause_output,
             number_of_clause_outputs,
@@ -541,7 +541,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, SampleType const 
     auto const clause_output_tile_size = Params::clause_output_tile_size(params);
 
 
-    calculate_clause_output_for_predict(
+    calculate_clause_output_with_pruning(
         sample,
         state.cache.clause_output,
         number_of_clause_outputs,
@@ -588,7 +588,7 @@ predict_classifier_raw_impl(ClassifierStateType const & state, std::vector<Sampl
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
+        calculate_clause_output_with_pruning(
             X[it],
             state.cache.clause_output,
             number_of_clause_outputs,
@@ -910,7 +910,7 @@ predict_regressor_impl(RegressorStateType const & state, std::vector<SampleType>
 
     for (auto it = 0u; it < number_of_examples; ++it)
     {
-        calculate_clause_output_for_predict(
+        calculate_clause_output_with_pruning(
             X[it],
             state.cache.clause_output,
             number_of_clause_outputs,

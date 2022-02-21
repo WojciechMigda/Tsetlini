@@ -148,7 +148,7 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise calculate_clause_output_for_predict replicates paper formula"_test = [&]
+"Bytewise calculate_clause_output_with_pruning replicates paper formula"_test = [&]
 {
     auto ok = rc::check(
         [&]()
@@ -165,7 +165,7 @@ auto make_ta_state_matrix = [](
             Tsetlini::aligned_vector_char clause_output(value_of(number_of_clause_outputs));
             Tsetlini::TAState::value_type const ta_state{ta_state_matrix};
 
-            Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clause_outputs, ta_state,
+            Tsetlini::calculate_clause_output_with_pruning(X, clause_output, number_of_clause_outputs, ta_state,
                 Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
             RC_ASSERT(clause_output == ground_truth);
@@ -338,7 +338,7 @@ auto make_signum_matrix = [](
 };
 
 
-"Bitwise calculate_clause_output_for_predict replicates paper formula"_test = [&]
+"Bitwise calculate_clause_output_with_pruning replicates paper formula"_test = [&]
 {
     auto ok = rc::check(
         [&]()
@@ -356,7 +356,7 @@ auto make_signum_matrix = [](
             Tsetlini::TAStateWithSignum::value_type ta_state;
             ta_state.signum = ta_state_signum;
 
-            Tsetlini::calculate_clause_output_for_predict(X, clause_output, number_of_clause_outputs, ta_state,
+            Tsetlini::calculate_clause_output_with_pruning(X, clause_output, number_of_clause_outputs, ta_state,
                 Tsetlini::number_of_jobs_t{1}, Tsetlini::clause_output_tile_size_t{16});
 
             RC_ASSERT(clause_output == ground_truth);

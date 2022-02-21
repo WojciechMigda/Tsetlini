@@ -208,7 +208,7 @@ void calculate_clause_output_T(
  */
 template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
-void calculate_clause_output_for_predict_T(
+void calculate_clause_output_with_pruning_T(
     bit_vector<bit_block_type> const & X,
     aligned_vector_char & clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
@@ -308,7 +308,7 @@ void calculate_clause_output_for_predict_T(
 
 template<unsigned int BATCH_SZ, typename bit_block_type>
 inline
-void calculate_clause_output_for_predict_T(
+void calculate_clause_output_with_pruning_T(
     bit_vector<bit_block_type> const & X,
     bit_vector<bit_block_type> clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
