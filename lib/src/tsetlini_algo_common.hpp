@@ -100,7 +100,7 @@ void calculate_clause_output(
 
 template<typename SampleType, typename TAStateType>
 inline
-void calculate_clause_output_for_predict(
+void calculate_clause_output_with_pruning(
     SampleType const & X,
     aligned_vector_char & clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
@@ -111,7 +111,7 @@ void calculate_clause_output_for_predict(
     switch (value_of(TILE_SZ))
     {
         case 128:
-            calculate_clause_output_for_predict_T<128>(
+            calculate_clause_output_with_pruning_T<128>(
                 X,
                 clause_output,
                 number_of_clause_outputs,
@@ -120,7 +120,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 64:
-            calculate_clause_output_for_predict_T<64>(
+            calculate_clause_output_with_pruning_T<64>(
                 X,
                 clause_output,
                 number_of_clause_outputs,
@@ -129,7 +129,7 @@ void calculate_clause_output_for_predict(
             );
             break;
         case 32:
-            calculate_clause_output_for_predict_T<32>(
+            calculate_clause_output_with_pruning_T<32>(
                 X,
                 clause_output,
                 number_of_clause_outputs,
@@ -138,10 +138,10 @@ void calculate_clause_output_for_predict(
             );
             break;
         default:
-//            LOG_(warn) << "calculate_clause_output_for_predict: unrecognized clause_output_tile_size value "
+//            LOG_(warn) << "calculate_clause_output_with_pruning: unrecognized clause_output_tile_size value "
 //                       << clause_output_tile_size << ", fallback to 16.\n";
         case 16:
-            calculate_clause_output_for_predict_T<16>(
+            calculate_clause_output_with_pruning_T<16>(
                 X,
                 clause_output,
                 number_of_clause_outputs,

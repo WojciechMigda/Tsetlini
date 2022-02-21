@@ -128,7 +128,7 @@ void sum_up_all_label_votes(
  */
 template<unsigned int BATCH_SZ, typename state_type>
 inline
-void calculate_clause_output_for_predict_T(
+void calculate_clause_output_with_pruning_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
@@ -223,7 +223,7 @@ void calculate_clause_output_for_predict_T(
 
 template<unsigned int BATCH_SZ>
 inline
-void calculate_clause_output_for_predict_T(
+void calculate_clause_output_with_pruning_T(
     aligned_vector_char const & X,
     aligned_vector_char & clause_output,
     number_of_estimator_clause_outputs_t const number_of_clause_outputs,
@@ -233,7 +233,7 @@ void calculate_clause_output_for_predict_T(
     std::visit(
         [&](auto & ta_state_values)
         {
-            calculate_clause_output_for_predict_T<BATCH_SZ>(
+            calculate_clause_output_with_pruning_T<BATCH_SZ>(
                 X,
                 clause_output,
                 number_of_clause_outputs,
