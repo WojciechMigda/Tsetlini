@@ -15,7 +15,7 @@ jobs:
       CXX: g++-11
       CXX_FLAGS: -Wall -Werror -march=native -mno-avx512f -DTSETLINI_USE_OMP=0
 #      VALGRIND_FLAGS: ''
-      MEMCHECK_FLAGS: --leak-check=full
+      MEMCHECK_FLAGS: --leak-check=full --fair-sched=yes
     steps:
     - uses: actions/checkout@v2
     - name: Install CMake
