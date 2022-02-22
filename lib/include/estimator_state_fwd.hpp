@@ -11,7 +11,7 @@ namespace Tsetlini
 
 
 struct TAState;
-struct TAStateWithSignum;
+struct TAStateWithPolarity;
 struct ClassifierStateCache;
 struct RegressorStateCache;
 
@@ -26,16 +26,16 @@ auto ClassifierStateClassicDeleter = &EstimatorStateDeleter<TAState, ClassifierS
 static constexpr
 auto RegressorStateClassicDeleter = &EstimatorStateDeleter<TAState, RegressorStateCache>;
 static constexpr
-auto ClassifierStateBitwiseDeleter = &EstimatorStateDeleter<TAStateWithSignum, ClassifierStateCache>;
+auto ClassifierStateBitwiseDeleter = &EstimatorStateDeleter<TAStateWithPolarity, ClassifierStateCache>;
 static constexpr
-auto RegressorStateBitwiseDeleter = &EstimatorStateDeleter<TAStateWithSignum, RegressorStateCache>;
+auto RegressorStateBitwiseDeleter = &EstimatorStateDeleter<TAStateWithPolarity, RegressorStateCache>;
 
 
 using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
 
-using ClassifierStateBitwise = EstimatorState<TAStateWithSignum, ClassifierStateCache>;
-using RegressorStateBitwise = EstimatorState<TAStateWithSignum, RegressorStateCache>;
+using ClassifierStateBitwise = EstimatorState<TAStateWithPolarity, ClassifierStateCache>;
+using RegressorStateBitwise = EstimatorState<TAStateWithPolarity, RegressorStateCache>;
 
 
 using ClassifierStateClassicDeleterType = void(*)(ClassifierStateClassic *);
@@ -55,8 +55,8 @@ bool operator==(EstimatorState<TAStateType, EstimatorStateCacheType> const &, Es
 
 extern template bool operator==<TAState, ClassifierStateCache>(ClassifierStateClassic const &, ClassifierStateClassic const &);
 extern template bool operator==<TAState, RegressorStateCache>(RegressorStateClassic const &, RegressorStateClassic const &);
-extern template bool operator==<TAStateWithSignum, ClassifierStateCache>(ClassifierStateBitwise const &, ClassifierStateBitwise const &);
-extern template bool operator==<TAStateWithSignum, RegressorStateCache>(RegressorStateBitwise const &, RegressorStateBitwise const &);
+extern template bool operator==<TAStateWithPolarity, ClassifierStateCache>(ClassifierStateBitwise const &, ClassifierStateBitwise const &);
+extern template bool operator==<TAStateWithPolarity, RegressorStateCache>(RegressorStateBitwise const &, RegressorStateBitwise const &);
 
 
 }  // namespace Tsetlini

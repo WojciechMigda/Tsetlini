@@ -78,8 +78,8 @@ EstimatorState<TAStateType, EstimatorStateCacheType>::EstimatorState(params_t co
 using ClassifierStateClassic = EstimatorState<TAState, ClassifierStateCache>;
 using RegressorStateClassic = EstimatorState<TAState, RegressorStateCache>;
 
-using ClassifierStateBitwise = EstimatorState<TAStateWithSignum, ClassifierStateCache>;
-using RegressorStateBitwise = EstimatorState<TAStateWithSignum, RegressorStateCache>;
+using ClassifierStateBitwise = EstimatorState<TAStateWithPolarity, ClassifierStateCache>;
+using RegressorStateBitwise = EstimatorState<TAStateWithPolarity, RegressorStateCache>;
 
 
 }  // namespace Tsetlini

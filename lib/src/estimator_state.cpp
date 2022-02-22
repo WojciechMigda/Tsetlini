@@ -16,8 +16,8 @@ void EstimatorStateDeleter(EstimatorState<TAStateType, EstimatorStateCacheType> 
 // and its explicit template instantiations
 template void EstimatorStateDeleter<TAState, ClassifierStateCache>(EstimatorState<TAState, ClassifierStateCache> *);
 template void EstimatorStateDeleter<TAState, RegressorStateCache>(EstimatorState<TAState, RegressorStateCache> *);
-template void EstimatorStateDeleter<TAStateWithSignum, ClassifierStateCache>(EstimatorState<TAStateWithSignum, ClassifierStateCache> *);
-template void EstimatorStateDeleter<TAStateWithSignum, RegressorStateCache>(EstimatorState<TAStateWithSignum, RegressorStateCache> *);
+template void EstimatorStateDeleter<TAStateWithPolarity, ClassifierStateCache>(EstimatorState<TAStateWithPolarity, ClassifierStateCache> *);
+template void EstimatorStateDeleter<TAStateWithPolarity, RegressorStateCache>(EstimatorState<TAStateWithPolarity, RegressorStateCache> *);
 
 
 /// equality operator
@@ -43,8 +43,8 @@ bool operator==(EstimatorState<TAStateType, EstimatorStateCacheType> const & lhs
 // and its explicit template instantiations
 template bool operator==<TAState, ClassifierStateCache>(ClassifierStateClassic const &, ClassifierStateClassic const &);
 template bool operator==<TAState, RegressorStateCache>(RegressorStateClassic const &, RegressorStateClassic const &);
-template bool operator==<TAStateWithSignum, ClassifierStateCache>(ClassifierStateBitwise const &, ClassifierStateBitwise const &);
-template bool operator==<TAStateWithSignum, RegressorStateCache>(RegressorStateBitwise const &, RegressorStateBitwise const &);
+template bool operator==<TAStateWithPolarity, ClassifierStateCache>(ClassifierStateBitwise const &, ClassifierStateBitwise const &);
+template bool operator==<TAStateWithPolarity, RegressorStateCache>(RegressorStateBitwise const &, RegressorStateBitwise const &);
 
 
 }  // namespace Tsetlini

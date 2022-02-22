@@ -16,9 +16,9 @@ namespace
 {
 
 
-template<typename state_type, typename signum_type>
+template<typename state_type, typename polarity_type>
 void
-signum_from_ta_state(Tsetlini::numeric_matrix<state_type> const & ta_state, Tsetlini::bit_matrix<signum_type> & signum_matrix)
+polarity_from_ta_state(Tsetlini::numeric_matrix<state_type> const & ta_state, Tsetlini::bit_matrix<polarity_type> & polarity_matrix)
 {
     auto const [nrows, ncols] = ta_state.shape();
 
@@ -32,11 +32,11 @@ signum_from_ta_state(Tsetlini::numeric_matrix<state_type> const & ta_state, Tset
 
             if (negative)
             {
-                signum_matrix.clear(rix, cix);
+                polarity_matrix.clear(rix, cix);
             }
             else
             {
-                signum_matrix.set(rix, cix);
+                polarity_matrix.set(rix, cix);
             }
         }
     }
@@ -105,12 +105,12 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         auto const bitwise_X = basic_bit_vectors::from_range<std::uint64_t>(X.cbegin(), X.cend());
 
-        Tsetlini::bit_matrix_uint64 ta_state_signum(2 * number_of_clauses, number_of_features);
-        signum_from_ta_state(ta_state_values, ta_state_signum);
+        Tsetlini::bit_matrix_uint64 ta_state_polarity(2 * number_of_clauses, number_of_features);
+        polarity_from_ta_state(ta_state_values, ta_state_polarity);
 
         // this will be fed to train_classifier_automata
-        Tsetlini::TAStateWithSignum::value_type ta_state;
-        ta_state.signum = ta_state_signum;
+        Tsetlini::TAStateWithPolarity::value_type ta_state;
+        ta_state.polarity = ta_state_polarity;
         ta_state.matrix = ta_state_values;
 
         // mock prng which returns duplicated running integers modulo number of features
@@ -132,11 +132,11 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
         ta_state_values = std::get<Tsetlini::numeric_matrix_int8>(ta_state.matrix);
         EXPECT_TRUE(ta_state_values == ta_state_classic);
 
-        // assert whether signum was synchronized
-        Tsetlini::bit_matrix_uint64 ta_state_signum_post(2 * number_of_clauses, number_of_features);
-        signum_from_ta_state(ta_state_values, ta_state_signum_post);
+        // assert whether polarity was synchronized
+        Tsetlini::bit_matrix_uint64 ta_state_polarity_post(2 * number_of_clauses, number_of_features);
+        polarity_from_ta_state(ta_state_values, ta_state_polarity_post);
 
-        EXPECT_TRUE(ta_state.signum == ta_state_signum_post);
+        EXPECT_TRUE(ta_state.polarity == ta_state_polarity_post);
     }
 }
 

@@ -187,7 +187,7 @@ void to_json(json & j, ClassifierStateBitwise::ta_state_type::value_type const &
 
     ta_state["matrix"] = p.matrix;
     ta_state["weights"] = p.weights;
-    ta_state["signum"] = p.signum;
+    ta_state["polarity"] = p.polarity;
 
     j = ta_state;
 }
@@ -197,7 +197,7 @@ void from_json(json const & j, Tsetlini::ClassifierStateBitwise::ta_state_type::
 {
     p.matrix = j.at("matrix").get<Tsetlini::ClassifierStateBitwise::ta_state_type::value_type::matrix_variant_type>();
     p.weights = j.at("weights").get<Tsetlini::w_vector_type>();
-    p.signum = j.at("signum").get<Tsetlini::bit_matrix_uint64>();
+    p.polarity = j.at("polarity").get<Tsetlini::bit_matrix_uint64>();
 }
 
 
