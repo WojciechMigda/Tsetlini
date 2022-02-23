@@ -63,7 +63,6 @@ struct RegressorStateCache : public EstimatorStateCacheBase
 {
     struct value_type
     {
-        feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
         aligned_vector_char clause_output; // shape=(number of clauses)
 
         coin_tosser_type ct;
@@ -100,7 +99,6 @@ struct RegressorStateBitwiseCache : public EstimatorStateBitwiseCacheBase
 {
     struct value_type
     {
-        feedback_vector_type feedback_to_clauses; // shape=(number of clauses)
         aligned_vector_char clause_output; // shape=(number of clauses)
 
         coin_tosser_type ct;
