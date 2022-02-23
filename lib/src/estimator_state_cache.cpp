@@ -50,8 +50,6 @@ void RegressorStateCache::reset(
 
     cache.clause_output.clear();
     cache.clause_output.resize(value_of(number_of_outputs));
-    cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     cache.ct = CoinTosserExact(
         real_type{1.} / value_of(Params::s(params)),
@@ -61,9 +59,7 @@ void RegressorStateCache::reset(
 
 bool RegressorStateCache::are_equal(value_type const & lhs, value_type const & rhs)
 {
-    return
-        lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
-        and lhs.clause_output.size() == rhs.clause_output.size();
+    return lhs.clause_output.size() == rhs.clause_output.size();
 }
 
 
@@ -115,8 +111,6 @@ void RegressorStateBitwiseCache::reset(
 
     cache.clause_output.clear();
     cache.clause_output.resize(value_of(number_of_outputs));
-    cache.feedback_to_clauses.clear();
-    cache.feedback_to_clauses.resize(value_of(number_of_outputs));
 
     auto const base_size = value_of(Params::number_of_features(params));
     cache.ct = CoinTosserBitwise(base_size, 3 * 8 * base_size);
@@ -125,9 +119,7 @@ void RegressorStateBitwiseCache::reset(
 
 bool RegressorStateBitwiseCache::are_equal(value_type const & lhs, value_type const & rhs)
 {
-    return
-        lhs.feedback_to_clauses.size() == rhs.feedback_to_clauses.size()
-        and lhs.clause_output.size() == rhs.clause_output.size();
+    return lhs.clause_output.size() == rhs.clause_output.size();
 }
 
 
