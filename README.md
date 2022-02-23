@@ -1,3 +1,3 @@
 GitHub Pages of [WojciechMigda/Tsetlini](https://github.com/WojciechMigda/Tsetlini.git)
 ===
-Sphinx html documentation of [eea5f249](https://github.com/WojciechMigda/Tsetlini/tree/eea5f24981859ce6dc06e38d927b28e62783beb2)
+Sphinx html documentation of [92456dfb](https://github.com/WojciechMigda/Tsetlini/tree/92456dfb7a310292cc858f8f0990984faa3dcd16)
