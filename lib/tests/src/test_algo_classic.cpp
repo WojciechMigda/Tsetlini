@@ -18,53 +18,6 @@ namespace
 {
 
 
-TEST(CalculateClassifierFeedbackToClauses, replicates_result_of_CAIR_code)
-{
-    IRNG    irng(1234);
-    FRNG    fgen(4567);
-    FRNG    fgen_CAIR(4567);
-
-    for (auto it = 0u; it < 1000; ++it)
-    {
-        int const number_of_labels = irng.next(2, 12);
-        Tsetlini::label_type const target_label = irng.next(0, number_of_labels - 1);
-        Tsetlini::label_type const opposite_label = (target_label + 1 + irng() % (number_of_labels - 1)) % number_of_labels;
-
-        Tsetlini::threshold_t const threshold{irng.next(1, 127)};
-        int const target_label_votes = irng.next(-value_of(threshold), value_of(threshold));
-        int const opposite_label_votes = irng.next(-value_of(threshold), value_of(threshold));
-
-        int const number_of_clause_outputs_per_label = irng.next(1, 10) * 2; // must be even
-
-        Tsetlini::feedback_vector_type feedback_to_clauses(number_of_clause_outputs_per_label * number_of_labels);
-        Tsetlini::feedback_vector_type feedback_to_clauses_CAIR(number_of_clause_outputs_per_label * number_of_labels);
-
-        CAIR::calculate_feedback_to_clauses(
-            feedback_to_clauses_CAIR,
-            target_label,
-            opposite_label,
-            target_label_votes,
-            opposite_label_votes,
-            number_of_clause_outputs_per_label,
-            number_of_labels,
-            value_of(threshold),
-            fgen_CAIR);
-
-        Tsetlini::calculate_classifier_feedback_to_clauses(
-            feedback_to_clauses,
-            target_label,
-            opposite_label,
-            target_label_votes,
-            opposite_label_votes,
-            Tsetlini::number_of_classifier_clause_outputs_per_label_t{number_of_clause_outputs_per_label},
-            threshold,
-            fgen);
-
-        EXPECT_TRUE(feedback_to_clauses_CAIR == feedback_to_clauses);
-    }
-}
-
-
 TEST(ClassicTrainClassifierAutomata, replicates_result_of_CAIR_code)
 {
     IRNG    irng(1234);

@@ -28,6 +28,14 @@ namespace
 {
 
 
+enum
+{
+    Type_II_Feedback = -1,
+    No_Feedback = 0,
+    Type_I_Feedback = +1
+};
+
+
 template<typename state_type>
 inline
 bool action(state_type state)
@@ -680,7 +688,7 @@ void calculate_classifier_feedback_to_clauses(
     const auto THR_pos = THR2_inv * (value_of(threshold) - target_label_votes);
     const auto THR_neg = THR2_inv * (value_of(threshold) + opposite_label_votes);
 
-    std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), 0);
+    std::fill(feedback_to_clauses.begin(), feedback_to_clauses.end(), No_Feedback);
 
     {
         auto const [feedback_begin_ix, feedback_end_ix] = clause_outputs_range_for_label(target_label, number_of_clause_outputs_per_label);
@@ -693,7 +701,7 @@ void calculate_classifier_feedback_to_clauses(
             }
 
             // Type I and II Feedback
-            feedback_to_clauses[fidx] = fidx % 2 == 0 ? 1 : -1;
+            feedback_to_clauses[fidx] = fidx % 2 == 0 ? Type_I_Feedback : Type_II_Feedback;
         }
     }
 
@@ -708,7 +716,7 @@ void calculate_classifier_feedback_to_clauses(
             }
 
             // Type I and II Feedback
-            feedback_to_clauses[fidx] = fidx % 2 == 0 ? -1 : 1;
+            feedback_to_clauses[fidx] = fidx % 2 == 0 ? Type_II_Feedback : Type_I_Feedback;
         }
     }
 }
