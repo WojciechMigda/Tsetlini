@@ -102,7 +102,7 @@ suite CalculateClassifierFeedbackToClauses = []
 {
 
 
-"calculate_classifier_feedback_to_clauses "_test = []
+"calculate_classifier_feedback_to_clauses yields statistically correct results"_test = []
 {
     /*
      * Begin with a PRNG section
@@ -207,7 +207,7 @@ suite CalculateClassifierFeedbackToClauses = []
     const auto expected_opposite_label_count = std::round(N_REPEAT * THR2_inv * (value_of(threshold) + opposite_label_votes));
 
     /*
-     * Now we can verify that each count fall within a margin of expected value.
+     * Now we can verify that each count falls within a margin of expected value.
      * For the target label I will use margin of (N_REPEAT / 2) / 100,
      * for the opposite label the margin will be N_REPEAT / 100.
      */
