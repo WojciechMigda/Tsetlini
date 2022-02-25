@@ -8,6 +8,7 @@
 
 #include <cstdlib>
 #include <algorithm>
+#include <cstdint>
 
 
 using namespace boost::ut;
