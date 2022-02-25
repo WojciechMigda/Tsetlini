@@ -594,7 +594,7 @@ void train_classifier_automata(
         state_type * ta_state_pos_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 0));
         state_type * ta_state_neg_j = ::assume_aligned<alignment>(ta_state.row_data(2 * iidx + 1));
 
-        if (feedback_to_clauses[iidx] > 0)
+        if (feedback_to_clauses[iidx] >= Type_I_Feedback)
         {
             if (clause_output[iidx] == 0)
             {
@@ -618,7 +618,7 @@ void train_classifier_automata(
                 }
             }
         }
-        else if (feedback_to_clauses[iidx] < 0)
+        else if (feedback_to_clauses[iidx] <= Type_II_Feedback)
         {
             if (clause_output[iidx] == 1)
             {
