@@ -8,6 +8,8 @@
 
 #include <cmath>
 #include <cstring>
+#include <algorithm>
+#include <cstdint>
 
 
 namespace Tsetlini
@@ -18,6 +20,15 @@ struct CoinTosserExact
 {
     real_type m_s_inv;
     unsigned int m_hits;
+    unsigned int m_hits_floor;
+    /*
+     * This 32-bit integer threshold will be used to stochastically decide
+     * whether m_hits should be set to `m_hits_floor` or `m_hits_floor + 1`.
+     * We need this to avoid rounding bias when S_inv is multiplied by
+     * number of features.
+     */
+    std::uint32_t m_hits_ceil_threshold;
+
     aligned_vector_char m_cache1;
     aligned_vector_char m_cache2;
 
@@ -49,6 +60,8 @@ private:
 CoinTosserExact::CoinTosserExact()
     : m_s_inv(1)
     , m_hits(0)
+    , m_hits_floor(0)
+    , m_hits_ceil_threshold(0)
 {
 
 }
@@ -56,6 +69,9 @@ CoinTosserExact::CoinTosserExact()
 CoinTosserExact::CoinTosserExact(real_type s_inv, unsigned int size)
     : m_s_inv(s_inv)
     , m_hits(std::round(size * s_inv))
+    , m_hits_floor(std::floor(size * s_inv))
+    , m_hits_ceil_threshold(
+        std::round(static_cast<double>(s_inv * size - std::floor(s_inv * size)) * std::numeric_limits<std::uint32_t>::max()))
     , m_cache1(size)
     , m_cache2(size)
 {
@@ -99,10 +115,18 @@ unsigned int CoinTosserExact::hits() const
 template<typename PRNG>
 char const * CoinTosserExact::tosses_(aligned_vector_char & cache, PRNG & prng)
 {
+    static_assert(sizeof (typename PRNG::result_type) == sizeof (m_hits_ceil_threshold));
+
     auto const vsz = cache.size();
 
     //memset(m_cache.data(), 0, vsz * sizeof (decltype (m_cache)::value_type));
     std::fill(cache.begin(), cache.end(), 0);
+
+    /*
+     * Estimate number of hits.
+     * It will be either floor() or ceil() of S_inv * cache.size()
+     */
+    m_hits = m_hits_floor + (prng() < m_hits_ceil_threshold);
 
     for (auto it = 0u; it < m_hits; /* nop */)
     {
