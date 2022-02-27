@@ -115,13 +115,20 @@ TEST(BitwiseTrainClassifierAutomata, replicates_result_of_classic_code)
 
         // mock prng which returns duplicated running integers modulo number of features
         // 0, 0, 1, 1, 2, 2, ...
-        auto iota_counter = 0u;
-        auto iota_prng = [&iota_counter, number_of_features]()
+        struct IotaPrng
         {
-            auto rv = iota_counter % (2 * number_of_features);
-            ++iota_counter;
-            return rv / 2;
-        };
+            using result_type = unsigned int;
+            result_type iota_counter = 0u;
+            int number_of_features;
+            IotaPrng(int nfeat) : number_of_features(nfeat){}
+            auto operator()()
+            {
+                result_type rv = iota_counter % (2 * number_of_features);
+                ++iota_counter;
+                return rv / 2;
+            }
+            result_type max() const { return std::numeric_limits<result_type>::max(); }
+        } iota_prng(number_of_features);
 
         Tsetlini::train_classifier_automata(
             ta_state, 0, number_of_clauses, feedback_to_clauses.data(), clause_output.data(),

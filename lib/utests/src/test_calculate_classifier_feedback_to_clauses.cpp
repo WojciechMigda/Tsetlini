@@ -10,6 +10,7 @@
 #include <vector>
 #include <cstddef>
 #include <random>
+#include <cmath>
 
 
 using namespace boost::ut;
