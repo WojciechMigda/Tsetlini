@@ -289,6 +289,12 @@ assert_specificity(params_t const & params)
 {
     auto value = std::get<real_type>(params.at("s"));
 
+    /*
+     * specificity is >= 1.0
+     *
+     * "Extending the Tsetlin Machine With Integer-Weighted Clauses for Increased Interpretability"
+     * Section 2.3, pp 5.
+     */
     if (value < 1.0)
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
