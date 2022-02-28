@@ -26,10 +26,11 @@ auto constexpr MAX_NUM_OF_STATES = 1000;
  *
  *      weight = [0, MAX_WEIGHT)
  *
- * In real life scenario weight will never MAX_WEIGHT, because for
+ * In real life scenario weight will never equal MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
 std::uint64_t constexpr MAX_WEIGHT = std::numeric_limits<Tsetlini::w_vector_type::value_type>::max();
+std::uint64_t constexpr MIN_WEIGHT = 0;
 
 
 /*
@@ -81,21 +82,15 @@ auto aggregate_diff = [](
 };
 
 
-auto make_ta_state_matrix = [](
-    auto && gen,
-    Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
-    Tsetlini::number_of_features_t number_of_features)
-{
-    matrix_type ta_state_matrix(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+/*
+ * Feedback: None
+ * Clause outputs: n/a
+ * X: n/a
+ */
 
-    // fill entire matrix storage space, regardless of alignment and padding
-    std::generate(ta_state_matrix.m_v.begin(), ta_state_matrix.m_v.end(), gen);
-
-    return ta_state_matrix;
-};
-
-
-"Bytewise non-weighted train_classifier_automata does not modify TA state when all feedback is None"_test = [&]
+"Bytewise non-weighted train_classifier_automata"
+" does not modify TA state"
+" when all feedback is None"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -110,7 +105,7 @@ auto make_ta_state_matrix = [](
             auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
             auto const max_weight = Tsetlini::max_weight_t{0};
 
-            auto ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
             Tsetlini::w_vector_type empty_weights;
@@ -138,7 +133,9 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise weighted train_classifier_automata does not modify TA state when all feedback is None"_test = [&]
+"Bytewise weighted train_classifier_automata"
+" does not modify TA state nor weights"
+" when all feedback is None"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -152,16 +149,18 @@ auto make_ta_state_matrix = [](
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
             auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
 
-            auto ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
-            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs), rc::gen::inRange<std::uint64_t>(0, MAX_WEIGHT));
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::No_Feedback);
 
             matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -174,6 +173,7 @@ auto make_ta_state_matrix = [](
                 boost_tpf, prng, ct);
 
             RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+            RC_ASSERT(weights == weights_reference);
         }
     );
 
@@ -181,7 +181,14 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise non-weighted train_classifier_automata does not modify TA state"
+/*
+ * Feedback: Type II
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bytewise non-weighted train_classifier_automata"
+" does not modify TA state"
 " when all feedback is Type II and clause outputs are 0"_test = [&]
 {
     auto ok = rc::check(
@@ -197,7 +204,7 @@ auto make_ta_state_matrix = [](
             auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
             auto const max_weight = Tsetlini::max_weight_t{0};
 
-            auto ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
             Tsetlini::w_vector_type empty_weights;
 
@@ -225,7 +232,8 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise weighted train_classifier_automata does not modify TA state when"
+"Bytewise weighted train_classifier_automata"
+" does not modify TA state when"
 " all feedback is Type II and clause outputs are 0"_test = [&]
 {
     auto ok = rc::check(
@@ -240,9 +248,10 @@ auto make_ta_state_matrix = [](
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
             auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
 
-            auto ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
-            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs), rc::gen::inRange<std::uint64_t>(0, MAX_WEIGHT));
+            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
@@ -269,8 +278,124 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise non-weighted train_classifier_automata adjusts TA states with 1/s probability when"
-" feedback is Type I and clause outputs are 0"_test = [&]
+"Bytewise weighted train_classifier_automata"
+" decrements weights when"
+" all feedback is Type II and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
+            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+
+            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
+            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT + 1, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /* increment weights so that they can be compared against reference */
+            std::for_each(weights.begin(), weights.end(), [](auto & x){ x += 1; });
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" does not decrement zero weights when"
+" all feedback is Type II and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
+            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+
+            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
+            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            Tsetlini::w_vector_type zero_weights(value_of(number_of_clause_outputs), MIN_WEIGHT);
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state,
+                zero_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            RC_ASSERT(std::all_of(zero_weights.cbegin(), zero_weights.cend(), [](auto x){ return x == MIN_WEIGHT; }));
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+
+auto make_ta_state_matrix = [](
+    auto && gen,
+    Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
+    Tsetlini::number_of_features_t number_of_features)
+{
+    matrix_type ta_state_matrix(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+
+    // fill entire matrix storage space, regardless of alignment and padding
+    std::generate(ta_state_matrix.m_v.begin(), ta_state_matrix.m_v.end(), gen);
+
+    return ta_state_matrix;
+};
+
+
+/*
+ * Feedback: Type I
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bytewise non-weighted train_classifier_automata"
+" adjusts TA states with 1/s probability"
+" when feedback is Type I and clause outputs are 0"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -378,8 +503,10 @@ auto make_ta_state_matrix = [](
 };
 
 
-"Bytewise weighted train_classifier_automata adjusts TA states with 1/s probability"
-" and leaves weights unchanged when feedback is Type I and clause outputs are 0"_test = [&]
+"Bytewise weighted train_classifier_automata"
+" adjusts TA states with 1/s probability"
+" and leaves weights unchanged"
+" when feedback is Type I and clause outputs are 0"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -412,7 +539,7 @@ auto make_ta_state_matrix = [](
 
     Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
     Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
-    Tsetlini::w_vector_type const weights_reference(value_of(number_of_clause_outputs), random_int(gen, 0u, std::uint32_t(MAX_WEIGHT - 1)));
+    Tsetlini::w_vector_type const weights_reference(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
     auto const ta_state_reference = make_ta_state_matrix(
         /*
          * training is expected to decrement state, so we need to fill TA state
