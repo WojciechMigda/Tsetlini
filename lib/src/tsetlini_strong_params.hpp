@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <string>
+#include <cstdint>
 
 
 namespace Tsetlini
@@ -125,8 +126,8 @@ using box_muller_flag_t = strong::type<
 >;
 
 using max_weight_t = strong::type<
-    int, struct _max_weight_tag,
-    strong::ordered_with<int>,
+    std::uint32_t, struct _max_weight_tag,
+    strong::ordered_with<std::uint32_t>,
     strong::ostreamable
 >;
 
