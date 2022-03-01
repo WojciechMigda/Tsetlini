@@ -27,7 +27,7 @@ auto constexpr MAX_NUM_OF_POLARIZED_CLAUSE_OUTPUTS_PER_LABEL = 0x100; // arbitra
  * In real life scenario weight will never MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
-std::uint64_t constexpr MAX_WEIGHT = std::numeric_limits<Tsetlini::w_vector_type::value_type>::max();
+std::uint32_t constexpr MAX_WEIGHT = std::numeric_limits<strong::underlying_type<Tsetlini::max_weight_t>::type>::max();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -116,8 +116,8 @@ suite SumUpAllLabelVotes = []
 
             auto const positive_clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(number_of_polarized_clause_outputs, rc::gen::arbitrary<bool>());
             auto const negative_clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(number_of_polarized_clause_outputs, rc::gen::arbitrary<bool>());
-            auto const positive_weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_polarized_clause_outputs, rc::gen::inRange<std::uint64_t>(0, MAX_WEIGHT));
-            auto const negative_weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_polarized_clause_outputs, rc::gen::inRange<std::uint64_t>(0, MAX_WEIGHT));
+            auto const positive_weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_polarized_clause_outputs, rc::gen::inRange(0u, MAX_WEIGHT));
+            auto const negative_weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_polarized_clause_outputs, rc::gen::inRange(0u, MAX_WEIGHT));
 
             auto const clause_output = flat_zip(positive_clause_output, negative_clause_output);
             auto const weights = flat_zip(positive_weights, negative_weights);

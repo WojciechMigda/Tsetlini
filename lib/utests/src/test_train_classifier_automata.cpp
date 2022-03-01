@@ -29,8 +29,8 @@ auto constexpr MAX_NUM_OF_STATES = 1000;
  * In real life scenario weight will never equal MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
-std::uint64_t constexpr MAX_WEIGHT = std::numeric_limits<Tsetlini::w_vector_type::value_type>::max();
-std::uint64_t constexpr MIN_WEIGHT = 0;
+std::uint32_t constexpr MAX_WEIGHT = std::numeric_limits<strong::underlying_type<Tsetlini::max_weight_t>::type>::max();
+std::uint32_t constexpr MIN_WEIGHT = 0;
 
 
 /*
@@ -41,6 +41,12 @@ T random_int(Gen & gen, T lo, T hi)
 {
     return std::uniform_int_distribution<T>(lo, hi)(gen);
 };
+
+
+auto gen_S_inv() -> Tsetlini::real_type
+{
+    return *rc::gen::map(rc::gen::arbitrary<std::uint32_t>(), [](auto x){ return (x + 0.5f) * (1.0f / 4294967296.0f); });
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +108,7 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
             auto const max_weight = Tsetlini::max_weight_t{0};
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
@@ -147,13 +153,13 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
-                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT, MAX_WEIGHT));
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
@@ -201,7 +207,7 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
             auto const max_weight = Tsetlini::max_weight_t{0};
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
@@ -246,12 +252,12 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
-                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT, MAX_WEIGHT));
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
@@ -280,7 +286,7 @@ auto aggregate_diff = [](
 
 "Bytewise weighted train_classifier_automata"
 " decrements weights when"
-" all feedback is Type II and clause outputs are 0"_test = [&]
+" all feedback is Type II"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -292,16 +298,16 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
 
+            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
-            auto weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
-                rc::gen::inRange<std::uint64_t>(MIN_WEIGHT + 1, MAX_WEIGHT));
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT + 1, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
-            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
 
             matrix_type ta_state = ta_state_reference;
@@ -329,7 +335,7 @@ auto aggregate_diff = [](
 
 "Bytewise weighted train_classifier_automata"
 " does not decrement zero weights when"
-" all feedback is Type II and clause outputs are 0"_test = [&]
+" all feedback is Type II"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -341,15 +347,15 @@ auto aggregate_diff = [](
 
             auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
             auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
-            auto const S_inv = *rc::gen::suchThat(rc::gen::arbitrary<Tsetlini::real_type>(), [](auto x){ return x < 1.; });
+            auto const S_inv = gen_S_inv();
 
+            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
             auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
             Tsetlini::w_vector_type zero_weights(value_of(number_of_clause_outputs), MIN_WEIGHT);
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
-            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
 
             matrix_type ta_state = ta_state_reference;
@@ -617,6 +623,112 @@ auto make_ta_state_matrix = [](
         all_within_margin = all_within_margin and (where_failed == end);
     }
     expect(that % true == all_within_margin);
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" increments weights when"
+" all feedback is Type I and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 40;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
+            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+
+            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
+            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT - 1));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /* decrement weights so that they can be compared against reference */
+            std::for_each(weights.begin(), weights.end(), [](auto & x){ x -= 1; });
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" does not increment maxxed weights when"
+" all feedback is Type I and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 40;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
+            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+
+            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
+            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features);
+            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            Tsetlini::w_vector_type maxxed_weights(value_of(number_of_clause_outputs), MAX_WEIGHT - 1);
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state,
+                maxxed_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            RC_ASSERT(std::all_of(maxxed_weights.cbegin(), maxxed_weights.cend(), [](auto x){ return x == (MAX_WEIGHT - 1); }));
+        }
+    );
+
+    expect(that % true == ok);
 };
 
 
