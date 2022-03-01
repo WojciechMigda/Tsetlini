@@ -30,7 +30,7 @@ jobs:
         cmake --build . -- -j2
     - name: Run tests
       working-directory: .build/lib
-      run: ctest
+      run: ctest --output-on-failure #--rerun-failed
     - name: Run 'Noisy XOR' classic classifier example
       working-directory: .build/lib/examples/noisy-xor
       run: |

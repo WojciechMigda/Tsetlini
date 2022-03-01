@@ -25,7 +25,7 @@ auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 0x1000; // arbitrary
  * In real life scenario weight will never MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
-std::uint64_t constexpr MAX_WEIGHT = std::numeric_limits<Tsetlini::w_vector_type::value_type>::max();
+std::uint32_t constexpr MAX_WEIGHT = std::numeric_limits<strong::underlying_type<Tsetlini::max_weight_t>::type>::max();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -76,7 +76,7 @@ suite SumUpRegressorVotes = []
             auto const number_of_clause_outputs = *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS + 1);
 
             auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(number_of_clause_outputs, rc::gen::arbitrary<bool>());
-            auto const weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_clause_outputs, rc::gen::inRange<std::uint64_t>(0, MAX_WEIGHT));
+            auto const weights = *rc::gen::container<Tsetlini::w_vector_type>(number_of_clause_outputs, rc::gen::inRange(0u, MAX_WEIGHT));
 
             auto sum = Tsetlini::sum_up_regressor_votes(
                 clause_output,
