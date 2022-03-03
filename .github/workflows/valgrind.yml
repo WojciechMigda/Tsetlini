@@ -18,6 +18,8 @@ jobs:
       MEMCHECK_FLAGS: --leak-check=full
     steps:
     - uses: actions/checkout@v2
+    - name: Update apt
+      run: sudo apt-get update -y
     - name: Install CMake
       run: sudo apt-get install -y cmake
     - name: Install valgrind
