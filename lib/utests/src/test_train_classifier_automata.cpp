@@ -892,11 +892,20 @@ auto make_ta_state_matrix = [](
 };
 
 
+auto make_X_vector = [](auto && gen, Tsetlini::number_of_features_t const & number_of_features)
+{
+    Tsetlini::aligned_vector_char X(value_of(number_of_features));
+
+    std::generate(X.begin(), X.end(), gen);
+
+    return X;
+};
+
+
 "Bytewise non-weighted train_classifier_automata"
 " does not change TA states"
 " when feedback is Type II"
 " and clause outputs are 1"
-" and X values are 0"
 " and TA actions are 'include'"_test = [&]
 {
     /*
@@ -924,7 +933,7 @@ auto make_ta_state_matrix = [](
 
     Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
     Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
-    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    Tsetlini::aligned_vector_char const X = make_X_vector([&]{ return random_int(gen, 0, 1); }, number_of_features);
     auto const ta_state_reference = make_ta_state_matrix(
         /*
          * TA state will be all set to non-negative (include).
@@ -1115,7 +1124,6 @@ auto make_ta_state_matrix = [](
 " does not change TA states"
 " when feedback is Type II"
 " and clause outputs are 1"
-" and X values are 0"
 " and TA actions are 'include'"_test = [&]
 {
     /*
@@ -1143,7 +1151,7 @@ auto make_ta_state_matrix = [](
 
     Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
     Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
-    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    Tsetlini::aligned_vector_char const X = make_X_vector([&]{ return random_int(gen, 0, 1); }, number_of_features);
     auto const ta_state_reference = make_ta_state_matrix(
         /*
          * TA state will be all set to non-negative (include).
