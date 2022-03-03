@@ -195,7 +195,8 @@ auto aggregate_diff = [](
 
 "Bytewise non-weighted train_classifier_automata"
 " does not modify TA state"
-" when all feedback is Type II and clause outputs are 0"_test = [&]
+" when all feedback is Type II"
+" and clause outputs are 0"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -240,7 +241,8 @@ auto aggregate_diff = [](
 
 "Bytewise weighted train_classifier_automata"
 " does not modify TA state when"
-" all feedback is Type II and clause outputs are 0"_test = [&]
+" all feedback is Type II"
+" and clause outputs are 0"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -401,7 +403,8 @@ auto make_ta_state_matrix = [](
 
 "Bytewise non-weighted train_classifier_automata"
 " adjusts TA states with 1/s probability"
-" when feedback is Type I and clause outputs are 0"_test = [&]
+" when feedback is Type I"
+" and clause outputs are 0"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -512,7 +515,8 @@ auto make_ta_state_matrix = [](
 "Bytewise weighted train_classifier_automata"
 " adjusts TA states with 1/s probability"
 " and leaves weights unchanged"
-" when feedback is Type I and clause outputs are 0"_test = [&]
+" when feedback is Type I"
+" and clause outputs are 0"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -627,8 +631,9 @@ auto make_ta_state_matrix = [](
 
 
 "Bytewise weighted train_classifier_automata"
-" increments weights when"
-" all feedback is Type I and clause outputs are 1"_test = [&]
+" increments weights"
+" when all feedback is Type I"
+" and clause outputs are 1"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -682,8 +687,9 @@ auto make_ta_state_matrix = [](
 
 
 "Bytewise weighted train_classifier_automata"
-" does not increment maxxed weights when"
-" all feedback is Type I and clause outputs are 1"_test = [&]
+" does not increment maxxed weights"
+" when all feedback is Type I"
+" and clause outputs are 1"_test = [&]
 {
     /*
      * override few limits for faster execution
@@ -729,6 +735,444 @@ auto make_ta_state_matrix = [](
     );
 
     expect(that % true == ok);
+};
+
+
+"Bytewise non-weighted train_classifier_automata"
+" increments 'positive clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type empty_weights;
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state has to be negative (exclude). Only TA states corresponding
+         * to 'positive clauses' will be incremented.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states), -1); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        empty_weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states for 'negative clauses' were not changed
+     * Check that TA states for 'positive clauses' were incremented
+     */
+    bool all_negative_ok = true;
+    bool all_positive_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        if (rix % 2 == 1)
+        {
+            all_negative_ok = all_negative_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+        else
+        {
+            std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+            all_positive_ok = all_positive_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+    expect(that % true == all_negative_ok) << "'Negative clause' TA states were changed";
+    expect(that % true == all_positive_ok) << "'Positive clause' TA states were not incremented";
+};
+
+
+"Bytewise non-weighted train_classifier_automata"
+" increments 'negative clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 1"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type empty_weights;
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 1);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state has to be negative (exclude). Only TA states corresponding
+         * to 'negative clauses' will be incremented.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states), -1); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        empty_weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states for 'positive clauses' were not changed
+     * Check that TA states for 'negative clauses' were incremented
+     */
+    bool all_negative_ok = true;
+    bool all_positive_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        if (rix % 2 == 1)
+        {
+            std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+            all_negative_ok = all_negative_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+        else
+        {
+            all_positive_ok = all_positive_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+    expect(that % true == all_negative_ok) << "'Negative clause' TA states were not incremented";
+    expect(that % true == all_positive_ok) << "'Positive clause' TA states were changed";
+};
+
+
+"Bytewise non-weighted train_classifier_automata"
+" does not change TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'include'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type empty_weights;
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state will be all set to non-negative (include).
+         */
+        [&](){ return random_int(gen, 0, value_of(number_of_states)); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        empty_weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states were not changed
+     */
+    bool all_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        all_ok = all_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+    }
+    expect(that % true == all_ok) << "TA states were changed";
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" increments 'positive clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type weights(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state has to be negative (exclude). Only TA states corresponding
+         * to 'positive clauses' will be incremented.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states), -1); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states for 'negative clauses' were not changed
+     * Check that TA states for 'positive clauses' were incremented
+     */
+    bool all_negative_ok = true;
+    bool all_positive_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        if (rix % 2 == 1)
+        {
+            all_negative_ok = all_negative_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+        else
+        {
+            std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+            all_positive_ok = all_positive_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+    expect(that % true == all_negative_ok) << "'Negative clause' TA states were changed";
+    expect(that % true == all_positive_ok) << "'Positive clause' TA states were not incremented";
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" increments 'negative clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 1"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type weights(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 1);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state has to be negative (exclude). Only TA states corresponding
+         * to 'negative clauses' will be incremented.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states), -1); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states for 'positive clauses' were not changed
+     * Check that TA states for 'negative clauses' were incremented
+     */
+    bool all_negative_ok = true;
+    bool all_positive_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        if (rix % 2 == 1)
+        {
+            std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+            all_negative_ok = all_negative_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+        else
+        {
+            all_positive_ok = all_positive_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+    expect(that % true == all_negative_ok) << "'Negative clause' TA states were not incremented";
+    expect(that % true == all_positive_ok) << "'Positive clause' TA states were changed";
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" does not change TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'include'"_test = [&]
+{
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    auto const seed = rd();
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 1, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::w_vector_type weights(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * TA state will be all set to non-negative (include).
+         */
+        [&](){ return random_int(gen, 0, value_of(number_of_states)); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+
+    Tsetlini::train_classifier_automata(
+        ta_state,
+        weights,
+        0, value_of(number_of_clause_outputs),
+        feedback_to_clauses.data(),
+        clause_output.data(),
+        number_of_states, X,
+        Tsetlini::max_weight_t{MAX_WEIGHT},
+        boost_tpf, prng, ct);
+
+    /*
+     * Check that TA states were not changed
+     */
+    bool all_ok = true;
+
+    for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+    {
+        all_ok = all_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+    }
+    expect(that % true == all_ok) << "TA states were changed";
 };
 
 
