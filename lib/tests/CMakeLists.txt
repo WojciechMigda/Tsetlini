@@ -28,7 +28,6 @@ add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src
 add_executable(tsetlini-test
     src/main.cpp
     src/test_algo_bitwise.cpp
-    src/test_algo_classic.cpp
 )
 
 target_include_directories(tsetlini-test
