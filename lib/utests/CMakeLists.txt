@@ -54,4 +54,5 @@ add_ut( EXE_NAME test_sum_up_all_label_votes                    SOURCE "src/test
 add_ut( EXE_NAME test_sum_up_regressor_votes                    SOURCE "src/test_sum_up_regressor_votes.cpp" EXT_LIBS rapidcheck )
 add_ut( EXE_NAME test_calculate_clause_output                   SOURCE "src/test_calculate_clause_output.cpp" EXT_LIBS rapidcheck )
 add_ut( EXE_NAME test_calculate_classifier_feedback_to_clauses  SOURCE "src/test_calculate_classifier_feedback_to_clauses.cpp" )
+add_ut( EXE_NAME test_bitwise_train_classifier_automata         SOURCE "src/test_bitwise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
 add_ut( EXE_NAME test_bytewise_train_classifier_automata        SOURCE "src/test_bytewise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
