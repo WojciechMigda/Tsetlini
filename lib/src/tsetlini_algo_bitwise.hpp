@@ -885,7 +885,7 @@ void block3(
 
 
 template<typename state_type, typename bit_block_type, typename PRNG>
-void train_classifier_automata_T(
+void train_classifier_automata(
     numeric_matrix<state_type> & ta_state_matrix,
     bit_matrix<bit_block_type> & ta_state_polarity,
     w_vector_type & weights,
@@ -990,7 +990,7 @@ void train_classifier_automata(
     std::visit(
         [&](auto & ta_state_matrix)
         {
-            train_classifier_automata_T(
+            train_classifier_automata(
                 ta_state_matrix,
                 ta_state_polarity,
                 ta_state.weights,
