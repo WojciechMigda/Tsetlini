@@ -43,27 +43,50 @@ T random_int(Gen & gen, T lo, T hi)
 };
 
 
+auto gen_number_of_features(int max_num_of_features = MAX_NUM_OF_FEATURES) -> Tsetlini::number_of_features_t
+{
+    return Tsetlini::number_of_features_t{*rc::gen::inRange(1, max_num_of_features + 1)};
+}
+
+auto gen_number_of_clause_outputs(int max_num_of_clause_outputs = MAX_NUM_OF_CLAUSE_OUTPUTS) -> Tsetlini::number_of_estimator_clause_outputs_t
+{
+    return Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, max_num_of_clause_outputs / 2 + 1)};
+}
+
+auto gen_number_of_states() -> Tsetlini::number_of_states_t
+{
+    return Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
+}
+
+auto gen_boost_tpf()
+{
+    return Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+}
+
 auto gen_S_inv() -> Tsetlini::real_type
 {
     return *rc::gen::map(rc::gen::arbitrary<std::uint32_t>(), [](auto x){ return (x + 0.5f) * (1.0f / 4294967296.0f); });
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-
-
-suite TrainClassifierAutomata = []
+auto gen_arbitrary_clause_output(Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs)
 {
+    return *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
+}
+
+auto gen_arbitrary_X(Tsetlini::number_of_features_t number_of_features)
+{
+    return *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+}
 
 
 using matrix_type = Tsetlini::numeric_matrix_int16;
 
 
-auto gen_ta_state_matrix = [](
+auto gen_ta_state_matrix(
     Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
     Tsetlini::number_of_features_t number_of_features,
     int const lo_closed,
-    int const hi_open)
+    int const hi_open) -> matrix_type
 {
     matrix_type ta_state_matrix(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
 
@@ -72,13 +95,13 @@ auto gen_ta_state_matrix = [](
         *rc::gen::container<matrix_type::aligned_vector>(ta_state_matrix.m_v.size(), rc::gen::inRange<matrix_type::value_type>(lo_closed, hi_open));
 
     return ta_state_matrix;
-};
+}
 
-
-auto aggregate_diff = [](
+template<typename T>
+void aggregate_diff(
     matrix_type const & ta_state_matrix,
     matrix_type const & reference_matrix,
-    auto & diff)
+    Tsetlini::numeric_matrix<T> & diff)
 {
     for (auto rix = 0u; rix < ta_state_matrix.rows(); ++rix)
     {
@@ -87,7 +110,14 @@ auto aggregate_diff = [](
             diff.row_data(rix)[cix] += (ta_state_matrix[{rix, cix}] - reference_matrix[{rix, cix}]);
         }
     }
-};
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+suite TrainClassifierAutomata = []
+{
 
 
 /*
@@ -105,17 +135,17 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
             auto const max_weight = Tsetlini::max_weight_t{0};
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
+            auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type empty_weights;
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
@@ -150,16 +180,16 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
+            auto const X = gen_arbitrary_X(number_of_features);
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
@@ -205,16 +235,16 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
             auto const max_weight = Tsetlini::max_weight_t{0};
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type empty_weights;
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
@@ -251,15 +281,15 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
@@ -297,16 +327,16 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
-            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
+            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT + 1, MAX_WEIGHT));
 
@@ -346,16 +376,16 @@ auto aggregate_diff = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
-            auto const clause_output = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_clause_outputs), rc::gen::arbitrary<bool>());
+            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type zero_weights(value_of(number_of_clause_outputs), MIN_WEIGHT);
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
@@ -652,15 +682,15 @@ auto make_ta_state_matrix = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features(MAX_NUM_OF_FEATURES);
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs(MAX_NUM_OF_CLAUSE_OUTPUTS);
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT - 1));
 
@@ -708,15 +738,15 @@ auto make_ta_state_matrix = [](
         {
             IRNG prng(*rc::gen::arbitrary<int>());
 
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features(MAX_NUM_OF_FEATURES);
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs(MAX_NUM_OF_CLAUSE_OUTPUTS);
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type maxxed_weights(value_of(number_of_clause_outputs), MAX_WEIGHT - 1);
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
@@ -766,11 +796,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             Tsetlini::w_vector_type empty_weights;
@@ -831,11 +861,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             Tsetlini::w_vector_type empty_weights;
@@ -895,11 +925,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             Tsetlini::w_vector_type empty_weights;
@@ -908,7 +938,7 @@ auto make_ta_state_matrix = [](
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
 
             Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
@@ -951,11 +981,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
@@ -1017,11 +1047,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
@@ -1082,11 +1112,11 @@ auto make_ta_state_matrix = [](
             /*
              * Initialize few random constants for the algorithm
              */
-            auto const number_of_features = Tsetlini::number_of_features_t{*rc::gen::inRange(1, MAX_NUM_OF_FEATURES + 1)};
-            auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * *rc::gen::inRange(1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2 + 1)};
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
 
-            auto const number_of_states = Tsetlini::number_of_states_t{*rc::gen::inRange(1, MAX_NUM_OF_STATES + 1)};
-            auto const boost_tpf = Tsetlini::boost_tpf_t{*rc::gen::arbitrary<bool>()};
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
@@ -1096,7 +1126,7 @@ auto make_ta_state_matrix = [](
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
-            auto const X = *rc::gen::container<Tsetlini::aligned_vector_char>(value_of(number_of_features), rc::gen::arbitrary<bool>());
+            auto const X = gen_arbitrary_X(number_of_features);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
 
             Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
