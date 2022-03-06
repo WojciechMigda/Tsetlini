@@ -912,7 +912,7 @@ void train_classifier_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
+                block1_sparse<state_type, bit_block_type>(number_of_features, ct.estimate_hits(prng), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_polarity.row(2 * iidx + 0),
@@ -1058,7 +1058,7 @@ void train_regressor_automata(
         {
             if (clause_output[iidx] == 0)
             {
-                block1_sparse<state_type, bit_block_type>(number_of_features, ct.hits(), number_of_states,
+                block1_sparse<state_type, bit_block_type>(number_of_features, ct.estimate_hits(prng), number_of_states,
                     ta_state_pos_j,
                     ta_state_neg_j,
                     ta_state_polarity.row(2 * iidx + 0),

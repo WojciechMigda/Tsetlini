@@ -19,7 +19,6 @@ namespace Tsetlini
 struct CoinTosserExact
 {
     real_type m_s_inv;
-    unsigned int m_hits;
     unsigned int m_hits_floor;
     /*
      * This 32-bit integer threshold will be used to stochastically decide
@@ -49,8 +48,8 @@ struct CoinTosserExact
     inline
     void fill(char val);
 
-    inline
-    unsigned int hits() const;
+    template<typename PRNG>
+    unsigned int estimate_hits(PRNG & prng) const;
 
 private:
     template<typename PRNG>
@@ -59,7 +58,6 @@ private:
 
 CoinTosserExact::CoinTosserExact()
     : m_s_inv(1)
-    , m_hits(0)
     , m_hits_floor(0)
     , m_hits_ceil_threshold(0)
 {
@@ -68,7 +66,6 @@ CoinTosserExact::CoinTosserExact()
 
 CoinTosserExact::CoinTosserExact(real_type s_inv, unsigned int size)
     : m_s_inv(s_inv)
-    , m_hits(std::round(size * s_inv))
     , m_hits_floor(std::floor(size * s_inv))
     , m_hits_ceil_threshold(
         std::round(static_cast<double>(s_inv * size - std::floor(s_inv * size)) * std::numeric_limits<std::uint32_t>::max()))
@@ -106,9 +103,11 @@ void CoinTosserExact::fill(char val)
 }
 
 
-unsigned int CoinTosserExact::hits() const
+template<typename PRNG>
+unsigned int CoinTosserExact::estimate_hits(PRNG & prng) const
 {
-    return m_hits;
+    unsigned int hits = m_hits_floor + (prng() < m_hits_ceil_threshold);
+    return hits;
 }
 
 
@@ -126,9 +125,9 @@ char const * CoinTosserExact::tosses_(aligned_vector_char & cache, PRNG & prng)
      * Estimate number of hits.
      * It will be either floor() or ceil() of S_inv * cache.size()
      */
-    m_hits = m_hits_floor + (prng() < m_hits_ceil_threshold);
+    auto const hits = estimate_hits(prng);
 
-    for (auto it = 0u; it < m_hits; /* nop */)
+    for (auto it = 0u; it < hits; /* nop */)
     {
         auto const ix = prng() % vsz;
 

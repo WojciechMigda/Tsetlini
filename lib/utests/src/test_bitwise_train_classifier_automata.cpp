@@ -136,6 +136,44 @@ auto make_polarity_matrix_from(matrix_type const & ta_state_matrix)
     return polarity;
 };
 
+auto verify_polarities(polarity_matrix_type const & polarity, matrix_type const & ta_state_matrix) -> bool
+{
+    /* check that every polarity reflects values iof TA state matrix */
+    auto const [nrows, ncols] = ta_state_matrix.shape();
+    bool all_ok = true;
+
+    for (auto rix = 0u; rix < nrows; ++rix)
+    {
+        for (auto cix = 0u; cix < ncols; ++cix)
+        {
+            auto const negative = ta_state_matrix[{rix, cix}] < 0;
+
+            all_ok = all_ok and
+                (
+                    (negative == true and polarity.test(rix, cix) == 0) or
+                    (negative == false and polarity.test(rix, cix) == 1)
+                );
+        }
+    }
+
+    return all_ok;
+}
+
+template<typename T>
+void aggregate_diff(
+    matrix_type const & ta_state_matrix,
+    matrix_type const & reference_matrix,
+    Tsetlini::numeric_matrix<T> & diff)
+{
+    for (auto rix = 0u; rix < ta_state_matrix.rows(); ++rix)
+    {
+        for (auto cix = 0u; cix < ta_state_matrix.cols(); ++cix)
+        {
+            diff.row_data(rix)[cix] += (ta_state_matrix[{rix, cix}] - reference_matrix[{rix, cix}]);
+        }
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -453,6 +491,282 @@ suite TrainClassifierAutomata = []
     );
 
     expect(that % true == ok);
+};
+
+
+auto make_ta_state_matrix = [](
+    auto && gen,
+    Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
+    Tsetlini::number_of_features_t number_of_features)
+{
+    matrix_type ta_state_matrix(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+
+    // fill entire matrix storage space, regardless of alignment and padding
+    std::generate(ta_state_matrix.m_v.begin(), ta_state_matrix.m_v.end(), gen);
+
+    return ta_state_matrix;
+};
+
+
+/*
+ * Feedback: Type I
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bitwise non-weighted train_classifier_automata"
+" adjusts TA states with 1/s probability"
+" when feedback is Type I"
+" and clause outputs are 0"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 8, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::bit_vector_uint64 const X(value_of(number_of_features));
+    Tsetlini::w_vector_type empty_weights;
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * training is expected to decrement state, so we need to fill TA state
+         * with random numbers in range open on number_of_states:
+         *
+         *      (-number_of_states, number_of_states]
+         *
+         * HOWEVER, this algorithm does prevent randomly generating the same feature
+         * index more than once while iterating, hence, for the sake of the test
+         * scenario we need to allow for a wider margin, and instead of using
+         * offset of +1 for the lower bound we will use +8 instead. Lower bound
+         * of number_of_states is also adjusted.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states) + 8, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+    bool all_polarities_ok = true;
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 8);
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+
+        Tsetlini::train_classifier_automata(
+            ta_state, polarity,
+            empty_weights,
+            0, value_of(number_of_clause_outputs),
+            feedback_to_clauses.data(),
+            clause_output.data(),
+            number_of_states, X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            boost_tpf, prng, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+        all_polarities_ok = all_polarities_ok and verify_polarities(polarity, ta_state);
+    }
+
+    expect(that % true == all_polarities_ok) << "Updated polarities do not reflect TA state contents";
+
+    /*
+     * This is the target average value given TA state would be decreased by
+     */
+    int target = -std::round(N_REPEAT * S_inv);
+
+    /*
+     * Check that no TA state element deviates from that target by more than
+     * a margin of N_REPEAT / 100.
+     */
+    bool all_ok = true;
+    for (auto rix = 0u; rix < diff.rows(); ++rix)
+    {
+        auto within_margin = [target, margin = std::round(N_REPEAT / 100)](auto x){ return (target - margin) <= x and x <= (target + margin); };
+
+        auto begin = diff.row_data(rix);
+        auto end = diff.row_data(rix) + diff.cols();
+        auto where_failed = std::find_if_not(begin, end, within_margin);
+
+        if (where_failed != end)
+        {
+            if (all_ok)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "1 / s: " << S_inv;
+                boost::ut::log << "Target decrease: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_ok = all_ok and (where_failed == end);
+    }
+    expect(that % true == all_ok) << "TA state values distribution fell outside expected margin. Re-run to see if this persists.";
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" adjusts TA states with 1/s probability"
+" and leaves weights unchanged"
+" when feedback is Type I"
+" and clause outputs are 0"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 8, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+
+    Tsetlini::bit_vector_uint64 const X(value_of(number_of_features));
+
+    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+    Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+    Tsetlini::w_vector_type const weights_reference(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * training is expected to decrement state, so we need to fill TA state
+         * with random numbers in range open on number_of_states:
+         *
+         *      (-number_of_states, number_of_states]
+         *
+         * HOWEVER, this algorithm does prevent randomly generating the same feature
+         * index more than once while iterating, hence, for the sake of the test
+         * scenario we need to allow for a wider margin, and instead of using
+         * offset of +1 for the lower bound we will use +8 instead. Lower bound
+         * of number_of_states is also adjusted.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states) + 8, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+    bool all_weights_unchanged = true;
+    bool all_polarities_ok = true;
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 8);
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_classifier_automata(
+            ta_state, polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            feedback_to_clauses.data(),
+            clause_output.data(),
+            number_of_states, X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            boost_tpf, prng, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+
+        all_weights_unchanged = all_weights_unchanged and (weights == weights_reference);
+        all_polarities_ok = all_polarities_ok and verify_polarities(polarity, ta_state);
+    }
+
+    expect(that % true == all_polarities_ok) << "Updated polarities do not reflect TA state contents";
+    expect(that % true == all_weights_unchanged) << "Weights were changed";
+
+    /*
+     * This is the target average value given TA state would be decreased by
+     */
+    int target = -std::round(N_REPEAT * S_inv);
+
+    /*
+     * Check that no TA state element deviates from that target by more than
+     * a margin of N_REPEAT / 100.
+     */
+    bool all_within_margin = true;
+    for (auto rix = 0u; rix < diff.rows(); ++rix)
+    {
+        auto within_margin = [target, margin = std::round(N_REPEAT / 100)](auto x){ return (target - margin) <= x and x <= (target + margin); };
+
+        auto begin = diff.row_data(rix);
+        auto end = diff.row_data(rix) + diff.cols();
+        auto where_failed = std::find_if_not(begin, end, within_margin);
+
+        if (where_failed != end)
+        {
+            if (all_within_margin)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "1 / s: " << S_inv;
+                boost::ut::log << "Target decrease: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_within_margin = all_within_margin and (where_failed == end);
+    }
+    expect(that % true == all_within_margin) << "TA state values distribution fell outside expected margin. Re-run to see if this persists.";
 };
 
 

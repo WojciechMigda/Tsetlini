@@ -496,7 +496,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -611,7 +611,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
         Tsetlini::w_vector_type weights = weights_reference;
 
         Tsetlini::train_classifier_automata(
