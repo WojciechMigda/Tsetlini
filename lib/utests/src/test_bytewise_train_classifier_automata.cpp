@@ -816,7 +816,7 @@ auto make_ta_state_matrix = [](
             Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -881,7 +881,7 @@ auto make_ta_state_matrix = [](
             Tsetlini::aligned_vector_char const X(value_of(number_of_features), 1);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -945,7 +945,7 @@ auto make_ta_state_matrix = [](
             auto const X = gen_arbitrary_X(number_of_features);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -1002,7 +1002,7 @@ auto make_ta_state_matrix = [](
             Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -1068,7 +1068,7 @@ auto make_ta_state_matrix = [](
             Tsetlini::aligned_vector_char const X(value_of(number_of_features), 1);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -1133,7 +1133,7 @@ auto make_ta_state_matrix = [](
             auto const X = gen_arbitrary_X(number_of_features);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
 
-            Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+            matrix_type ta_state = ta_state_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -1213,7 +1213,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1337,7 +1337,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1462,7 +1462,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1586,7 +1586,7 @@ auto make_ta_state_matrix = [](
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1720,7 +1720,7 @@ auto equals = [](int target)
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1844,7 +1844,7 @@ auto equals = [](int target)
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -1969,7 +1969,7 @@ auto equals = [](int target)
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
@@ -2093,7 +2093,7 @@ auto equals = [](int target)
 
     for (auto it = 0u; it < N_REPEAT; ++it)
     {
-        Tsetlini::numeric_matrix_int16 ta_state = ta_state_reference;
+        matrix_type ta_state = ta_state_reference;
 
         Tsetlini::train_classifier_automata(
             ta_state,
