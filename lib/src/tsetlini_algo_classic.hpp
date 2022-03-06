@@ -623,11 +623,11 @@ void train_classifier_automata(
             if (clause_output[iidx] == 1)
             {
                 block3(number_of_features, ta_state_pos_j, ta_state_neg_j, X.data());
-            }
 
-            if (weights.size() != 0)
-            {
-                weights[iidx] -= (weights[iidx] != 0);
+                if (weights.size() != 0)
+                {
+                    weights[iidx] -= (weights[iidx] != 0);
+                }
             }
         }
     }

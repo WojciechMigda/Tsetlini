@@ -290,7 +290,7 @@ suite TrainClassifierAutomata = []
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
             auto const X = gen_arbitrary_X(number_of_features);
-            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
@@ -299,6 +299,7 @@ suite TrainClassifierAutomata = []
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
 
             matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
 
             Tsetlini::train_classifier_automata(
                 ta_state,
@@ -311,6 +312,7 @@ suite TrainClassifierAutomata = []
                 boost_tpf, prng, ct);
 
             RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+            RC_ASSERT(weights == weights_reference);
         }
     );
 
@@ -319,8 +321,9 @@ suite TrainClassifierAutomata = []
 
 
 "Bytewise weighted train_classifier_automata"
-" decrements weights when"
-" all feedback is Type II"_test = [&]
+" decrements weights"
+" when all feedback is Type II"
+" and clause outputs are 1"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -334,7 +337,6 @@ suite TrainClassifierAutomata = []
             auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
-            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
             auto const X = gen_arbitrary_X(number_of_features);
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
@@ -342,6 +344,7 @@ suite TrainClassifierAutomata = []
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
 
             matrix_type ta_state = ta_state_reference;
@@ -368,8 +371,9 @@ suite TrainClassifierAutomata = []
 
 
 "Bytewise weighted train_classifier_automata"
-" does not decrement zero weights when"
-" all feedback is Type II"_test = [&]
+" does not decrement weights"
+" when all feedback is Type II"
+" and clause outputs are 0"_test = [&]
 {
     auto ok = rc::check(
         [&]
@@ -383,13 +387,61 @@ suite TrainClassifierAutomata = []
             auto const boost_tpf = gen_boost_tpf();
             auto const S_inv = gen_S_inv();
 
-            auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT + 1, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bytewise weighted train_classifier_automata"
+" does not decrement zero weights when"
+" all feedback is Type II"
+" and clause outputs are 1"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
             auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type zero_weights(value_of(number_of_clause_outputs), MIN_WEIGHT);
 
             Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
 
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
 
             matrix_type ta_state = ta_state_reference;
