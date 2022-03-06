@@ -90,6 +90,28 @@ auto gen_arbitrary_X(Tsetlini::number_of_features_t number_of_features)
     return X;
 }
 
+auto gen_arbitrary_X_of_0s(Tsetlini::number_of_features_t number_of_features)
+{
+    Tsetlini::bit_vector_uint64 X(value_of(number_of_features));
+
+    return X;
+}
+
+auto gen_arbitrary_X_of_1s(Tsetlini::number_of_features_t number_of_features)
+{
+    Tsetlini::bit_vector_uint64 X(value_of(number_of_features));
+
+    X.m_vector = Tsetlini::bit_vector_uint64::aligned_vector(X.m_vector.size(), Tsetlini::bit_vector_uint64::block_type(-1));
+
+    auto const total_bits = X.m_vector.size() * X.block_bits;
+    for (Tsetlini::size_type ix = value_of(number_of_features); ix < total_bits; ++ix)
+    {
+        X.clear(ix);
+    }
+
+    return X;
+}
+
 using matrix_type = Tsetlini::numeric_matrix_int16;
 using polarity_matrix_type = Tsetlini::bit_matrix_uint64;
 
@@ -767,6 +789,528 @@ auto make_ta_state_matrix = [](
         all_within_margin = all_within_margin and (where_failed == end);
     }
     expect(that % true == all_within_margin) << "TA state values distribution fell outside expected margin. Re-run to see if this persists.";
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" increments weights"
+" when all feedback is Type I"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 40;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features(MAX_NUM_OF_FEATURES);
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs(MAX_NUM_OF_CLAUSE_OUTPUTS);
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT - 1));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /* decrement weights so that they can be compared against reference */
+            std::for_each(weights.begin(), weights.end(), [](auto & x){ x -= 1; });
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" does not increment maxxed weights"
+" when all feedback is Type I"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 40;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features(MAX_NUM_OF_FEATURES);
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs(MAX_NUM_OF_CLAUSE_OUTPUTS);
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+            auto const X = gen_arbitrary_X(number_of_features);
+            Tsetlini::w_vector_type maxxed_weights(value_of(number_of_clause_outputs), MAX_WEIGHT - 1);
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                maxxed_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            RC_ASSERT(std::all_of(maxxed_weights.cbegin(), maxxed_weights.cend(), [](auto x){ return x == (MAX_WEIGHT - 1); }));
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+/*
+ * Feedback: Type II
+ * Clause outputs: 1
+ * X: 0
+ * TA: exclude
+ */
+
+"Bitwise non-weighted train_classifier_automata"
+" increments 'positive clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'exclude'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            Tsetlini::w_vector_type empty_weights;
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X_of_0s(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                empty_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+
+            /*
+             * Check that TA states for 'negative clauses' were not changed
+             * Check that TA states for 'positive clauses' were incremented
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                if (rix % 2 == 1)
+                {
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+                else
+                {
+                    std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+            }
+        });
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise non-weighted train_classifier_automata"
+" increments 'negative clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 1"
+" and TA actions are 'exclude'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            Tsetlini::w_vector_type empty_weights;
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X_of_1s(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                empty_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+
+            /*
+             * Check that TA states for 'positive clauses' were not changed
+             * Check that TA states for 'negative clauses' were incremented
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                if (rix % 2 == 1)
+                {
+                    std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+                else
+                {
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+            }
+        });
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise non-weighted train_classifier_automata"
+" does not change TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and TA actions are 'include'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            Tsetlini::w_vector_type empty_weights;
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                empty_weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /*
+             * Check that TA states were not changed
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+            }
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+        });
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" increments 'positive clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'exclude'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X_of_0s(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+
+            /*
+             * Check that TA states for 'negative clauses' were not changed
+             * Check that TA states for 'positive clauses' were incremented
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                if (rix % 2 == 1)
+                {
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+                else
+                {
+                    std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+            }
+        });
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" increments 'negative clause' TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and X values are 1"
+" and TA actions are 'exclude'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X_of_1s(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), 0);
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /*
+             * Check that TA states for 'positive clauses' were not changed
+             * Check that TA states for 'negative clauses' were incremented
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                if (rix % 2 == 1)
+                {
+                    std::for_each(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), [](auto & x){ x -= 1; });
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+                else
+                {
+                    RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+                }
+            }
+        });
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise weighted train_classifier_automata"
+" does not change TA states"
+" when feedback is Type II"
+" and clause outputs are 1"
+" and TA actions are 'include'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+
+            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_classifier_automata(
+                ta_state, polarity,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                feedback_to_clauses.data(),
+                clause_output.data(),
+                number_of_states, X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                boost_tpf, prng, ct);
+
+            /*
+             * Check that TA states were not changed
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+            }
+
+            bool polarities_ok = verify_polarities(polarity, ta_state);
+            RC_ASSERT(true == polarities_ok);
+        });
+
+    expect(that % true == ok);
 };
 
 
