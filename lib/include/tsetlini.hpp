@@ -68,6 +68,7 @@ struct ClassifierClassic
 
     ClassifierClassic(ClassifierStateClassic const & state);
     ClassifierClassic(ClassifierClassic &&);
+    ClassifierClassic & operator=(ClassifierClassic &&) = default;
 
 friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params);
 
@@ -122,6 +123,7 @@ struct RegressorClassic
 
     RegressorClassic(RegressorStateClassic const & state);
     RegressorClassic(RegressorClassic &&);
+    RegressorClassic & operator=(RegressorClassic &&) = default;
 
 friend Either<status_message_t, RegressorClassic> make_regressor_classic(std::string const & json_params);
 
@@ -194,6 +196,7 @@ struct ClassifierBitwise
 
     ClassifierBitwise(ClassifierStateBitwise const & state);
     ClassifierBitwise(ClassifierBitwise &&);
+    ClassifierBitwise & operator=(ClassifierBitwise &&) = default;
 
 friend Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params);
 
@@ -250,6 +253,7 @@ struct RegressorBitwise
 
     RegressorBitwise(RegressorStateBitwise const & state);
     RegressorBitwise(RegressorBitwise &&);
+    RegressorBitwise & operator=(RegressorBitwise &&) = default;
 
 friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::string const & json_params);
 
