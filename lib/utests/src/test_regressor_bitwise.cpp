@@ -2,8 +2,10 @@
 #include "tsetlini_types.hpp"
 
 #include "boost/ut.hpp"
+#include "neither/either.hpp"
 
 #include <cstdlib>
+#include <optional>
 
 
 using namespace boost::ut;
@@ -18,6 +20,23 @@ suite TestRegressorBitwise = []
     auto const reg = Tsetlini::make_regressor_bitwise();
 
     expect(that % true == !!reg);
+};
+
+
+"RegressorBitwise can be move-assigned"_test = []
+{
+    std::optional<Tsetlini::RegressorBitwise> maybe_estimator;
+
+    auto const rv = Tsetlini::make_regressor_bitwise()
+        .rightFlatMap(
+        [&](auto && est)
+        {
+            maybe_estimator = std::move(est);
+
+            return neither::Either<Tsetlini::status_message_t, int>::rightOf(0);
+        });
+
+    expect(that % true == maybe_estimator.has_value());
 };
 
 

@@ -2,8 +2,10 @@
 #include "tsetlini_types.hpp"
 
 #include "boost/ut.hpp"
+#include "neither/either.hpp"
 
 #include <cstdlib>
+#include <optional>
 
 
 using namespace boost::ut;
@@ -18,6 +20,23 @@ suite TestClassifierClassic = []
     auto const clf = Tsetlini::make_classifier_classic();
 
     expect(that % true == !!clf);
+};
+
+
+"ClassifierClassic can be move-assigned"_test = []
+{
+    std::optional<Tsetlini::ClassifierClassic> maybe_estimator;
+
+    auto const rv = Tsetlini::make_classifier_classic()
+        .rightFlatMap(
+        [&](auto && est)
+        {
+            maybe_estimator = std::move(est);
+
+            return neither::Either<Tsetlini::status_message_t, int>::rightOf(0);
+        });
+
+    expect(that % true == maybe_estimator.has_value());
 };
 
 
