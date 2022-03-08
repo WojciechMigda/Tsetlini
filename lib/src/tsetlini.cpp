@@ -50,8 +50,36 @@ bool check_all_0s_or_1s(aligned_vector<T> const & vec)
 
 
 template<typename T>
-bool check_all_0s_or_1s(bit_vector<T> const & vec)
+bool check_all_0s_or_1s(bit_vector<T> const &)
 {
+    /* by definition, all bit vector elements are always either 0 or 1 */
+    return true;
+}
+
+
+template<typename T>
+bool check_clear_padding(aligned_vector<T> const &)
+{
+    /* by definition, there is no padding in regular vector */
+    return true;
+}
+
+
+template<typename T>
+bool check_clear_padding(bit_vector<T> const & vec)
+{
+    using block_type = typename bit_vector<T>::block_type;
+
+    auto const n_blocks = vec.capacity_blocks();
+    auto const padding_nbits = n_blocks * vec.block_bits - vec.size();
+
+    if (padding_nbits != 0)
+    {
+        auto const mask = block_type(-1) << (vec.block_bits - padding_nbits);
+
+        return (vec.m_vector.back() & mask) == 0;
+    }
+
     return true;
 }
 
@@ -86,6 +114,11 @@ status_message_t check_X_y(
     {
         return {StatusCode::S_VALUE_ERROR,
             "Only values of 0 and 1 can be used in X"};
+    }
+    else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & row){ return check_clear_padding(row); }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Some padding bits in X are not cleared to 0"};
     }
 
     return {StatusCode::S_OK, ""};
@@ -200,6 +233,11 @@ status_message_t check_for_predict(
         return {StatusCode::S_VALUE_ERROR,
             "Only values of 0 and 1 can be used in X"};
     }
+    else if (not std::all_of(X.cbegin(), X.cend(), [](auto const & row){ return check_clear_padding(row); }))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Some padding bits in X are not cleared to 0"};
+    }
 
     return {StatusCode::S_OK, ""};
 }
@@ -225,6 +263,11 @@ status_message_t check_for_predict(
     {
         return {StatusCode::S_VALUE_ERROR,
             "Only values of 0 and 1 can be used in sample for prediction"};
+    }
+    else if (not check_clear_padding(sample))
+    {
+        return {StatusCode::S_VALUE_ERROR,
+            "Some padding bits in X are not cleared to 0"};
     }
 
     return {StatusCode::S_OK, ""};

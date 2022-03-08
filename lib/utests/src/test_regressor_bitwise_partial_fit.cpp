@@ -85,6 +85,68 @@ suite TestRegressorBitwisePartialFit = []
 };
 
 
+"RegressorBitwise::partial_fit on untrained regressor rejects input X with first padding bit set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[1].set(4);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
+"RegressorBitwise::partial_fit on untrained regressor rejects input X with last padding bit set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[2].set(Tsetlini::bit_vector_uint64::block_bits - 1);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
+"RegressorBitwise::partial_fit on untrained regressor rejects input X with some padding bits set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[0].set(12);
+            X[0].set(18);
+            X[1].set(7);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
 "RegressorBitwise::partial_fit on untrained regressor rejects input X and y with unequal dimensions"_test = []
 {
     Tsetlini::make_regressor_bitwise("{}")
@@ -241,6 +303,74 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0}, {0, 0, 0}});
             Tsetlini::response_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
+"RegressorBitwise::partial_fit on trained regressor rejects input X with first padding bit set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            train_regressor(reg);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[1].set(4);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
+"RegressorBitwise::partial_fit on trained regressor rejects input X with last padding bit set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            train_regressor(reg);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[2].set(Tsetlini::bit_vector_uint64::block_bits - 1);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = reg.partial_fit(X, y);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(reg);
+        });
+};
+
+
+"RegressorBitwise::partial_fit on trained regressor rejects input X with some padding bits set to 1"_test = []
+{
+    Tsetlini::make_regressor_bitwise("{}")
+        .rightMap(
+        [](auto && reg)
+        {
+            train_regressor(reg);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[0].set(12);
+            X[0].set(18);
+            X[1].set(7);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
 
             auto const rv = reg.partial_fit(X, y);
 
