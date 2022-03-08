@@ -85,6 +85,68 @@ suite TestClassifierBitwisePartialFit = []
 };
 
 
+"ClassifierBitwise::partial_fit on untrained classifier rejects input X with first padding bit set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[1].set(4);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierBitwise::partial_fit on untrained classifier rejects input X with last padding bit set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[2].set(Tsetlini::bit_vector_uint64::block_bits - 1);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierBitwise::partial_fit on untrained classifier rejects input X with some padding bits set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[0].set(12);
+            X[0].set(18);
+            X[1].set(7);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
 "ClassifierBitwise::partial_fit on untrained classifier rejects input X and y with unequal dimensions"_test = []
 {
     Tsetlini::make_classifier_bitwise("{}")
@@ -204,6 +266,74 @@ suite TestClassifierBitwisePartialFitOnTrained = []
             train_classifier(clf);
 
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0}, {0, 0, 0}});
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierBitwise::partial_fit on trained classifier rejects input X with first padding bit set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            train_classifier(clf);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[1].set(4);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierBitwise::partial_fit on trained classifier rejects input X with last padding bit set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            train_classifier(clf);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[2].set(Tsetlini::bit_vector_uint64::block_bits - 1);
+
+            Tsetlini::label_vector_type y{1, 0, 0};
+
+            auto const rv = clf.partial_fit(X, y, 2);
+
+            expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
+
+            return std::move(clf);
+        });
+};
+
+
+"ClassifierBitwise::partial_fit on trained classifier rejects input X with some padding bits set to 1"_test = []
+{
+    Tsetlini::make_classifier_bitwise("{}")
+        .rightMap(
+        [](auto && clf)
+        {
+            train_classifier(clf);
+
+            std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
+            X[0].set(12);
+            X[0].set(18);
+            X[1].set(7);
+
             Tsetlini::label_vector_type y{1, 0, 0};
 
             auto const rv = clf.partial_fit(X, y, 2);
