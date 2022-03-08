@@ -16,6 +16,8 @@ jobs:
       CXX_FLAGS: -Wall -Werror -march=native -mno-avx512f -fsanitize=address -fsanitize=undefined
     steps:
     - uses: actions/checkout@v2
+    - name: Update apt
+      run: sudo apt-get update -y
     - name: Install CMake
       run: sudo apt-get install -y cmake
     - name: Install compiler
@@ -30,7 +32,7 @@ jobs:
         cmake --build . -- -j2
     - name: Run tests
       working-directory: .build/lib
-      run: ctest --output-on-failure #--rerun-failed
+      run: ctest -j 2 --output-on-failure #--rerun-failed
     - name: Run 'Noisy XOR' classic classifier example
       working-directory: .build/lib/examples/noisy-xor
       run: |

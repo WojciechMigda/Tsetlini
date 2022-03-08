@@ -19,6 +19,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Update apt
+      run: sudo apt-get update -y
+
     - name: Install sphinx
       run: pip3 install --user Sphinx>=2.0.0
 
