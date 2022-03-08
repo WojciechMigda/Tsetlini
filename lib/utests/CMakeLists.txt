@@ -22,6 +22,16 @@ function(add_ut)
     add_test( ${parsed_TEST_NAME} ${parsed_EXE_NAME} )
 endfunction()
 
+# the most time consuming tests go first
+add_ut( EXE_NAME test_bitwise_train_classifier_automata         SOURCE "src/test_bitwise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_bytewise_train_classifier_automata        SOURCE "src/test_bytewise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
+
+add_ut( EXE_NAME test_calculate_clause_output                   SOURCE "src/test_calculate_clause_output.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_sum_up_all_label_votes                    SOURCE "src/test_sum_up_all_label_votes.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_sum_up_regressor_votes                    SOURCE "src/test_sum_up_regressor_votes.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_calculate_classifier_feedback_to_clauses  SOURCE "src/test_calculate_classifier_feedback_to_clauses.cpp" )
+
+
 add_ut( EXE_NAME test_aligned_array                             SOURCE "src/test_aligned_array.cpp" )
 add_ut( EXE_NAME test_bit_matrix                                SOURCE "src/test_bit_matrix.cpp" )
 add_ut( EXE_NAME test_numeric_matrix                            SOURCE "src/test_numeric_matrix.cpp" )
@@ -49,10 +59,3 @@ add_ut( EXE_NAME test_regressor_bitwise_partial_fit             SOURCE "src/test
 add_ut( EXE_NAME test_regressor_bitwise_predict                 SOURCE "src/test_regressor_bitwise_predict.cpp" )
 add_ut( EXE_NAME test_regressor_params                          SOURCE "src/test_regressor_params.cpp" )
 add_ut( EXE_NAME test_regressor_state_json_serialization        SOURCE "src/test_regressor_state_json_serialization.cpp" )
-
-add_ut( EXE_NAME test_sum_up_all_label_votes                    SOURCE "src/test_sum_up_all_label_votes.cpp" EXT_LIBS rapidcheck )
-add_ut( EXE_NAME test_sum_up_regressor_votes                    SOURCE "src/test_sum_up_regressor_votes.cpp" EXT_LIBS rapidcheck )
-add_ut( EXE_NAME test_calculate_clause_output                   SOURCE "src/test_calculate_clause_output.cpp" EXT_LIBS rapidcheck )
-add_ut( EXE_NAME test_calculate_classifier_feedback_to_clauses  SOURCE "src/test_calculate_classifier_feedback_to_clauses.cpp" )
-add_ut( EXE_NAME test_bitwise_train_classifier_automata         SOURCE "src/test_bitwise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
-add_ut( EXE_NAME test_bytewise_train_classifier_automata        SOURCE "src/test_bytewise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )

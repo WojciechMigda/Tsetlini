@@ -70,6 +70,9 @@ jobs:
       CXX_FLAGS: -Wall -Werror -march=native -mno-avx512f ${{ startsWith(matrix.runs-on, 'macos') && '-Wno-unused-command-line-argument' || '' }}
     steps:
     - uses: actions/checkout@v2
+    - name: Update apt (ubuntu)
+      if: startsWith(matrix.runs-on, 'ubuntu')
+      run: sudo apt-get update -y
     - name: Install CMake on Linux
       if: startsWith(matrix.runs-on, 'ubuntu')
       run: sudo apt-get install -y cmake
@@ -95,7 +98,7 @@ jobs:
         cmake --build . -- -j2
     - name: Test
       working-directory: .build/lib
-      run: ctest --output-on-failure #--rerun-failed
+      run: ctest -j 2 --output-on-failure #--rerun-failed
     - name: Install
       working-directory: .build
       run: sudo make install
