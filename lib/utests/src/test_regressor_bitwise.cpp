@@ -1,8 +1,8 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "either.hpp"
 
 #include "boost/ut.hpp"
-#include "neither/either.hpp"
 
 #include <cstdlib>
 #include <optional>
@@ -33,7 +33,7 @@ suite TestRegressorBitwise = []
         {
             maybe_estimator = std::move(est);
 
-            return neither::Either<Tsetlini::status_message_t, int>::rightOf(0);
+            return Tsetlini::Either<Tsetlini::status_message_t, int>::rightOf(0);
         });
 
     expect(that % true == maybe_estimator.has_value());

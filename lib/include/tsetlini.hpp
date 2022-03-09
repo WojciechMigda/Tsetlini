@@ -3,13 +3,12 @@
 #ifndef LIB_INCLUDE_TSETLINI_HPP_
 #define LIB_INCLUDE_TSETLINI_HPP_
 
-#include "neither/either.hpp"
-
 #include "tsetlini_params.hpp"
 #include "tsetlini_status_code.hpp"
 
 #include "tsetlini_types.hpp"
 #include "estimator_state_fwd.hpp"
+#include "either.hpp"
 
 #include <vector>
 
@@ -26,8 +25,6 @@
 namespace Tsetlini
 {
 
-
-using namespace neither;
 
 struct ClassifierClassic
 {

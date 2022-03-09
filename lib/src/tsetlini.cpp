@@ -17,8 +17,8 @@
 #include "tsetlini_estimator_state_private.hpp"
 #include "loss_fn.hpp"
 #include "tsetlini_strong_params.hpp"
+#include "either.hpp"
 
-#include "neither/either.hpp"
 #include "strong_type/strong_type.hpp"
 
 #include <utility>
@@ -31,7 +31,6 @@
 #include <memory>
 
 
-using namespace neither;
 using namespace std::string_literals;
 
 
