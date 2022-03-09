@@ -38,7 +38,7 @@ void train_classifier(Tsetlini::ClassifierBitwise & clf)
     std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
     Tsetlini::label_vector_type y{1, 0, 1};
 
-    auto const _ = clf.partial_fit(X, y, 3);
+    auto const _ = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 }
 
 

@@ -21,7 +21,7 @@ fit_impl(
     ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs);
 
 
@@ -31,7 +31,7 @@ partial_fit_impl(
     ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs);
 
 

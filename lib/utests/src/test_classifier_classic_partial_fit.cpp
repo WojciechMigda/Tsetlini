@@ -23,7 +23,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X;
             Tsetlini::label_vector_type y{1, 0, 1, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -41,7 +41,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y;
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -59,7 +59,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -77,7 +77,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
             Tsetlini::label_vector_type y{1, 0, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -95,7 +95,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 0, 1};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -113,7 +113,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, -21};
 
-            auto const rv = clf.partial_fit(X, y, 3);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -131,7 +131,7 @@ suite TestClassifierClassicPartialFit = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 2};
 
-            auto const rv = clf.partial_fit(X, y, 3);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 
             expect(that % Tsetlini::StatusCode::S_OK == rv.first);
 
@@ -148,7 +148,7 @@ void train_classifier(Tsetlini::ClassifierClassic & clf)
     std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
     Tsetlini::label_vector_type y{1, 0, 1};
 
-    auto const _ = clf.partial_fit(X, y, 3);
+    auto const _ = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 }
 
 
@@ -167,7 +167,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X;
             Tsetlini::label_vector_type y{1, 0, 1, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -187,7 +187,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y;
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -207,7 +207,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -227,7 +227,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 1}};
             Tsetlini::label_vector_type y{1, 0, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -247,7 +247,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, -1}, {0, 2, 0}};
             Tsetlini::label_vector_type y{1, 0, 0};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -267,7 +267,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 0, 1};
 
-            auto const rv = clf.partial_fit(X, y, 2);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{2});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -287,7 +287,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, -21};
 
-            auto const rv = clf.partial_fit(X, y, 3);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -307,7 +307,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
             Tsetlini::label_vector_type y{1, 0, 2};
 
-            auto const rv = clf.partial_fit(X, y, 3);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 
             expect(that % Tsetlini::StatusCode::S_OK == rv.first);
 
@@ -330,7 +330,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             Tsetlini::label_vector_type y{1, 0, 3};
 
             // and I pass invalid max_number_of_labels = 4
-            auto const rv = clf.partial_fit(X, y, 4);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{4});
 
             expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
 
@@ -353,7 +353,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
             Tsetlini::label_vector_type y{1, 0, 2};
 
             // but I pass invalid max_number_of_labels = 4
-            auto const rv = clf.partial_fit(X, y, 4);
+            auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{4});
 
             expect(that % Tsetlini::StatusCode::S_OK == rv.first);
 
@@ -378,7 +378,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
                 Tsetlini::label_vector_type y{1, 0, 2};
 
                 // and I pass invalid max_number_of_labels = 4
-                auto const rv = clf.partial_fit(X, y, 4);
+                auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{4});
 
                 expect(that % Tsetlini::StatusCode::S_OK == rv.first);
             }
@@ -389,7 +389,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
                 Tsetlini::label_vector_type y{1, 0, 3};
 
                 // they are still rejected
-                auto const rv = clf.partial_fit(X, y, 4);
+                auto const rv = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{4});
 
                 expect(that % Tsetlini::StatusCode::S_VALUE_ERROR == rv.first);
             }

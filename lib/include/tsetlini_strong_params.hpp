@@ -36,6 +36,10 @@ using number_of_features_t = strong::type<
     strong::ostreamable
 >;
 
+using max_number_of_labels_t = strong::type<
+    int, struct _max_number_of_labels_tag
+>;
+
 using number_of_labels_t = strong::type<
     int, struct _number_of_labels_tag,
     strong::ordered_with<int>,

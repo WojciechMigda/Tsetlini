@@ -139,7 +139,7 @@ Please run make_data.py to generate this file and copy it to the current working
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 2;
-            auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
+            auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
@@ -162,7 +162,7 @@ Please run make_data.py to generate this file and copy it to the current working
             Tsetlini::ClassifierClassic clf2(new_state);
 
             auto const NEPOCHS = 3u;
-            auto status = clf2.partial_fit(train_X, train_y, 0, NEPOCHS);
+            auto status = clf2.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{0}, NEPOCHS);
 
             clf2.evaluate(test_X, test_y)
                 .leftMap(error_printer)
@@ -181,7 +181,7 @@ Please run make_data.py to generate this file and copy it to the current working
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 5;
-            auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
+            auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
@@ -201,7 +201,7 @@ Please run make_data.py to generate this file and copy it to the current working
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 49;
-            auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
+            auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
@@ -224,7 +224,7 @@ Please run make_data.py to generate this file and copy it to the current working
             Tsetlini::ClassifierClassic clf2(new_state);
 
             auto const NEPOCHS = 1u;
-            auto status = clf2.partial_fit(train_X, train_y, 0, NEPOCHS);
+            auto status = clf2.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{0}, NEPOCHS);
 
             clf2.evaluate(test_X, test_y)
                 .leftMap(error_printer)
@@ -243,7 +243,7 @@ Please run make_data.py to generate this file and copy it to the current working
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             auto const NEPOCHS = 50;
-            auto status = clf.fit(train_X, train_y, 10, NEPOCHS);
+            auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)

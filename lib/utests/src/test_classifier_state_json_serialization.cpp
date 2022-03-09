@@ -47,7 +47,7 @@ suite TestClassifierStateJsonSerialization = []
                 .rightMap([&clf1](Tsetlini::ClassifierClassic && clf2)
                 {
                     // initialize state by calling fit() on our working classifier
-                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
+                    auto _ = clf1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, Tsetlini::max_number_of_labels_t{2});
                     // and extract the state
                     auto s1 = clf1.clone_state();
 
@@ -85,7 +85,7 @@ suite TestClassifierStateJsonSerialization = []
                     auto const X = to_bitvector(Xi);
 
                     // initialize state by calling fit() on our working classifier
-                    auto _ = clf1.fit(X, {0, 1}, 2);
+                    auto _ = clf1.fit(X, {0, 1}, Tsetlini::max_number_of_labels_t{2});
                     // and extract the state
                     auto s1 = clf1.clone_state();
 

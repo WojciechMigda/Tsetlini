@@ -15,7 +15,7 @@ void train_classifier(Tsetlini::ClassifierClassic & clf)
     std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
     Tsetlini::label_vector_type y{1, 0, 1};
 
-    auto const _ = clf.partial_fit(X, y, 3);
+    auto const _ = clf.partial_fit(X, y, Tsetlini::max_number_of_labels_t{3});
 }
 
 
