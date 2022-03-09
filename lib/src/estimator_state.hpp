@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_INCLUDE_ESTIMATOR_STATE_HPP_
-#define LIB_INCLUDE_ESTIMATOR_STATE_HPP_
+#ifndef LIB_SRC_ESTIMATOR_STATE_HPP_
+#define LIB_SRC_ESTIMATOR_STATE_HPP_
 
 #include "estimator_state_fwd.hpp"
 #include "tsetlini_params.hpp"
@@ -85,4 +85,4 @@ using RegressorStateBitwise = EstimatorState<TAStateWithPolarity, RegressorState
 }  // namespace Tsetlini
 
 
-#endif /* LIB_INCLUDE_ESTIMATOR_STATE_HPP_ */
+#endif /* LIB_SRC_ESTIMATOR_STATE_HPP_ */

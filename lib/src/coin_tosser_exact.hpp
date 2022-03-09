@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_INCLUDE_COIN_TOSSER_EXACT_HPP_
-#define LIB_INCLUDE_COIN_TOSSER_EXACT_HPP_
+#ifndef LIB_SRC_COIN_TOSSER_EXACT_HPP_
+#define LIB_SRC_COIN_TOSSER_EXACT_HPP_
 
 #include "tsetlini_types.hpp"
 #include "tsetlini_strong_params.hpp"
@@ -142,4 +142,4 @@ char const * CoinTosserExact::tosses_(aligned_vector_char & cache, PRNG & prng)
 }  // namespace Tsetlini
 
 
-#endif /* LIB_INCLUDE_COIN_TOSSER_EXACT_HPP_ */
+#endif /* LIB_SRC_COIN_TOSSER_EXACT_HPP_ */

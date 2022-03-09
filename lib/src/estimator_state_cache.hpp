@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_INCLUDE_ESTIMATOR_STATE_CACHE_HPP_
-#define LIB_INCLUDE_ESTIMATOR_STATE_CACHE_HPP_
+#ifndef LIB_SRC_ESTIMATOR_STATE_CACHE_HPP_
+#define LIB_SRC_ESTIMATOR_STATE_CACHE_HPP_
 
 #include "tsetlini_types.hpp"
 #include "tsetlini_params.hpp"
@@ -112,4 +112,4 @@ struct RegressorStateBitwiseCache : public EstimatorStateBitwiseCacheBase
 }  // namespace Tsetlini
 
 
-#endif /* LIB_INCLUDE_ESTIMATOR_STATE_CACHE_HPP_ */
+#endif /* LIB_SRC_ESTIMATOR_STATE_CACHE_HPP_ */

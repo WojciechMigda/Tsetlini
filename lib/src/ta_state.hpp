@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef LIB_INCLUDE_TA_STATE_HPP_
-#define LIB_INCLUDE_TA_STATE_HPP_
+#ifndef LIB_SRC_TA_STATE_HPP_
+#define LIB_SRC_TA_STATE_HPP_
 
 #include "tsetlini_types.hpp"
 #include "tsetlini_strong_params.hpp"
@@ -110,4 +110,4 @@ struct TAStateWithPolarity : public TAStateBase
 }  // namespace Tsetlini
 
 
-#endif /* LIB_INCLUDE_TA_STATE_HPP_ */
+#endif /* LIB_SRC_TA_STATE_HPP_ */
