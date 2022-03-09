@@ -6,8 +6,7 @@
 #include "tsetlini_status_code.hpp"
 #include "estimator_state.hpp"
 #include "tsetlini_types.hpp"
-
-#include "neither/either.hpp"
+#include "either.hpp"
 
 #include <vector>
 
@@ -37,21 +36,21 @@ partial_fit_impl(
 
 
 [[nodiscard]]
-neither::Either<status_message_t, label_vector_type>
+Either<status_message_t, label_vector_type>
 predict_impl(
     ClassifierStateClassic const & state,
     std::vector<aligned_vector_char> const & X);
 
 
 [[nodiscard]]
-neither::Either<status_message_t, aligned_vector_int>
+Either<status_message_t, aligned_vector_int>
 predict_raw_impl(
     ClassifierStateClassic const & state,
     aligned_vector_char const & sample);
 
 
 [[nodiscard]]
-neither::Either<status_message_t, std::vector<aligned_vector_int>>
+Either<status_message_t, std::vector<aligned_vector_int>>
 predict_raw_impl(
     ClassifierStateClassic const & state,
     std::vector<aligned_vector_char> const & X);
@@ -76,7 +75,7 @@ partial_fit_impl(
 
 
 [[nodiscard]]
-neither::Either<status_message_t, response_vector_type>
+Either<status_message_t, response_vector_type>
 predict_impl(
     RegressorStateClassic const & state,
     std::vector<aligned_vector_char> const & X);

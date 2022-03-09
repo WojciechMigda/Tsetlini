@@ -1,8 +1,8 @@
 #include "tsetlini_params.hpp"
 #include "tsetlini_status_code.hpp"
 #include "params_companion.hpp"
+#include "either.hpp"
 
-#include "neither/either.hpp"
 #include "json/json.hpp"
 #include "strong_type/strong_type.hpp"
 
@@ -15,7 +15,6 @@
 #include <limits>
 
 
-using namespace neither;
 using namespace std::string_literals;
 using json = nlohmann::json;
 
