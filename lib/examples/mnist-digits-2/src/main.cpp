@@ -173,7 +173,7 @@ $> wget https://github.com/cair/fast-tsetlin-machine-with-mnist-demo/raw/ca5ae46
 
                 time0 = now();
 
-                auto status = clf.partial_fit(train_X, train_y, 10, 1);
+                auto status = clf.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, 1);
                 printf("Training Time: %.1f s\n", as_ms(now() - time0));
 
                 time0 = now();

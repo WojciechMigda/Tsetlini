@@ -139,7 +139,7 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
             // Training of the Tsetlin Machine in batch mode. The Tsetlin Machine can also be trained online
-            auto status = clf.fit(train_X, train_y, 2, 200);
+            auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{2}, 200);
 
             // Some performance statistics
             clf.evaluate(test_X, test_y)

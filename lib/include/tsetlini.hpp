@@ -8,6 +8,7 @@
 
 #include "tsetlini_types.hpp"
 #include "estimator_state_fwd.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "either.hpp"
 
 #include <vector>
@@ -31,12 +32,12 @@ struct ClassifierClassic
     [[nodiscard]]
     status_message_t
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
 
     [[nodiscard]]
     Either<status_message_t, real_type>
@@ -160,12 +161,12 @@ struct ClassifierBitwise
     [[nodiscard]]
     status_message_t
     fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        int max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
 
     [[nodiscard]]
     Either<status_message_t, real_type>

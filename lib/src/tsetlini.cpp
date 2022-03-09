@@ -740,7 +740,7 @@ fit_classifier_impl(
     ClassifierStateType & state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
@@ -753,7 +753,7 @@ fit_classifier_impl(
 
     int const number_of_labels = std::max(
         *std::max_element(labels.cbegin(), labels.cend()) + 1,
-        max_number_of_labels);
+        value_of(max_number_of_labels));
 
     if (auto sm = check_labels(labels);
         sm.first != StatusCode::S_OK)
@@ -1004,7 +1004,7 @@ fit_classifier_online_with_input_check(
     ClassifierStateType & state,
     std::vector<SampleType> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     if (auto sm = check_X_y(X, y);
@@ -1037,7 +1037,7 @@ partial_fit_impl(
     ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
@@ -1134,14 +1134,14 @@ ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_ve
 
 
 status_message_t
-ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
 {
     return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
 
 
 status_message_t
-ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
 {
     return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
@@ -1152,7 +1152,7 @@ fit_impl(
     ClassifierStateClassic & state,
     std::vector<aligned_vector_char> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
@@ -1354,7 +1354,7 @@ fit_impl(
     ClassifierStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     return fit_classifier_impl(state, X, y, max_number_of_labels, epochs);
@@ -1362,7 +1362,7 @@ fit_impl(
 
 
 status_message_t
-ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
 {
     return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }
@@ -1373,7 +1373,7 @@ partial_fit_impl(
     ClassifierStateBitwise & state,
     std::vector<bit_vector_uint64> const & X,
     label_vector_type const & y,
-    int max_number_of_labels,
+    max_number_of_labels_t max_number_of_labels,
     number_of_epochs_t epochs)
 {
     if (is_fitted(state.ta_state))
@@ -1388,7 +1388,7 @@ partial_fit_impl(
 
 
 status_message_t
-ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, int max_number_of_labels, unsigned int epochs)
+ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
 {
     return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
 }

@@ -168,7 +168,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         })").leftMap(error_printer)
             .rightMap([&](auto && clf)
             {
-                auto status = clf.fit(train_X, train_y, 2, 25);
+                auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{2}, 25);
 
                 clf.evaluate(test_X, test_y)
                     .leftMap(error_printer)
