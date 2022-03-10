@@ -1134,16 +1134,16 @@ ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_ve
 
 
 status_message_t
-ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
+ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
 status_message_t
-ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
+ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1231,9 +1231,9 @@ make_regressor_classic(std::string const & json_params)
 
 
 status_message_t
-RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
+RegressorClassic::fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, number_of_epochs_t epochs)
 {
-    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
+    return fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1298,9 +1298,9 @@ fit_impl(
 
 
 status_message_t
-RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, unsigned int epochs)
+RegressorClassic::partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y, number_of_epochs_t epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
+    return partial_fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1362,9 +1362,9 @@ fit_impl(
 
 
 status_message_t
-ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
+ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
-    return fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
+    return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1388,9 +1388,9 @@ partial_fit_impl(
 
 
 status_message_t
-ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, unsigned int epochs)
+ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, number_of_epochs_t{epochs});
+    return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
@@ -1538,9 +1538,9 @@ fit_impl(
 
 
 status_message_t
-RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
+RegressorBitwise::fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, number_of_epochs_t epochs)
 {
-    return fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
+    return fit_impl(*m_state_p, X, y, epochs);
 }
 
 
@@ -1563,9 +1563,9 @@ partial_fit_impl(
 
 
 status_message_t
-RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, unsigned int epochs)
+RegressorBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y, number_of_epochs_t epochs)
 {
-    return partial_fit_impl(*m_state_p, X, y, number_of_epochs_t{epochs});
+    return partial_fit_impl(*m_state_p, X, y, epochs);
 }
 
 

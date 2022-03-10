@@ -138,14 +138,14 @@ Please run make_data.py to generate this file and copy it to the current working
         .leftMap(error_printer)
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const NEPOCHS = 2;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{2};
             auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after %d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after %d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 }
             );
@@ -161,14 +161,14 @@ Please run make_data.py to generate this file and copy it to the current working
 
             Tsetlini::ClassifierClassic clf2(new_state);
 
-            auto const NEPOCHS = 3u;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{3u};
             auto status = clf2.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{0}, NEPOCHS);
 
             clf2.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after +%d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after +%d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 }
             );
@@ -180,14 +180,14 @@ Please run make_data.py to generate this file and copy it to the current working
         .leftMap(error_printer)
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const NEPOCHS = 5;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{5};
             auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after %d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after %d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 });
 
@@ -200,14 +200,14 @@ Please run make_data.py to generate this file and copy it to the current working
         .leftMap(error_printer)
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const NEPOCHS = 49;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{49};
             auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after %d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after %d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 }
             );
@@ -223,14 +223,14 @@ Please run make_data.py to generate this file and copy it to the current working
 
             Tsetlini::ClassifierClassic clf2(new_state);
 
-            auto const NEPOCHS = 1u;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{1u};
             auto status = clf2.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{0}, NEPOCHS);
 
             clf2.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after +%d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after +%d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 }
             );
@@ -242,14 +242,14 @@ Please run make_data.py to generate this file and copy it to the current working
         .leftMap(error_printer)
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {
-            auto const NEPOCHS = 50;
+            auto const NEPOCHS = Tsetlini::number_of_epochs_t{50};
             auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{10}, NEPOCHS);
 
             clf.evaluate(test_X, test_y)
                 .leftMap(error_printer)
                 .rightMap([&](auto acc)
                 {
-                    printf("Accuracy after %d epochs: %.2f\n", NEPOCHS, acc * 100);
+                    printf("Accuracy after %d epochs: %.2f\n", value_of(NEPOCHS), acc * 100);
                     return acc;
                 });
 

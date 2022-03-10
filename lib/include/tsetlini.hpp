@@ -32,12 +32,12 @@ struct ClassifierClassic
     [[nodiscard]]
     status_message_t
     fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     Either<status_message_t, real_type>
@@ -96,12 +96,12 @@ struct RegressorClassic
     [[nodiscard]]
     status_message_t
     fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y,
-        unsigned int epochs = 100);
+        number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<aligned_vector_char> const & X, response_vector_type const & y,
-        unsigned int epochs = 100);
+        number_of_epochs_t epochs = number_of_epochs_t{100});
 
 //    [[nodiscard]]
 //    Either<status_message_t, real_type>
@@ -161,12 +161,12 @@ struct ClassifierBitwise
     [[nodiscard]]
     status_message_t
     fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, unsigned int epochs = 100);
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     Either<status_message_t, real_type>
@@ -226,12 +226,12 @@ struct RegressorBitwise
     [[nodiscard]]
     status_message_t
     fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y,
-        unsigned int epochs = 100);
+        number_of_epochs_t epochs = number_of_epochs_t{100});
 
     [[nodiscard]]
     status_message_t
     partial_fit(std::vector<bit_vector_uint64> const & X, response_vector_type const & y,
-        unsigned int epochs = 100);
+        number_of_epochs_t epochs = number_of_epochs_t{100});
 
 //    [[nodiscard]]
 //    Either<status_message_t, real_type>

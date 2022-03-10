@@ -329,7 +329,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
             {
                 auto const time0 = now();
 
-                auto status = reg.fit(train_X, train_yi, nepochs);
+                auto status = reg.fit(train_X, train_yi, Tsetlini::number_of_epochs_t{nepochs});
 
                 auto const elapsed = as_ms(now() - time0);
 

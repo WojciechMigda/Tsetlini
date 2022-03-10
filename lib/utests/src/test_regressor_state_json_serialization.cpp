@@ -47,7 +47,7 @@ suite TestRegressorStateJsonSerialization = []
                 .rightMap([&reg1](Tsetlini::RegressorClassic && reg2)
                 {
                     // initialize state by calling fit() on our working regressor
-                    auto _ = reg1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, 2);
+                    auto _ = reg1.fit({{1, 0, 1, 0}, {1, 1, 1, 0}}, {0, 1}, Tsetlini::number_of_epochs_t{2});
                     // and extract the state
                     auto s1 = reg1.clone_state();
 
@@ -85,7 +85,7 @@ suite TestRegressorStateJsonSerialization = []
                     auto const X = to_bitvector(Xi);
 
                     // initialize state by calling fit() on our working regressor
-                    auto _ = reg1.fit(X, {0, 1}, 2);
+                    auto _ = reg1.fit(X, {0, 1}, Tsetlini::number_of_epochs_t{2});
                     // and extract the state
                     auto s1 = reg1.clone_state();
 
