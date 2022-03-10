@@ -148,7 +148,7 @@ either is not readable or does not exist.)";
             .leftMap(error_printer)
             .rightMap([&](Tsetlini::ClassifierClassic && clf)
             {
-                auto status = clf.fit(X_train, y_train, Tsetlini::max_number_of_labels_t{10}, 300);
+                auto status = clf.fit(X_train, y_train, Tsetlini::max_number_of_labels_t{10}, Tsetlini::number_of_epochs_t{300});
 
                 clf.evaluate(X_folds[it], y_folds[it])
                     .leftMap(error_printer)

@@ -147,7 +147,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
 
                 time0 = now();
 
-                auto status = clf.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{2}, 1);
+                auto status = clf.partial_fit(train_X, train_y, Tsetlini::max_number_of_labels_t{2}, Tsetlini::number_of_epochs_t{1});
                 printf("Training Time: %.1f s\n", as_ms(now() - time0));
 
                 time0 = now();
