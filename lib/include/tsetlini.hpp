@@ -9,6 +9,7 @@
 #include "tsetlini_types.hpp"
 #include "estimator_state_fwd.hpp"
 #include "tsetlini_strong_params.hpp"
+#include "arg_extract.hpp"
 #include "either.hpp"
 
 #include <vector>
@@ -29,15 +30,62 @@ namespace Tsetlini
 
 struct ClassifierClassic
 {
+    /*
+     * Fit the model according to the given training data.
+     *
+     * X: matrix of shape (n_samples, n_features)
+     *    Training vector, where n_samples is the number of samples and
+     *    n_features is the number of features. All values must be either
+     *    0 or 1.
+     *
+     * y: array of shape (n_samples,)
+     *    Target vector relative to X.
+     *
+     * max_number_of_labels: integer value of type max_number_of_labels_t
+     *    Number of labels to prepare the model for. If, however, y contains
+     *    more labels, the value will be adjusted accordingly to accommodate
+     *    all of them.
+     *
+     * number_of_epochs: unsigned integer value of type max_number_of_labels_t
+     *    Number of epochs to train the model for. If not provided, the default
+     *    value of 100 is used.
+     *
+     * Arguments except X and y can be passed in arbitrary order.
+     */
+    template<typename ...Args>
     [[nodiscard]]
+    inline
     status_message_t
-    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
+    fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, Args && ...args);
 
+    /*
+     * Update the model over the given data.
+     *
+     * X: matrix of shape (n_samples, n_features)
+     *    Training vector, where n_samples is the number of samples and
+     *    n_features is the number of features. All values must be either
+     *    0 or 1.
+     *
+     * y: array of shape (n_samples,)
+     *    Target vector relative to X.
+     *
+     * max_number_of_labels: integer value of type max_number_of_labels_t
+     *    Number of labels to prepare the model for in case partial_fit was
+     *    called on an untrained model. If, however, y contains more labels,
+     *    the value will be adjusted accordingly to accommodate all of them.
+     *    This parameter has no meaning if the model has been already trained.
+     *
+     * number_of_epochs: unsigned integer value of type max_number_of_labels_t
+     *    Number of epochs to train the model for. If not provided, the default
+     *    value of 100 is used.
+     *
+     * Arguments except X and y can be passed in arbitrary order.
+     */
+    template<typename ...Args>
     [[nodiscard]]
+    inline
     status_message_t
-    partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
+    partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, Args && ...args);
 
     [[nodiscard]]
     Either<status_message_t, real_type>
@@ -76,9 +124,34 @@ private:
 
     ClassifierClassic(params_t const & params);
     ClassifierClassic(params_t && params);
+
+    status_message_t
+    _fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs);
+
+    status_message_t
+    _partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y,
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs);
+
 };
 
 Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params = "{}");
+
+
+template<typename ...Args>
+status_message_t
+ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, Args && ...args)
+{
+    return _fit(X, y, arg::extract<max_number_of_labels_t>(args...), arg::extract_or<number_of_epochs_t>(number_of_epochs_t{100}, args...));
+}
+
+
+template<typename ...Args>
+status_message_t
+ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, Args && ...args)
+{
+    return _partial_fit(X, y, arg::extract<max_number_of_labels_t>(args...), arg::extract_or<number_of_epochs_t>(number_of_epochs_t{100}, args...));
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,15 +231,60 @@ Either<status_message_t, RegressorClassic> make_regressor_classic(std::string co
 
 struct ClassifierBitwise
 {
+    /*
+     * Fit the model according to the given training data.
+     *
+     * X: bit matrix of shape (n_samples, n_features)
+     *    Training vector, where n_samples is the number of samples and
+     *    n_features is the number of features.
+     *
+     * y: array of shape (n_samples,)
+     *    Target vector relative to X.
+     *
+     * max_number_of_labels: integer value of type max_number_of_labels_t
+     *    Number of labels to prepare the model for. If, however, y contains
+     *    more labels, the value will be adjusted accordingly to accommodate
+     *    all of them.
+     *
+     * number_of_epochs: unsigned integer value of type max_number_of_labels_t
+     *    Number of epochs to train the model for. If not provided, the default
+     *    value of 100 is used.
+     *
+     * Arguments except X and y can be passed in arbitrary order.
+     */
+    template<typename ...Args>
     [[nodiscard]]
+    inline
     status_message_t
-    fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
+    fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, Args && ...args);
 
+    /*
+     * Update the model over the given data.
+     *
+     * X: bit matrix of shape (n_samples, n_features)
+     *    Training vector, where n_samples is the number of samples and
+     *    n_features is the number of features.
+     *
+     * y: array of shape (n_samples,)
+     *    Target vector relative to X.
+     *
+     * max_number_of_labels: integer value of type max_number_of_labels_t
+     *    Number of labels to prepare the model for in case partial_fit was
+     *    called on an untrained model. If, however, y contains more labels,
+     *    the value will be adjusted accordingly to accommodate all of them.
+     *    This parameter has no meaning if the model has been already trained.
+     *
+     * number_of_epochs: unsigned integer value of type max_number_of_labels_t
+     *    Number of epochs to train the model for. If not provided, the default
+     *    value of 100 is used.
+     *
+     * Arguments except X and y can be passed in arbitrary order.
+     */
+    template<typename ...Args>
     [[nodiscard]]
+    inline
     status_message_t
-    partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
-        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs = number_of_epochs_t{100});
+    partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, Args && ...args);
 
     [[nodiscard]]
     Either<status_message_t, real_type>
@@ -204,10 +322,34 @@ private:
 
     ClassifierBitwise(params_t const & params);
     ClassifierBitwise(params_t && params);
+
+    status_message_t
+    _fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs);
+
+    status_message_t
+    _partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y,
+        max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs);
 };
 
 
 Either<status_message_t, ClassifierBitwise> make_classifier_bitwise(std::string const & json_params = "{}");
+
+
+template<typename ...Args>
+status_message_t
+ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, Args && ...args)
+{
+    return _fit(X, y, arg::extract<max_number_of_labels_t>(args...), arg::extract_or<number_of_epochs_t>(number_of_epochs_t{100}, args...));
+}
+
+
+template<typename ...Args>
+status_message_t
+ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, Args && ...args)
+{
+    return _partial_fit(X, y, arg::extract<max_number_of_labels_t>(args...), arg::extract_or<number_of_epochs_t>(number_of_epochs_t{100}, args...));
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////

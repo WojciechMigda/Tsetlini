@@ -1134,14 +1134,14 @@ ClassifierClassic::evaluate(std::vector<aligned_vector_char> const & X, label_ve
 
 
 status_message_t
-ClassifierClassic::partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
+ClassifierClassic::_partial_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
     return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
 
 
 status_message_t
-ClassifierClassic::fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
+ClassifierClassic::_fit(std::vector<aligned_vector_char> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
     return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
@@ -1362,7 +1362,7 @@ fit_impl(
 
 
 status_message_t
-ClassifierBitwise::fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
+ClassifierBitwise::_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
     return fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
@@ -1388,7 +1388,7 @@ partial_fit_impl(
 
 
 status_message_t
-ClassifierBitwise::partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
+ClassifierBitwise::_partial_fit(std::vector<bit_vector_uint64> const & X, label_vector_type const & y, max_number_of_labels_t max_number_of_labels, number_of_epochs_t epochs)
 {
     return partial_fit_impl(*m_state_p, X, y, max_number_of_labels, epochs);
 }
