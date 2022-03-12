@@ -8,6 +8,7 @@
 
 #include <cstddef>
 #include <string>
+#include <limits>
 
 
 namespace Tsetlini
@@ -133,6 +134,8 @@ using max_weight_t = strong::type<
     strong::ordered_with<int>,
     strong::ostreamable
 >;
+static auto constexpr MAX_WEIGHT_DEFAULT =
+    max_weight_t{std::numeric_limits<strong::underlying_type_t<max_weight_t>>::max()};
 
 using loss_fn_name_t = strong::type<
     std::string, struct _loss_fn_name_tag,

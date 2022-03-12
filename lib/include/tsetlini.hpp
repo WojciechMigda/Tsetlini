@@ -11,6 +11,7 @@
 #include "tsetlini_strong_params.hpp"
 #include "arg_extract.hpp"
 #include "either.hpp"
+#include "is_subset_of.hpp"
 
 #include <vector>
 
@@ -116,7 +117,10 @@ struct ClassifierClassic
     ClassifierClassic(ClassifierClassic &&);
     ClassifierClassic & operator=(ClassifierClassic &&) = default;
 
-friend Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params);
+    friend Either<status_message_t, ClassifierClassic> make_classifier_classic_from_json(std::string const & json_params);
+
+    template<typename ...Args>
+    friend Either<status_message_t, ClassifierClassic> make_classifier_classic(Args && ...args);
 
 
 private:
@@ -135,7 +139,48 @@ private:
 
 };
 
-Either<status_message_t, ClassifierClassic> make_classifier_classic(std::string const & json_params = "{}");
+
+Either<status_message_t, ClassifierClassic> make_classifier_classic_from_json(std::string const & json_params = "{}");
+
+
+template<typename ...Args>
+Either<status_message_t, ClassifierClassic> make_classifier_classic(Args && ...args)
+{
+    static_assert(meta::is_subset_of<
+        std::tuple<
+            number_of_physical_classifier_clauses_per_label_t,
+            number_of_states_t,
+            specificity_t,
+            threshold_t,
+            weighted_flag_t,
+            max_weight_t,
+            boost_tpf_t,
+            number_of_jobs_t,
+            verbosity_t,
+            counting_type_t,
+            clause_output_tile_size_t,
+            random_seed_t>,
+        std::decay_t<Args>...>,
+        "Passed argument of type outside of accepted type set");
+
+    return
+        make_classifier_params_from_args(
+            arg::extract_or<number_of_physical_classifier_clauses_per_label_t>(number_of_physical_classifier_clauses_per_label_t{12}, args...)
+            , arg::extract_or<number_of_states_t>(number_of_states_t{100}, args...)
+            , arg::extract_or<specificity_t>(specificity_t{2.0f}, args...)
+            , arg::extract_or<threshold_t>(threshold_t{15}, args...)
+            , arg::extract_or<weighted_flag_t>(weighted_flag_t{false}, args...)
+            , arg::extract_or<max_weight_t>(MAX_WEIGHT_DEFAULT, args...)
+            , arg::extract_or<boost_tpf_t>(boost_tpf_t{false}, args...)
+            , arg::extract_or<number_of_jobs_t>(number_of_jobs_t{-1}, args...)
+            , arg::extract_or<verbosity_t>(verbosity_t{false}, args...)
+            , arg::extract_or<counting_type_t>(counting_type_t{std::string("auto")}, args...)
+            , arg::extract_or<clause_output_tile_size_t>(clause_output_tile_size_t{16}, args...)
+            , arg::maybe_extract<random_seed_t>(args...)
+        )
+        .rightMap([](params_t && params){ return ClassifierClassic(params); })
+        ;
+}
 
 
 template<typename ...Args>

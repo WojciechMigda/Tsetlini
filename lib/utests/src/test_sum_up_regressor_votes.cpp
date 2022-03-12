@@ -13,7 +13,7 @@
 using namespace boost::ut;
 
 
-long long constexpr MAX_THRESHOLD = std::numeric_limits<strong::underlying_type<Tsetlini::threshold_t>::type>::max();
+long long constexpr MAX_THRESHOLD = std::numeric_limits<strong::underlying_type_t<Tsetlini::threshold_t>>::max();
 auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 0x1000; // arbitrary
 
 /*
@@ -25,7 +25,7 @@ auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 0x1000; // arbitrary
  * In real life scenario weight will never MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
-std::uint32_t constexpr MAX_WEIGHT = std::numeric_limits<strong::underlying_type<Tsetlini::max_weight_t>::type>::max();
+std::uint32_t constexpr MAX_WEIGHT = value_of(Tsetlini::MAX_WEIGHT_DEFAULT);
 
 ////////////////////////////////////////////////////////////////////////////////
 

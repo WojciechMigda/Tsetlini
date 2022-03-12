@@ -25,7 +25,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -44,7 +44,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -65,7 +65,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -86,7 +86,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -107,7 +107,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -128,7 +128,7 @@ suite TestClassifierClassicPredictMatrix = []
 
 "ClassifierClassic::predict accepts valid input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -156,7 +156,7 @@ suite TestClassifierClassicPredictSample = []
 
 "ClassifierClassic::predict on sample fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -175,7 +175,7 @@ suite TestClassifierClassicPredictSample = []
 
 "ClassifierClassic::predict rejects empty input sample"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -196,7 +196,7 @@ suite TestClassifierClassicPredictSample = []
 
 "ClassifierClassic::predict rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -217,7 +217,7 @@ suite TestClassifierClassicPredictSample = []
 
 "ClassifierClassic::predict rejects input sample with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -238,7 +238,7 @@ suite TestClassifierClassicPredictSample = []
 
 "ClassifierClassic::predict accepts valid input sample"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {

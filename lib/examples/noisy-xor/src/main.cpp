@@ -1,6 +1,7 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <vector>
 #include <string>
@@ -124,17 +125,17 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/79f0be5c9b25
     };
 
 
-    Tsetlini::make_classifier_classic(R"({
-            "threshold": 15,
-            "s": 3.9,
-            "number_of_clauses_per_label": 20,
-            "number_of_states": 100,
-            "boost_true_positive_feedback": 0,
-            "random_state": 1,
-            "counting_type": "int32",
-            "n_jobs": 1,
-            "verbose": false
-        })")
+    Tsetlini::make_classifier_classic(
+        Tsetlini::threshold_t{15},
+        Tsetlini::specificity_t{3.9},
+        Tsetlini::number_of_physical_classifier_clauses_per_label_t{20},
+        Tsetlini::number_of_states_t{100},
+        Tsetlini::boost_tpf_t{false},
+        Tsetlini::random_seed_t{1},
+        Tsetlini::counting_type_t{"int32"},
+        Tsetlini::number_of_jobs_t{1},
+        Tsetlini::verbosity_t{false}
+        )
         .leftMap(error_printer)
         .rightMap([&, train_X = train_X, train_y = train_y, test_X = test_X, test_y = test_y](Tsetlini::ClassifierClassic && clf)
         {

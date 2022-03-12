@@ -46,7 +46,7 @@ add_ut( EXE_NAME test_classifier_bitwise_fit                    SOURCE "src/test
 add_ut( EXE_NAME test_classifier_bitwise_partial_fit            SOURCE "src/test_classifier_bitwise_partial_fit.cpp" )
 add_ut( EXE_NAME test_classifier_bitwise_predict                SOURCE "src/test_classifier_bitwise_predict.cpp" )
 add_ut( EXE_NAME test_classifier_bitwise_decision_function      SOURCE "src/test_classifier_bitwise_decision_function.cpp" )
-add_ut( EXE_NAME test_classifier_params                         SOURCE "src/test_classifier_params.cpp" )
+add_ut( EXE_NAME test_classifier_params_from_json               SOURCE "src/test_classifier_params_from_json.cpp" )
 add_ut( EXE_NAME test_classifier_state_json_serialization       SOURCE "src/test_classifier_state_json_serialization.cpp" )
 
 add_ut( EXE_NAME test_regressor_classic                         SOURCE "src/test_regressor_classic.cpp" )

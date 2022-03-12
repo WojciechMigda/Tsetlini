@@ -16,7 +16,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -34,7 +34,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects empty input y"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -52,7 +52,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -70,7 +70,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -88,7 +88,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -106,7 +106,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit rejects input y with negative label"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -124,7 +124,7 @@ suite TestClassifierClassicFit = []
 
 "ClassifierClassic::fit accepts valid input"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
