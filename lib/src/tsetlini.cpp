@@ -1477,7 +1477,7 @@ ClassifierBitwise::ClassifierBitwise(ClassifierBitwise &&) = default;
 
 
 Either<status_message_t, ClassifierBitwise>
-make_classifier_bitwise(std::string const & json_params)
+make_classifier_bitwise_from_json(std::string const & json_params)
 {
     auto rv =
         make_classifier_params_from_json(json_params)

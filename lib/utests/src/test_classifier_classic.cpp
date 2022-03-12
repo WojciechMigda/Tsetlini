@@ -1,5 +1,6 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "either.hpp"
 #include "params_companion.hpp"
 
