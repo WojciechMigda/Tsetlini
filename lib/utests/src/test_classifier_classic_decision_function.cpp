@@ -25,7 +25,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -44,7 +44,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -65,7 +65,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -86,7 +86,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -107,7 +107,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -128,7 +128,7 @@ suite TestClassifierClassicDecisionFunctionMatrix = []
 
 "ClassifierClassic::decision_function accepts valid input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -157,7 +157,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
 "ClassifierClassic::decision_function on sample fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -176,7 +176,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
 "ClassifierClassic::decision_function rejects empty input sample"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -197,7 +197,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
 "ClassifierClassic::decision_function rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -218,7 +218,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
 "ClassifierClassic::decision_function rejects input sample with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -239,7 +239,7 @@ suite TestClassifierClassicDecisionFunctionSample = []
 
 "ClassifierClassic::decision_function accepts valid input sample"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {

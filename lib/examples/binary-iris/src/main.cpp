@@ -1,6 +1,7 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <vector>
 #include <string>
@@ -158,16 +159,17 @@ $> wget https://raw.githubusercontent.com/cair/TsetlinMachineCython/08fb54af9554
             test_y[rit - PIVOT] = df_y[ix[rit]];
         }
 
-        auto clf = Tsetlini::make_classifier_classic(R"({
-            "threshold": 10,
-            "s": 3.0,
-            "number_of_clauses_per_label": 200,
-            "number_of_states": 100,
-            "boost_true_positive_feedback": 1,
-            "random_state": 1,
-            "n_jobs": 1,
-            "verbose": false
-        })").leftMap(error_printer)
+        auto clf = Tsetlini::make_classifier_classic(
+            Tsetlini::threshold_t{10},
+            Tsetlini::specificity_t{3.0},
+            Tsetlini::number_of_physical_classifier_clauses_per_label_t{200},
+            Tsetlini::number_of_states_t{100},
+            Tsetlini::boost_tpf_t{true},
+            Tsetlini::random_seed_t{1},
+            Tsetlini::number_of_jobs_t{1},
+            Tsetlini::verbosity_t{false}
+            )
+            .leftMap(error_printer)
             .rightMap([&](auto && clf)
             {
                 auto status = clf.fit(train_X, train_y, Tsetlini::max_number_of_labels_t{3}, Tsetlini::number_of_epochs_t{500});

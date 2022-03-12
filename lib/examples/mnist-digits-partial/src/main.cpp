@@ -1,7 +1,8 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
-#include "tsetlini_private.hpp"
+#include "tsetlini_strong_params.hpp"
+#include "tsetlini_private.hpp" // I need to instantiate Tsetlini::ClassifierStateClassic
 #include "tsetlini_state_json.hpp"
 
 #include <vector>
@@ -120,17 +121,16 @@ Please run make_data.py to generate this file and copy it to the current working
         return std::move(msg);
     };
 
-    auto const params = R"({
-        "threshold": 10,
-        "s": 3.0,
-        "number_of_clauses_per_label": 100,
-        "number_of_states": 100,
-        "boost_true_positive_feedback": 0,
-        "random_state": 1,
-        "clause_output_tile_size": 64,
-        "n_jobs": 2,
-        "verbose": false
-    })";
+#define params \
+    Tsetlini::threshold_t{10},\
+    Tsetlini::specificity_t{3.0},\
+    Tsetlini::number_of_physical_classifier_clauses_per_label_t{100},\
+    Tsetlini::number_of_states_t{100}, \
+    Tsetlini::boost_tpf_t{false}, \
+    Tsetlini::random_seed_t{1},\
+    Tsetlini::clause_output_tile_size_t{64},\
+    Tsetlini::number_of_jobs_t{2},\
+    Tsetlini::verbosity_t{false}
 
     puts("===[ 2 + 3 epoch fit ]=============================================");
 

@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <random>
 #include <limits>
+#include <cmath>
 
 
 using namespace std::string_literals;
@@ -294,7 +295,7 @@ assert_specificity(params_t const & params)
      * "Extending the Tsetlin Machine With Integer-Weighted Clauses for Increased Interpretability"
      * Section 2.3, pp 5.
      */
-    if (value < 1.0)
+    if ((value < 1.0) or std::isinf(value) or std::isnan(value))
     {
         return Either<status_message_t, params_t>::leftOf({S_BAD_JSON,
             "Param 's' got value " + std::to_string(value) + ", instead of a value >= 1.0 .\n"});
@@ -435,6 +436,62 @@ make_classifier_params_from_json(std::string const & json_params)
         .rightFlatMap(assert_specificity)
         .rightFlatMap(assert_number_of_physical_clauses_per_label)
         .rightFlatMap(assert_boost_true_positive_feedback)
+        .rightFlatMap(assert_threshold)
+        .rightFlatMap(assert_max_weight)
+        .rightMap(normalize_n_jobs)
+        .rightMap(normalize_random_state)
+        .rightFlatMap(assert_counting_type_enumeration)
+        .rightFlatMap(assert_clause_output_tile_size_enumeration)
+        ;
+
+    return rv;
+}
+
+
+Either<status_message_t, params_t>
+make_classifier_params_from_args(
+    number_of_physical_classifier_clauses_per_label_t number_of_clauses_per_label,
+    number_of_states_t number_of_states,
+    specificity_t specificity,
+    threshold_t threshold,
+    weighted_flag_t weighted_flag,
+    max_weight_t max_weight,
+    boost_tpf_t boost_tpf,
+    number_of_jobs_t n_jobs,
+    verbosity_t verbose,
+    counting_type_t counting_type,
+    clause_output_tile_size_t clause_output_tile_size,
+    std::optional<random_seed_t> maybe_random_seed)
+{
+    params_t params;
+
+    params["number_of_clauses_per_label"] = param_value_t(value_of(number_of_clauses_per_label));
+    params["number_of_states"] = param_value_t(value_of(number_of_states));
+    params["s"] = param_value_t(value_of(specificity));
+    params["threshold"] = param_value_t(value_of(threshold));
+    params["weighted"] = param_value_t(value_of(weighted_flag));
+    params["max_weight"] = param_value_t(value_of(max_weight));
+    params["boost_true_positive_feedback"] = param_value_t(int(value_of(boost_tpf)));
+    params["n_jobs"] = param_value_t(value_of(n_jobs));
+    params["verbose"] = param_value_t(value_of(verbose));
+    params["counting_type"] = param_value_t(value_of(counting_type));
+    params["clause_output_tile_size"] = param_value_t(value_of(clause_output_tile_size));
+    if (maybe_random_seed)
+    {
+        params["random_state"] = param_value_t(value_of(*maybe_random_seed));
+    }
+    else
+    {
+        params["random_state"] = param_value_t(std::nullopt);
+    }
+
+    auto rv =
+        Either<status_message_t, params_t>::rightOf(params)
+        .rightFlatMap(assert_n_jobs)
+        .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_specificity)
+        .rightFlatMap(assert_number_of_physical_clauses_per_label)
+        .rightFlatMap(assert_boost_true_positive_feedback) // redundant or defensive programming?
         .rightFlatMap(assert_threshold)
         .rightFlatMap(assert_max_weight)
         .rightMap(normalize_n_jobs)

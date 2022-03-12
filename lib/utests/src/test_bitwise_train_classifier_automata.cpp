@@ -30,7 +30,7 @@ auto constexpr MAX_NUM_OF_STATES = 1000;
  * In real life scenario weight will never equal MAX_WEIGHT, because for
  * incrementation it is compared against `max_weight` after adding +1 to it.
  */
-std::uint32_t constexpr MAX_WEIGHT = std::numeric_limits<strong::underlying_type<Tsetlini::max_weight_t>::type>::max();
+std::uint32_t constexpr MAX_WEIGHT = value_of(Tsetlini::MAX_WEIGHT_DEFAULT);
 std::uint32_t constexpr MIN_WEIGHT = 0;
 
 

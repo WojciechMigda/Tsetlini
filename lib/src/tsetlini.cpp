@@ -1174,7 +1174,7 @@ ClassifierStateClassicPtr ClassifierClassic::clone_state() const
 
 
 Either<status_message_t, ClassifierClassic>
-make_classifier_classic(std::string const & json_params)
+make_classifier_classic_from_json(std::string const & json_params)
 {
     auto rv =
         make_classifier_params_from_json(json_params)

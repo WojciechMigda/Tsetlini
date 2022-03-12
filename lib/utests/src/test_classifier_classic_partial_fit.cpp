@@ -16,7 +16,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -34,7 +34,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects empty input y"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -52,7 +52,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -70,7 +70,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -88,7 +88,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -106,7 +106,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier rejects input y with negative label"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -124,7 +124,7 @@ suite TestClassifierClassicPartialFit = []
 
 "ClassifierClassic::partial_fit on untrained classifier accepts valid input"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -158,7 +158,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -178,7 +178,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects empty input y"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -198,7 +198,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -218,7 +218,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -238,7 +238,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -258,7 +258,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -278,7 +278,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects input y with negative label"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -298,7 +298,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier accepts valid input"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -318,7 +318,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier rejects OOB labels"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -341,7 +341,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 
 "ClassifierClassic::partial_fit on trained classifier does not reject invalid max_number_of_labels when actual labels are in range"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
@@ -365,7 +365,7 @@ suite TestClassifierClassicPartialFitOnTrained = []
 "Passing too big max_number_of_labels to ClassifierClassic::partial_fit"
 " on trained classifier doesn't affect labels validation by subsequent partial_fit"_test = []
 {
-    Tsetlini::make_classifier_classic("{}")
+    Tsetlini::make_classifier_classic()
         .rightMap(
         [](auto && clf)
         {
