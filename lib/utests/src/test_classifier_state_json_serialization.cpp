@@ -1,4 +1,5 @@
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "tsetlini_status_code.hpp"
 #include "tsetlini_state_json.hpp"
 #include "basic_bit_vector.hpp"

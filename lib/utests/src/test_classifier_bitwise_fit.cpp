@@ -1,5 +1,6 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
 
@@ -33,7 +34,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -51,7 +52,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects empty input y"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -69,7 +70,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -87,7 +88,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input X with first padding bit set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -107,7 +108,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input X with last padding bit set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -127,7 +128,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input X with some padding bits set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -149,7 +150,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -167,7 +168,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit rejects input y with negative label"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -185,7 +186,7 @@ suite TestClassifierBitwiseFit = []
 
 "ClassifierBitwise::fit accepts valid input"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {

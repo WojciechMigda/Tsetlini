@@ -1,4 +1,5 @@
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "tsetlini_types.hpp"
 #include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
@@ -48,7 +49,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -67,7 +68,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects empty input X"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -88,7 +89,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -109,7 +110,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects input X with first padding bit set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -131,7 +132,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects input X with last padding bit set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -153,7 +154,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects input X with some padding bits set to 1"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -177,7 +178,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -198,7 +199,7 @@ suite TestClassifierBitwisePredictMatrix = []
 
 "ClassifierBitwise::predict accepts valid input X"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -226,7 +227,7 @@ suite TestClassifierBitwisePredictSample = []
 
 "ClassifierBitwise::predict on sample fails without prior train"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -245,7 +246,7 @@ suite TestClassifierBitwisePredictSample = []
 
 "ClassifierBitwise::predict rejects empty input sample"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -266,7 +267,7 @@ suite TestClassifierBitwisePredictSample = []
 
 "ClassifierBitwise::predict rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
@@ -287,7 +288,7 @@ suite TestClassifierBitwisePredictSample = []
 
 "ClassifierBitwise::predict accepts valid input sample"_test = []
 {
-    Tsetlini::make_classifier_bitwise("{}")
+    Tsetlini::make_classifier_bitwise()
         .rightMap(
         [](auto && clf)
         {
