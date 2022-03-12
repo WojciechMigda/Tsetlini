@@ -5,6 +5,7 @@
 
 #include <tuple>
 #include <type_traits>
+#include <optional>
 
 
 namespace Tsetlini::arg
@@ -69,6 +70,29 @@ template<typename T, typename ...Args>
 auto extract_or(T const & dval, Args && ...) -> std::enable_if_t<not std::disjunction_v<std::is_same<T, std::decay_t<Args>>...>, T const &>
 {
     return dval;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+template<typename T, typename ...Args>
+auto maybe_extract(Args && ...) -> std::enable_if_t<not std::disjunction_v<std::is_same<T, std::decay_t<Args>>...>, std::optional<T>>
+{
+    return std::nullopt;
+}
+
+
+template<typename T, typename ...Args>
+auto maybe_extract(Args && ...args) -> std::enable_if_t<std::disjunction_v<std::is_same<T, std::remove_reference_t<Args>>...>, std::optional<T>>
+{
+    return std::get<T &&>(std::forward_as_tuple(std::move(args)...));
+}
+
+template<typename T, typename ...Args>
+auto maybe_extract(Args && ...args) -> std::enable_if_t<std::disjunction_v<std::is_same<T const, std::remove_reference_t<Args>>...>, std::optional<T>>
+{
+    return std::get<T const &&>(std::forward_as_tuple(std::move(args)...));
 }
 
 

@@ -2,6 +2,7 @@
 #include "boost/ut.hpp"
 
 #include <cstdlib>
+#include <optional>
 
 
 using namespace boost::ut;
@@ -23,10 +24,25 @@ private:
 };
 
 
+struct Copyable
+{
+    const int v;
+
+    Copyable(int num): v(num) {}
+};
+
+
 template<typename ...Args>
 int wrapped_extract(long, void *, Args && ...args)
 {
     return Tsetlini::arg::extract<Noncopyable>(args...).v;
+}
+
+
+template<typename ...Args>
+std::optional<Copyable> wrapped_maybe_extract(long, void *, Args && ...args)
+{
+    return Tsetlini::arg::maybe_extract<Copyable>(args...);
 }
 
 
@@ -55,11 +71,11 @@ int wrapped_extract_or_rv(int num, void *, Args && ...args)
 }
 
 
-suite TestParamExtract = []
+suite TestArgExtract = []
 {
 
 
-"extract works with an r-value"_test = []
+"extract works with an r-value argument"_test = []
 {
     int v = wrapped_extract(0L, nullptr, Noncopyable(MEANING_OF_LIFE), 1);
 
@@ -67,7 +83,7 @@ suite TestParamExtract = []
 };
 
 
-"extract works with an l-value"_test = []
+"extract works with an l-value argument"_test = []
 {
     Noncopyable lval(MEANING_OF_LIFE);
 
@@ -77,7 +93,7 @@ suite TestParamExtract = []
 };
 
 
-"extract works with a const l-value"_test = []
+"extract works with a const l-value argument"_test = []
 {
     Noncopyable const clval(MEANING_OF_LIFE);
 
@@ -90,11 +106,57 @@ suite TestParamExtract = []
 };
 
 
-suite TestParamExtractOr = []
+suite TestArgMaybeExtract = []
 {
 
 
-"extract_or works with r-value default and missing parameter"_test = []
+"maybe_extract works with missing argument"_test = []
+{
+    auto maybe = wrapped_maybe_extract(0L, nullptr, 0.0);
+
+    expect(that % false == maybe.has_value());
+};
+
+
+"maybe_extract works with an r-value argument"_test = []
+{
+    auto maybe = wrapped_maybe_extract(0L, nullptr, Copyable(MEANING_OF_LIFE));
+
+    !expect(that % true == maybe.has_value());
+    expect(that % MEANING_OF_LIFE == maybe->v);
+};
+
+
+"maybe_extract works with an l-value argument"_test = []
+{
+    Copyable lval(MEANING_OF_LIFE);
+
+    auto maybe = wrapped_maybe_extract(0L, nullptr, lval);
+
+    !expect(that % true == maybe.has_value());
+    expect(that % MEANING_OF_LIFE == maybe->v);
+};
+
+
+"maybe_extract works with a const l-value argument"_test = []
+{
+    Copyable const clval(MEANING_OF_LIFE);
+
+    auto maybe = wrapped_maybe_extract(0L, nullptr, clval);
+
+    !expect(that % true == maybe.has_value());
+    expect(that % MEANING_OF_LIFE == maybe->v);
+};
+
+
+};
+
+
+suite TestArgExtractOr = []
+{
+
+
+"extract_or works with r-value default and missing argument"_test = []
 {
     int v = wrapped_extract_or_rv(NOT_FOUND, nullptr, nullptr);
 
@@ -102,7 +164,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with r-value default and r-value parameter"_test = []
+"extract_or works with r-value default and r-value argument"_test = []
 {
     int v = wrapped_extract_or_rv(NOT_FOUND, nullptr, Noncopyable(MEANING_OF_LIFE));
 
@@ -110,7 +172,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with r-value default and l-value parameter"_test = []
+"extract_or works with r-value default and l-value argument"_test = []
 {
     Noncopyable lval(MEANING_OF_LIFE);
 
@@ -120,7 +182,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with r-value default and const l-value parameter"_test = []
+"extract_or works with r-value default and const l-value argument"_test = []
 {
     Noncopyable const lval(MEANING_OF_LIFE);
 
@@ -133,7 +195,7 @@ suite TestParamExtractOr = []
 ////////////////////////////////////////////////////////////////////////////////
 
 
-"extract_or works with l-value default and missing parameter"_test = []
+"extract_or works with l-value default and missing argument"_test = []
 {
     int v = wrapped_extract_or_lv(NOT_FOUND, nullptr, nullptr);
 
@@ -141,7 +203,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with l-value default and r-value parameter"_test = []
+"extract_or works with l-value default and r-value argument"_test = []
 {
     int v = wrapped_extract_or_lv(NOT_FOUND, nullptr, Noncopyable(MEANING_OF_LIFE));
 
@@ -149,7 +211,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with l-value default and l-value parameter"_test = []
+"extract_or works with l-value default and l-value argument"_test = []
 {
     Noncopyable lval(MEANING_OF_LIFE);
 
@@ -159,7 +221,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with l-value default and const l-value parameter"_test = []
+"extract_or works with l-value default and const l-value argument"_test = []
 {
     Noncopyable const clval(MEANING_OF_LIFE);
 
@@ -172,7 +234,7 @@ suite TestParamExtractOr = []
 ////////////////////////////////////////////////////////////////////////////////
 
 
-"extract_or works with const l-value default and missing parameter"_test = []
+"extract_or works with const l-value default and missing argument"_test = []
 {
     int v = wrapped_extract_or_clv(NOT_FOUND, nullptr, nullptr);
 
@@ -180,7 +242,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with const l-value default and r-value parameter"_test = []
+"extract_or works with const l-value default and r-value argument"_test = []
 {
     int v = wrapped_extract_or_clv(NOT_FOUND, nullptr, Noncopyable(MEANING_OF_LIFE));
 
@@ -188,7 +250,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with const l-value default and l-value parameter"_test = []
+"extract_or works with const l-value default and l-value argument"_test = []
 {
     Noncopyable lval(MEANING_OF_LIFE);
 
@@ -198,7 +260,7 @@ suite TestParamExtractOr = []
 };
 
 
-"extract_or works with const l-value default and const l-value parameter"_test = []
+"extract_or works with const l-value default and const l-value argument"_test = []
 {
     Noncopyable const clval(MEANING_OF_LIFE);
 
