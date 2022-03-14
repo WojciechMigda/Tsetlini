@@ -446,7 +446,7 @@ suite TestRegressorClassicArgs = []
 };
 
 
-};
+}; // suite TestRegressorClassicArgs
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -865,7 +865,7 @@ suite TestRegressorClassicJson = []
 };
 
 
-}; // TestRegressorClassicJson
+}; // suite TestRegressorClassicJson
 
 
 int main()

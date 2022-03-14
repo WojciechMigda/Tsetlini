@@ -841,7 +841,8 @@ suite TestClassifierBitwiseJson = []
 };
 
 
-};
+}; // suite TestClassifierBitwiseJson
+
 
 int main()
 {

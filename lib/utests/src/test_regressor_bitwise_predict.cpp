@@ -48,7 +48,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -67,7 +67,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -88,7 +88,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -109,7 +109,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects input X with first padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -133,7 +133,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects input X with last padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -155,7 +155,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects input X some padding bits set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -179,7 +179,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -200,7 +200,7 @@ suite TestRegressorBitwisePredictMatrix = []
 
 "RegressorBitwise::predict accepts valid input X"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -228,7 +228,7 @@ suite TestRegressorBitwisePredictSample = []
 
 "RegressorBitwise::predict on sample fails without prior train"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -247,7 +247,7 @@ suite TestRegressorBitwisePredictSample = []
 
 "RegressorBitwise::predict rejects empty input sample"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -268,7 +268,7 @@ suite TestRegressorBitwisePredictSample = []
 
 "RegressorBitwise::predict rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -289,7 +289,7 @@ suite TestRegressorBitwisePredictSample = []
 
 "RegressorBitwise::predict accepts valid input sample"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
