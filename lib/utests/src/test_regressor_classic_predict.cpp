@@ -25,7 +25,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict on matrix fails without prior train"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -44,7 +44,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -65,7 +65,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -86,7 +86,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -107,7 +107,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -128,7 +128,7 @@ suite TestRegressorClassicPredictMatrix = []
 
 "RegressorClassic::predict accepts valid input X"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -156,7 +156,7 @@ suite TestRegressorClassicPredictSample = []
 
 "RegressorClassic::predict on sample fails without prior train"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -175,7 +175,7 @@ suite TestRegressorClassicPredictSample = []
 
 "RegressorClassic::predict rejects empty input sample"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -196,7 +196,7 @@ suite TestRegressorClassicPredictSample = []
 
 "RegressorClassic::predict rejects input sample with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -217,7 +217,7 @@ suite TestRegressorClassicPredictSample = []
 
 "RegressorClassic::predict rejects input sample with non-0/1 values"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -238,7 +238,7 @@ suite TestRegressorClassicPredictSample = []
 
 "RegressorClassic::predict accepts valid input sample"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {

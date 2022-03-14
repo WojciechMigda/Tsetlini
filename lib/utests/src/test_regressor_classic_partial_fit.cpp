@@ -16,7 +16,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -34,7 +34,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects empty input y"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -52,7 +52,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -70,7 +70,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -88,7 +88,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -106,7 +106,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects input y with negative response"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -124,7 +124,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic(R"({"threshold": 15})")
+    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -142,7 +142,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic(R"({"threshold": 15})")
+    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -160,7 +160,7 @@ suite TestRegressorClassicPartialFit = []
 
 "RegressorClassic::partial_fit on untrained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -194,7 +194,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -214,7 +214,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects empty input y"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -234,7 +234,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -254,7 +254,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -274,7 +274,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input X with non-0/1 values"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -294,7 +294,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -314,7 +314,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input y with negative response"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -334,7 +334,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
@@ -354,7 +354,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic(R"({"threshold": 15})")
+    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -374,7 +374,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic(R"({"threshold": 15})")
+    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -394,7 +394,7 @@ suite TestRegressorClassicPartialFitOnTrained = []
 
 "RegressorClassic::partial_fit on trained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_classic("{}")
+    Tsetlini::make_regressor_classic()
         .rightMap(
         [](auto && reg)
         {
