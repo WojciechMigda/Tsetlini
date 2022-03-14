@@ -47,156 +47,42 @@ suite TestClassifierClassicArgs = []
 };
 
 
-"ClassifierClassic can be created with counting_type argument set to int8"_test = []
+"ClassifierClassic can be created with counting_type argument set to {int8, int16, int32, auto}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::counting_type_t{"int8"})
+    Tsetlini::make_classifier_classic(Tsetlini::counting_type_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % "int8"s == value_of(Tsetlini::Params::counting_type(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::counting_type(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector{"int8"s, "int16"s, "int32"s, "auto"s};
 
 
-"ClassifierClassic can be created with counting_type argument set to int16"_test = []
+"ClassifierClassic can be created with clause_output_tile_size argument set to {16, 32, 64, 128}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::counting_type_t{"int16"})
+    Tsetlini::make_classifier_classic(Tsetlini::clause_output_tile_size_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % "int16"s == value_of(Tsetlini::Params::counting_type(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::clause_output_tile_size(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
-
-
-"ClassifierClassic can be created with counting_type argument set to int32"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::counting_type_t{"int32"})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % "int32"s == value_of(Tsetlini::Params::counting_type(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with counting_type argument set to auto"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::counting_type_t{"auto"})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % "auto"s == value_of(Tsetlini::Params::counting_type(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with clause_output_tile_size argument set to 16"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::clause_output_tile_size_t{16})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 16 == value_of(Tsetlini::Params::clause_output_tile_size(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with clause_output_tile_size argument set to 32"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::clause_output_tile_size_t{32})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 32 == value_of(Tsetlini::Params::clause_output_tile_size(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with clause_output_tile_size argument set to 64"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::clause_output_tile_size_t{64})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 64 == value_of(Tsetlini::Params::clause_output_tile_size(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with clause_output_tile_size argument set to 128"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::clause_output_tile_size_t{128})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 128 == value_of(Tsetlini::Params::clause_output_tile_size(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
+} | std::vector{16, 32, 64, 128};
 
 
 "ClassifierClassic cannot be created with clause_output_tile_size argument set to 24"_test = []
@@ -247,20 +133,12 @@ suite TestClassifierClassicArgs = []
 };
 
 
-"ClassifierClassic cannot be created with number_of_jobs argument set to 0"_test = []
+"ClassifierClassic cannot be created with number_of_jobs argument set to {0, -2}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_jobs_t{0});
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_jobs_t{arg});
 
     expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_jobs argument set to -2"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_jobs_t{-2});
-
-    expect(that % false == !!clf);
-};
+} | std::vector{0, -2};
 
 
 "ClassifierClassic can be created with number_of_physical_classifier_clauses_per_label argument set to 4"_test = []
@@ -282,52 +160,12 @@ suite TestClassifierClassicArgs = []
 };
 
 
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to 3"_test = []
+"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to {3, 2, 1, 0, -1, -4}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{3});
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{arg});
 
     expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to 2"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{2});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to 1"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{1});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to 0"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{0});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to -1"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{-1});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with number_of_physical_classifier_clauses_per_label argument set to -4"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_physical_classifier_clauses_per_label_t{-4});
-
-    expect(that % false == !!clf);
-};
+} | std::vector{3, 2, 1, 0, -1, -4};
 
 
 "ClassifierClassic can be created with number_of_states set argument to 1"_test = []
@@ -349,366 +187,175 @@ suite TestClassifierClassicArgs = []
 };
 
 
-"ClassifierClassic cannot be created with number_of_states argument set to 0"_test = []
+"ClassifierClassic cannot be created with number_of_states argument set to {0, -1}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_states_t{0});
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_states_t{arg});
 
     expect(that % false == !!clf);
-};
+} | std::vector{0, -1};
 
 
-"ClassifierClassic cannot be created with number_of_states argument set to -1"_test = []
+"ClassifierClassic can be created with boost_true_positive_feedback argument set to {true, false}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::number_of_states_t{-1});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic can be created with boost_true_positive_feedback argument set to true"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::boost_tpf_t{true})
+    Tsetlini::make_classifier_classic(Tsetlini::boost_tpf_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % true == value_of(Tsetlini::Params::boost_true_positive_feedback(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::boost_true_positive_feedback(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector{true, false};
 
 
-"ClassifierClassic can be created with boost_true_positive_feedback argument set to false"_test = []
+"ClassifierClassic can be created with threshold argument set to {1, 2, 10}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::boost_tpf_t{false})
+    Tsetlini::make_classifier_classic(Tsetlini::threshold_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % false == value_of(Tsetlini::Params::boost_true_positive_feedback(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::threshold(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector{1, 2, 10};
 
 
-"ClassifierClassic can be created with threshold argument set to 1"_test = []
+"ClassifierClassic cannot be created with threshold argument set to {0, -1}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::threshold_t{1})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 1 == value_of(Tsetlini::Params::threshold(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic cannot be created with threshold argument set to 0"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::threshold_t{0});
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::threshold_t{arg});
 
     expect(that % false == !!clf);
-};
+} | std::vector{0, -1};
 
 
-"ClassifierClassic cannot be created with threshold argument set to -1"_test = []
+"ClassifierClassic can be created with max_weight argument set to {1, 2, 10}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::threshold_t{-1});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic can be created with max_weight argument set to 1"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{1})
+    Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % 1 == value_of(Tsetlini::Params::max_weight(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::max_weight(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector{1, 2, 10};
 
 
-"ClassifierClassic can be created with max_weight argument set to 10"_test = []
+"ClassifierClassic cannot be created with max_weight argument set to {0, -1}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{10})
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{arg});
+
+    expect(that % false == !!clf);
+} | std::vector{0, -1};
+
+
+"ClassifierClassic can be created with verbosity argument set to {true, false}"_test = [](auto const & arg)
+{
+    Tsetlini::make_classifier_classic(Tsetlini::verbosity_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % 10 == value_of(Tsetlini::Params::max_weight(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::verbose(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector{true, false};
 
 
-"ClassifierClassic cannot be created with max_weight argument set to 0"_test = []
+"ClassifierClassic can be created with weighted argument set to {true, false}"_test = [](auto const & arg)
 {
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{0});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with max_weight argument set to -1"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::max_weight_t{-1});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic can be created with verbosity argument set to true"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::verbosity_t{true})
+    Tsetlini::make_classifier_classic(Tsetlini::weighted_flag_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % true == value_of(Tsetlini::Params::verbose(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::weighted(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
+} | std::vector{true, false};
+
+
+"ClassifierClassic cannot be created with specificity argument set to {-1.0, 0.0, 1 - epsilon -inf, +inf, -NaN, +NaN}"_test = [](auto const & arg)
+{
+    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{arg});
+
+    expect(that % false == !!clf);
+} | std::vector<strong::underlying_type_t<Tsetlini::specificity_t>>{
+    -1.0, 0.0,
+    strong::underlying_type_t<Tsetlini::specificity_t>{1} - std::numeric_limits<strong::underlying_type_t<Tsetlini::specificity_t>>::epsilon(),
+    -std::numeric_limits<strong::underlying_type_t<Tsetlini::specificity_t>>::infinity(),
+    std::numeric_limits<strong::underlying_type_t<Tsetlini::specificity_t>>::infinity(),
+    NAN, -NAN
 };
 
 
-"ClassifierClassic can be created with verbosity argument set to false"_test = []
+"ClassifierClassic can be created with specificity argument set to {1.0, 3.14}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::verbosity_t{false})
+    Tsetlini::make_classifier_classic(Tsetlini::specificity_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % false == value_of(Tsetlini::Params::verbose(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::s(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
+} | std::vector<strong::underlying_type_t<Tsetlini::specificity_t>>{1.0, 3.14};
 
 
-"ClassifierClassic can be created with weighted argument set to true"_test = []
+"ClassifierClassic can be created with random_seed argument set to {1, 1234}"_test = [](auto const & arg)
 {
-    Tsetlini::make_classifier_classic(Tsetlini::weighted_flag_t{true})
+    Tsetlini::make_classifier_classic(Tsetlini::random_seed_t{arg})
         .leftMap([](Tsetlini::status_message_t && msg)
             {
                 expect(false);
 
                 return std::move(msg);
             })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
+        .rightMap([&arg](Tsetlini::ClassifierClassic && clf)
             {
-                expect(that % true == value_of(Tsetlini::Params::weighted(clf.read_params())));
+                expect(that % arg == value_of(Tsetlini::Params::random_state(clf.read_params())));
 
                 return std::move(clf);
             })
         ;
-};
-
-
-"ClassifierClassic can be created with weighted argument set to false"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::weighted_flag_t{false})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % false == value_of(Tsetlini::Params::weighted(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to -1.0"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{-1.0});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to 0.0"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{0.0});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to 1.0 - epsilon"_test = []
-{
-    using underlying_type = strong::underlying_type_t<Tsetlini::specificity_t>;
-
-    auto const clf = Tsetlini::make_classifier_classic(
-        Tsetlini::specificity_t{underlying_type{1} - std::numeric_limits<underlying_type>::epsilon()});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to -inf"_test = []
-{
-    using underlying_type = strong::underlying_type_t<Tsetlini::specificity_t>;
-
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{-std::numeric_limits<underlying_type>::infinity()});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to +inf"_test = []
-{
-    using underlying_type = strong::underlying_type_t<Tsetlini::specificity_t>;
-
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{std::numeric_limits<underlying_type>::infinity()});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to +NaN"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{NAN});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic cannot be created with specificity argument set to -NaN"_test = []
-{
-    auto const clf = Tsetlini::make_classifier_classic(Tsetlini::specificity_t{-NAN});
-
-    expect(that % false == !!clf);
-};
-
-
-"ClassifierClassic can be created with specificity argument set to 1.0"_test = []
-{
-    using underlying_type = strong::underlying_type_t<Tsetlini::specificity_t>;
-
-    Tsetlini::make_classifier_classic(Tsetlini::specificity_t{1.0})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % underlying_type{1} == value_of(Tsetlini::Params::s(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with specificity argument set to 3.14"_test = []
-{
-    using underlying_type = strong::underlying_type_t<Tsetlini::specificity_t>;
-
-    Tsetlini::make_classifier_classic(Tsetlini::specificity_t{3.14})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % underlying_type{3.14} == value_of(Tsetlini::Params::s(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with random_seed argument set to 1"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::random_seed_t{1})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 1u == value_of(Tsetlini::Params::random_state(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
-
-
-"ClassifierClassic can be created with random_seed argument set to 1234"_test = []
-{
-    Tsetlini::make_classifier_classic(Tsetlini::random_seed_t{1234})
-        .leftMap([](Tsetlini::status_message_t && msg)
-            {
-                expect(false);
-
-                return std::move(msg);
-            })
-        .rightMap([](Tsetlini::ClassifierClassic && clf)
-            {
-                expect(that % 1234u == value_of(Tsetlini::Params::random_state(clf.read_params())));
-
-                return std::move(clf);
-            })
-        ;
-};
+} | std::vector{1u, 1234u};
 
 
 "ClassifierClassic can be created without random_seed argument"_test = []

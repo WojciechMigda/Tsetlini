@@ -530,4 +530,67 @@ make_regressor_params_from_json(std::string const & json_params)
 }
 
 
+Either<status_message_t, params_t>
+make_regressor_params_from_args(
+    number_of_physical_regressor_clauses_t number_of_clauses,
+    number_of_states_t number_of_states,
+    specificity_t specificity,
+    threshold_t threshold,
+    weighted_flag_t weighted_flag,
+    max_weight_t max_weight,
+    boost_tpf_t boost_tpf,
+    number_of_jobs_t n_jobs,
+    verbosity_t verbose,
+    counting_type_t counting_type,
+    clause_output_tile_size_t clause_output_tile_size,
+    loss_fn_name_t loss_fn_name,
+    loss_fn_C1_t loss_fn_C1,
+    box_muller_flag_t box_muller_flag,
+    std::optional<random_seed_t> maybe_random_seed)
+{
+    params_t params;
+
+    params["number_of_regressor_clauses"] = param_value_t(value_of(number_of_clauses));
+    params["number_of_states"] = param_value_t(value_of(number_of_states));
+    params["s"] = param_value_t(value_of(specificity));
+    params["threshold"] = param_value_t(value_of(threshold));
+    params["weighted"] = param_value_t(value_of(weighted_flag));
+    params["max_weight"] = param_value_t(value_of(max_weight));
+    params["boost_true_positive_feedback"] = param_value_t(int(value_of(boost_tpf)));
+    params["n_jobs"] = param_value_t(value_of(n_jobs));
+    params["verbose"] = param_value_t(value_of(verbose));
+    params["counting_type"] = param_value_t(value_of(counting_type));
+    params["clause_output_tile_size"] = param_value_t(value_of(clause_output_tile_size));
+    params["loss_fn"] = param_value_t(value_of(loss_fn_name));
+    params["loss_fn_C1"] = param_value_t(value_of(loss_fn_C1));
+    params["box_muller"] = param_value_t(value_of(box_muller_flag));
+    if (maybe_random_seed)
+    {
+        params["random_state"] = param_value_t(value_of(*maybe_random_seed));
+    }
+    else
+    {
+        params["random_state"] = param_value_t(std::nullopt);
+    }
+
+    auto rv =
+        Either<status_message_t, params_t>::rightOf(params)
+        .rightFlatMap(assert_n_jobs)
+        .rightFlatMap(assert_number_of_states)
+        .rightFlatMap(assert_specificity)
+        .rightFlatMap(assert_number_of_regressor_clauses)
+        .rightFlatMap(assert_boost_true_positive_feedback) // redundant or defensive programming?
+        .rightFlatMap(assert_threshold)
+        .rightFlatMap(assert_max_weight)
+        .rightMap(normalize_n_jobs)
+        .rightMap(normalize_random_state)
+        .rightFlatMap(assert_counting_type_enumeration)
+        .rightFlatMap(assert_loss_function)
+        .rightFlatMap(assert_clause_output_tile_size_enumeration)
+        ;
+
+    return rv;
+}
+
+
 } // namespace Tsetlini

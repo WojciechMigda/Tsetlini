@@ -57,7 +57,7 @@ add_ut( EXE_NAME test_regressor_bitwise                         SOURCE "src/test
 add_ut( EXE_NAME test_regressor_bitwise_fit                     SOURCE "src/test_regressor_bitwise_fit.cpp" )
 add_ut( EXE_NAME test_regressor_bitwise_partial_fit             SOURCE "src/test_regressor_bitwise_partial_fit.cpp" )
 add_ut( EXE_NAME test_regressor_bitwise_predict                 SOURCE "src/test_regressor_bitwise_predict.cpp" )
-add_ut( EXE_NAME test_regressor_params                          SOURCE "src/test_regressor_params.cpp" )
+add_ut( EXE_NAME test_regressor_params_from_json                SOURCE "src/test_regressor_params_from_json.cpp" )
 add_ut( EXE_NAME test_regressor_state_json_serialization        SOURCE "src/test_regressor_state_json_serialization.cpp" )
 
 add_ut( EXE_NAME test_arg_extract                               SOURCE "src/test_arg_extract.cpp" )

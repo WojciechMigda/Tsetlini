@@ -1219,7 +1219,7 @@ RegressorClassic::RegressorClassic(RegressorClassic &&) = default;
 
 
 Either<status_message_t, RegressorClassic>
-make_regressor_classic(std::string const & json_params)
+make_regressor_classic_from_json(std::string const & json_params)
 {
     auto rv =
         make_regressor_params_from_json(json_params)

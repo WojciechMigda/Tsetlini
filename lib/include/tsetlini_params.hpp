@@ -39,6 +39,24 @@ Either<status_message_t, params_t> make_classifier_params_from_args(
 
 Either<status_message_t, params_t> make_regressor_params_from_json(std::string const & json_params = "{}");
 
+Either<status_message_t, params_t>
+make_regressor_params_from_args(
+    number_of_physical_regressor_clauses_t number_of_clauses,
+    number_of_states_t number_of_states,
+    specificity_t specificity,
+    threshold_t threshold,
+    weighted_flag_t weighted_flag,
+    max_weight_t max_weight,
+    boost_tpf_t boost_tpf,
+    number_of_jobs_t n_jobs,
+    verbosity_t verbose,
+    counting_type_t counting_type,
+    clause_output_tile_size_t clause_output_tile_size,
+    loss_fn_name_t loss_fn_name,
+    loss_fn_C1_t loss_fn_C1,
+    box_muller_flag_t box_muller_flag,
+    std::optional<random_seed_t> maybe_random_seed);
+
 
 } // namespace Tsetlini
 

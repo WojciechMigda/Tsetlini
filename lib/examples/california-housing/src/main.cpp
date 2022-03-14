@@ -314,7 +314,7 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         train_yi = scaler.transform(train_y);
         test_yi = scaler.transform(test_y);
 
-        auto reg = Tsetlini::make_regressor_classic(R"({
+        auto reg = Tsetlini::make_regressor_classic_from_json(R"({
             "threshold": )" + std::to_string(T) + R"(,
             "s": 2.75,
             "number_of_regressor_clauses": 2000,
