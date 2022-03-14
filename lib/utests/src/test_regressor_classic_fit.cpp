@@ -1,5 +1,6 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include "boost/ut.hpp"
 
@@ -124,12 +125,14 @@ suite TestRegressorClassicFit = []
 
 "RegressorClassic::fit rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
+    auto constexpr threshold = 15;
+
+    Tsetlini::make_regressor_classic(Tsetlini::threshold_t{threshold})
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
-            Tsetlini::response_vector_type y{1, 15 + 1, 1};
+            Tsetlini::response_vector_type y{1, threshold + 1, 1};
 
             auto const rv = reg.fit(X, y);
 
@@ -142,12 +145,14 @@ suite TestRegressorClassicFit = []
 
 "RegressorClassic::fit accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_classic_from_json(R"({"threshold": 15})")
+    auto constexpr threshold = 15;
+
+    Tsetlini::make_regressor_classic(Tsetlini::threshold_t{threshold})
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::aligned_vector_char> X{{1, 0, 1}, {1, 0, 0}, {0, 0, 0}};
-            Tsetlini::response_vector_type y{1, 15, 1};
+            Tsetlini::response_vector_type y{1, threshold, 1};
 
             auto const rv = reg.fit(X, y);
 

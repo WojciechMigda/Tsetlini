@@ -1,6 +1,7 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "basic_bit_vector_companion.hpp"
 
 #include <vector>

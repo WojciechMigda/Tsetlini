@@ -1,5 +1,6 @@
 #include "tsetlini.hpp"
 #include "tsetlini_types.hpp"
+#include "tsetlini_strong_params.hpp"
 #include "basic_bit_vector.hpp"
 #include "basic_bit_vector_companion.hpp"
 
@@ -185,12 +186,14 @@ suite TestRegressorBitwiseFit = []
 
 "RegressorBitwise::fit rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
+    auto constexpr threshold = 15;
+
+    Tsetlini::make_regressor_bitwise(Tsetlini::threshold_t{threshold})
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
-            Tsetlini::response_vector_type y{1, 15 + 1, 1};
+            Tsetlini::response_vector_type y{1, threshold + 1, 1};
 
             auto const rv = reg.fit(X, y);
 
@@ -203,12 +206,14 @@ suite TestRegressorBitwiseFit = []
 
 "RegressorBitwise::fit accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
+    auto constexpr threshold = 15;
+
+    Tsetlini::make_regressor_bitwise(Tsetlini::threshold_t{threshold})
         .rightMap(
         [](auto && reg)
         {
             std::vector<Tsetlini::bit_vector_uint64> X = to_bitvector({{1, 0, 1}, {1, 0, 0}, {0, 0, 0}});
-            Tsetlini::response_vector_type y{1, 15, 1};
+            Tsetlini::response_vector_type y{1, threshold, 1};
 
             auto const rv = reg.fit(X, y);
 
