@@ -33,7 +33,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -51,7 +51,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects empty input y"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -69,7 +69,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -87,7 +87,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input X with first padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -107,7 +107,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input X with last padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -127,7 +127,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input X with some padding bits set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -149,7 +149,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -167,7 +167,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input y with negative response"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -185,7 +185,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise(R"({"threshold": 15})")
+    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -203,7 +203,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise(R"({"threshold": 15})")
+    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -221,7 +221,7 @@ suite TestRegressorBitwisePartialFit = []
 
 "RegressorBitwise::partial_fit on untrained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -255,7 +255,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects empty input X"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -275,7 +275,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects empty input y"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -295,7 +295,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X with rows of unequal length"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -315,7 +315,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X with first padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -337,7 +337,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X with last padding bit set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -359,7 +359,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X with some padding bits set to 1"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -383,7 +383,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X with invalid number of features"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -403,7 +403,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input X and y with unequal dimensions"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -423,7 +423,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input y with negative response"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -443,7 +443,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {
@@ -463,7 +463,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor rejects input y with response over Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise(R"({"threshold": 15})")
+    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -483,7 +483,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor accepts valid input y with response equal to Threshold"_test = []
 {
-    Tsetlini::make_regressor_bitwise(R"({"threshold": 15})")
+    Tsetlini::make_regressor_bitwise_from_json(R"({"threshold": 15})")
         .rightMap(
         [](auto && reg)
         {
@@ -503,7 +503,7 @@ suite TestRegressorBitwisePartialFitOnTrained = []
 
 "RegressorBitwise::partial_fit on trained regressor accepts valid input"_test = []
 {
-    Tsetlini::make_regressor_bitwise("{}")
+    Tsetlini::make_regressor_bitwise()
         .rightMap(
         [](auto && reg)
         {

@@ -1624,7 +1624,7 @@ RegressorBitwise::RegressorBitwise(RegressorBitwise &&) = default;
 
 
 Either<status_message_t, RegressorBitwise>
-make_regressor_bitwise(std::string const & json_params)
+make_regressor_bitwise_from_json(std::string const & json_params)
 {
     auto rv =
         make_regressor_params_from_json(json_params)

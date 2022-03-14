@@ -560,7 +560,10 @@ struct RegressorBitwise
     RegressorBitwise(RegressorBitwise &&);
     RegressorBitwise & operator=(RegressorBitwise &&) = default;
 
-friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::string const & json_params);
+    friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise_from_json(std::string const & json_params);
+
+    template<typename ...Args>
+    friend Either<status_message_t, RegressorBitwise> make_regressor_bitwise(Args && ...args);
 
 
 private:
@@ -588,7 +591,53 @@ private:
  *
  * number_of_features - [internal] number of features used for initial fit. Used for for X verification in partial fit.
  */
-Either<status_message_t, RegressorBitwise> make_regressor_bitwise(std::string const & json_params = "{}");
+Either<status_message_t, RegressorBitwise> make_regressor_bitwise_from_json(std::string const & json_params = "{}");
+
+
+template<typename ...Args>
+Either<status_message_t, RegressorBitwise> make_regressor_bitwise(Args && ...args)
+{
+    static_assert(meta::is_subset_of<
+        std::tuple<
+            number_of_physical_regressor_clauses_t,
+            number_of_states_t,
+            specificity_t,
+            threshold_t,
+            weighted_flag_t,
+            max_weight_t,
+            boost_tpf_t,
+            number_of_jobs_t,
+            verbosity_t,
+            counting_type_t,
+            clause_output_tile_size_t,
+            loss_fn_name_t,
+            loss_fn_C1_t,
+            box_muller_flag_t,
+            random_seed_t>,
+        std::decay_t<Args>...>,
+        "Passed argument of type outside of accepted type set");
+
+    return
+        make_regressor_params_from_args(
+            arg::extract_or<number_of_physical_regressor_clauses_t>(number_of_physical_regressor_clauses_t{20}, args...)
+            , arg::extract_or<number_of_states_t>(number_of_states_t{100}, args...)
+            , arg::extract_or<specificity_t>(specificity_t{2.0f}, args...)
+            , arg::extract_or<threshold_t>(threshold_t{15}, args...)
+            , arg::extract_or<weighted_flag_t>(weighted_flag_t{true}, args...)
+            , arg::extract_or<max_weight_t>(MAX_WEIGHT_DEFAULT, args...)
+            , arg::extract_or<boost_tpf_t>(boost_tpf_t{false}, args...)
+            , arg::extract_or<number_of_jobs_t>(number_of_jobs_t{-1}, args...)
+            , arg::extract_or<verbosity_t>(verbosity_t{false}, args...)
+            , arg::extract_or<counting_type_t>(counting_type_t{std::string("auto")}, args...)
+            , arg::extract_or<clause_output_tile_size_t>(clause_output_tile_size_t{16}, args...)
+            , arg::extract_or<loss_fn_name_t>(loss_fn_name_t{"MSE"}, args...)
+            , arg::extract_or<loss_fn_C1_t>(loss_fn_C1_t{0.0f}, args...)
+            , arg::extract_or<box_muller_flag_t>(box_muller_flag_t{false}, args...)
+            , arg::maybe_extract<random_seed_t>(args...)
+        )
+        .rightMap([](params_t && params){ return RegressorBitwise(params); })
+        ;
+}
 
 
 } // namespace Tsetlini
