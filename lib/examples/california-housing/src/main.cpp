@@ -1,6 +1,7 @@
 #undef NDEBUG // I want assert to work
 
 #include "tsetlini.hpp"
+#include "tsetlini_strong_params.hpp"
 
 #include <vector>
 #include <string>
@@ -314,17 +315,17 @@ Please run produce_dataset.py script and move created .txt files to the folder w
         train_yi = scaler.transform(train_y);
         test_yi = scaler.transform(test_y);
 
-        auto reg = Tsetlini::make_regressor_classic_from_json(R"({
-            "threshold": )" + std::to_string(T) + R"(,
-            "s": 2.75,
-            "number_of_regressor_clauses": 2000,
-            "number_of_states": 127,
-            "boost_true_positive_feedback": 1,
-            "random_state": 1,
-            "n_jobs": 2,
-            "clause_output_tile_size": 64,
-            "verbose": false
-        })").leftMap(error_printer)
+        auto reg = Tsetlini::make_regressor_classic(
+            Tsetlini::threshold_t{T},
+            Tsetlini::specificity_t{2.75},
+            Tsetlini::number_of_physical_regressor_clauses_t{2000},
+            Tsetlini::number_of_states_t{127},
+            Tsetlini::boost_tpf_t{true},
+            Tsetlini::random_seed_t{1},
+            Tsetlini::number_of_jobs_t{2},
+            Tsetlini::clause_output_tile_size_t{64},
+            Tsetlini::verbosity_t{false})
+            .leftMap(error_printer)
             .rightMap([&](auto && reg)
             {
                 auto const time0 = now();
