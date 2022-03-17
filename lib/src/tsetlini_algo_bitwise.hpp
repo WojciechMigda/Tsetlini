@@ -1020,7 +1020,7 @@ void train_regressor_automata(
     int const input_end_ix,
     char const * __restrict clause_output,
     number_of_states_t const number_of_states,
-    int const response_error,
+    response_error_t const response_error,
     bit_vector<bit_block_type> const & X,
     max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
@@ -1034,7 +1034,7 @@ void train_regressor_automata(
     auto const number_of_features = number_of_features_t{X.size()};
 
     unsigned int const N = input_end_ix - input_begin_ix;
-    real_type const P = loss_fn(static_cast<real_type>(response_error) / value_of(threshold));
+    real_type const P = loss_fn(static_cast<real_type>(value_of(response_error)) / value_of(threshold));
     /*
      * For sparse feedback if N * P >= 0.5 we will just round the number of hits,
      * else we will pick either 0 or 1 with probability proportional to P.
@@ -1122,7 +1122,7 @@ void train_regressor_automata(
     int const input_end_ix,
     char const * __restrict clause_output,
     number_of_states_t const number_of_states,
-    int const response_error,
+    response_error_t const response_error,
     bit_vector<bit_block_type> const & X,
     max_weight_t const max_weight,
     loss_fn_type const & loss_fn,
