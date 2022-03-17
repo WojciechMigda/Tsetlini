@@ -1,6 +1,7 @@
 #include "tsetlini_algo_bitwise.hpp"
 #include "tsetlini_algo_classic.hpp" // TODO: move Feedback enum out of this header
 #include "tsetlini_strong_params.hpp"
+#include "tsetlini_strong_params_private.hpp"
 #include "tsetlini_types.hpp"
 
 #include "strong_type/strong_type.hpp"

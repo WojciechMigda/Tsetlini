@@ -5,6 +5,7 @@
 
 #include "tsetlini_params.hpp"
 #include "tsetlini_strong_params.hpp"
+#include "tsetlini_strong_params_private.hpp"
 
 #include "strong_type/strong_type.hpp"
 

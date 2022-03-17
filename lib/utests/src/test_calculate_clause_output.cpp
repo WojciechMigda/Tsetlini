@@ -1,5 +1,6 @@
 #include "tsetlini_algo_common.hpp"
 #include "tsetlini_strong_params.hpp"
+#include "tsetlini_strong_params_private.hpp"
 #include "tsetlini_types.hpp"
 
 #include "strong_type/strong_type.hpp"

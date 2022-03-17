@@ -1,5 +1,6 @@
 #include "ta_state.hpp"
 #include "tsetlini_strong_params.hpp"
+#include "tsetlini_strong_params_private.hpp"
 #include "mt.hpp"
 
 #include "strong_type/strong_type.hpp"
