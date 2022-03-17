@@ -25,6 +25,7 @@ endfunction()
 # the most time consuming tests go first
 add_ut( EXE_NAME test_bitwise_train_classifier_automata         SOURCE "src/test_bitwise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
 add_ut( EXE_NAME test_bytewise_train_classifier_automata        SOURCE "src/test_bytewise_train_classifier_automata.cpp" EXT_LIBS rapidcheck )
+add_ut( EXE_NAME test_bytewise_train_regressor_automata         SOURCE "src/test_bytewise_train_regressor_automata.cpp" EXT_LIBS rapidcheck )
 
 add_ut( EXE_NAME test_calculate_clause_output                   SOURCE "src/test_calculate_clause_output.cpp" EXT_LIBS rapidcheck )
 add_ut( EXE_NAME test_sum_up_all_label_votes                    SOURCE "src/test_sum_up_all_label_votes.cpp" EXT_LIBS rapidcheck )
