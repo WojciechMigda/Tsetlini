@@ -41,12 +41,6 @@ using max_number_of_labels_t = strong::type<
     int, struct _max_number_of_labels_tag
 >;
 
-using number_of_labels_t = strong::type<
-    int, struct _number_of_labels_tag,
-    strong::ordered_with<int>,
-    strong::ostreamable
->;
-
 using number_of_states_t = strong::type<
     int, struct _number_of_states_tag,
     strong::ordered_with<int>, // covers comparison against int{8,16,32}
@@ -97,24 +91,6 @@ using number_of_physical_regressor_clauses_t = strong::type<
 
 using number_of_physical_classifier_clauses_per_label_t = strong::type<
     int, struct _number_of_physical_classifier_clauses_per_label_tag
->;
-
-using number_of_classifier_clause_outputs_per_label_t = strong::type<
-    int, struct _number_of_classifier_clause_outputs_per_label_tag
->;
-
-using number_of_physical_classifier_clauses_t = strong::type<
-    int, struct _number_of_physical_classifier_clauses_tag,
-    strong::ostreamable
->;
-
-using number_of_physical_estimator_clauses_t = strong::type<
-    int, struct _number_of_physical_estimator_clauses_tag
->;
-
-using number_of_estimator_clause_outputs_t = strong::type<
-    int, struct _number_of_estimator_clause_outputs_tag,
-    strong::ordered_with<int>
 >;
 
 using weighted_flag_t = strong::type<
