@@ -75,6 +75,30 @@ auto gen_box_muller_flag()
     return Tsetlini::box_muller_flag_t{*rc::gen::arbitrary<bool>()};
 }
 
+auto gen_positive_response_error() -> Tsetlini::response_error_t
+{
+    using underlying_type = strong::underlying_type_t<Tsetlini::response_error_t>;
+    using gen_type = long;
+
+    static_assert(sizeof (underlying_type) < sizeof (gen_type));
+
+    static auto constexpr MAX = gen_type{std::numeric_limits<underlying_type>::max()};
+
+    return Tsetlini::response_error_t{*rc::gen::inRange<gen_type>(1, MAX + 1)};
+}
+
+auto gen_negative_response_error() -> Tsetlini::response_error_t
+{
+    using underlying_type = strong::underlying_type_t<Tsetlini::response_error_t>;
+    using gen_type = long;
+
+    static_assert(sizeof (underlying_type) < sizeof (gen_type));
+
+    static auto constexpr MIN = gen_type{std::numeric_limits<underlying_type>::min()};
+
+    return Tsetlini::response_error_t{*rc::gen::inRange<gen_type>(MIN - 1, -1)};
+}
+
 auto gen_S_inv() -> Tsetlini::real_type
 {
     return *rc::gen::map(rc::gen::arbitrary<std::uint32_t>(), [](auto x){ return (x + 0.5f) * (1.0f / 4294967296.0f); });
@@ -200,7 +224,6 @@ suite TrainRegressorAutomata = []
             auto const threshold = gen_threshold();
             auto const box_muller_flag = gen_box_muller_flag();
             auto const S_inv = gen_S_inv();
-            auto const max_weight = Tsetlini::max_weight_t{0};
 
             auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
             auto const clause_output = gen_arbitrary_clause_output(number_of_clause_outputs);
@@ -224,7 +247,123 @@ suite TrainRegressorAutomata = []
                 number_of_states,
                 zero_response_error,
                 X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                loss_fn,
+                box_muller_flag,
+                boost_tpf, prng, threshold, ct);
+
+            RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+/*
+ * Response error: Positive
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bytewise non-weighted train_regressor_automata"
+" does not modify TA state"
+" when response error is positive"
+" and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const threshold = gen_threshold();
+            auto const box_muller_flag = gen_box_muller_flag();
+            auto const S_inv = gen_S_inv();
+            auto const max_weight = Tsetlini::max_weight_t{0};
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const loss_fn = gen_random_loss_fn();
+            Tsetlini::w_vector_type empty_weights;
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+
+            auto const response_error = gen_positive_response_error();
+
+            matrix_type ta_state = ta_state_reference;
+
+            Tsetlini::train_regressor_automata(
+                ta_state,
+                empty_weights,
+                0, value_of(number_of_clause_outputs),
+                clause_output.data(),
+                number_of_states,
+                response_error,
+                X,
                 max_weight,
+                loss_fn,
+                box_muller_flag,
+                boost_tpf, prng, threshold, ct);
+
+            RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bytewise weighted train_regressor_automata"
+" does not modify TA state nor weights"
+" when response error is positive"
+" and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const threshold = gen_threshold();
+            auto const box_muller_flag = gen_box_muller_flag();
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const loss_fn = gen_random_loss_fn();
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+
+            auto const response_error = gen_positive_response_error();
+
+            matrix_type ta_state = ta_state_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_regressor_automata(
+                ta_state,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                clause_output.data(),
+                number_of_states,
+                response_error,
+                X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
                 loss_fn,
                 box_muller_flag,
                 boost_tpf, prng, threshold, ct);

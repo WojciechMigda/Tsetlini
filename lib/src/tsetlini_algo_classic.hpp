@@ -788,7 +788,8 @@ void train_regressor_automata(
             0, N
         );
 
-    for (unsigned int idx = 0; idx < feedback_hits; ++idx)    {
+    for (unsigned int idx = 0; idx < feedback_hits; ++idx)
+    {
         // randomly pick index that corresponds to non-zero feedback
         auto const iidx = prng() % N + input_begin_ix;
 
