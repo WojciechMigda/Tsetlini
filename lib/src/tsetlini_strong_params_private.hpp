@@ -34,6 +34,11 @@ using number_of_estimator_clause_outputs_t = strong::type<
     strong::ordered_with<int>
 >;
 
+using response_error_t = strong::type<
+    int, struct _resonse_error_tag,
+    strong::ordered_with<int>
+>;
+
 
 }  // namespace Tsetlini
 

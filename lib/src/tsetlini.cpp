@@ -809,7 +809,7 @@ void regressor_update_impl(
     );
 
     auto const votes = sum_up_regressor_votes(cache.clause_output, threshold, ta_state.weights);
-    int const response_error = votes - target_response;
+    auto const response_error = response_error_t{votes - target_response};
 
     train_regressor_automata(
         ta_state,
