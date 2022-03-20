@@ -3,6 +3,7 @@
 #include "tsetlini_strong_params.hpp"
 #include "tsetlini_strong_params_private.hpp"
 #include "tsetlini_types.hpp"
+#include "estimator_state.hpp"
 
 #include "strong_type/strong_type.hpp"
 #include "rapidcheck.h"
@@ -91,6 +92,22 @@ auto gen_arbitrary_X(Tsetlini::number_of_features_t number_of_features)
     return X;
 }
 
+template<typename PRNG>
+auto gen_arbitrary_X(PRNG & irng, Tsetlini::number_of_features_t number_of_features)
+{
+    Tsetlini::bit_vector_uint64 X(value_of(number_of_features));
+
+    std::generate(X.m_vector.begin(), X.m_vector.end(), irng);
+
+    auto const total_bits = X.m_vector.size() * X.block_bits;
+    for (Tsetlini::size_type ix = value_of(number_of_features); ix < total_bits; ++ix)
+    {
+        X.clear(ix);
+    }
+
+    return X;
+}
+
 auto gen_arbitrary_X_of_0s(Tsetlini::number_of_features_t number_of_features)
 {
     Tsetlini::bit_vector_uint64 X(value_of(number_of_features));
@@ -113,6 +130,7 @@ auto gen_arbitrary_X_of_1s(Tsetlini::number_of_features_t number_of_features)
     return X;
 }
 
+using coin_tosser_type = Tsetlini::ClassifierStateBitwise::cache_type::coin_tosser_type;
 using matrix_type = Tsetlini::numeric_matrix_int16;
 using polarity_matrix_type = Tsetlini::bit_matrix_uint64;
 
@@ -234,7 +252,7 @@ suite TrainClassifierAutomata = []
             auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type empty_weights;
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::No_Feedback);
 
@@ -282,7 +300,7 @@ suite TrainClassifierAutomata = []
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::No_Feedback);
 
@@ -339,7 +357,7 @@ suite TrainClassifierAutomata = []
             auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type empty_weights;
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -388,7 +406,7 @@ suite TrainClassifierAutomata = []
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -440,7 +458,7 @@ suite TrainClassifierAutomata = []
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT + 1, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -491,7 +509,7 @@ suite TrainClassifierAutomata = []
             auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type zero_weights(value_of(number_of_clause_outputs), MIN_WEIGHT);
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -567,10 +585,10 @@ auto make_ta_state_matrix = [](
     auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::bit_vector_uint64 const X(value_of(number_of_features));
+    auto const X = gen_arbitrary_X(gen, number_of_features);
     Tsetlini::w_vector_type empty_weights;
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
     Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
@@ -693,9 +711,9 @@ auto make_ta_state_matrix = [](
     auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::bit_vector_uint64 const X(value_of(number_of_features));
+    auto const X = gen_arbitrary_X(gen, number_of_features);
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
     Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
@@ -822,7 +840,7 @@ auto make_ta_state_matrix = [](
             auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT - 1));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
@@ -879,7 +897,7 @@ auto make_ta_state_matrix = [](
             auto const X = gen_arbitrary_X(number_of_features);
             Tsetlini::w_vector_type maxxed_weights(value_of(number_of_clause_outputs), MAX_WEIGHT - 1);
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_I_Feedback);
@@ -936,7 +954,7 @@ auto make_ta_state_matrix = [](
 
             Tsetlini::w_vector_type empty_weights;
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1006,7 +1024,7 @@ auto make_ta_state_matrix = [](
 
             Tsetlini::w_vector_type empty_weights;
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1075,7 +1093,7 @@ auto make_ta_state_matrix = [](
 
             Tsetlini::w_vector_type empty_weights;
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1137,7 +1155,7 @@ auto make_ta_state_matrix = [](
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1208,7 +1226,7 @@ auto make_ta_state_matrix = [](
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1278,7 +1296,7 @@ auto make_ta_state_matrix = [](
             auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
                 rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
 
-            Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
 
             Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
             Tsetlini::feedback_vector_type const feedback_to_clauses(value_of(number_of_clause_outputs), Tsetlini::Type_II_Feedback);
@@ -1348,7 +1366,7 @@ auto make_ta_state_matrix = [](
 
     Tsetlini::w_vector_type empty_weights;
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{false};
     auto const X = gen_arbitrary_X_of_0s(number_of_features);
@@ -1477,7 +1495,7 @@ auto make_ta_state_matrix = [](
     auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{false};
     auto const X = gen_arbitrary_X_of_0s(number_of_features);
@@ -1609,7 +1627,7 @@ auto make_ta_state_matrix = [](
 
     Tsetlini::w_vector_type empty_weights;
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{false};
     auto const X = gen_arbitrary_X_of_1s(number_of_features);
@@ -1738,7 +1756,7 @@ auto make_ta_state_matrix = [](
     auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{false};
     auto const X = gen_arbitrary_X_of_1s(number_of_features);
@@ -1879,7 +1897,7 @@ auto equals = [](int target)
 
     Tsetlini::w_vector_type empty_weights;
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{true};
     auto const X = gen_arbitrary_X_of_0s(number_of_features);
@@ -2008,7 +2026,7 @@ auto equals = [](int target)
     auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{true};
     auto const X = gen_arbitrary_X_of_0s(number_of_features);
@@ -2140,7 +2158,7 @@ auto equals = [](int target)
 
     Tsetlini::w_vector_type empty_weights;
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{true};
     auto const X = gen_arbitrary_X_of_1s(number_of_features);
@@ -2269,7 +2287,7 @@ auto equals = [](int target)
     auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
     auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
 
-    Tsetlini::ClassifierStateCache::coin_tosser_type ct(S_inv, value_of(number_of_features));
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
 
     auto const boost_tpf = Tsetlini::boost_tpf_t{true};
     auto const X = gen_arbitrary_X_of_1s(number_of_features);

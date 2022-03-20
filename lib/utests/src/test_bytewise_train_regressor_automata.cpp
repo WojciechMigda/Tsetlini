@@ -2,6 +2,7 @@
 #include "tsetlini_strong_params.hpp"
 #include "tsetlini_strong_params_private.hpp"
 #include "tsetlini_types.hpp"
+#include "estimator_state.hpp"
 
 #include "strong_type/strong_type.hpp"
 #include "rapidcheck.h"
@@ -130,7 +131,7 @@ auto make_fixed_loss_fn = [](float rv)
 };
 
 
-using coin_tosser_type = Tsetlini::RegressorStateCache::coin_tosser_type;
+using coin_tosser_type = Tsetlini::RegressorStateClassic::cache_type::coin_tosser_type;
 using matrix_type = Tsetlini::numeric_matrix_int16;
 
 

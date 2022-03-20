@@ -1,5 +1,4 @@
 #include "tsetlini_algo_bitwise.hpp"
-//#include "tsetlini_algo_classic.hpp" // TODO: move Feedback enum out of this header
 #include "tsetlini_strong_params.hpp"
 #include "tsetlini_strong_params_private.hpp"
 #include "tsetlini_types.hpp"
@@ -126,6 +125,22 @@ auto gen_arbitrary_X(Tsetlini::number_of_features_t number_of_features)
     return X;
 }
 
+template<typename PRNG>
+auto gen_arbitrary_X(PRNG & irng, Tsetlini::number_of_features_t number_of_features)
+{
+    Tsetlini::bit_vector_uint64 X(value_of(number_of_features));
+
+    std::generate(X.m_vector.begin(), X.m_vector.end(), irng);
+
+    auto const total_bits = X.m_vector.size() * X.block_bits;
+    for (Tsetlini::size_type ix = value_of(number_of_features); ix < total_bits; ++ix)
+    {
+        X.clear(ix);
+    }
+
+    return X;
+}
+
 auto gen_random_loss_fn = []
 {
     return [](float)
@@ -134,13 +149,13 @@ auto gen_random_loss_fn = []
         };
 };
 
-//auto make_fixed_loss_fn = [](float rv)
-//{
-//    return [rv](float)
-//        {
-//            return rv;
-//        };
-//};
+auto make_fixed_loss_fn = [](float rv)
+{
+    return [rv](float)
+        {
+            return rv;
+        };
+};
 
 
 using coin_tosser_type = Tsetlini::RegressorStateBitwise::cache_type::coin_tosser_type;
@@ -366,6 +381,333 @@ suite TrainRegressorAutomata = []
     );
 
     expect(that % true == ok);
+};
+
+
+/*
+ * Response error: Positive
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bitwise non-weighted train_regressor_automata"
+" does not modify TA state"
+" when response error is positive"
+" and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const threshold = gen_threshold();
+            auto const box_muller_flag = gen_box_muller_flag();
+            auto const S_inv = gen_S_inv();
+            auto const max_weight = Tsetlini::max_weight_t{0};
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const loss_fn = gen_random_loss_fn();
+            Tsetlini::w_vector_type empty_weights;
+
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+
+            auto const response_error = gen_positive_response_error();
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+
+            Tsetlini::train_regressor_automata(
+                ta_state,
+                polarity,
+                empty_weights,
+                0, value_of(number_of_clause_outputs),
+                clause_output.data(),
+                number_of_states,
+                response_error,
+                X,
+                max_weight,
+                loss_fn,
+                box_muller_flag,
+                boost_tpf, prng, threshold, ct);
+
+            RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+            RC_ASSERT(polarity.m_v == polarity_reference.m_v);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" does not modify TA state nor weights"
+" when response error is positive"
+" and clause outputs are 0"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const threshold = gen_threshold();
+            auto const box_muller_flag = gen_box_muller_flag();
+            auto const S_inv = gen_S_inv();
+
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, -value_of(number_of_states), value_of(number_of_states));
+            auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const loss_fn = gen_random_loss_fn();
+            auto const weights_reference = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+
+            auto const response_error = gen_positive_response_error();
+
+            matrix_type ta_state = ta_state_reference;
+            polarity_matrix_type polarity = polarity_reference;
+            Tsetlini::w_vector_type weights = weights_reference;
+
+            Tsetlini::train_regressor_automata(
+                ta_state,
+                polarity,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                clause_output.data(),
+                number_of_states,
+                response_error,
+                X,
+                Tsetlini::max_weight_t{MAX_WEIGHT},
+                loss_fn,
+                box_muller_flag,
+                boost_tpf, prng, threshold, ct);
+
+            RC_ASSERT(ta_state.m_v == ta_state_reference.m_v);
+            RC_ASSERT(polarity.m_v == polarity_reference.m_v);
+            RC_ASSERT(weights == weights_reference);
+        }
+    );
+
+    expect(that % true == ok);
+};
+
+
+auto make_ta_state_matrix = [](
+    auto && gen,
+    Tsetlini::number_of_estimator_clause_outputs_t number_of_clause_outputs,
+    Tsetlini::number_of_features_t number_of_features)
+{
+    matrix_type ta_state_matrix(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+
+    // fill entire matrix storage space, regardless of alignment and padding
+    std::generate(ta_state_matrix.m_v.begin(), ta_state_matrix.m_v.end(), gen);
+
+    return ta_state_matrix;
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" decrements weights"
+" when response error is positive"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states) + 1, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs),
+        random_int(gen, std::uint32_t(MIN_WEIGHT) + 10, std::uint32_t(MAX_WEIGHT - 1)));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, 1, MAX_RESPONSE_ERROR)};
+
+    /*
+     * Here we will aggregate differences between weights and their base reference
+     */
+    Tsetlini::aligned_vector_int32 diff(value_of(number_of_clause_outputs), 0);
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 2); // empirical
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(weights, weights_reference, diff);
+    }
+
+    int const target = -N_REPEAT;
+
+    /*
+     * Check that no weight diff element deviates from target by more than
+     * a margin of N_REPEAT / 100
+     */
+    auto within_margin = [margin = std::round(N_REPEAT / 100)](int target)
+        {
+            return [=](auto x)
+                {
+                    return (target - margin) <= x and x <= (target + margin);
+                };
+        };
+
+    auto const where_failed = std::find_if_not(diff.cbegin(), diff.cend(), within_margin(target));
+
+    if (where_failed != diff.cend())
+    {
+        boost::ut::log << "Random seed: " << seed;
+        boost::ut::log << "Number of clause_outputs: " << diff.size();
+        boost::ut::log << "Target adjustment: " << target;
+
+        boost::ut::log << "Failed element: " << *where_failed << " @ [" << (where_failed - diff.cbegin()) << ']';
+    }
+
+    expect(that % true == (where_failed == diff.cend())) << "Decrementation of weights failed!";
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" does not decrement zero weights"
+" when response error is positive"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states) + 1, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs), MIN_WEIGHT);
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, 1, MAX_RESPONSE_ERROR)};
+
+    /*
+     * Repeatedly call the algorithm and check invariants
+     */
+    auto N_REPEAT = 10'000u;
+
+    bool all_ok = true;
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        all_ok = all_ok and (weights == weights_reference);
+    }
+
+    expect(that % true == all_ok) << "Weights were modified!";
 };
 
 
