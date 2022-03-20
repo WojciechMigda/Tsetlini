@@ -1383,7 +1383,331 @@ auto make_ta_state_matrix = [](
             }
         });
 
-    expect(that % true == ok);
+    expect(that % true == ok) << "TA state was modified!";
+};
+
+
+"Bytewise weighted train_regressor_automata"
+" increments 'positive clause' TA states"
+" when response error is Positive"
+" and clause outputs are 1"
+" and X values are 0"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 10, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{false};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states), -10); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs), random_int(gen, MIN_WEIGHT, MAX_WEIGHT));
+
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 0);
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, 1, MAX_RESPONSE_ERROR)};
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+
+    bool all_neg_ok = true;
+
+    /*
+     * Repeatedly call the algorithm and check invariants
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 2); // empirical
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+
+        for (auto rix = 1u; rix < diff.rows(); rix += 2)
+        {
+            all_neg_ok = all_neg_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+
+    expect(that % true == all_neg_ok) << "Negative clauses were modified!";
+
+    int const target = +N_REPEAT;
+
+    /*
+     * Check that no positive TA state element deviates from that target
+     * by more than a margin of N_REPEAT / 100.
+     */
+    bool all_pos_ok = true;
+
+    auto within_margin = [margin = std::round(N_REPEAT / 100)](int target)
+        {
+            return [=](auto x)
+                {
+                    return (target - margin) <= x and x <= (target + margin);
+                };
+        };
+
+    for (auto rix = 0u; rix < diff.rows(); rix += 2)
+    {
+        auto const begin = diff.row_data(rix);
+        auto const end = begin + diff.cols();
+        auto const where_failed = std::find_if_not(begin, end, within_margin(target));
+
+        if (where_failed != end)
+        {
+            if (all_pos_ok)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "Target adjustment for pos clause: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_pos_ok = all_pos_ok and (where_failed == end);
+    }
+
+    expect(that % true == all_pos_ok) << "Positive clause incrementation failed!";
+};
+
+
+"Bytewise weighted train_regressor_automata"
+" increments 'negative clause' TA states"
+" when response error is Positive"
+" and clause outputs are 1"
+" and X values are 1"
+" and TA actions are 'exclude'"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 10, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{false};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states), -10); },
+        number_of_clause_outputs, number_of_features);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs), random_int(gen, MIN_WEIGHT, MAX_WEIGHT));
+
+    Tsetlini::aligned_vector_char const X(value_of(number_of_features), 1);
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, 1, MAX_RESPONSE_ERROR)};
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+
+    bool all_pos_ok = true;
+
+    /*
+     * Repeatedly call the algorithm and check invariants
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 2); // empirical
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+
+        for (auto rix = 0u; rix < diff.rows(); rix += 2)
+        {
+            all_pos_ok = all_pos_ok and std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix));
+        }
+    }
+
+    expect(that % true == all_pos_ok) << "Positive clauses were modified!";
+
+    int const target = +N_REPEAT;
+
+    /*
+     * Check that no negative TA state element deviates from that target
+     * by more than a margin of N_REPEAT / 100.
+     */
+    bool all_neg_ok = true;
+
+    auto within_margin = [margin = std::round(N_REPEAT / 100)](int target)
+        {
+            return [=](auto x)
+                {
+                    return (target - margin) <= x and x <= (target + margin);
+                };
+        };
+
+    for (auto rix = 1u; rix < diff.rows(); rix += 2)
+    {
+        auto const begin = diff.row_data(rix);
+        auto const end = begin + diff.cols();
+        auto const where_failed = std::find_if_not(begin, end, within_margin(target));
+
+        if (where_failed != end)
+        {
+            if (all_neg_ok)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "Target adjustment for neg clause: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_neg_ok = all_neg_ok and (where_failed == end);
+    }
+
+    expect(that % true == all_neg_ok) << "Negative clause incrementation failed!";
+};
+
+
+"Bytewise weighted train_regressor_automata"
+" does not change TA states"
+" when response error is Positive"
+" and clause outputs are 1"
+" and TA actions are 'include'"_test = [&]
+{
+    auto ok = rc::check(
+        [&]
+        {
+            IRNG prng(*rc::gen::arbitrary<int>());
+
+            /*
+             * Initialize few random constants for the algorithm
+             */
+            auto const number_of_features = gen_number_of_features();
+            auto const number_of_clause_outputs = gen_number_of_clause_outputs();
+
+            auto const number_of_states = gen_number_of_states();
+            auto const boost_tpf = gen_boost_tpf();
+            auto const S_inv = gen_S_inv();
+            auto const threshold = gen_threshold();
+            auto const box_muller_flag = gen_box_muller_flag();
+            auto const max_weight = Tsetlini::max_weight_t{0};
+            auto const loss_fn = gen_random_loss_fn();
+
+            auto weights = *rc::gen::container<Tsetlini::w_vector_type>(value_of(number_of_clause_outputs),
+                rc::gen::inRange(MIN_WEIGHT, MAX_WEIGHT));
+
+            coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+            Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+            auto const X = gen_arbitrary_X(number_of_features);
+            auto const ta_state_reference = gen_ta_state_matrix(number_of_clause_outputs, number_of_features, 0, value_of(number_of_states));
+
+            auto const response_error = gen_positive_response_error();
+
+            matrix_type ta_state = ta_state_reference;
+
+            Tsetlini::train_regressor_automata(
+                ta_state,
+                weights,
+                0, value_of(number_of_clause_outputs),
+                clause_output.data(),
+                number_of_states,
+                response_error,
+                X,
+                max_weight,
+                loss_fn,
+                box_muller_flag,
+                boost_tpf, prng, threshold, ct);
+
+            /*
+             * Check that TA states were not changed
+             */
+            for (auto rix = 0u; rix < ta_state.rows(); ++rix)
+            {
+                RC_ASSERT(std::equal(ta_state.row_data(rix), ta_state.row_data(rix) + ta_state.cols(), ta_state_reference.row_data(rix)));
+            }
+        });
+
+    expect(that % true == ok) << "TA state was modified!";
 };
 
 
