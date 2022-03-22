@@ -711,6 +711,475 @@ auto make_ta_state_matrix = [](
 };
 
 
+/*
+ * Response error: Negative
+ * Clause outputs: 0
+ * X: n/a
+ */
+
+"Bitwise non-weighted train_regressor_automata"
+" adjusts TA states with 1/s probability"
+" when response error is negative"
+" and clause outputs are 0"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 8, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    Tsetlini::w_vector_type empty_weights;
+
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * training is expected to decrement state, so we need to fill TA state
+         * with random numbers in range open on number_of_states:
+         *
+         *      (-number_of_states, number_of_states]
+         *
+         * HOWEVER, this algorithm does prevent randomly generating the same feature
+         * index more than once while iterating, hence, for the sake of the test
+         * scenario we need to allow for a wider margin, and instead of using
+         * offset of +1 for the lower bound we will use +8 instead. Lower bound
+         * of number_of_states is also adjusted.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states) + 8, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, MIN_RESPONSE_ERROR, -1)};
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+    bool all_polarities_ok = true;
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 14);
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            empty_weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+        all_polarities_ok = all_polarities_ok and verify_polarities(polarity, ta_state);
+    }
+
+    expect(that % true == all_polarities_ok) << "Updated polarities do not reflect TA state contents";
+
+    /*
+     * This is the target average value given TA state would be decreased by
+     */
+    int target = -std::round(N_REPEAT * S_inv);
+
+    /*
+     * Check that no TA state diff element deviates from that target by more than
+     * a margin of N_REPEAT / 100.
+     */
+    bool all_ok = true;
+    for (auto rix = 0u; rix < diff.rows(); ++rix)
+    {
+        auto within_margin = [target, margin = std::round(N_REPEAT / 100)](auto x){ return (target - margin) <= x and x <= (target + margin); };
+
+        auto begin = diff.row_data(rix);
+        auto end = diff.row_data(rix) + diff.cols();
+        auto where_failed = std::find_if_not(begin, end, within_margin);
+
+        if (where_failed != end)
+        {
+            if (all_ok)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "Box-muller flag: " << box_muller_flag;
+                boost::ut::log << "1 / s: " << S_inv;
+                boost::ut::log << "Target decrease: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_ok = all_ok and (where_failed == end);
+    }
+    expect(that % true == all_ok) << "Adjustment of TA state failed!";
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" adjusts TA states with 1/s probability"
+" and leaves weights unchanged"
+" when response error is negative"
+" and clause outputs are 0"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 8, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    Tsetlini::w_vector_type const weights_reference(value_of(number_of_clause_outputs), random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 1)));
+
+    auto const ta_state_reference = make_ta_state_matrix(
+        /*
+         * training is expected to decrement state, so we need to fill TA state
+         * with random numbers in range open on number_of_states:
+         *
+         *      (-number_of_states, number_of_states]
+         *
+         * HOWEVER, this algorithm does prevent randomly generating the same feature
+         * index more than once while iterating, hence, for the sake of the test
+         * scenario we need to allow for a wider margin, and instead of using
+         * offset of +1 for the lower bound we will use +8 instead. Lower bound
+         * of number_of_states is also adjusted.
+         */
+        [&](){ return random_int(gen, -value_of(number_of_states) + 8, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 0);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, MIN_RESPONSE_ERROR, -1)};
+
+    /*
+     * Here we will aggregate differences between ta_state and its base reference
+     */
+    Tsetlini::numeric_matrix_int32 diff(2 * value_of(number_of_clause_outputs), value_of(number_of_features));
+    bool all_polarities_ok = true;
+    bool all_weights_unchanged = true;
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 14);
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(ta_state, ta_state_reference, diff);
+
+        all_polarities_ok = all_polarities_ok and verify_polarities(polarity, ta_state);
+        all_weights_unchanged = all_weights_unchanged and (weights == weights_reference);
+    }
+
+    expect(that % true == all_polarities_ok) << "Updated polarities do not reflect TA state contents";
+    expect(that % true == all_weights_unchanged) << "Weights were modified!";
+
+    /*
+     * This is the target average value given TA state would be decreased by
+     */
+    int target = -std::round(N_REPEAT * S_inv);
+
+    /*
+     * Check that no TA state diff element deviates from that target by more than
+     * a margin of N_REPEAT / 100.
+     */
+    bool all_ok = true;
+    for (auto rix = 0u; rix < diff.rows(); ++rix)
+    {
+        auto within_margin = [target, margin = std::round(N_REPEAT / 100)](auto x){ return (target - margin) <= x and x <= (target + margin); };
+
+        auto begin = diff.row_data(rix);
+        auto end = diff.row_data(rix) + diff.cols();
+        auto where_failed = std::find_if_not(begin, end, within_margin);
+
+        if (where_failed != end)
+        {
+            if (all_ok)
+            {
+                // log this only on first failure
+                boost::ut::log << "Random seed: " << seed;
+                boost::ut::log << "Number of states: " << number_of_states;
+                boost::ut::log << "Number of rows: " << diff.rows();
+                boost::ut::log << "Number of columns: " << diff.cols();
+                boost::ut::log << "Box-muller flag: " << box_muller_flag;
+                boost::ut::log << "1 / s: " << S_inv;
+                boost::ut::log << "Target decrease: " << target;
+            }
+            boost::ut::log << "Failed element row/col: " << *where_failed << " @ [" << rix << ", " << (where_failed - begin) << ']';
+        }
+
+        all_ok = all_ok and (where_failed == end);
+    }
+    expect(that % true == all_ok) << "Adjustment of TA state failed!";
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" increments weights"
+" when response error is negative"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states) + 1, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs),
+        random_int(gen, std::uint32_t(MIN_WEIGHT), std::uint32_t(MAX_WEIGHT - 10)));
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, MIN_RESPONSE_ERROR, -1)};
+
+    /*
+     * Here we will aggregate differences between weights and their base reference
+     */
+    Tsetlini::aligned_vector_int32 diff(value_of(number_of_clause_outputs), 0);
+
+    /*
+     * Repeatedly call the algorithm and aggregate differences to the state
+     */
+    auto N_REPEAT = 15'000u * (value_of(number_of_clause_outputs) + 2); // empirical
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        aggregate_diff(weights, weights_reference, diff);
+    }
+
+    int const target = +N_REPEAT;
+
+    /*
+     * Check that no weight diff element deviates from target by more than
+     * a margin of N_REPEAT / 100
+     */
+    auto within_margin = [margin = std::round(N_REPEAT / 100)](int target)
+        {
+            return [=](auto x)
+                {
+                    return (target - margin) <= x and x <= (target + margin);
+                };
+        };
+
+    auto const where_failed = std::find_if_not(diff.cbegin(), diff.cend(), within_margin(target));
+
+    if (where_failed != diff.cend())
+    {
+        boost::ut::log << "Random seed: " << seed;
+        boost::ut::log << "Number of clause_outputs: " << diff.size();
+        boost::ut::log << "Target adjustment: " << target;
+
+        boost::ut::log << "Failed element: " << *where_failed << " @ [" << (where_failed - diff.cbegin()) << ']';
+    }
+
+    expect(that % true == (where_failed == diff.cend())) << "Incrementation of weights failed!";
+};
+
+
+"Bitwise weighted train_regressor_automata"
+" does not increment maxxed weights"
+" when response error is negative"
+" and clause outputs are 1"_test = [&]
+{
+    /*
+     * override few limits for faster execution
+     */
+    auto constexpr MAX_NUM_OF_FEATURES = 400;
+    auto constexpr MAX_NUM_OF_CLAUSE_OUTPUTS = 8;
+
+    /*
+     * Begin with a PRNG section
+     */
+    std::random_device rd;
+    auto const seed = rd();
+    std::mt19937 gen(seed);
+
+    IRNG prng(seed);
+
+    /*
+     * Initialize few random constants for the algorithm
+     */
+    auto const number_of_features = Tsetlini::number_of_features_t{random_int(gen, 1, MAX_NUM_OF_FEATURES)};
+    auto const number_of_clause_outputs = Tsetlini::number_of_estimator_clause_outputs_t{2 * random_int(gen, 1, MAX_NUM_OF_CLAUSE_OUTPUTS / 2)};
+
+    auto const number_of_states = Tsetlini::number_of_states_t{random_int(gen, 2, MAX_NUM_OF_STATES)};
+    auto const boost_tpf = Tsetlini::boost_tpf_t{random_int(gen, 0, 1)};
+    auto const S_inv = std::uniform_real_distribution<>(0.f, 1.f)(gen);
+    auto const threshold = Tsetlini::threshold_t{random_int(gen, 1, MAX_THRESHOLD)};
+    auto const box_muller_flag = Tsetlini::box_muller_flag_t{random_int(gen, 0, 1)};
+    auto const loss_fn = make_fixed_loss_fn(1.0);
+
+    coin_tosser_type ct(S_inv, value_of(number_of_features));
+
+    auto const X = gen_arbitrary_X(gen, number_of_features);
+    auto const ta_state_reference = make_ta_state_matrix(
+        [&]{ return random_int(gen, -value_of(number_of_states) + 1, value_of(number_of_states) - 1); },
+        number_of_clause_outputs, number_of_features);
+    auto const polarity_reference = make_polarity_matrix_from(ta_state_reference);
+
+    Tsetlini::w_vector_type weights_reference(value_of(number_of_clause_outputs), MAX_WEIGHT - 1);
+
+    Tsetlini::aligned_vector_char const clause_output(value_of(number_of_clause_outputs), 1);
+    auto const response_error = Tsetlini::response_error_t{random_int(gen, MIN_RESPONSE_ERROR, -1)};
+
+    bool all_weights_unchanged = true;
+
+    /*
+     * Repeatedly call the algorithm and check invariants
+     */
+    auto N_REPEAT = 10'000u;
+
+    for (auto it = 0u; it < N_REPEAT; ++it)
+    {
+        matrix_type ta_state = ta_state_reference;
+        polarity_matrix_type polarity = polarity_reference;
+        Tsetlini::w_vector_type weights = weights_reference;
+
+        Tsetlini::train_regressor_automata(
+            ta_state,
+            polarity,
+            weights,
+            0, value_of(number_of_clause_outputs),
+            clause_output.data(),
+            number_of_states,
+            response_error,
+            X,
+            Tsetlini::max_weight_t{MAX_WEIGHT},
+            loss_fn,
+            box_muller_flag,
+            boost_tpf, prng, threshold, ct);
+
+        all_weights_unchanged = all_weights_unchanged and (weights == weights_reference);
+    }
+
+    expect(that % true == all_weights_unchanged) << "Weights were modified!";
+};
+
+
 }; // suite TrainRegressorAutomata
 
 
