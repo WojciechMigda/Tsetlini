@@ -158,9 +158,19 @@ When run it will produce output below::
 
 `Full execution log <https://github.com/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/output.txt>`__.
 
-Run ``Tsetlini``'s example inside `Colab Notebook <https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/The_Binary_Iris_Dataset.ipynb>`__.
+Run notebook with ``Tsetlini``'s example |colab-iris-tsetlini|
 
-Run [TM2018code]_ reference example inside `Colab Notebook <https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb>`__.
+.. |colab-iris-tsetlini| image:: images/colab-badge.svg
+ :scale: 100%
+ :alt: Run in Colab
+ :target: https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/The_Binary_Iris_Dataset.ipynb
+
+Run notebook with [TM2018code]_ reference example |colab-iris-cair|
+
+.. |colab-iris-cair| image:: images/colab-badge.svg
+ :scale: 100%
+ :alt: Run in Colab
+ :target: https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb
 
 
 .. [TM2018] Granmo, O.C., 2018. The Tsetlin Machine--A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. `arXiv preprint arXiv:1804.01508 <https://arxiv.org/abs/1804.01508>`__.
