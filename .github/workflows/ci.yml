@@ -11,43 +11,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runs-on: [ubuntu-18.04, ubuntu-20.04, macos-latest]
-        compiler: [g++-7, g++-8, g++-9, g++-10, clang++-8, clang++-9, clang++-10, clang++-11, g++]
+        runs-on: [ubuntu-20.04, macos-latest]
+        compiler: [g++-7, g++-8, g++-9, g++-10, g++-11, clang++-8, clang++-9, clang++-10, clang++-11]
         exclude:
           # see 'Ultimate mega master compatibility table'
           # https://askubuntu.com/questions/466651/how-do-i-use-the-latest-gcc-on-ubuntu/1163021#1163021
 
-          # Newer compilers don't run on ubuntu 18.04
-          - runs-on: ubuntu-18.04
-            compiler: g++
-          - runs-on: ubuntu-18.04
-            compiler: g++-9
-          - runs-on: ubuntu-18.04
-            compiler: g++-10
-          - runs-on: ubuntu-18.04
-            compiler: clang++-10
-          - runs-on: ubuntu-18.04
-            compiler: clang++-11
-          # Older compilers don't run on ubuntu 20.04
+          # Older/too new compilers that don't run on ubuntu 20.04
           - runs-on: ubuntu-20.04
-            compiler: g++
-          - runs-on: ubuntu-20.04
-            compiler: g++-4.8
-          - runs-on: ubuntu-20.04
-            compiler: g++-4.9
-          - runs-on: ubuntu-20.04
-            compiler: g++-5
-          - runs-on: ubuntu-20.04
-            compiler: g++-6
+            compiler: g++-11
           # Versioned g++ and clang++ don't run on macOS
-          - runs-on: macos-latest
-            compiler: g++-4.8
-          - runs-on: macos-latest
-            compiler: g++-4.9
-          - runs-on: macos-latest
-            compiler: g++-5
-          - runs-on: macos-latest
-            compiler: g++-6
           - runs-on: macos-latest
             compiler: g++-7
           - runs-on: macos-latest
