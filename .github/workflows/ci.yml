@@ -12,14 +12,14 @@ jobs:
       fail-fast: false
       matrix:
         runs-on: [ubuntu-20.04, macos-latest]
-        compiler: [g++-7, g++-8, g++-9, g++-10, clang++-8, clang++-9, clang++-10, clang++-11, g++]
+        compiler: [g++-7, g++-8, g++-9, g++-10, g++-11, clang++-8, clang++-9, clang++-10, clang++-11]
         exclude:
           # see 'Ultimate mega master compatibility table'
           # https://askubuntu.com/questions/466651/how-do-i-use-the-latest-gcc-on-ubuntu/1163021#1163021
 
-          # Older compilers don't run on ubuntu 20.04
+          # Older/too new compilers that don't run on ubuntu 20.04
           - runs-on: ubuntu-20.04
-            compiler: g++
+            compiler: g++-11
           # Versioned g++ and clang++ don't run on macOS
           - runs-on: macos-latest
             compiler: g++-7
