@@ -1,8 +1,3 @@
 https://github.com/LoopPerfect/neither
 
-91d4878b411e5903253f2a9bf37b0edee95a77f0
-
-
-Changes:
-- silenced warning in maybe.hpp
-- rightMap && fix
+d2db83d37e4ac84e50c51928bac4504b982983f0
