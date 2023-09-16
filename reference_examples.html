@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reference examples &mdash; Tsetlini 0.0.9 documentation</title>
@@ -11,10 +11,11 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=f7cdbf68"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -27,11 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> Tsetlini
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Tsetlini
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -64,8 +69,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Reference examples</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Reference examples</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/reference_examples.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -76,9 +81,9 @@
            <div itemprop="articleBody">
              
   <section id="reference-examples">
-<h1>Reference examples<a class="headerlink" href="#reference-examples" title="Permalink to this headline"></a></h1>
+<h1>Reference examples<a class="headerlink" href="#reference-examples" title="Link to this heading"></a></h1>
 <section id="noisy-xor">
-<h2>Noisy XOR<a class="headerlink" href="#noisy-xor" title="Permalink to this headline"></a></h2>
+<h2>Noisy XOR<a class="headerlink" href="#noisy-xor" title="Link to this heading"></a></h2>
 <p>Appeared in the first Tsetlin Machine paper <a class="reference internal" href="#tm2018" id="id1"><span>[TM2018]</span></a>, Section 5.4, pp 28.</p>
 <blockquote>
 <div><p>The dataset consists of <span class="math notranslate nohighlight">\(10~000\)</span> examples with twelve binary inputs,
@@ -98,7 +103,7 @@ each has <span class="math notranslate nohighlight">\(100\)</span> states. The T
 in specification of the number of clauses. <code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s configuration that corresponds
 to the referenced values uses <code class="docutils literal notranslate"><span class="pre">number_of_clauses_per_label</span></code> equal <code class="docutils literal notranslate"><span class="pre">20</span></code>. In addition to that,
 <a class="reference internal" href="#tm2018" id="id2"><span>[TM2018]</span></a> does not explicitly state configuration of <code class="docutils literal notranslate"><span class="pre">boost_true_positive_feedback</span></code> parameter,
-but the source code referenced in it uses value of <code class="docutils literal notranslate"><span class="pre">0</span></code> <a class="footnote-reference brackets" href="#xor-code1" id="id3">1</a> <a class="footnote-reference brackets" href="#xor-code2" id="id4">2</a>.</p>
+but the source code referenced in it uses value of <code class="docutils literal notranslate"><span class="pre">0</span></code> <a class="footnote-reference brackets" href="#xor-code1" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#xor-code2" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s Noisy XOR example source code can be found in the
 <a class="reference external" href="https://github.com/WojciechMigda/Tsetlini/tree/main/lib/examples/noisy-xor">lib/examples/noisy-xor</a> folder.</p>
 <p>When run it will produce output below:</p>
@@ -125,7 +130,7 @@ Prediction: x1 = 1, x2 = 1, ... -&gt; y =  0
 </div>
 </section>
 <section id="the-binary-iris-dataset">
-<h2>The Binary Iris Dataset<a class="headerlink" href="#the-binary-iris-dataset" title="Permalink to this headline"></a></h2>
+<h2>The Binary Iris Dataset<a class="headerlink" href="#the-binary-iris-dataset" title="Link to this heading"></a></h2>
 <p>Appeared in the first Tsetlin Machine paper <a class="reference internal" href="#tm2018" id="id6"><span>[TM2018]</span></a>, section 5.2, pp 25.</p>
 <blockquote>
 <div><p>We first evaluate the Tsetlin Machine on the classical Iris dataset.
@@ -225,23 +230,29 @@ Average accuracy on train data: 96.5 +/- 0.0
 <p><a class="reference external" href="https://github.com/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/output.txt">Full execution log</a>.</p>
 <p>Run notebook with <code class="docutils literal notranslate"><span class="pre">Tsetlini</span></code>’s example <a class="reference external" href="https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/The_Binary_Iris_Dataset.ipynb"><img alt="Run in Colab" height="20" src="_images/colab-badge.svg" width="117" /></a></p>
 <p>Run notebook with <a class="reference internal" href="#tm2018code" id="id7"><span>[TM2018code]</span></a> reference example <a class="reference external" href="https://colab.research.google.com/github/WojciechMigda/Tsetlini/blob/main/lib/examples/binary-iris/src/CAIR_The_Binary_Iris_Dataset.ipynb"><img alt="Run in Colab" height="20" src="_images/colab-badge.svg" width="117" /></a></p>
-<dl class="citation">
-<dt class="label" id="tm2018"><span class="brackets">TM2018</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id6">3</a>)</span></dt>
-<dd><p>Granmo, O.C., 2018. The Tsetlin Machine–A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. <a class="reference external" href="https://arxiv.org/abs/1804.01508">arXiv preprint arXiv:1804.01508</a>.</p>
-</dd>
-<dt class="label" id="tm2018code"><span class="brackets">TM2018code</span><span class="fn-backref">(<a href="#id5">1</a>,<a href="#id7">2</a>)</span></dt>
-<dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine">Tsetlin Machine</a>.</p>
-</dd>
-</dl>
+<div role="list" class="citation-list">
+<div class="citation" id="tm2018" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>TM2018<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id1">1</a>,<a role="doc-backlink" href="#id2">2</a>,<a role="doc-backlink" href="#id6">3</a>)</span>
+<p>Granmo, O.C., 2018. The Tsetlin Machine–A Game Theoretic Bandit Driven Approach to Optimal Pattern Recognition with Propositional Logic. <a class="reference external" href="https://arxiv.org/abs/1804.01508">arXiv preprint arXiv:1804.01508</a>.</p>
+</div>
+<div class="citation" id="tm2018code" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>TM2018code<span class="fn-bracket">]</span></span>
+<span class="backrefs">(<a role="doc-backlink" href="#id5">1</a>,<a role="doc-backlink" href="#id7">2</a>)</span>
+<p><a class="reference external" href="https://github.com/cair/TsetlinMachine">Tsetlin Machine</a>.</p>
+</div>
+</div>
 <p class="rubric">Footnotes</p>
-<dl class="footnote brackets">
-<dt class="label" id="xor-code1"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
-<dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34">https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34</a>.</p>
-</dd>
-<dt class="label" id="xor-code2"><span class="brackets"><a class="fn-backref" href="#id4">2</a></span></dt>
-<dd><p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58">https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58</a></p>
-</dd>
-</dl>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="xor-code1" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34">https://github.com/cair/TsetlinMachine/blob/master/NoisyXORDemo.py#L34</a>.</p>
+</aside>
+<aside class="footnote brackets" id="xor-code2" role="note">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">2</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58">https://github.com/cair/TsetlinMachine/blob/master/MultiClassTsetlinMachine.pyx#L58</a></p>
+</aside>
+</aside>
 </section>
 </section>
 
