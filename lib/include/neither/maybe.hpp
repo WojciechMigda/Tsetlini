@@ -5,7 +5,7 @@
 #include <cassert>
 #include <cstddef>
 #include <type_traits>
-#include <neither/traits.hpp>
+#include "traits.hpp"
 
 namespace neither {
 
