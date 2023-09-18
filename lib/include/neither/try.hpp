@@ -2,7 +2,7 @@
 #define NEITHER_TRY_HPP
 
 #include <functional>
-#include <neither/either.hpp>
+#include "either.hpp"
 
 namespace neither {
 

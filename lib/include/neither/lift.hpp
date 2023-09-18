@@ -1,4 +1,4 @@
-#include <neither/either.hpp>
+#include "either.hpp"
 
 namespace neither {
 

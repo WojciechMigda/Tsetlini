@@ -1,10 +1,10 @@
 #ifndef NEITHER_NEITHER_HPP
 #define NEITHER_NEITHER_HPP
 
-#include <neither/either.hpp>
-#include <neither/lift.hpp>
-#include <neither/maybe.hpp>
-#include <neither/traits.hpp>
-#include <neither/try.hpp>
+#include "either.hpp"
+#include "lift.hpp"
+#include "maybe.hpp"
+#include "traits.hpp"
+#include "try.hpp"
 
 #endif
