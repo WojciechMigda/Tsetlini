@@ -1,6 +1,6 @@
 include(${CMAKE_ROOT}/Modules/FindPackageHandleStandardArgs.cmake)
 
-find_path(Tsetlini_INCLUDE_DIR tsetlini.hpp PATH_SUFFIXES tsetlini)
+find_path(Tsetlini_INCLUDE_DIR tsetlini/tsetlini.hpp)
 find_library(Tsetlini_LIBRARY tsetlini libtsetlini)
 
 find_package_handle_standard_args(Tsetlini
